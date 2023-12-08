@@ -1,0 +1,12 @@
+{
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#0df620",
+    "titleBar.activeBackground": "#27c407",
+    "titleBar.activeForeground": "#ff8000",
+    "activityBar.foreground": "#e63bc7", //icons active
+    "activityBar.inactiveForeground": "#00aa2d", //icon inactive
+  }
+}

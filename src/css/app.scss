@@ -1,0 +1,158 @@
+/* app global css */
+/* app global css */
+
+$font-family-lexend: 'Lexend Zetta', sans-serif;
+$font-family-museo: 'MuseoModerno', sans-serif;
+$font-family-montserrat: 'Montserrat', sans-serif;
+
+
+:root {
+  .q-card__actions {
+    padding: 1rem;
+  }
+  --px30: 1.875rem;
+  --px43: 2.6rem;
+  --px60: 3.75rem;
+  --px64: 4rem;
+  --coefficient: 4vmax;
+  --coefficient_gap: 4vmin;
+  --width_coefficient: 20rem;
+  --width_coefficient: 20rem;
+  --border-sm: 1.875rem;
+  --box-shadow--product_cart: 0 0 3px 2px #00000039;
+  // --calc_width: calc($width_coefficient + var(--coefficient));
+}
+@font-face {
+  font-family: Briller;
+  src: url(./font/Briller.ttf);
+}
+
+body {
+  font-family: 'Briller';
+  color: var(--q-text);
+  background: #FBFBFF
+}
+
+body.body--dark {
+  color: var(--q-text);
+}
+
+.body--dark {
+  --q-primary: #7eba43;
+  --q-secondary: #1e1e1e;
+  --q-positive: #254031;
+  // --q-accent: #254031;
+  --q-green-light: #ecffda;
+  --q-header_bg: #fefefe;
+  --q-dark-page: #FBFBFF;
+  --q-text: #1E1E1E;
+}
+
+.body--light {
+  --q-primary: #7143ba;
+  --q-secondary: #1e1e1e;
+  --q-positive: #254031;
+  // --q-accent: #254031;
+  --q-green-light: #ecffda;
+  --q-header_bg: #fefefe;
+  --q-text: #1E1E1E;
+}
+
+.text-h1 {
+  font-size: calc(3rem + 0.1vmin);
+  font-family: 'Briller';
+  font-weight: bold;
+  line-height: normal;
+  color: var(--q-text);
+}
+.text-h2 {
+  font-size: calc(2rem + 0.1vmin);
+  // font-family: $font-family-museo;
+  font-family: 'Briller';
+  font-weight: bold;
+  line-height: normal;
+  color: var(--q-text);
+}
+.text-h3 {
+  font-size: calc(1.5rem + 0.1vmin);
+  font-family: 'Briller';
+  font-weight: bold;
+  line-height: normal;
+  color: var(--q-text);
+}
+.text-h4 {
+  font-size: calc(1.1rem + 0.1vmin);
+  font-family: 'Briller';
+  font-weight: bold;
+  line-height: normal;
+  color: var(--q-text);
+}
+.text-h5 {
+  font-size: calc(1rem + 0.1vmin);
+  font-weight: bold;
+  line-height: normal;
+  color: var(--q-text);
+}
+.text-subtitle1 {
+  font-size: calc(0.8rem + 0.1vmin);
+  font-family: 'Briller';
+  font-weight: bold;
+  line-height: normal;
+  // color: var(--q-text);
+}
+
+.text-body1 {
+  font-size: calc(1.2rem + 0.1vmin);
+  font-family: $font-family-montserrat;
+  line-height: normal;
+  color: var(--q-text);
+}
+
+.round-button-light_green {
+  background-color: var(--q-primary);
+  color: white;
+  padding: 0.5rem;
+  box-shadow: 0 0 1px 2px white;
+  border-radius: 50%;
+  width: calc(2rem + 0.5vmin);
+  height: calc(2rem + 0.5vmin);
+}
+
+.round-button-dark_green {
+  background-color: var(--q-positive);
+  color: white;
+  padding: 0.5rem;
+  box-shadow: 0 0 1px 2px white;
+  border-radius: 50%;
+  width: calc(2rem + 0.5vmin);
+  height: calc(2rem + 0.5vmin);
+}
+
+.q-img {
+  border-radius: 1.875rem;
+}
+
+.q-drawer {
+  width: 40vw !important;
+}
+
+.q-drawer--right {
+  box-shadow: -1px 0px 5px 0px #d5ebd8;
+}
+
+.q-dialog__backdrop {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.q-dialog__inner > div {
+  border-radius: var(--border-sm);
+}
+
+.dialog_card {
+  background-color: var(--q-header_bg);
+  padding: 3rem;
+}
+
+// .q-field {
+//   color: var(--q-text)
+// }
