@@ -7,10 +7,15 @@ import { ref } from 'vue';
   let isPwd = ref(true);
 
   const onSubmit = () => {
-    axios.post('', {
-      name: 'kiosk-test',
-      code: 'kiosk-test',
-      type_id: '654c6b75-54c5-4153-a3c7-b0f6a3431c68'
+    axios.post('https://dash.fait.team',
+      {
+        name: 'kiosk-test',
+        code: 'kiosk-test',
+        type_id: '654c6b75-54c5-4153-a3c7-b0f6a3431c68'
+      }, {
+      headers: {
+        'content-type': 'text/json'
+      }
     })
     .then(function (response) {
       console.log(response);
@@ -28,10 +33,12 @@ import { ref } from 'vue';
 
       <q-form
         @submit="onSubmit"
-        class="text-text"
+        class="text-text form-style"
+        style="margin-bottom: 2rem;"
       >
         <q-input dark="true" rounded outlined v-model="name" label="name" />
         <q-input dark="true" rounded outlined v-model="code" label="code" />
+        <q-input dark="true" rounded outlined v-model="token" label="token" />
 
         <div>
           <q-btn label="Submit" rounded type="submit" color="primary"/>
@@ -39,7 +46,7 @@ import { ref } from 'vue';
       </q-form>
 
       <q-form
-        class="text-text"
+        class="text-text form-style"
       >
         <q-input
           v-model="login"
@@ -66,7 +73,6 @@ import { ref } from 'vue';
           </template>
         </q-input>
 
-
         <div>
           <q-btn label="Submit" rounded type="submit" color="primary"/>
         </div>
@@ -75,4 +81,10 @@ import { ref } from 'vue';
     </div>
   </q-page>
 </template>
+
+<style scoped>
+.form-style > *:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+</style>
 
