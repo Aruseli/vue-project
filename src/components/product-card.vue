@@ -46,31 +46,18 @@ import { isConstructorDeclaration } from 'typescript';
   const openDialog = ref(false);
   const slide = ref(0);
 
-  const emits = defineEmits(['clickAddToCart']);
-
   const selectedProduct = computed(() => {
     return store.products.find((item) => item.id === props.productId);
   })
 
+  const count = computed(() => {
+    return store.cart.filter(item => item.id == selectedProduct.value.id)
+  })
   const productDetails = () => {
     openDialog.value = true;
+    console.log('selectedProduct', selectedProduct.value.id)
   }
-  const selectedCount = ref(1);
 
-
-  const addToCart = () => {
-    let newProduct = {
-      id: props.productId,
-      title: props.title,
-      price: props.price * selectedCount.value,
-      count: selectedCount.value,
-      images: [...props.images],
-      alt: props.title,
-      description: props.description
-    };
-    // let add = store.products.find((item) => item.id == newProduct.id);
-    emits('clickAddToCart', newProduct);
-  }
 
 </script>
 
@@ -116,28 +103,32 @@ import { isConstructorDeclaration } from 'typescript';
       </div>
     </div>
 
-
     <div>
-      <q-btn
+      <q-btn v-if="count.length === 0"
         class="full-width text-style"
         unelevated
         rounded
         no-caps
         color="primary"
         text-color="white"
-        @click="addToCart"
+        @click="store.addToCartAndIncrementCount(selectedProduct)"
         >
         <div class="text-center text-weight-bold text-subtitle1">
           {{ $t('add') }}
         </div>
       </q-btn>
-      <div class="row justify-between">
-        <q-icon flat class="round-button" :name="evaPlusOutline"/>
-        <div>{{ props.count }}</div>
-        <q-icon flat class="round-button" :name="evaMinusOutline"/>
+      <div class="row justify-between items-center" v-else>
+        <q-btn unelevated round @click="store.increaseItems(selectedProduct)">
+          <q-icon flat class="round-button-light_green" :name="evaPlusOutline"/>
+        </q-btn>
+        <h5 style="margin: 0">{{ props.count }}</h5>
+        <q-btn unelevated round @click="store.decreaseItems(selectedProduct)">
+          <q-icon flat class="round-button-light_green" :name="evaMinusOutline"/>
+        </q-btn>
       </div>
     </div>
   </div>
+
   <template>
     <q-dialog
       v-model="openDialog"

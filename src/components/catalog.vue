@@ -22,11 +22,11 @@
     await  store.fetchDataFromDB();
   })
 
-  const addToCart = (product) => {
-    store.addToCart(product);
-    // go to cart page
-    // router.push({name: 'Cart', params: { id }});
-  }
+  // const addToCart = (product) => {
+  //   store.addToCartAndIncrementCount(product);
+  //   // go to cart page
+  //   // router.push({name: 'Cart', params: { id }});
+  // }
 
 </script>
 
@@ -50,7 +50,6 @@
           :count="product.count"
           :description="product.description"
           :productId="product.id"
-          @clickAddToCart="addToCart"
         />
       </q-intersection>
     </div>

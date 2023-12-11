@@ -25,19 +25,19 @@ declare module 'pinia' {
 export default store((/* { ssrContext } */) => {
   const pinia = createPinia()
 
-  // pinia.use(context => {
-  //   const storeId = context.store.$id;
-  //   console.log('storeId', storeId);
+  pinia.use(context => {
+    const storeId = context.store.$id;
+    console.log('storeId', storeId);
 
-  //   const serializer = {
-  //     serialize: JSON.stringify,
-  //     deserialize: JSON.parse
-  //   }
+    const serializer = {
+      serialize: JSON.stringify,
+      deserialize: JSON.parse
+    }
 
-  //   context.store.$subscribe((mutation, state) => {
-  //     window.localStorage.setItem(storeId, serializer.serialize(state))
-  //   })
-  // })
+    context.store.$subscribe((mutation, state) => {
+      window.localStorage.setItem(storeId, serializer.serialize(state))
+    })
+  })
   // You can add Pinia plugins here
   // pinia.use(SomePiniaPlugin)
 

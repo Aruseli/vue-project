@@ -1,6 +1,8 @@
 <script setup>
   import { productsStore } from '../../stores/store';
   import { ref, computed } from 'vue';
+  import { evaPlusOutline } from '@quasar/extras/eva-icons';
+  import { evaMinusOutline } from '@quasar/extras/eva-icons';
 
   const store = productsStore();
   const slide = ref(0);
@@ -82,7 +84,7 @@
             </q-carousel>
           </div>
 
-          <div>
+          <div class="column justify-between">
             <div class="row justify-between items-center">
               <div class="text-h2 text-weight-regular">
                 {{ item.title }}
@@ -95,8 +97,19 @@
             <div class="text-body1 text-weight-regular">
               {{ item.description }}
             </div>
-            <div class="text-body1 text-weight-regular">
-              {{ item.description }}
+            <div class="row justify-between items-center">
+              <div class="text-subtitle1">
+                {{ item.price }}$
+              </div>
+              <div class="row justify-between items-center">
+                <q-btn unelevated round @click="store.increaseItems(item)" class='q-mr-lg'>
+                  <q-icon flat class="round-button-light_green" :name="evaPlusOutline"/>
+                </q-btn>
+                <h5 class='q-mr-lg q-my-none'>{{ item.count }}</h5>
+                <q-btn unelevated round @click="store.decreaseItems(item)">
+                  <q-icon flat class="round-button-light_green" :name="evaMinusOutline"/>
+                </q-btn>
+              </div>
             </div>
           </div>
         </div>
@@ -122,6 +135,7 @@
   height: max-content;
   display: flex;
   flex-flow: row nowrap;
+  justify-content: space-between;
   border-radius: var(--border-sm);
   box-shadow: var(--box-shadow--product_cart);
   padding: var(--px30);
