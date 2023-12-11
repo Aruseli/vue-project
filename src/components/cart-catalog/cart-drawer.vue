@@ -36,6 +36,7 @@
     side="right"
     overlay
     elevated
+    width="900"
   >
     <q-btn unelevated round @click="closeDrawer" class="q-pa-md">
       <q-icon name="arrow_back" class="round-button-light_green" />

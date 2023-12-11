@@ -50,13 +50,19 @@ import { isConstructorDeclaration } from 'typescript';
     return store.products.find((item) => item.id === props.productId);
   })
 
-  const count = computed(() => {
-    return store.cart.filter(item => item.id == selectedProduct.value.id)
+  const existProduct = computed(() => {
+    return store.cart.filter(item => item.id == selectedProduct.value.id);
+  })
+  const countItems = computed(() => {
+    let existProduct = store.cart.filter(item => item.id == selectedProduct.value.id) || null
+    return existProduct
   })
   const productDetails = () => {
     openDialog.value = true;
     console.log('selectedProduct', selectedProduct.value.id)
+    console.log('countItems', countItems.value[0].count)
   }
+
 
 
 </script>
@@ -104,7 +110,7 @@ import { isConstructorDeclaration } from 'typescript';
     </div>
 
     <div>
-      <q-btn v-if="count.length === 0"
+      <q-btn v-if="existProduct.length === 0"
         class="full-width text-style"
         unelevated
         rounded
@@ -121,7 +127,7 @@ import { isConstructorDeclaration } from 'typescript';
         <q-btn unelevated round @click="store.increaseItems(selectedProduct)">
           <q-icon flat class="round-button-light_green" :name="evaPlusOutline"/>
         </q-btn>
-        <h5 style="margin: 0">{{ props.count }}</h5>
+        <h5 style="margin: 0">{{ countItems[0].count }}</h5>
         <q-btn unelevated round @click="store.decreaseItems(selectedProduct)">
           <q-icon flat class="round-button-light_green" :name="evaMinusOutline"/>
         </q-btn>
