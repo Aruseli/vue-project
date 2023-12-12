@@ -7,7 +7,7 @@ import { ref } from 'vue';
   let isPwd = ref(true);
 
   const onSubmit = () => {
-    axios.post('/api/v2/addTerminal',
+    axios.post('/api/v2/addAnyTerminal',
       {
         name: 'kiosk-test',
         code: 'kiosk-test',
