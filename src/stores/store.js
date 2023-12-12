@@ -44,7 +44,7 @@ export const productsStore = defineStore('products', {
       let existingProduct = this.cart.find(item => item.id === product.id);
       existingProduct.count--;
       existingProduct.price -= product.price;
-      if ( existingProduct.count == 0 ) this.cart = this.cart.filter(item => item.id !== id);
+      if ( existingProduct.count == 0 ) this.cart = this.cart.filter(item => item.id !== product.id);
     },
 
     addToCartAndIncrementCount(product) {
