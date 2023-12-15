@@ -7,22 +7,35 @@ import { ref } from 'vue';
   let isPwd = ref(true);
 
   const onSubmit = () => {
-    axios.post('https://dash.fait.team',
+    axios.post('http://158.255.7.105:60480/api/v2/addAnyTerminal',
       {
         name: 'kiosk-test',
         code: 'kiosk-test',
-        type_id: '654c6b75-54c5-4153-a3c7-b0f6a3431c68'
-      }, {
-      headers: {
-        'content-type': 'text/json'
-      }
+        type_id: '654c6b75-54c5-4153-a3c7-b0f6a3431c68',
+      },
+      // {
+      //   auth: {
+      //     username: 'admin@example.com',
+      //     password: '000000'
+      //   }
+      // },
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
     })
     .then(function (response) {
       console.log(response);
     })
-    .catch(function (error) {
-      console.log(error);
+    .catch(err => {
+    if (err.response.status === 401) {
+      //Auth failed
+      //Call reentry function
+      return;
+    }
+      return console.log(err)
     });
+
   }
 
 </script>
