@@ -1,32 +1,15 @@
 <script setup>
-  import { onMounted, computed } from 'vue';
+  import { onMounted } from 'vue';
   import { useRoute } from 'vue-router';
   import { productsStore } from '../stores/store';
   import ProductCard from '../components/product-card.vue';
-  import { useQuasar } from 'quasar'
-
-  // const $q = useQuasar();
-
-  // $q.localStorage.set(key, value);
-  // const value = $q.localStorage.getItem(key);
-
-  // $q.sessionStorage.set(key, value);
-  // const otherValue = $q.sessionStorage.getItem(key);
-
 
   const rout = useRoute();
-
   const store = productsStore();
 
   onMounted(async() => {
     await  store.fetchDataFromDB();
   })
-
-  // const addToCart = (product) => {
-  //   store.addToCartAndIncrementCount(product);
-  //   // go to cart page
-  //   // router.push({name: 'Cart', params: { id }});
-  // }
 
 </script>
 
@@ -40,7 +23,7 @@
         transition-duration="0.5"
         ssr-prerender
         class="intersection-card-settings"
-        style="width: 367px; height: 621px"
+        style="width: max-content; height: 830px"
       >
         <ProductCard
           :images="product.images"

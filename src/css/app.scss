@@ -91,7 +91,7 @@ body.body--dark {
   font-size: calc(1.3rem + 0.5vmin);
   font-weight: bold;
   line-height: normal;
-  color: var(--q-text);
+  color: var(--q-text) !important;
 }
 .text-subtitle1 {
   font-size: calc(1.2rem + 0.4vmin);
@@ -147,6 +147,10 @@ body.body--dark {
 .dialog_card {
   background-color: var(--q-header_bg);
   padding: 3rem;
+}
+
+.q-dark {
+  color: var(--q-text)
 }
 
 // .q-field {

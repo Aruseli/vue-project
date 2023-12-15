@@ -4,9 +4,12 @@
   import { ionEllipse } from '@quasar/extras/ionicons-v6';
   import { evaRadioButtonOffOutline } from '@quasar/extras/eva-icons';
   import { useI18n } from 'vue-i18n';
-  import { computed, ref } from 'vue';
+  import { computed, ref, onMounted } from 'vue';
   import { productsStore } from 'src/stores/store.js';
-import { isConstructorDeclaration } from 'typescript';
+
+  const text = ref(null);
+  const openDialog = ref(false);
+  const slide = ref(0);
 
   const { t } = useI18n();
 
@@ -43,8 +46,24 @@ import { isConstructorDeclaration } from 'typescript';
     },
   })
 
-  const openDialog = ref(false);
-  const slide = ref(0);
+  let size = ref(false);
+
+  let mult = computed(() => {
+    size = text.value.clientHeight < text.value.scrollHeight;
+    return size;
+  })
+
+  onMounted(async() => {
+    if (text.value.clientHeight < text.value.scrollHeight) {
+      text.value.style.webkitLineClamp = '3';
+      text.value.style.textOverflow = 'ellipsis';
+      text.value.style.overflow = 'hidden';
+      text.value.style.display = '-webkit-box';
+      text.value.style.webkitBoxOrient = 'vertical';
+    }
+    console.log('size', size)
+    return size;
+  })
 
   const selectedProduct = computed(() => {
     return store.products.find((item) => item.id === props.productId);
@@ -59,19 +78,16 @@ import { isConstructorDeclaration } from 'typescript';
   })
   const productDetails = () => {
     openDialog.value = true;
-    console.log('selectedProduct', selectedProduct.value.id)
-    console.log('countItems', countItems.value[0].count)
+    console.log('size', mult.value)
   }
-
-
 
 </script>
 
 
 <template>
-  <div class="card-setting">
-    <div>
-      <div class="img-container">
+  <div class="card_setting">
+    <div class="content_container">
+      <div class="img_container">
         <q-img
           :src="props.images[0]"
           :alt="props.alt"
@@ -86,7 +102,7 @@ import { isConstructorDeclaration } from 'typescript';
       </div>
       <div>
         <div class="column no-wrap items-left">
-          <div class="text-h5 text-weight-regular">
+          <div class="text-h5 text-weight-regular q-mb-sm">
             {{ props.title }}
           </div>
           <div class="row no-wrap justify-between">
@@ -100,13 +116,11 @@ import { isConstructorDeclaration } from 'typescript';
         </div>
       </div>
 
-      <div class="">
-        <div class="text-body1 ellipsis-3-lines">
-          {{ props.description }}
-        </div>
-        <!-- <router-link to="/abc">{{ $t('read') }}</router-link> -->
-        <q-btn @click="productDetails">{{ $t('read') }}</q-btn>
+      <div ref="text" class="text-body1" style="height: 6.5rem">
+        {{ props.description }}
       </div>
+
+      <q-btn  @click="productDetails">{{ $t('read') }}</q-btn>
     </div>
 
     <div>
@@ -127,7 +141,7 @@ import { isConstructorDeclaration } from 'typescript';
         <q-btn unelevated round @click="store.increaseItems(selectedProduct)">
           <q-icon flat class="round-button-light_green" :name="evaPlusOutline"/>
         </q-btn>
-        <h5 style="margin: 0">{{ countItems[0].count }}</h5>
+        <h5 class="q-ma-none">{{ countItems[0].count }}</h5>
         <q-btn unelevated round @click="store.decreaseItems(selectedProduct)">
           <q-icon flat class="round-button-light_green" :name="evaMinusOutline"/>
         </q-btn>
@@ -141,6 +155,7 @@ import { isConstructorDeclaration } from 'typescript';
       transition-hide="fade"
       transition-show="fade"
       transition-duration="1.8"
+      dark="true"
     >
       <div class="dialog_container">
         <q-card class="dialog_card">
@@ -156,7 +171,7 @@ import { isConstructorDeclaration } from 'typescript';
               navigation
               infinite
               padding
-              class="bg-white shadow-1 round-borders fit"
+              class="bg-transparent round-borders fit"
             >
               <q-carousel-slide
                 v-for="(image, index) in selectedProduct.images"
@@ -164,10 +179,11 @@ import { isConstructorDeclaration } from 'typescript';
                 :name="index"
                 class="column no-wrap flex-center"
               >
-                <div class="bg-red">
+                <div>
                   <q-img
                     :src="image"
-                    style="width: 20rem; height: 20rem;"
+                    style="width: calc(70vw - 8rem); height: calc(70vw - 8rem);"
+                    :ration="1"
                   >
                     <template #loading>
                       <div class="text-subtitle1 text-black">
@@ -189,6 +205,32 @@ import { isConstructorDeclaration } from 'typescript';
               {{ selectedProduct.description }}
             </div>
           </q-card-section>
+          <q-card-actions>
+            <div class="full-width">
+              <q-btn v-if="existProduct.length === 0"
+                class="full-width text-style"
+                unelevated
+                rounded
+                no-caps
+                color="primary"
+                text-color="white"
+                @click="store.addToCartAndIncrementCount(selectedProduct)"
+                >
+                <div class="text-center text-weight-bold text-subtitle1">
+                  {{ $t('add') }}
+                </div>
+              </q-btn>
+              <div class="row justify-between items-center" v-else>
+                <q-btn unelevated round @click="store.increaseItems(selectedProduct)">
+                  <q-icon flat class="round-button-light_green" :name="evaPlusOutline"/>
+                </q-btn>
+                <h5 class="q-ma-none">{{ countItems[0].count }}</h5>
+                <q-btn unelevated round @click="store.decreaseItems(selectedProduct)">
+                  <q-icon flat class="round-button-light_green" :name="evaMinusOutline"/>
+                </q-btn>
+              </div>
+            </div>
+          </q-card-actions>
         </q-card>
       </div>
     </q-dialog>
@@ -199,24 +241,28 @@ import { isConstructorDeclaration } from 'typescript';
 <style lang="scss" scoped>
 $calc_width: calc(var(--width_coefficient) + var(--coefficient));
 
-.card-setting {
+.card_setting {
   border-radius: var(--border-sm);
   box-shadow: var(--box-shadow--product_cart);
   font-weight: bold;
   width: max-content;
   max-width: calc(var(--width_coefficient) + var(--coefficient));
-  min-height: 46rem;
+  min-height: 51rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 1.3rem;
 }
-.img-container {
+.img_container {
   max-width: $calc_width;
   max-height: $calc_width;
   border-radius : var(--px30);
   overflow: hidden;
   margin-bottom: 2.5rem;
+}
+
+.content_container > *:nth-child(n+2){
+  margin-bottom: 1.5rem;
 }
 
 .text-style {
