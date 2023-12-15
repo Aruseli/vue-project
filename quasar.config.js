@@ -105,14 +105,21 @@ module.exports = configure(function (ctx) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
     devServer: {
-      // https: true
-      open: true // opens browser window automatically
+      open: true, // opens browser window automatically
+      proxy: {
+        '/api': {
+          target: 'http://158.255.7.105:60480',
+          changeOrigin: true,
+          cookieDomainRewrite: 'localhost',
+        },
+      },
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework
     framework: {
       config: {
-        dark: 'auto'
+        dark: 'auto',
+        // notify:
       },
 
       iconSet: 'material-icons', // Quasar icon set
@@ -128,7 +135,8 @@ module.exports = configure(function (ctx) {
       // Quasar plugins
       plugins: [
         'LocalStorage',
-        'SessionStorage'
+        'SessionStorage',
+        'Notify'
       ]
     },
 
