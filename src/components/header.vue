@@ -5,14 +5,15 @@
   import { productsStore } from 'src/stores/store';
   import { useI18n } from 'vue-i18n'
 
-  const { locale } = useI18n({ useScope: 'global' })
+  const { locale } = useI18n({ useScope: 'global' });
+  const { t } = useI18n();
 
 // Function to switch language
   const switchLanguage = (newLocale) => {
     locale.value = newLocale
   }
 
-  const tab = ref('stuff');
+  // const tab = ref('stuff');
   const store = productsStore();
 
   const openDrawer = () => {
@@ -49,17 +50,16 @@
     </q-toolbar>
 
     <q-tabs
-      v-model="tab"
+      v-model="store.tab"
       inline-label
-      narrow-indicator
       no-caps
+      indicator-color="transparent"
+      active-color="white"
     >
-      <q-tab name="stuff" label="Images" />
-      <q-tab name="stuff" label="Videos" />
-      <q-tab name="stuff" label="Articles" />
-      <q-tab name="stuff" label="Images" />
-      <q-tab name="stuff" label="Videos" />
-      <q-tab name="stuff" label="Articles" />
+      <q-tab name="food" :label="t('food')" />
+      <q-tab name="roll_sets" :label="t('roll_sets')" />
+      <q-tab name="weight_sets" :label="t('weight_sets')" />
+      <q-tab name="consumption_sets" :label="t('consumption_sets')" />
     </q-tabs>
   </q-header>
 </template>

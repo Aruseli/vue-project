@@ -1,10 +1,8 @@
 <script setup>
   import { onMounted } from 'vue';
-  import { useRoute } from 'vue-router';
   import { productsStore } from '../stores/store';
   import ProductCard from '../components/product-card.vue';
 
-  const rout = useRoute();
   const store = productsStore();
 
   onMounted(async() => {
@@ -14,28 +12,107 @@
 </script>
 
 <template>
-  <div class="image-grid">
-      <q-intersection
-        v-for="(product, index) in store.products"
-        :key="index"
-        transition="slide-up"
-        :threshold="0"
-        transition-duration="0.5"
-        ssr-prerender
-        class="intersection-card-settings"
-        style="width: max-content; height: 830px"
-      >
-        <ProductCard
-          :images="product.images"
-          :alt="product.title"
-          :title="product.title"
-          :price="product.price"
-          :count="product.count"
-          :description="product.description"
-          :productId="product.id"
-        />
-      </q-intersection>
-    </div>
+  <q-tab-panels v-model="store.tab" animated swipeable class="fit">
+    <q-tab-panel name="food" dark>
+      <div class="image-grid">
+        <q-intersection
+          v-for="(product, index) in store.products"
+          :key="index"
+          transition="slide-up"
+          :threshold="0"
+          transition-duration="0.5"
+          ssr-prerender
+          class="intersection-card-settings"
+          style="width: max-content; height: 830px"
+        >
+          <ProductCard
+            :images="product.images"
+            :alt="product.title"
+            :title="product.title"
+            :price="product.price"
+            :count="product.count"
+            :description="product.description"
+            :productId="product.id"
+          />
+        </q-intersection>
+      </div>
+    </q-tab-panel>
+
+    <q-tab-panel name="roll_sets" dark>
+      <div class="image-grid">
+        <q-intersection
+          v-for="(product, index) in store.products"
+          :key="index"
+          transition="slide-up"
+          :threshold="0"
+          transition-duration="0.5"
+          ssr-prerender
+          class="intersection-card-settings"
+          style="width: max-content; height: 830px"
+        >
+          <ProductCard
+            :images="product.images"
+            :alt="product.title"
+            :title="product.title"
+            :price="product.price"
+            :count="product.count"
+            :description="product.description"
+            :productId="product.id"
+          />
+        </q-intersection>
+      </div>
+    </q-tab-panel>
+
+    <q-tab-panel name="weight_sets">
+      <div class="image-grid">
+        <q-intersection
+          v-for="(product, index) in store.products"
+          :key="index"
+          transition="slide-up"
+          :threshold="0"
+          transition-duration="0.5"
+          ssr-prerender
+          class="intersection-card-settings"
+          style="width: max-content; height: 830px"
+        >
+          <ProductCard
+            :images="product.images"
+            :alt="product.title"
+            :title="product.title"
+            :price="product.price"
+            :count="product.count"
+            :description="product.description"
+            :productId="product.id"
+          />
+        </q-intersection>
+      </div>
+    </q-tab-panel>
+
+    <q-tab-panel name="consumption_sets">
+      <div class="image-grid">
+        <q-intersection
+          v-for="(product, index) in store.products"
+          :key="index"
+          transition="slide-up"
+          :threshold="0"
+          transition-duration="0.5"
+          ssr-prerender
+          class="intersection-card-settings"
+          style="width: max-content; height: 830px"
+        >
+          <ProductCard
+            :images="product.images"
+            :alt="product.title"
+            :title="product.title"
+            :price="product.price"
+            :count="product.count"
+            :description="product.description"
+            :productId="product.id"
+          />
+        </q-intersection>
+      </div>
+    </q-tab-panel>
+  </q-tab-panels>
 </template>
 
 <style lang="scss" scoped>
