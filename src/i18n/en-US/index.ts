@@ -7,5 +7,11 @@ export default {
   order: "order",
   thank_you: "thank you",
   read: 'read',
-  empty_cart: 'your cart is empty'
+  empty_cart: 'your cart is empty',
+  field_is_required: 'this field must be filled',
+  password_consists_characters: 'password consists of 6 characters',
+  food: 'food',
+  roll_sets: 'roll sets',
+  weight_sets: 'weight sets',
+  consumption_sets: 'consumption sets'
 };
