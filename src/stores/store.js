@@ -5,6 +5,7 @@ export const productsStore = defineStore('products', {
     products: [],
     cart: [],
     drawerState: false,
+    tab: 'food',
   }),
 
   actions: {
@@ -72,6 +73,10 @@ export const productsStore = defineStore('products', {
     openDrawer(state) {
       this.drawerState = state;
     },
-  }
+  },
 
+  persist: {
+    storage: localStorage,
+
+  },
 });
