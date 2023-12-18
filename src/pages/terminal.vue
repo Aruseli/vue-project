@@ -14,35 +14,57 @@
   let qrcode = ref(true);
 
 
-  // let terminalId = ref(null);
-  let state = reactive({
-    terminalId: ''
+  let props = defineProps({
+    terminalId: {
+      type: Number,
+      default: null,
+    },
+    objectId: {
+      type: Number,
+      default: null,
+    },
+    locationId: {
+      type: Number,
+      default: null,
+    },
   });
 
+  let state = reactive({
+    terminalId: props.terminalId,
+    objectId: props.objectId,
+    locationId: props.locationId,
+  });
 
   const level = ref('M');
   const renderAs = ref('svg');
 
   const onSubmit = () => {
-    axios.post('/api/v2/addAnyTerminal',
-      {
-        name: 'kiosk-test',
-        code: 'kiosk-test',
-        type_id: '654c6b75-54c5-4153-a3c7-b0f6a3431c68',
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    )
-      .then(response => {
-        state.terminalId = response.data.data.terminal_id;
-      })
-      .catch(err => {
-        console.log('err')
-      }
-    );
+    // axios.post('/api/v2/addAnyTerminal',
+    //   {
+    //     name: 'kiosk-test',
+    //     code: 'kiosk-test',
+    //     type_id: '654c6b75-54c5-4153-a3c7-b0f6a3431c68',
+    //   }, {
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     }
+    //   }
+    // )
+    //   .then(response => {
+    //     const { terminal_id, object_id, location_id } = response.data.data;
+    //     // state.terminalId = response.data.data.terminal_id;
+    //     state.terminalId = terminal_id;
+    //     state.objectId = object_id;
+    //     state.locationId = location_id;
+    //     console.log('state.objectId, state.terminalId', state.objectId, state.terminalId)
+    //   })
+    //   .catch(err => {
+    //     console.log('err')
+    //   }
+    // );
+    console.log('hi')
   }
+
 
   const onSubmitLogin = () => {
     axios.post('http://158.255.7.105:60480/auth/login.json',
@@ -65,13 +87,32 @@
     );
   }
 
-  // onMounted(async() => {
-  //   axios.get('/auth/login.json')
-  //     .then(response => {
-  //       console.log('response', response);
-  //     });
-  //   console.log('!state.terminalId', !!state.terminalId);
-  // })
+  onMounted(async() => {
+    axios.post('/api/v2/addAnyTerminal',
+      {
+        name: 'kiosk-test',
+        code: 'kiosk-test',
+        type_id: '654c6b75-54c5-4153-a3c7-b0f6a3431c68',
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+      .then(response => {
+        const { terminal_id, object_id, location_id } = response.data.data;
+        // state.terminalId = response.data.data.terminal_id;
+        state.terminalId = terminal_id;
+        state.objectId = object_id;
+        state.locationId = location_id;
+        console.log('state.objectId, state.terminalId', state.objectId, state.terminalId)
+      })
+      .catch(err => {
+        console.log('err')
+      }
+    );
+    console.log('state.objectId, state.terminalId', state.objectId, state.terminalId)
+  })
 
 </script>
 
@@ -81,7 +122,7 @@
 
       <q-dialog v-model="qrcode" dark="true">
         <q-card  dark="true" class="flex column items-center">
-          <q-card-section v-if="state.terminalId == ''">
+          <q-card-section v-if="state.terminalId == null">
             <q-form
               @submit="onSubmit"
               class="text-text form-style"
@@ -90,16 +131,13 @@
               <q-btn label="Submit" rounded type="submit" color="primary"/>
             </q-form>
           </q-card-section>
-          <q-card-section>
+          <q-card-section v-if="state.objectId === null && state.locationId === null ">
             <div class="text-h6 q-mx-sm">Ожидание подтверждения регистрации в системе...</div>
           </q-card-section>
-          <q-card-section>
+          <q-card-section v-if="!!state.objectId || !!state.locationId">
             <div class="text-body1">
               Код терминала <code style="font-family: 'Courier New', monospace">{{ state.terminalId }}</code>
             </div>
-          </q-card-section>
-
-          <q-card-section class="q-pt-none">
             <div
               v-if="state.terminalId"
               class="q-mx-auto"
