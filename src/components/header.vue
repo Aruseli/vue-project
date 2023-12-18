@@ -3,7 +3,8 @@
   import Switcher from './switcher.vue';
   import { ref } from 'vue';
   import { productsStore } from 'src/stores/store';
-  import { useI18n } from 'vue-i18n'
+  import { useI18n } from 'vue-i18n';
+  import BinButton from './buttons/bin-button.vue';
 
   const { locale } = useI18n({ useScope: 'global' });
   const { t } = useI18n();
@@ -17,7 +18,7 @@
   const store = productsStore();
 
   const openDrawer = () => {
-    store.openDrawer(true);
+    store.openDrawerCart(true);
   }
 
 </script>
@@ -30,37 +31,40 @@
     class="header"
   >
     <q-toolbar class="justify-end">
-      <q-btn unelevated round @click="openDrawer">
-        <q-icon class="round-button-light_green">
-          <BinIcon />
-          <q-badge align="bottom" round>{{ store.cart.length }}</q-badge>
-        </q-icon>
-      </q-btn>
       <Switcher />
       <div>
         <q-btn
-          label="English"
+          label="En"
           @click="switchLanguage('en-US')"
         />
         <q-btn
-          label="German"
+          label="Gr"
           @click="switchLanguage('de-DE')"
         />
       </div>
     </q-toolbar>
 
-    <q-tabs
-      v-model="store.tab"
-      inline-label
-      no-caps
-      indicator-color="transparent"
-      active-color="white"
-    >
-      <q-tab name="food" :label="t('food')" />
-      <q-tab name="roll_sets" :label="t('roll_sets')" />
-      <q-tab name="weight_sets" :label="t('weight_sets')" />
-      <q-tab name="consumption_sets" :label="t('consumption_sets')" />
-    </q-tabs>
+    <div class="relative-position">
+      <q-tabs
+        v-model="store.tab"
+        inline-label
+        no-caps
+        indicator-color="transparent"
+        active-color="white"
+      >
+        <q-tab name="food" :label="t('food')" />
+        <q-tab name="roll_sets" :label="t('roll_sets')" />
+        <q-tab name="weight_sets" :label="t('weight_sets')" />
+        <q-tab name="consumption_sets" :label="t('consumption_sets')" />
+      </q-tabs>
+      <q-btn unelevated round class="absolute-right q-mr-lg" @click="openDrawer">
+        <q-icon class="round-button-light_green">
+          <BinIcon />
+          <q-badge align="bottom" round>{{ store.cart.length }}</q-badge>
+        </q-icon>
+      </q-btn>
+      <!-- <bin-button /> -->
+    </div>
   </q-header>
 </template>
 
