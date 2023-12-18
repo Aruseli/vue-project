@@ -18,5 +18,8 @@ export default {
   food: 'food',
   roll_sets: 'roll sets',
   weight_sets: 'weight sets',
-  consumption_sets: 'consumption sets'
+  consumption_sets: 'consumption sets',
+  total: 'gesamt',
+  pieces: '',
+  placing_an_order: 'eine Bestellung aufgeben',
 };
