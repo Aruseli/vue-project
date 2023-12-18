@@ -4,7 +4,7 @@ export const productsStore = defineStore('products', {
   state: () => ({
     products: [],
     cart: [],
-    drawerState: false,
+    drawerCartState: false,
     tab: 'food',
   }),
 
@@ -36,9 +36,6 @@ export const productsStore = defineStore('products', {
         existingProduct.count++;
         existingProduct.price += product.price;
       }
-      console.log('existingProductInc', existingProduct)
-      // console.log('this.cart', this.cart)
-      // console.log('this.cart', this.cart.count)
     },
 
     decreaseItems(product) {
@@ -70,9 +67,10 @@ export const productsStore = defineStore('products', {
       this.cart = this.cart.filter(item => item.id !== id)
     },
 
-    openDrawer(state) {
-      this.drawerState = state;
+    openDrawerCart(state) {
+      this.drawerCartState = state;
     },
+
   },
 
   persist: {
