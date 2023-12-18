@@ -6,7 +6,9 @@
   import { useI18n } from 'vue-i18n';
   import { computed, ref, onMounted } from 'vue';
   import { productsStore } from 'src/stores/store.js';
+  import { useQuasar } from 'quasar';
 
+  const $q = useQuasar();
   const text = ref(null);
   const openDialog = ref(false);
   const slide = ref(0);
@@ -48,6 +50,22 @@
 
   let size = ref(false);
 
+  const showNotify = () => {
+    $q.notify({
+      timeout: 55000,
+      multiLine: true,
+      classes: 'text-h3',
+      actions: [
+        {
+          label: t('placing_an_order'),
+          color: 'black',
+          'aria-label': 'Move to cart',
+          handler: () => store.openDrawerCart(true)
+        },
+      ]
+    })
+  }
+
   let mult = computed(() => {
     size = text.value.clientHeight < text.value.scrollHeight;
     return size;
@@ -73,78 +91,104 @@
     return store.cart.filter(item => item.id == selectedProduct.value.id);
   })
   const countItems = computed(() => {
-    let existProduct = store.cart.filter(item => item.id == selectedProduct.value.id) || null
+    let existProduct = store.cart.filter(item => item.id == selectedProduct.value.id) || null;
     return existProduct
   })
   const productDetails = () => {
     openDialog.value = true;
-    console.log('size', mult.value)
   }
+
+  const addProductToCart = (selectedProduct) => {
+    store.addToCartAndIncrementCount(selectedProduct);
+    showNotify();
+  }
+
+  const decrease = (selectedProduct) => {
+    store.decreaseItems(selectedProduct);
+    showNotify();
+  }
+
+  const increase = (selectedProduct) => {
+    store.increaseItems(selectedProduct);
+    showNotify();
+  }
+
+  const unavailable = computed(() => {
+    return store.products.find((item) => item.stock < 37);
+  })
+
+  onMounted(async() => {
+    await  console.log('123', store.products.find(item => item.stock < 37));
+  })
 
 </script>
 
 
 <template>
   <div class="card_setting">
-    <div class="content_container">
-      <div class="img_container">
-        <q-img
-          :src="props.images[0]"
-          :alt="props.alt"
-          ratio="1"
-        >
-          <template #loading>
-            <div class="text-subtitle1 text-black">
-              Loading...
+    <div
+      style="filter: unavailable ? contrast(0.2) : none; cursor: not-allowed"
+    >
+      <div class="content_container">
+        <div class="img_container">
+          <q-img
+            :src="props.images[0]"
+            :alt="props.alt"
+            ratio="1"
+          >
+            <template #loading>
+              <div class="text-subtitle1 text-black">
+                Loading...
+              </div>
+            </template>
+          </q-img>
+        </div>
+        <div>
+          <div class="column no-wrap items-left">
+            <div class="text-h5 text-weight-regular q-mb-sm">
+              {{ props.title }}
             </div>
-          </template>
-        </q-img>
+            <div class="row no-wrap justify-between">
+              <div class="text-subtitle1">
+                {{ t('product_price') }}$
+              </div>
+              <div class="text-subtitle1">
+                {{ props.price }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div ref="text" class="text-body1" style="height: 6.5rem">
+          {{ props.description }}
+        </div>
+
+        <q-btn  @click="productDetails">{{ $t('read') }}</q-btn>
       </div>
+
       <div>
-        <div class="column no-wrap items-left">
-          <div class="text-h5 text-weight-regular q-mb-sm">
-            {{ props.title }}
+        <q-btn v-if="existProduct.length === 0"
+          class="full-width text-style"
+          unelevated
+          rounded
+          no-caps
+          color="primary"
+          text-color="white"
+          @click="addProductToCart(selectedProduct)"
+          >
+          <div class="text-center text-weight-bold text-subtitle1">
+            {{ $t('add') }}
           </div>
-          <div class="row no-wrap justify-between">
-            <div class="text-subtitle1">
-              {{ t('product_price') }}$
-            </div>
-            <div class="text-subtitle1">
-              {{ props.price }}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div ref="text" class="text-body1" style="height: 6.5rem">
-        {{ props.description }}
-      </div>
-
-      <q-btn  @click="productDetails">{{ $t('read') }}</q-btn>
-    </div>
-
-    <div>
-      <q-btn v-if="existProduct.length === 0"
-        class="full-width text-style"
-        unelevated
-        rounded
-        no-caps
-        color="primary"
-        text-color="white"
-        @click="store.addToCartAndIncrementCount(selectedProduct)"
-        >
-        <div class="text-center text-weight-bold text-subtitle1">
-          {{ $t('add') }}
-        </div>
-      </q-btn>
-      <div class="row justify-between items-center" v-else>
-        <q-btn unelevated round @click="store.increaseItems(selectedProduct)">
-          <q-icon flat class="round-button-light_green" :name="evaPlusOutline"/>
         </q-btn>
-        <h5 class="q-ma-none">{{ countItems[0].count }}</h5>
-        <q-btn unelevated round @click="store.decreaseItems(selectedProduct)">
-          <q-icon flat class="round-button-light_green" :name="evaMinusOutline"/>
-        </q-btn>
+        <div class="row justify-between items-center" v-else>
+          <q-btn unelevated round @click="increase(selectedProduct)">
+            <q-icon flat class="round-button-light_green" :name="evaPlusOutline"/>
+          </q-btn>
+          <h5 class="q-ma-none">{{ countItems[0].count }}</h5>
+          <q-btn unelevated round @click="decrease(selectedProduct)">
+            <q-icon flat class="round-button-light_green" :name="evaMinusOutline"/>
+          </q-btn>
+        </div>
       </div>
     </div>
   </div>
@@ -239,35 +283,38 @@
 </template>
 
 <style lang="scss" scoped>
-$calc_width: calc(var(--width_coefficient) + var(--coefficient));
+  $calc_width: calc(var(--width_coefficient) + var(--coefficient));
 
-.card_setting {
-  border-radius: var(--border-sm);
-  box-shadow: var(--box-shadow--product_cart);
-  font-weight: bold;
-  width: max-content;
-  max-width: calc(var(--width_coefficient) + var(--coefficient));
-  min-height: 51rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 1.3rem;
-}
-.img_container {
-  max-width: $calc_width;
-  max-height: $calc_width;
-  border-radius : var(--px30);
-  overflow: hidden;
-  margin-bottom: 2.5rem;
-}
+  .unavailable_block {
 
-.content_container > *:nth-child(n+2){
-  margin-bottom: 1.5rem;
-}
+  }
+  .card_setting {
+    border-radius: var(--border-sm);
+    box-shadow: var(--box-shadow--product_cart);
+    font-weight: bold;
+    width: max-content;
+    max-width: calc(var(--width_coefficient) + var(--coefficient));
+    min-height: 51rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.3rem;
+  }
+  .img_container {
+    max-width: $calc_width;
+    max-height: $calc_width;
+    border-radius : var(--px30);
+    overflow: hidden;
+    margin-bottom: 2.5rem;
+  }
 
-.text-style {
-  font-weight: bold;
-}
+  .content_container > *:nth-child(n+2){
+    margin-bottom: 1.5rem;
+  }
+
+  .text-style {
+    font-weight: bold;
+  }
 
   .dialog_container {
     width: 70vw;
