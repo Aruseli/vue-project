@@ -41,6 +41,7 @@ body.body--dark {
   --q-primary: #234141;
   --q-secondary: #1e1e1e;
   --q-positive: #254031;
+  --q-negative: #C6C9D1;
   --q-accent: #3C3C3C;
   --q-green-light: #ecffda;
   --q-header_bg: #fefefe;
@@ -53,6 +54,7 @@ body.body--dark {
   --q-primary: #7143ba;
   --q-secondary: #1e1e1e;
   --q-positive: #254031;
+  --q-negative: #C6C9D1;
   --q-accent: #3C3C3C;
   --q-green-light: #ecffda;
   --q-header_bg: #fefefe;
@@ -82,7 +84,7 @@ body.body--dark {
   color: var(--q-text);
 }
 .text-h4 {
-  font-size: calc(1.1rem + 0.1vmin);
+  font-size: calc(1.4rem + 0.1vmin);
   font-family: 'Briller';
   font-weight: bold;
   line-height: normal;
@@ -102,9 +104,17 @@ body.body--dark {
   // color: var(--q-text);
 }
 
+.text-subtitle2 {
+  font-size: calc(1.2rem + 0.25vmin);
+  font-family: 'Briller';
+  line-height: normal;
+  // color: var(--q-text);
+}
+
 .text-body1 {
   font-size: calc(1.2rem + 0.5vmin);
   font-family: $font-family-montserrat;
+  font-weight: normal;
   line-height: normal;
   color: var(--q-text);
 }
@@ -162,6 +172,16 @@ body.body--dark {
   border-radius: 2rem;
   background: var(--q-accent);
   color: #FBFBFF;
+}
+
+.q-notification {
+  background-image: url(/src/assets/order_button.svg);
+  background-position: center;
+}
+
+.q-notification__actions > button > span:nth-child(2) {
+  font-size: calc(1.5rem + 0.1vmin);
+  font-weight: bold;
 }
 
 
