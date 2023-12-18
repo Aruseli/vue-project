@@ -3,12 +3,20 @@
   import { ref, computed } from 'vue';
   import { evaPlusOutline } from '@quasar/extras/eva-icons';
   import { evaMinusOutline } from '@quasar/extras/eva-icons';
+  import { useI18n } from 'vue-i18n';
+
+  const { t } = useI18n();
 
   const store = productsStore();
   const slide = ref(0);
+  const openOrderDialog = ref(false);
 
-  const closeDrawer = () => {
-    store.openDrawer(false)
+  const closeDrawerCart = () => {
+    store.openDrawerCart(false)
+  }
+
+  const orderDialog = () => {
+    openOrderDialog.value = true;
   }
 
   const removeFromCart = (id) => {
@@ -32,17 +40,27 @@
 <template>
   <q-drawer
     dark="true"
-    v-model="store.drawerState"
+    v-model="store.drawerCartState"
     side="right"
     overlay
     elevated
+
+    behavior="mobile"
     width="900"
   >
-    <q-btn unelevated round @click="closeDrawer" class="q-pa-md">
-      <q-icon name="arrow_back" class="round-button-light_green" />
-    </q-btn>
+    <div class="q-px-lg">
+      <div class="row items-center">
+        <q-btn unelevated round @click="closeDrawerCart" class="q-pa-md col-1">
+          <q-icon name="arrow_back" class="round-button-light_green" />
+        </q-btn>
+        <div class="text-subtitle1 text-center text-weight-bold text-text text-uppercase col-11">
+          {{ $t('order') }}
+        </div>
+      </div>
+      <div class="bg-negative full-width" style="height: 0.1rem" />
+    </div>
 
-    <div v-if="!store.cart.length" style="padding: 2rem; text-align: center;">
+    <div v-if="!store.cart.length" class="q-pa-lg text-center">
       <h2>{{ $t('empty_cart') }}</h2>
     </div>
     <q-scroll-area class="fit">
@@ -116,32 +134,93 @@
         </div>
       </div>
     </q-scroll-area>
+
+    <div class="q-pa-lg">
+      <div class="bg-secondary full-width q-mb-lg" style="height: 0.3rem" />
+      <div class="row justify-between items-center q-mb-md">
+        <div class="text-subtitle1">{{t('total')}}</div>
+        <div class="text-subtitle1 q-mb-md">
+          $
+        </div>
+        <div class="bg-negative full-width q-mb-lg" style="height: 0.1rem" />
+        <div class="text-subtitle2 order_container text-weight-regular">
+          <span>{{t('order')}}</span>
+          <span></span>
+          <span>{{ t('pieces') }}</span>
+        </div>
+      </div>
+      <div class="full-width">
+        <q-btn
+          class="full-width text-style q-py-lg"
+          unelevated
+          rounded
+          no-caps
+          color="accent"
+          @click="orderDialog"
+          >
+          <div class="text-subtitle1 text-center text-weight-bold text-header_bg text-uppercase">
+            {{ $t('order') }}
+          </div>
+        </q-btn>
+      </div>
+    </div>
+
   </q-drawer>
+
+  <template>
+    <q-dialog
+      v-model="openOrderDialog"
+      transition-hide="fade"
+      transition-show="fade"
+      transition-duration="1.8"
+      dark="true"
+    >
+      <div class="dialog_container">
+        <q-card class="dialog_card">
+          <q-card-section class="q-pt-none">
+            <div class="text-body1 text-weight-regular">
+              thank you
+            </div>
+          </q-card-section>
+        </q-card>
+      </div>
+    </q-dialog>
+  </template>
 </template>
 
 <style scoped>
 
-.container-settings {
-  padding: var(--px43);
-}
+  .container-settings {
+    padding: var(--px43);
+  }
 
-.container-settings > *:not(:last-of-type) {
-  margin-bottom: var(--px30);
-}
-.container-settings > *:last-of-type {
-  margin-bottom: var(--px60);
-}
-.cart-product-item {
-  width: 100%;
-  height: max-content;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  border-radius: var(--border-sm);
-  box-shadow: var(--box-shadow--product_cart);
-  padding: var(--px30);
-}
-.cart-product-item > *:first-of-type {
-  margin-right: 2rem;
-}
+  .container-settings > *:not(:last-of-type) {
+    margin-bottom: var(--px30);
+  }
+  .container-settings > *:last-of-type {
+    margin-bottom: var(--px60);
+  }
+  .cart-product-item {
+    width: 100%;
+    height: max-content;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    border-radius: var(--border-sm);
+    box-shadow: var(--box-shadow--product_cart);
+    padding: var(--px30);
+  }
+  .cart-product-item > *:first-of-type {
+    margin-right: 2rem;
+  }
+
+  .order_container > span:not(:last-of-type) {
+    margin-right: 1rem;
+  }
+
+  .dialog_container {
+    width: 70vw;
+    max-width: 80vw;
+    height: max-content;
+  }
 </style>
