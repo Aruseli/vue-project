@@ -1,6 +1,6 @@
 <script setup>
   import { productsStore } from '../../stores/store';
-  import { ref, computed } from 'vue';
+  import { ref, computed, onMounted, watch } from 'vue';
   import { evaPlusOutline } from '@quasar/extras/eva-icons';
   import { evaMinusOutline } from '@quasar/extras/eva-icons';
   import { useI18n } from 'vue-i18n';
@@ -10,6 +10,33 @@
   const store = productsStore();
   const slide = ref(0);
   const openOrderDialog = ref(false);
+
+  // Получаем массив из store
+  const cart = store.cart;
+
+  // Инициализируем реактивные переменные для хранения общего количества и общей стоимости
+  const totalCount = ref(0);
+  const totalPrice = ref(0);
+
+  // Функция для подсчета общего количества и общей стоимости
+  const calculateTotal = () => {
+    totalCount.value = cart.reduce((acc, item) => acc + item.count, 0);
+    totalPrice.value = cart.reduce((acc, item) => acc + item.count * item.price, 0);
+  };
+
+  // Вычисляемые свойства для общего количества и общей стоимости
+  const totalQuantity = computed(() => {
+    return cart.reduce((acc, item) => acc + item.count, 0);
+  });
+
+  const totalCost = computed(() => {
+    return cart.reduce((acc, item) => acc + item.count * item.price, 0);
+  });
+
+  // Вызываем функцию при монтировании компонента
+  onMounted(() => {
+    calculateTotal();
+  });
 
   const closeDrawerCart = () => {
     store.openDrawerCart(false)
@@ -50,7 +77,11 @@
   >
     <div class="q-px-lg">
       <div class="row items-center">
-        <q-btn unelevated round @click="closeDrawerCart" class="q-pa-md col-1">
+        <q-btn
+          unelevated round
+          @click="closeDrawerCart"
+          class="q-pa-md col-1"
+        >
           <q-icon name="arrow_back" class="round-button-light_green" />
         </q-btn>
         <div class="text-subtitle1 text-center text-weight-bold text-text text-uppercase col-11">
@@ -140,12 +171,12 @@
       <div class="row justify-between items-center q-mb-md">
         <div class="text-subtitle1">{{t('total')}}</div>
         <div class="text-subtitle1 q-mb-md">
-          $
+          {{ totalCost }} &ensp;$
         </div>
         <div class="bg-negative full-width q-mb-lg" style="height: 0.1rem" />
         <div class="text-subtitle2 order_container text-weight-regular">
           <span>{{t('order')}}</span>
-          <span></span>
+          <span>{{ totalQuantity }}</span>
           <span>{{ t('pieces') }}</span>
         </div>
       </div>

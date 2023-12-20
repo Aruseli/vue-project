@@ -1,7 +1,7 @@
 <script setup>
   import BinIcon from './buttons/bin-icon.vue';
   import Switcher from './switcher.vue';
-  import { ref } from 'vue';
+  import { ref, computed, onMounted } from 'vue';
   import { productsStore } from 'src/stores/store';
   import { useI18n } from 'vue-i18n';
   import BinButton from './buttons/bin-button.vue';
@@ -9,17 +9,37 @@
   const { locale } = useI18n({ useScope: 'global' });
   const { t } = useI18n();
 
-// Function to switch language
+  const store = productsStore();
+
+  // Получаем массив из store
+  const cart = store.cart;
+
+  // Инициализируем реактивные переменные для хранения общего количества и общей стоимости
+  const totalCount = ref(0);
+
+  // Функция для подсчета общего количества и общей стоимости
+  const calculateTotal = () => {
+    totalCount.value = cart.reduce((acc, item) => acc + item.count, 0);
+  };
+
+  // Вычисляемые свойства для общего количества и общей стоимости
+  const totalQuantity = computed(() => {
+    return cart.reduce((acc, item) => acc + item.count, 0);
+  });
+
+  // Фнукция для переключения языка
   const switchLanguage = (newLocale) => {
     locale.value = newLocale
   }
 
-  // const tab = ref('stuff');
-  const store = productsStore();
-
   const openDrawer = () => {
     store.openDrawerCart(true);
   }
+
+   // Вызываем функцию при монтировании компонента
+   onMounted(() => {
+    calculateTotal();
+  });
 
 </script>
 
@@ -60,7 +80,7 @@
       <q-btn unelevated round class="absolute-right q-mr-lg" @click="openDrawer">
         <q-icon class="round-button-light_green">
           <BinIcon />
-          <q-badge align="bottom" round>{{ store.cart.length }}</q-badge>
+          <q-badge align="bottom" round>{{ totalQuantity }}</q-badge>
         </q-icon>
       </q-btn>
       <!-- <bin-button /> -->
