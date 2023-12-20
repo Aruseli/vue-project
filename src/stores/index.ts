@@ -14,21 +14,19 @@ declare module 'pinia' {
   }
 }
 
-/*
- * If not building with SSR mode, you can
- * directly export the Store instantiation;
- *
- * The function below can be async too; either use
- * async/await or return a Promise which resolves
- * with the Store instance.
- */
-
 export default store((/* { ssrContext } */) => {
-  const pinia = createPinia()
+  const pinia = createPinia();
 
-  pinia.use(piniaPluginPersistedstate)
-  // You can add Pinia plugins here
-  // pinia.use(SomePiniaPlugin)
+  pinia.use(({ store }) => {
+    store.$subscribe((mutation, state) => {
+      localStorage.setItem(store.$id, JSON.stringify(state));
+    });
 
-  return pinia
-})
+    const stateJson = localStorage.getItem(store.$id);
+    if (stateJson) {
+      store.$state = JSON.parse(stateJson);
+    }
+  });
+
+  return pinia;
+});

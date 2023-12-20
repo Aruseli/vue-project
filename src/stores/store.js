@@ -17,19 +17,6 @@ export const productsStore = defineStore('products', {
         })
     },
 
-    // increase(product) {
-    //   const stock = this.products.find(item => item.id === product.id);
-    //   // const a = this.stock.stock;
-    //   console.log('a', stock.stock--)
-    // },
-
-    // localCartInstance() {
-    //   const cartStore = localStorage.getItem('cart');
-    //   if(!cartStore) {
-    //     this.cart = [];
-    //   } else { this.cart = JSON.parse(cartStore)}
-    // },
-
     increaseItems(product) {
       let existingProduct = this.cart.find(item => item.id === product.id) || null;
       if (existingProduct) {
@@ -73,8 +60,8 @@ export const productsStore = defineStore('products', {
 
   },
 
-  persist: {
-    storage: localStorage,
+  // persist: {
+  //   storage: localStorage,
 
-  },
+  // },
 });
