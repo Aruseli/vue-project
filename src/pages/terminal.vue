@@ -12,38 +12,45 @@
   const router = useRouter();
 
   let isPwd = ref(true);
-  let qrcode = ref(true);
-
+  let openDialog = ref(false);
+  let openDialogRegistration = ref(false);
 
   let props = defineProps({
     terminalId: {
       type: Number,
       default: null,
+      require: false
     },
     objectId: {
       type: Number,
       default: null,
+      require: false
     },
     locationId: {
       type: Number,
       default: null,
+      require: false
     },
     requestError: {
       type: {},
       request: false,
+      require: false
     },
     userName: {
       type: String,
       default: '',
+      require: false
     },
     userPassword: {
       type: String,
       default: '',
+      require: false
     },
     code: {
       type: String,
       default: 'kiosk-test',
-    }
+      require: false
+    },
   });
 
   let state = reactive({
@@ -59,56 +66,40 @@
   const level = ref('M');
   const renderAs = ref('svg');
 
-  const sendRequest = () => {
-    axios.post('/api/v2/addAnyTerminal',
+  const sendRequest = async () => {
+    const result = await axios.post('/api/v2/addAnyTerminal',
       {
         name: 'kiosk-test',
         code: state.code,
         type_id: '654c6b75-54c5-4153-a3c7-b0f6a3431c68',
-      }, {
+      },
+      {
+        // timeout: 1000,
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        validateStatus: status => true
       }
     )
-    .then(response => {
-      const { terminal_id, object_id, location_id } = response.data.data;
-      state.terminalId = terminal_id;
-      state.objectId = object_id;
-      state.locationId = location_id;
-      console.log('state.objectId, state.terminalId', state.objectId, state.terminalId);
-    })
-    .catch(err => {
-      if (terminal_id == nul) {
-        // Ошибка в ответе от сервера
-        this.$q.notify({
-          color: 'negative',
-          position: 'right',
-          message: 'Произошла ошибка: ' + err.response,
-        });
-        console.log('Ошибка в ответе от сервера:', err.response);
-      } else if (err.request) {
-        state.requestError = err.request;
-        // Ошибка отправки запроса
-        this.$q.notify({
-          color: 'negative',
-          position: 'right',
-          message: 'Произошла ошибка: ' + error.request,
-        });
-        console.log('Ошибка отправки запроса:', err.request);
-      } else {
-        // Общая ошибка
-        console.log('Общая ошибка:', err.message);
-        this.$q.notify({
-          color: 'negative',
-          position: 'right',
-          message: 'Произошла ошибка: ' + err.message,
-        });
-      }
-      console.log('error', err);
-    });
-  }
+    if (!!result.request.response) openDialogRegistration.value = true;
+    if (result.status >= 400) {
+      state.requestError = result.status;
+      openDialog.value = true
+      // $q.notify({
+      //   color: 'primary',
+      //   position: 'center',
+      //   timeout: result.status >= 400 ? 0 : 3000,
+      //   multiLine: true,
+      //   message: `Page not found on the server. Error ${result.status}`,
+      // })
+    }
+    const { terminal_id, object_id, location_id } = result.data.data;
+    if ( !!object_id && !!location_id ) openDialogRegistration.value = false;
 
+    state.terminalId = terminal_id;
+    state.objectId = object_id;
+    state.locationId = location_id;
+  };
 
   const onSubmitLogin = () => {
     axios.post('http://158.255.7.105:60480/auth/login.json',
@@ -152,20 +143,35 @@
         console.log(err.config.data)
       }
     );
-  }
+  };
 
   onMounted(() => {
     const intervalId = setInterval(() => {
-      sendRequest();
+      sendRequest().catch((error) => {
+        // Ошибка при отправке запроса, нет соединения с интернетом
+        if (error.code === 'ERR_NETWORK') {
+          $q.notify({
+            color: 'primary',
+            position: 'center',
+            message: `Internet connection lost ${error.code}`,
+          })
+        };
+        if (error.code === 'ECONNABORTED') {
+          // Ошибка тайм-аута
+          console.log('The request took too long to return');
+        }
+      });
     }, 5000);
 
-    watch([() => state.objectId, () => state.locationId], ([ newObjectId, newLocationId]) => {
-      if (newObjectId && newLocationId) {
-        clearInterval(intervalId);
+    watch(
+      [() => state.objectId, () => state.terminalId, () => state.locationId, () => state.requestError],
+      ([ newObjectId, newLocationId, newTerminalId, newRequestError]) => {
+        if (newObjectId && newLocationId && newTerminalId || newRequestError) {
+          clearInterval(intervalId);
+        }
       }
-    });
-    console.log('ERROR', state.terminalId)
-  })
+    );
+  });
 
 </script>
 
@@ -173,99 +179,97 @@
   <q-page class="flex flex-center relative" style="100%">
     <div class="q-pa-md items-center column" style="width: 50vw">
 
-      <q-dialog v-model="qrcode" dark="true" v-if="state.requestError">
+      <q-dialog v-model="openDialog" dark="true" class="1234">
         <q-card  dark="true" class="flex column items-center">
           <q-card-section>
-            <div class="text-h6 q-mx-sm text-center">Ошибка на сервере {{ state.requestError }}</div>
+            <div class="text-h6 q-ma-sm text-center">Page not found on the server {{ state.requestError }}</div>
           </q-card-section>
         </q-card>
       </q-dialog>
 
-      <q-dialog v-model="qrcode" dark="true" v-if="!state.objectId || !state.locationId">
+      <q-dialog v-model="openDialogRegistration" dark="true" class="7654323">
         <q-card  dark="true" class="flex column items-center">
-          <q-card-section v-if="state.requestError">
-            <div class="text-h6 q-mx-sm text-center">Ошибка на сервере {{ state.requestError }}</div>
-          </q-card-section>
-          <q-card-section v-if="!state.objectId || !state.locationId">
-            <div class="text-h6 q-ma-sm text-center">Ожидание подтверждения регистрации в системе...</div>
-            <div v-if="state.terminalId">
-              <div class="text-h6 text-center q-mb-md text-weight-bold">
-                Код терминала <code style="font-family: 'Courier New', monospace">{{ state.code }}</code>
+          <q-card-section>
+            <div v-if="!state.objectId && !state.locationId">
+              <div class="text-h6 q-ma-sm text-center">
+                Ожидание подтверждения регистрации в системе...
               </div>
-              <div
-                v-if="state.terminalId"
-                class="q-mx-auto q-mb-md"
-                style="width: 300px; height: 300px"
-              >
-                <qrcode-vue
-                  :value="state.terminalId"
-                  :level="level"
-                  :render-as="renderAs"
-                  size="300"
-                  foreground="#234141"
-                />
+              <div>
+                <div class="text-h6 text-center q-mb-md text-weight-bold">
+                  Код терминала <code style="font-family: 'Courier New', monospace">{{ state.code }}</code>
+                </div>
+                <div
+                  v-if="state.terminalId"
+                  class="q-mx-auto q-mb-md"
+                  style="width: 300px; height: 300px"
+                >
+                  <qrcode-vue
+                    :value="state.terminalId"
+                    :level="level"
+                    :render-as="renderAs"
+                    size="300"
+                    foreground="#234141"
+                  />
+                </div>
               </div>
             </div>
           </q-card-section>
-
-
         </q-card>
       </q-dialog>
 
-      <q-form
-        class="text-text form_style fit"
-        @submit.prevent="onSubmitLogin"
-      >
-        <q-input
-          v-model="state.userName"
-          label="login"
-          type="email"
-          autofocus
-          :rules="[
-            value => !!value || t('field_is_required')
-          ]"
-          no-error-icon
-          debounce="500"
-          dark="true"
-          rounded
-          outlined
-        />
-        <q-input
-          v-model="state.userPassword"
-          label="password"
-          :type="isPwd ? 'password' : 'text'"
-          :rules="[
-            val => !!val || t('field_is_required'),
-            val => val.length == 6 || t('password_consists_characters'),
-          ]"
-          counter
-          no-error-icon
-          dark="true"
-          rounded
-          outlined
-          class="q-mb-lg"
+      <div v-if="state.objectId && state.locationId">
+        <q-form
+          class="text-text fit"
+          @submit.prevent="onSubmitLogin"
         >
-          <template v-slot:append>
-            <q-icon
-              :name="isPwd ? 'visibility_off' : 'visibility'"
-              class="cursor-pointer"
-              @click="isPwd = !isPwd"
-            />
-          </template>
-        </q-input>
+          <q-input
+            v-model="state.userName"
+            label="login"
+            type="email"
+            autofocus
+            :rules="[
+              value => !!value || t('field_is_required')
+            ]"
+            no-error-icon
+            debounce="500"
+            dark="true"
+            rounded
+            outlined
+          />
+          <q-input
+            v-model="state.userPassword"
+            label="password"
+            :type="isPwd ? 'password' : 'text'"
+            :rules="[
+              val => !!val || t('field_is_required'),
+              val => val.length == 6 || t('password_consists_characters'),
+            ]"
+            counter
+            no-error-icon
+            dark="true"
+            rounded
+            outlined
+            class="q-mb-lg"
+          >
+            <template v-slot:append>
+              <q-icon
+                :name="isPwd ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="isPwd = !isPwd"
+              />
+            </template>
+          </q-input>
 
-        <div class="text-center">
-          <q-btn label="authorization" rounded type="submit" color="primary" class="fit" />
-        </div>
-      </q-form>
+          <div class="text-center">
+            <q-btn label="authorization" rounded type="submit" color="primary" class="fit" />
+          </div>
+        </q-form>
+      </div>
 
     </div>
   </q-page>
 </template>
 
 <style scoped>
-.form_style > *:not(:last-child) {
-  /* margin-bottom: 0.5rem; */
-}
 </style>
 
