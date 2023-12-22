@@ -1,58 +1,14 @@
 <script setup>
-  import { onMounted, reactive } from 'vue';
+  import { onMounted } from 'vue';
   import { productsStore } from '../stores/store';
   import ProductCard from '../components/product-card.vue';
-  import { liveQuery } from "dexie";
-  import { useObservable } from "@vueuse/rxjs";
-  import { db } from '../local-db.js';
 
   const store = productsStore();
 
-  const state = reactive({
-    products: []
-  });
+  onMounted(async() => {
+    await  store.fetchDataFromDB();
+  })
 
-  async function loadDataFromServerAndSaveToDexie() {
-    try {
-
-      const response = await fetch('https://dummyjson.com/products');
-      const data = await response.json();
-
-      const transformedData = data.products.map((item) => ({
-        id: item.id,
-        title: item.title,
-        price: item.price,
-        description: item.description,
-        images: [...item.images],
-        alt: item.title,
-        count: item.stock
-      }));
-
-
-      await db.products.bulkAdd(transformedData);
-
-      state.products = await db.products.toArray();
-      console.log('state.products', state.products)
-      console.log('Данные успешно загружены и сохранены в хранилище Dexie.');
-    } catch (error) {
-      console.error('Произошла ошибка при загрузке данных и сохранении их в хранилище Dexie:', error);
-    }
-  }
-
-  onMounted(async () => {
-    loadDataFromServerAndSaveToDexie();
-  });
-
-  //  onMounted(async() => {
-    //     await  store.fetchDataFromDB();
-    //   })const products = ref([]);
-
-
-    // onMounted(async() => {
-    //   await useObservable(
-    //     liveQuery(() => db.products.toArray())
-    //   );
-    // })
 </script>
 
 <template>
@@ -60,7 +16,7 @@
     <q-tab-panel name="food" dark>
       <div class="image-grid">
         <q-intersection
-          v-for="(product, index) in state.products"
+          v-for="(product, index) in store.products"
           :key="index"
           transition="slide-up"
           :threshold="0"
@@ -85,7 +41,7 @@
     <q-tab-panel name="roll_sets" dark>
       <div class="image-grid">
         <q-intersection
-          v-for="(product, index) in state.products"
+          v-for="(product, index) in store.products"
           :key="index"
           transition="slide-up"
           :threshold="0"
@@ -110,7 +66,7 @@
     <q-tab-panel name="weight_sets">
       <div class="image-grid">
         <q-intersection
-          v-for="(product, index) in state.products"
+          v-for="(product, index) in store.products"
           :key="index"
           transition="slide-up"
           :threshold="0"
@@ -135,7 +91,7 @@
     <q-tab-panel name="consumption_sets">
       <div class="image-grid">
         <q-intersection
-          v-for="(product, index) in state.products"
+          v-for="(product, index) in store.products"
           :key="index"
           transition="slide-up"
           :threshold="0"

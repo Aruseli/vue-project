@@ -60,8 +60,4 @@ export const productsStore = defineStore('products', {
 
   },
 
-  // persist: {
-  //   storage: localStorage,
-
-  // },
 });
