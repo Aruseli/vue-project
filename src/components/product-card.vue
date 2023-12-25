@@ -5,60 +5,68 @@
   import { evaRadioButtonOffOutline } from '@quasar/extras/eva-icons';
   import { useI18n } from 'vue-i18n';
   import { computed, ref, onMounted } from 'vue';
-  import { productsStore } from 'src/stores/store.js';
+  // import { productsStore } from 'src/stores/store.js';
+  import { useCartStore } from '../stores/cart-store';
+  import { useProductsStore } from '../stores/product-store';
   import { useQuasar } from 'quasar';
 
   const $q = useQuasar();
-  const text = ref(null);
   const openDialog = ref(false);
   const slide = ref(0);
 
   const { t } = useI18n();
 
-  const store = productsStore();
+  const cartStore = useCartStore();
+  const productsStore = useProductsStore();
+
 
   const props = defineProps({
-    images: {
-      type: [String],
-      required: false,
-    },
-    alt: {
-      type: String,
-      required: false
-    },
-    title: {
-      type: String,
-      required: false
-    },
-    price: {
-      type: Number,
-      required: false
-    },
-    count: {
-      type: Number,
-      required: false
-    },
-    description: {
-      type: String,
-      required: false
-    },
-    productId: {
-      type: Number,
-      required: false
-    },
+    product: {
+      type: Object,
+      require: true,
+      default: () => {},
+    }
   })
-
-  let size = ref(false);
+  // const props = defineProps({
+  //   images: {
+  //     type: [String],
+  //     required: false,
+  //   },
+  //   alt: {
+  //     type: String,
+  //     required: false
+  //   },
+  //   title: {
+  //     type: String,
+  //     required: false
+  //   },
+  //   price: {
+  //     type: Number,
+  //     required: false
+  //   },
+  //   count: {
+  //     type: Number,
+  //     required: false
+  //   },
+  //   description: {
+  //     type: String,
+  //     required: false
+  //   },
+  //   productId: {
+  //     type: Number,
+  //     required: false
+  //   },
+  // })
 
   const showNotify = () => {
     $q.notify({
-      timeout: 55000,
+      timeout: 3000,
       multiLine: true,
-      classes: 'text-h3',
+      classes: 'full-width',
       actions: [
         {
           label: t('placing_an_order'),
-          color: 'black',
+          color: 'white',
           'aria-label': 'Move to cart',
           handler: () => store.openDrawerCart(true)
         },
@@ -66,60 +74,48 @@
     })
   }
 
-  let mult = computed(() => {
-    size = text.value.clientHeight < text.value.scrollHeight;
-    return size;
-  })
-
-  onMounted(async() => {
-    if (text.value.clientHeight < text.value.scrollHeight) {
-      text.value.style.webkitLineClamp = '3';
-      text.value.style.textOverflow = 'ellipsis';
-      text.value.style.overflow = 'hidden';
-      text.value.style.display = '-webkit-box';
-      text.value.style.webkitBoxOrient = 'vertical';
-    }
-    console.log('size', size)
-    return size;
-  })
-
   const selectedProduct = computed(() => {
-    return store.products.find((item) => item.id === props.productId);
+    return productsStore.products.find((item) => item.id === props.product.id);
   })
 
   const existProduct = computed(() => {
-    return store.cart.filter(item => item.id == selectedProduct.value.id);
+    return cartStore.cart.find(item => item.id === selectedProduct.id);
   })
-  const countItems = computed(() => {
-    let existProduct = store.cart.filter(item => item.id == selectedProduct.value.id) || null;
-    return existProduct
-  })
+
   const productDetails = () => {
     openDialog.value = true;
   }
 
   const addProductToCart = (selectedProduct) => {
-    store.addToCartAndIncrementCount(selectedProduct);
+    productsStore.addToCartAndIncrementCount(selectedProduct);
     showNotify();
+    console.log('selectedProduct.id', selectedProduct.id)
+    console.log('cartStore.cart', cartStore.cart.find(item => item.id === selectedProduct.id))
+    console.log('existProduct', existProduct == true)
   }
 
+  const countItems = computed(() => {
+    let exProduct = cartStore.cart.filter(item => item.id == selectedProduct.id) || null;
+    return exProduct
+  })
+
   const decrease = (selectedProduct) => {
-    store.decreaseItems(selectedProduct);
+    cartStore.decreaseItemsCount(selectedProduct);
     showNotify();
   }
 
   const increase = (selectedProduct) => {
-    store.increaseItems(selectedProduct);
+    cartStore.increaseItemsCount(selectedProduct);
     showNotify();
   }
 
-  const unavailable = computed(() => {
-    return store.products.find((item) => item.stock < 37);
-  })
+  // const unavailable = computed(() => {
+  //   return store.products.find((item) => item.stock < 37);
+  // })
 
-  onMounted(async() => {
-    await  console.log('123', store.products.find(item => item.stock < 37));
-  })
+  // onMounted(async() => {
+  //   await  console.log('123', store.products.find(item => item.stock < 37));
+  // })
 
 </script>
 
@@ -132,8 +128,8 @@
       <div class="content_container">
         <div class="img_container">
           <q-img
-            :src="props.images[0]"
-            :alt="props.alt"
+            :src="product.images[0]"
+            :alt="product.alt"
             ratio="1"
           >
             <template #loading>
@@ -145,35 +141,36 @@
         </div>
         <div>
           <div class="column no-wrap items-left">
-            <div class="text-h5 text-weight-regular q-mb-sm">
-              {{ props.title }}
+            <div class="text-h5 text-weight-regular q-mb-sm ellipsis">
+              {{ product.title }}
             </div>
             <div class="row no-wrap justify-between">
               <div class="text-subtitle1">
-                {{ t('product_price') }}$
+                {{ t('product_price') }}
               </div>
               <div class="text-subtitle1">
-                {{ props.price }}
+                {{ product.price }}&ensp;THB
               </div>
             </div>
           </div>
         </div>
 
-        <div ref="text" class="text-body1" style="height: 6.5rem">
-          {{ props.description }}
+        <div class="text-body1 ellipsis-2-lines">
+          {{ product.description }}
         </div>
 
         <q-btn  @click="productDetails">{{ $t('read') }}</q-btn>
       </div>
 
       <div>
-        <q-btn v-if="existProduct.length === 0"
+        <q-btn v-if="!existProduct"
           class="full-width text-style"
           unelevated
           rounded
           no-caps
           color="primary"
           text-color="white"
+          size="xl"
           @click="addProductToCart(selectedProduct)"
           >
           <div class="text-center text-weight-bold text-subtitle1">
@@ -184,7 +181,7 @@
           <q-btn unelevated round @click="increase(selectedProduct)">
             <q-icon flat class="round-button-light_green" :name="evaPlusOutline"/>
           </q-btn>
-          <h5 class="q-ma-none">{{ countItems[0].count }}</h5>
+          <h5 class="q-ma-none">{{ countItems }}</h5>
           <q-btn unelevated round @click="decrease(selectedProduct)">
             <q-icon flat class="round-button-light_green" :name="evaMinusOutline"/>
           </q-btn>
@@ -226,8 +223,8 @@
                 <div>
                   <q-img
                     :src="image"
+                    ration="1"
                     style="width: calc(70vw - 8rem); height: calc(70vw - 8rem);"
-                    :ration="1"
                   >
                     <template #loading>
                       <div class="text-subtitle1 text-black">
@@ -251,28 +248,28 @@
           </q-card-section>
           <q-card-actions>
             <div class="full-width">
-              <q-btn v-if="existProduct.length === 0"
-                class="full-width text-style"
+              <q-btn
+                class="full-width text_style"
                 unelevated
                 rounded
                 no-caps
                 color="primary"
                 text-color="white"
-                @click="store.addToCartAndIncrementCount(selectedProduct)"
+                @click="productsStore.addToCartAndIncrementCount(selectedProduct)"
                 >
                 <div class="text-center text-weight-bold text-subtitle1">
                   {{ $t('add') }}
                 </div>
               </q-btn>
-              <div class="row justify-between items-center" v-else>
-                <q-btn unelevated round @click="store.increaseItems(selectedProduct)">
+              <!-- <div class="row justify-between items-center" v-else>
+                <q-btn unelevated round @click="cartStore.increaseItems(selectedProduct)" size="xl">
                   <q-icon flat class="round-button-light_green" :name="evaPlusOutline"/>
                 </q-btn>
                 <h5 class="q-ma-none">{{ countItems[0].count }}</h5>
-                <q-btn unelevated round @click="store.decreaseItems(selectedProduct)">
+                <q-btn unelevated round @click="cartStore.decreaseItems(selectedProduct)" size="xl">
                   <q-icon flat class="round-button-light_green" :name="evaMinusOutline"/>
                 </q-btn>
-              </div>
+              </div> -->
             </div>
           </q-card-actions>
         </q-card>
@@ -285,34 +282,31 @@
 <style lang="scss" scoped>
   $calc_width: calc(var(--width_coefficient) + var(--coefficient));
 
-  .unavailable_block {
-
-  }
   .card_setting {
     border-radius: var(--border-sm);
     box-shadow: var(--box-shadow--product_cart);
-    font-weight: bold;
     width: max-content;
     max-width: calc(var(--width_coefficient) + var(--coefficient));
-    min-height: 51rem;
+    min-height: 53rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     padding: 1.3rem;
+    background-color: var(--q-header_bg);
   }
   .img_container {
     max-width: $calc_width;
     max-height: $calc_width;
     border-radius : var(--px30);
     overflow: hidden;
-    margin-bottom: 2.5rem;
+    margin-bottom: 1.5rem;
   }
 
   .content_container > *:nth-child(n+2){
     margin-bottom: 1.5rem;
   }
 
-  .text-style {
+  .text_style {
     font-weight: bold;
   }
 
@@ -327,7 +321,4 @@
     /* right: 0 */
   }
 
-  .custom-section {
-    padding: 1rem 3.2rem;
-  }
 </style>

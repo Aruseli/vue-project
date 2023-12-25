@@ -1,114 +1,84 @@
 <script setup>
   import { onMounted } from 'vue';
-  import { productsStore } from '../stores/store';
   import ProductCard from '../components/product-card.vue';
+  import { useProductsStore } from '../stores/product-store';
 
-  const store = productsStore();
+  const productsStore = useProductsStore();
 
-  onMounted(async() => {
-    await  store.fetchDataFromDB();
+  // const store = productsStore();
+
+  onMounted(() => {
+    productsStore.getProducts();
   })
 
 </script>
 
 <template>
-  <q-tab-panels v-model="store.tab" animated swipeable class="fit">
+  <q-tab-panels v-model="productsStore.tab" animated swipeable class="fit">
     <q-tab-panel name="food" dark>
-      <div class="image-grid">
+      <div class="image_grid">
         <q-intersection
-          v-for="(product, index) in store.products"
+          v-for="(product, index) in productsStore.products"
           :key="index"
           transition="slide-up"
           :threshold="0"
           transition-duration="0.5"
           ssr-prerender
-          class="intersection-card-settings"
-          style="width: max-content; height: 830px"
+          class="intersection_card_settings"
+          style="width: max-content; height: 845px"
         >
-          <ProductCard
-            :images="product.images"
-            :alt="product.title"
-            :title="product.title"
-            :price="product.price"
-            :count="product.count"
-            :description="product.description"
-            :productId="product.id"
-          />
+          <ProductCard :product="productsStore.products[index]" />
         </q-intersection>
       </div>
     </q-tab-panel>
 
     <q-tab-panel name="roll_sets" dark>
-      <div class="image-grid">
+      <div class="image_grid">
         <q-intersection
-          v-for="(product, index) in store.products"
+          v-for="(product, index) in productsStore.products"
           :key="index"
           transition="slide-up"
           :threshold="0"
           transition-duration="0.5"
           ssr-prerender
-          class="intersection-card-settings"
-          style="width: max-content; height: 830px"
+          class="intersection_card_settings"
+          style="width: max-content; height: 845px"
         >
-          <ProductCard
-            :images="product.images"
-            :alt="product.title"
-            :title="product.title"
-            :price="product.price"
-            :count="product.count"
-            :description="product.description"
-            :productId="product.id"
-          />
+          <ProductCard :product="productsStore.products[index]" />
         </q-intersection>
       </div>
     </q-tab-panel>
 
     <q-tab-panel name="weight_sets">
-      <div class="image-grid">
+      <div class="image_grid">
         <q-intersection
-          v-for="(product, index) in store.products"
+          v-for="(product, index) in productsStore.products"
           :key="index"
           transition="slide-up"
           :threshold="0"
           transition-duration="0.5"
           ssr-prerender
-          class="intersection-card-settings"
-          style="width: max-content; height: 830px"
+          class="intersection_card_settings"
+          style="width: max-content; height: 845px"
         >
-          <ProductCard
-            :images="product.images"
-            :alt="product.title"
-            :title="product.title"
-            :price="product.price"
-            :count="product.count"
-            :description="product.description"
-            :productId="product.id"
-          />
+          <ProductCard :product="productsStore.products[index]" />
         </q-intersection>
       </div>
     </q-tab-panel>
 
     <q-tab-panel name="consumption_sets">
-      <div class="image-grid">
+      <div class="image_grid">
         <q-intersection
-          v-for="(product, index) in store.products"
+          v-for="(product, index) in productsStore.products"
           :key="index"
           transition="slide-up"
           :threshold="0"
           transition-duration="0.5"
           ssr-prerender
-          class="intersection-card-settings"
-          style="width: max-content; height: 830px"
+          class="intersection_card_settings"
+          style="width: max-content; height: 845px"
         >
-          <ProductCard
-            :images="product.images"
-            :alt="product.title"
-            :title="product.title"
-            :price="product.price"
-            :count="product.count"
-            :description="product.description"
-            :productId="product.id"
-          />
+          <ProductCard :product="productsStore.products[index]" />
         </q-intersection>
       </div>
     </q-tab-panel>
@@ -117,9 +87,9 @@
 
 <style lang="scss" scoped>
   $calc_width: calc(var(--width_coefficient) + var(--coefficient));
-  $calc_gap: calc(1.875rem + var(--coefficient_gap));
+  $calc_gap: calc(1rem + var(--coefficient_gap));
 
-.image-grid {
+.image_grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, $calc_width);
   gap: $calc_gap;
@@ -127,9 +97,9 @@
   height: 100%;
   padding: 0 3.75rem;
   justify-content: center;
-  margin-top: 5rem;
+  margin-top: 2rem;
 }
-.intersection-card-settings{
+.intersection_card_settings{
   min-height: 46rem;
 }
 </style>
