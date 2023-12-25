@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { watch, ref, computed } from 'vue';
-import { useCartStore } from './cart-store';
+import { useCartStore } from './cart';
 
 export const useProductsStore = defineStore('productsStore', () => {
   const products = ref([]);

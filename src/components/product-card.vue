@@ -6,8 +6,8 @@
   import { useI18n } from 'vue-i18n';
   import { computed, ref, onMounted } from 'vue';
   // import { productsStore } from 'src/stores/store.js';
-  import { useCartStore } from '../stores/cart-store';
-  import { useProductsStore } from '../stores/product-store';
+  import { useCartStore } from '../stores/cart';
+  import { useProductsStore } from '../stores/products';
   import { useQuasar } from 'quasar';
 
   const $q = useQuasar();

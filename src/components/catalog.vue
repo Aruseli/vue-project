@@ -1,7 +1,7 @@
 <script setup>
   import { onMounted } from 'vue';
   import ProductCard from '../components/product-card.vue';
-  import { useProductsStore } from '../stores/product-store';
+  import { useProductsStore } from '../stores/products';
 
   const productsStore = useProductsStore();
 

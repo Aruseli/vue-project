@@ -4,8 +4,8 @@
   import { evaPlusOutline } from '@quasar/extras/eva-icons';
   import { evaMinusOutline } from '@quasar/extras/eva-icons';
   import { useI18n } from 'vue-i18n';
-  import { useProductsStore  } from 'src/stores/product-store';
-  import { useCartStore } from 'src/stores/cart-store';
+  import { useProductsStore  } from 'src/stores/products';
+  import { useCartStore } from 'src/stores/cart';
 
   const { t } = useI18n();
 
