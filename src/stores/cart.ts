@@ -2,6 +2,17 @@ import { defineStore } from 'pinia';
 import { watch, ref, computed } from 'vue';
 import { useProductsStore } from './products';
 
+/*
+  Хранит корзину
+
+  Точки общения с API:
+  - создание нового пустого заказа
+  - изменение строчки заказа
+  - подтверждение заказа (= нажатие кнопки Order)
+
+  NOTE:
+  In CAT we have Order in state "Draft" for cart and Order in state "Active" since "pending payment" state of cart
+*/
 export const useCartStore = defineStore('cartStore', () => {
   const cart = ref([]);
 
