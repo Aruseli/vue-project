@@ -1,6 +1,7 @@
 import { store } from 'quasar/wrappers'
 import { createPinia } from 'pinia'
 import { Router } from 'vue-router';
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 
 /*
  * When adding new properties to stores, you should also
@@ -13,33 +14,19 @@ declare module 'pinia' {
   }
 }
 
-/*
- * If not building with SSR mode, you can
- * directly export the Store instantiation;
- *
- * The function below can be async too; either use
- * async/await or return a Promise which resolves
- * with the Store instance.
- */
-
 export default store((/* { ssrContext } */) => {
-  const pinia = createPinia()
+  const pinia = createPinia();
 
-  pinia.use(context => {
-    const storeId = context.store.$id;
-    console.log('storeId', storeId);
+  // pinia.use(({ store }) => {
+  //   store.$subscribe((mutation, state) => {
+  //     localStorage.setItem(store.$id, JSON.stringify(state));
+  //   });
 
-    const serializer = {
-      serialize: JSON.stringify,
-      deserialize: JSON.parse
-    }
+  //   const stateJson = localStorage.getItem(store.$id);
+  //   if (stateJson) {
+  //     store.$state = JSON.parse(stateJson);
+  //   }
+  // });
 
-    context.store.$subscribe((mutation, state) => {
-      window.localStorage.setItem(storeId, serializer.serialize(state))
-    })
-  })
-  // You can add Pinia plugins here
-  // pinia.use(SomePiniaPlugin)
-
-  return pinia
-})
+  return pinia;
+});

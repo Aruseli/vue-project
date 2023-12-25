@@ -4,7 +4,8 @@ export const productsStore = defineStore('products', {
   state: () => ({
     products: [],
     cart: [],
-    drawerState: false,
+    drawerCartState: false,
+    tab: 'food',
   }),
 
   actions: {
@@ -16,28 +17,12 @@ export const productsStore = defineStore('products', {
         })
     },
 
-    // increase(product) {
-    //   const stock = this.products.find(item => item.id === product.id);
-    //   // const a = this.stock.stock;
-    //   console.log('a', stock.stock--)
-    // },
-
-    // localCartInstance() {
-    //   const cartStore = localStorage.getItem('cart');
-    //   if(!cartStore) {
-    //     this.cart = [];
-    //   } else { this.cart = JSON.parse(cartStore)}
-    // },
-
     increaseItems(product) {
       let existingProduct = this.cart.find(item => item.id === product.id) || null;
       if (existingProduct) {
         existingProduct.count++;
         existingProduct.price += product.price;
       }
-      console.log('existingProductInc', existingProduct)
-      // console.log('this.cart', this.cart)
-      // console.log('this.cart', this.cart.count)
     },
 
     decreaseItems(product) {
@@ -69,9 +54,10 @@ export const productsStore = defineStore('products', {
       this.cart = this.cart.filter(item => item.id !== id)
     },
 
-    openDrawer(state) {
-      this.drawerState = state;
+    openDrawerCart(state) {
+      this.drawerCartState = state;
     },
-  }
+
+  },
 
 });

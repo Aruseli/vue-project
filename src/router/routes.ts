@@ -11,30 +11,30 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {
-        path: '',
-        component: () => import('pages/IndexPage.vue')
-      },
-      {
-        path: '/post',
+        path: '/',
         component: () => import('pages/terminal.vue')
       },
       {
-        path: '/catalog',
-        name: 'Catalog',
-        component: Catalog,
-        children: [
-          {
-            path: '/product/:id',
-            name: 'Dialog',
-            component: Dialog
-          },
-        ]
+        path: 'catalog',
+        component: () => import('pages/IndexPage.vue')
       },
-      {
-        path: '/cart',
-        name: 'Cart',
-        component: Cart
-      },
+      // {
+      //   path: '/catalog',
+      //   name: 'Catalog',
+      //   component: Catalog,
+      //   children: [
+      //     {
+      //       path: '/product/:id',
+      //       name: 'Dialog',
+      //       component: Dialog
+      //     },
+      //   ]
+      // },
+      // {
+      //   path: '/cart',
+      //   name: 'Cart',
+      //   component: Cart
+      // },
 
     ],
   },

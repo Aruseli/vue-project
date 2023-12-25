@@ -1,65 +1,95 @@
 <script setup>
-  import { onMounted, computed } from 'vue';
-  import { useRoute } from 'vue-router';
-  import { productsStore } from '../stores/store';
+  import { onMounted } from 'vue';
   import ProductCard from '../components/product-card.vue';
-  import { useQuasar } from 'quasar'
+  import { useProductsStore } from '../stores/product-store';
 
-  // const $q = useQuasar();
+  const productsStore = useProductsStore();
 
-  // $q.localStorage.set(key, value);
-  // const value = $q.localStorage.getItem(key);
+  // const store = productsStore();
 
-  // $q.sessionStorage.set(key, value);
-  // const otherValue = $q.sessionStorage.getItem(key);
-
-
-  const rout = useRoute();
-
-  const store = productsStore();
-
-  onMounted(async() => {
-    await  store.fetchDataFromDB();
+  onMounted(() => {
+    productsStore.getProducts();
   })
-
-  // const addToCart = (product) => {
-  //   store.addToCartAndIncrementCount(product);
-  //   // go to cart page
-  //   // router.push({name: 'Cart', params: { id }});
-  // }
 
 </script>
 
 <template>
-  <div class="image-grid">
-      <q-intersection
-        v-for="(product, index) in store.products"
-        :key="index"
-        transition="slide-up"
-        :threshold="0"
-        transition-duration="0.5"
-        ssr-prerender
-        class="intersection-card-settings"
-        style="width: 367px; height: 621px"
-      >
-        <ProductCard
-          :images="product.images"
-          :alt="product.title"
-          :title="product.title"
-          :price="product.price"
-          :count="product.count"
-          :description="product.description"
-          :productId="product.id"
-        />
-      </q-intersection>
-    </div>
+  <q-tab-panels v-model="productsStore.tab" animated swipeable class="fit">
+    <q-tab-panel name="food" dark>
+      <div class="image_grid">
+        <q-intersection
+          v-for="(product, index) in productsStore.products"
+          :key="index"
+          transition="slide-up"
+          :threshold="0"
+          transition-duration="0.5"
+          ssr-prerender
+          class="intersection_card_settings"
+          style="width: max-content; height: 845px"
+        >
+          <ProductCard :product="productsStore.products[index]" />
+        </q-intersection>
+      </div>
+    </q-tab-panel>
+
+    <q-tab-panel name="roll_sets" dark>
+      <div class="image_grid">
+        <q-intersection
+          v-for="(product, index) in productsStore.products"
+          :key="index"
+          transition="slide-up"
+          :threshold="0"
+          transition-duration="0.5"
+          ssr-prerender
+          class="intersection_card_settings"
+          style="width: max-content; height: 845px"
+        >
+          <ProductCard :product="productsStore.products[index]" />
+        </q-intersection>
+      </div>
+    </q-tab-panel>
+
+    <q-tab-panel name="weight_sets">
+      <div class="image_grid">
+        <q-intersection
+          v-for="(product, index) in productsStore.products"
+          :key="index"
+          transition="slide-up"
+          :threshold="0"
+          transition-duration="0.5"
+          ssr-prerender
+          class="intersection_card_settings"
+          style="width: max-content; height: 845px"
+        >
+          <ProductCard :product="productsStore.products[index]" />
+        </q-intersection>
+      </div>
+    </q-tab-panel>
+
+    <q-tab-panel name="consumption_sets">
+      <div class="image_grid">
+        <q-intersection
+          v-for="(product, index) in productsStore.products"
+          :key="index"
+          transition="slide-up"
+          :threshold="0"
+          transition-duration="0.5"
+          ssr-prerender
+          class="intersection_card_settings"
+          style="width: max-content; height: 845px"
+        >
+          <ProductCard :product="productsStore.products[index]" />
+        </q-intersection>
+      </div>
+    </q-tab-panel>
+  </q-tab-panels>
 </template>
 
 <style lang="scss" scoped>
   $calc_width: calc(var(--width_coefficient) + var(--coefficient));
-  $calc_gap: calc(1.875rem + var(--coefficient_gap));
+  $calc_gap: calc(1rem + var(--coefficient_gap));
 
-.image-grid {
+.image_grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, $calc_width);
   gap: $calc_gap;
@@ -67,9 +97,9 @@
   height: 100%;
   padding: 0 3.75rem;
   justify-content: center;
-  margin-top: 5rem;
+  margin-top: 2rem;
 }
-.intersection-card-settings{
+.intersection_card_settings{
   min-height: 46rem;
 }
 </style>
