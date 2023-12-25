@@ -3,8 +3,8 @@
   import Switcher from './switcher.vue';
   import { ref, computed, onMounted } from 'vue';
   // import { productsStore } from 'src/stores/store';
-  import { useProductsStore } from '../stores/product-store';
-  import { useCartStore } from '../stores/cart-store';
+  import { useProductsStore } from '../stores/products';
+  import { useCartStore } from '../stores/cart';
   import { useI18n } from 'vue-i18n';
   import BinButton from './buttons/bin-button.vue';
 
