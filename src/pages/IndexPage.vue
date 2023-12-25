@@ -23,8 +23,8 @@
     <!-- <CartDrawer /> -->
     <q-scroll-observer @scroll="onScroll" />
     <Header />
-    <div style="height: 100px" />
-    <pre class="q-ma-none container">{{ scrollInfo }}</pre>
+    <!-- <div style="height: 100px" /> -->
+    <!-- <pre class="q-ma-none container">{{ scrollInfo }}</pre> -->
     <Catalog />
   </q-page>
 </template>
