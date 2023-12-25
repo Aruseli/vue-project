@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { ref } from 'vue';
 
 /*
  This is 'app' or 'main' store.
@@ -13,6 +14,18 @@ import { defineStore } from 'pinia';
  с комментарием "//TODO fetch"
  */
 
-export const useAppStore = defineStore('app', {
+export const useAppStore = defineStore('app', () => {
+  const drawerCartState = ref(false);
+  const tab = ref('food');
 
+  const openDrawerCart = (state) => {
+    drawerCartState.value = state;
+    console.log('drawerCartState', drawerCartState.value);
+  }
+
+  return {
+    drawerCartState,
+    tab,
+    openDrawerCart,
+  }
 });

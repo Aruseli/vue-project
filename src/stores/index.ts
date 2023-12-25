@@ -1,6 +1,7 @@
 import { store } from 'quasar/wrappers'
 import { createPinia } from 'pinia'
 import { Router } from 'vue-router';
+import { watch } from 'vue';
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 
 /*
@@ -17,16 +18,6 @@ declare module 'pinia' {
 export default store((/* { ssrContext } */) => {
   const pinia = createPinia();
 
-  // pinia.use(({ store }) => {
-  //   store.$subscribe((mutation, state) => {
-  //     localStorage.setItem(store.$id, JSON.stringify(state));
-  //   });
-
-  //   const stateJson = localStorage.getItem(store.$id);
-  //   if (stateJson) {
-  //     store.$state = JSON.parse(stateJson);
-  //   }
-  // });
-
+  pinia.use(piniaPluginPersistedstate);
   return pinia;
 });

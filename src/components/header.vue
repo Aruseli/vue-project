@@ -2,8 +2,8 @@
   import BinIcon from './buttons/bin-icon.vue';
   import Switcher from './switcher.vue';
   import { ref, computed, onMounted } from 'vue';
-  // import { productsStore } from 'src/stores/store';
-  import { useProductsStore } from '../stores/products';
+  import { useAppStore } from 'src/stores/app';
+  import { useGoodsStore } from '../stores/products';
   import { useCartStore } from '../stores/cart';
   import { useI18n } from 'vue-i18n';
   import BinButton from './buttons/bin-button.vue';
@@ -11,24 +11,21 @@
   const { locale } = useI18n({ useScope: 'global' });
   const { t } = useI18n();
 
-  // const store = productsStore();
-  const productsStore = useProductsStore();
+  const goodsStore = useGoodsStore();
   const cartStore = useCartStore();
-
-  // Получаем массив из store
-  const cart = cartStore.cart;
+  const app = useAppStore();
 
   // Инициализируем реактивные переменные для хранения общего количества и общей стоимости
   const totalCount = ref(0);
 
   // Функция для подсчета общего количества и общей стоимости
   const calculateTotal = () => {
-    totalCount.value = cart.reduce((acc, item) => acc + item.count, 0);
+    totalCount.value = cartStore.cart.reduce((acc, item) => acc + item.count, 0);
   };
 
   // Вычисляемые свойства для общего количества и общей стоимости
   const totalQuantity = computed(() => {
-    return cart.reduce((acc, item) => acc + item.count, 0);
+    return cartStore.cart.reduce((acc, item) => acc + item.count, 0);
   });
 
   // Фнукция для переключения языка
@@ -37,7 +34,7 @@
   }
 
   const openDrawer = () => {
-    productsStore.openDrawerCart(true);
+    app.openDrawerCart(true);
   }
 
    // Вызываем функцию при монтировании компонента
@@ -67,7 +64,7 @@
         />
       </div>
       <div class="absolute-right">
-        <q-btn unelevated round class="relative-position" @click="productsStore.openDrawerCart(true)">
+        <q-btn unelevated round class="relative-position" @click="goodsStore.openDrawerCart(true)">
           <BinIcon />
           <q-badge align="bottom" rounded :label="totalQuantity" class="absolute-bottom-left" color="positive" />
         </q-btn>
@@ -76,7 +73,7 @@
 
     <div class="relative-position">
       <q-tabs
-        v-model="productsStore.tab"
+        v-model="app.tab"
         inline-label
         no-caps
         indicator-color="transparent"

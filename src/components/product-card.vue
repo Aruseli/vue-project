@@ -5,9 +5,9 @@
   import { evaRadioButtonOffOutline } from '@quasar/extras/eva-icons';
   import { useI18n } from 'vue-i18n';
   import { computed, ref, onMounted } from 'vue';
-  // import { productsStore } from 'src/stores/store.js';
   import { useCartStore } from '../stores/cart';
-  import { useProductsStore } from '../stores/products';
+  import { useGoodsStore } from '../stores/products';
+  import { useAppStore } from 'src/stores/app';
   import { useQuasar } from 'quasar';
 
   const $q = useQuasar();
@@ -17,46 +17,38 @@
   const { t } = useI18n();
 
   const cartStore = useCartStore();
-  const productsStore = useProductsStore();
-
+  const goodsStore = useGoodsStore();
+  const app = useAppStore();
 
   const props = defineProps({
-    product: {
-      type: Object,
-      require: true,
-      default: () => {},
-    }
+    images: {
+      type: [String],
+      required: false,
+    },
+    alt: {
+      type: String,
+      required: false
+    },
+    title: {
+      type: String,
+      required: false
+    },
+    price: {
+      type: Number,
+      required: false
+    },
+    count: {
+      type: Number,
+      required: false
+    },
+    description: {
+      type: String,
+      required: false
+    },
+    itemId: {
+      type: Number,
+    },
   })
-  // const props = defineProps({
-  //   images: {
-  //     type: [String],
-  //     required: false,
-  //   },
-  //   alt: {
-  //     type: String,
-  //     required: false
-  //   },
-  //   title: {
-  //     type: String,
-  //     required: false
-  //   },
-  //   price: {
-  //     type: Number,
-  //     required: false
-  //   },
-  //   count: {
-  //     type: Number,
-  //     required: false
-  //   },
-  //   description: {
-  //     type: String,
-  //     required: false
-  //   },
-  //   productId: {
-  //     type: Number,
-  //     required: false
-  //   },
-  // })
 
   const showNotify = () => {
     $q.notify({
@@ -68,44 +60,44 @@
           label: t('placing_an_order'),
           color: 'white',
           'aria-label': 'Move to cart',
-          handler: () => store.openDrawerCart(true)
+          handler: () => app.openDrawerCart(true)
         },
       ]
     })
   }
 
-  const selectedProduct = computed(() => {
-    return productsStore.products.find((item) => item.id === props.product.id);
+  const selectedGood = computed(() => {
+    return goodsStore.goods.find((item) => item.id === props.itemId);
   })
 
   const existProduct = computed(() => {
-    return cartStore.cart.find(item => item.id === selectedProduct.id);
+    return cartStore.cart.find(item => item.id === selectedGood.id);
   })
 
-  const productDetails = () => {
+  const goodDetails = () => {
     openDialog.value = true;
+    console.log('selectedGood', selectedGood);
+    console.log('props.good.id', props.itemId);
   }
 
-  const addProductToCart = (selectedProduct) => {
-    productsStore.addToCartAndIncrementCount(selectedProduct);
+  const addProductToCart = (selectedGood) => {
+    console.log('selectedGood', selectedGood.id)
+    cartStore.addToCart(selectedGood);
     showNotify();
-    console.log('selectedProduct.id', selectedProduct.id)
-    console.log('cartStore.cart', cartStore.cart.find(item => item.id === selectedProduct.id))
-    console.log('existProduct', existProduct == true)
   }
 
   const countItems = computed(() => {
-    let exProduct = cartStore.cart.filter(item => item.id == selectedProduct.id) || null;
+    let exProduct = cartStore.cart.filter(item => item.id == selectedGood.id) || null;
     return exProduct
   })
 
-  const decrease = (selectedProduct) => {
-    cartStore.decreaseItemsCount(selectedProduct);
+  const decrease = (selectedGood) => {
+    cartStore.decreaseItemsCount(selectedGood);
     showNotify();
   }
 
-  const increase = (selectedProduct) => {
-    cartStore.increaseItemsCount(selectedProduct);
+  const increase = (selectedGood) => {
+    cartStore.increaseItemsCount(selectedGood);
     showNotify();
   }
 
@@ -128,8 +120,8 @@
       <div class="content_container">
         <div class="img_container">
           <q-img
-            :src="product.images[0]"
-            :alt="product.alt"
+            :src="props.images[0]"
+            :alt="props.alt"
             ratio="1"
           >
             <template #loading>
@@ -142,24 +134,24 @@
         <div>
           <div class="column no-wrap items-left">
             <div class="text-h5 text-weight-regular q-mb-sm ellipsis">
-              {{ product.title }}
+              {{ props.title }}
             </div>
             <div class="row no-wrap justify-between">
               <div class="text-subtitle1">
                 {{ t('product_price') }}
               </div>
               <div class="text-subtitle1">
-                {{ product.price }}&ensp;THB
+                {{ props.price }}&ensp;THB
               </div>
             </div>
           </div>
         </div>
 
         <div class="text-body1 ellipsis-2-lines">
-          {{ product.description }}
+          {{ props.description }}
         </div>
 
-        <q-btn  @click="productDetails">{{ $t('read') }}</q-btn>
+        <q-btn  @click="goodDetails">{{ $t('read') }}</q-btn>
       </div>
 
       <div>
@@ -171,18 +163,18 @@
           color="primary"
           text-color="white"
           size="xl"
-          @click="addProductToCart(selectedProduct)"
+          @click="addProductToCart(selectedGood)"
           >
           <div class="text-center text-weight-bold text-subtitle1">
             {{ $t('add') }}
           </div>
         </q-btn>
         <div class="row justify-between items-center" v-else>
-          <q-btn unelevated round @click="increase(selectedProduct)">
+          <q-btn unelevated round @click="increase(selectedGood)">
             <q-icon flat class="round-button-light_green" :name="evaPlusOutline"/>
           </q-btn>
           <h5 class="q-ma-none">{{ countItems }}</h5>
-          <q-btn unelevated round @click="decrease(selectedProduct)">
+          <q-btn unelevated round @click="decrease(selectedGood)">
             <q-icon flat class="round-button-light_green" :name="evaMinusOutline"/>
           </q-btn>
         </div>
@@ -215,7 +207,7 @@
               class="bg-transparent round-borders fit"
             >
               <q-carousel-slide
-                v-for="(image, index) in selectedProduct.images"
+                v-for="(image, index) in selectedGood.images"
                 :key="index"
                 :name="index"
                 class="column no-wrap flex-center"
@@ -238,12 +230,12 @@
           </q-card-section>
           <q-card-section>
             <div class="text-h5 text-weight-regular">
-              {{ selectedProduct.title }}
+              {{ selectedGood.title }}
             </div>
           </q-card-section>
           <q-card-section class="q-pt-none">
             <div class="text-body1 text-weight-regular">
-              {{ selectedProduct.description }}
+              {{ selectedGood.description }}
             </div>
           </q-card-section>
           <q-card-actions>
@@ -255,18 +247,18 @@
                 no-caps
                 color="primary"
                 text-color="white"
-                @click="productsStore.addToCartAndIncrementCount(selectedProduct)"
+                @click="cartStore.addToCart(selectedGood)"
                 >
                 <div class="text-center text-weight-bold text-subtitle1">
                   {{ $t('add') }}
                 </div>
               </q-btn>
               <!-- <div class="row justify-between items-center" v-else>
-                <q-btn unelevated round @click="cartStore.increaseItems(selectedProduct)" size="xl">
+                <q-btn unelevated round @click="cartStore.increaseItems(selectedGood)" size="xl">
                   <q-icon flat class="round-button-light_green" :name="evaPlusOutline"/>
                 </q-btn>
                 <h5 class="q-ma-none">{{ countItems[0].count }}</h5>
-                <q-btn unelevated round @click="cartStore.decreaseItems(selectedProduct)" size="xl">
+                <q-btn unelevated round @click="cartStore.decreaseItems(selectedGood)" size="xl">
                   <q-icon flat class="round-button-light_green" :name="evaMinusOutline"/>
                 </q-btn>
               </div> -->

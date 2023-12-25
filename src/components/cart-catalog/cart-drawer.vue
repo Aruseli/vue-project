@@ -1,22 +1,20 @@
 <script setup>
-  // import { productsStore } from '../../stores/store';
   import { ref, computed, onMounted, watch } from 'vue';
   import { evaPlusOutline } from '@quasar/extras/eva-icons';
   import { evaMinusOutline } from '@quasar/extras/eva-icons';
   import { useI18n } from 'vue-i18n';
-  import { useProductsStore  } from 'src/stores/products';
+  import { useGoodsStore  } from 'src/stores/products';
   import { useCartStore } from 'src/stores/cart';
+  import { useAppStore } from 'src/stores/app';
 
   const { t } = useI18n();
 
-  // const store = productsStore();
-  const productsStore = useProductsStore();
+  const goodsStore = useGoodsStore();
   const cartStore = useCartStore();
+  const app = useAppStore();
+
   const slide = ref(0);
   const openOrderDialog = ref(false);
-
-  // Получаем массив из store
-  const cart = cartStore.cart;
 
   // Инициализируем реактивные переменные для хранения общего количества и общей стоимости
   const totalCount = ref(0);
@@ -24,17 +22,17 @@
 
    // Функция для подсчета общего количества и общей стоимости
    const calculateTotal = () => {
-    totalCount.value = cart.reduce((acc, item) => acc + item.count, 0);
-    totalPrice.value = cart.reduce((acc, item) => acc + item.count * item.price, 0);
+    totalCount.value = cartStore.cart.reduce((acc, item) => acc + item.count, 0);
+    totalPrice.value = cartStore.cart.reduce((acc, item) => acc + item.count * item.price, 0);
   };
 
   // Вычисляемые свойства для общего количества и общей стоимости
   const totalQuantity = computed(() => {
-    return cart.reduce((total, item) => total + item.count, 0);
+    return cartStore.cart.reduce((total, item) => total + item.count, 0);
   });
 
   const totalCost = computed(() => {
-    return cart.reduce((total, item) => total + item.count * item.price, 0);
+    return cartStore.cart.reduce((total, item) => total + item.count * item.price, 0);
   });
 
   // Вызываем функцию при монтировании компонента
@@ -43,34 +41,34 @@
   });
 
   const closeDrawerCart = () => {
-    productsStore.openDrawerCart(false)
+    app.openDrawerCart(false)
   }
 
   const orderDialog = () => {
     openOrderDialog.value = true;
     cartStore.cart = [];
-    localStorage.removeItem('cart');
+    // localStorage.removeItem('cart');
   }
 
   // получаем объект из localStorage
-  const storedItems = localStorage.getItem('cart');
+  // const storedItems = localStorage.getItem('cart');
 
   // парсим объект
-  const parsedItems = JSON.parse(storedItems);
+  // const parsedItems = JSON.parse(storedItems);
 
   const removeFromCart = (id) => {
     // находим элемент который хотим удалить из localStorage
-    const item = Object.values(parsedItems).find(item => item.id === id);
+    // const item = Object.values(parsedItems).find(item => item.id === id);
     // удаляем элемент из localStorage
-    let index = -1;
-    for(let i = 0; i < parsedItems.length; i++) {
-      if(parsedItems[i].id === item.id) {
-        index = i;
-        break;
-      }
-    }
+    // let index = -1;
+    // for(let i = 0; i < parsedItems.length; i++) {
+    //   if(parsedItems[i].id === item.id) {
+    //     index = i;
+    //     break;
+    //   }
+    // }
     // записываем изменения в localStorage
-    localStorage.setItem('cart', JSON.stringify(parsedItems));
+    // localStorage.setItem('cart', JSON.stringify(parsedItems));
     cartStore.cart = cartStore.cart.filter(item => item.id !== id)
     console.log('remove',cartStore.cart);
   }
@@ -81,7 +79,7 @@
 <template>
   <q-drawer
     dark="true"
-    v-model="productsStore.drawerCartState"
+    v-model="app.drawerCartState"
     side="right"
     overlay
     elevated
@@ -105,12 +103,12 @@
       <div class="bg-negative full-width" style="height: 0.1rem" />
     </div>
 
-    <div v-if="!cart.length" class="q-pa-lg text-center">
+    <div v-if="!cartStore.cart.length" class="q-pa-lg text-center">
       <h2>{{ $t('empty_cart') }}</h2>
     </div>
     <q-scroll-area class="fit">
       <div class="row container_settings">
-        <div class="cart_product_item row" v-for="(item, index) in cart" :key="index">
+        <div class="cart_product_item row" v-for="(item, index) in cartStore.cart" :key="index">
           <div class="col-4 q-pr-md">
             <q-img
               :src="item.images[0]"
