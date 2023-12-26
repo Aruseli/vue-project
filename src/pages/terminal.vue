@@ -5,6 +5,7 @@
   import { useI18n } from 'vue-i18n';
   import { useRouter } from 'vue-router';
   import { useQuasar } from 'quasar';
+  import Logo from '../components/logo.vue';
 
   const $q = useQuasar();
 
@@ -176,7 +177,7 @@
 </script>
 
 <template>
-  <q-page class="flex flex-center relative" style="100%">
+  <q-page class="flex flex-center relative bg-secondary" style="100%">
     <div class="q-pa-md items-center column" style="width: 50vw">
 
       <q-dialog v-model="openDialog" dark="true" class="1234">
@@ -217,7 +218,10 @@
         </q-card>
       </q-dialog>
 
-      <div v-if="state.objectId && state.locationId">
+      <div v-if="state.objectId && state.locationId" class="fit">
+
+        <Logo class="logo_column" />
+
         <q-form
           class="text-text fit"
           @submit.prevent="onSubmitLogin"
@@ -233,8 +237,9 @@
             no-error-icon
             debounce="500"
             dark="true"
-            rounded
+            round
             outlined
+            bg-color="white"
           />
           <q-input
             v-model="state.userPassword"
@@ -247,9 +252,10 @@
             counter
             no-error-icon
             dark="true"
-            rounded
+            round
             outlined
             class="q-mb-lg"
+            bg-color="white"
           >
             <template v-slot:append>
               <q-icon
@@ -261,7 +267,7 @@
           </q-input>
 
           <div class="text-center">
-            <q-btn label="authorization" rounded type="submit" color="primary" class="fit" />
+            <q-btn label="authorization" unelevated size="xl" type="submit" color="primary" class="fit" />
           </div>
         </q-form>
       </div>

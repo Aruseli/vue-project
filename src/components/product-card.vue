@@ -70,26 +70,26 @@
     return goodsStore.goods.find((item) => item.id === props.itemId);
   })
 
-  const existProduct = computed(() => {
-    return cartStore.cart.find(item => item.id === selectedGood.id);
+  const existGood = computed(() => {
+    return cartStore.cart.find((item) => item.id === selectedGood.value.id);
   })
 
   const goodDetails = () => {
     openDialog.value = true;
-    console.log('selectedGood', selectedGood);
-    console.log('props.good.id', props.itemId);
   }
 
-  const addProductToCart = (selectedGood) => {
-    console.log('selectedGood', selectedGood.id)
+  const addGoodToCart = (selectedGood) => {
     cartStore.addToCart(selectedGood);
     showNotify();
+    console.log('existGood', existGood.value.count)
+    console.log('selectedGood', selectedGood)
+    console.log('count', cartStore.cart)
   }
 
-  const countItems = computed(() => {
-    let exProduct = cartStore.cart.filter(item => item.id == selectedGood.id) || null;
-    return exProduct
+  const selectedCount = computed(() => {
+    return cartStore.cart.find((item) => item.id === selectedGood.value.id);
   })
+
 
   const decrease = (selectedGood) => {
     cartStore.decreaseItemsCount(selectedGood);
@@ -151,11 +151,11 @@
           {{ props.description }}
         </div>
 
-        <q-btn  @click="goodDetails">{{ $t('read') }}</q-btn>
+        <q-btn @click="goodDetails">{{ $t('read') }}</q-btn>
       </div>
 
       <div>
-        <q-btn v-if="!existProduct"
+        <q-btn v-if="!existGood"
           class="full-width text-style"
           unelevated
           rounded
@@ -163,7 +163,7 @@
           color="primary"
           text-color="white"
           size="xl"
-          @click="addProductToCart(selectedGood)"
+          @click="addGoodToCart(selectedGood)"
           >
           <div class="text-center text-weight-bold text-subtitle1">
             {{ $t('add') }}
@@ -173,7 +173,7 @@
           <q-btn unelevated round @click="increase(selectedGood)">
             <q-icon flat class="round-button-light_green" :name="evaPlusOutline"/>
           </q-btn>
-          <h5 class="q-ma-none">{{ countItems }}</h5>
+          <div class="text-h4 q-ma-none">{{ existGood.count }}</div>
           <q-btn unelevated round @click="decrease(selectedGood)">
             <q-icon flat class="round-button-light_green" :name="evaMinusOutline"/>
           </q-btn>
@@ -241,27 +241,28 @@
           <q-card-actions>
             <div class="full-width">
               <q-btn
+                v-if="!existGood"
                 class="full-width text_style"
                 unelevated
                 rounded
                 no-caps
                 color="primary"
                 text-color="white"
-                @click="cartStore.addToCart(selectedGood)"
+                @click="addGoodToCart"
                 >
                 <div class="text-center text-weight-bold text-subtitle1">
                   {{ $t('add') }}
                 </div>
               </q-btn>
-              <!-- <div class="row justify-between items-center" v-else>
-                <q-btn unelevated round @click="cartStore.increaseItems(selectedGood)" size="xl">
+              <div class="row justify-between items-center" v-else>
+                <q-btn unelevated round @click="increase(selectedGood)" size="xl">
                   <q-icon flat class="round-button-light_green" :name="evaPlusOutline"/>
                 </q-btn>
-                <h5 class="q-ma-none">{{ countItems[0].count }}</h5>
-                <q-btn unelevated round @click="cartStore.decreaseItems(selectedGood)" size="xl">
+                <div class="text-h4 q-ma-none">{{ existGood.count }}</div>
+                <q-btn unelevated round @click="decrease(selectedGood)" size="xl">
                   <q-icon flat class="round-button-light_green" :name="evaMinusOutline"/>
                 </q-btn>
-              </div> -->
+              </div>
             </div>
           </q-card-actions>
         </q-card>
