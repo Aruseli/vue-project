@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import { useCartStore } from './cart';
 
 /*
  This is 'app' or 'main' store.
@@ -15,17 +16,25 @@ import { ref } from 'vue';
  */
 
 export const useAppStore = defineStore('app', () => {
+  const cartStore = useCartStore();
   const drawerCartState = ref(false);
+  const orderDialog = ref(false);
   const tab = ref('food');
 
   const openDrawerCart = (state) => {
     drawerCartState.value = state;
-    console.log('drawerCartState', drawerCartState.value);
+  }
+
+  const openOrderDialog = (state) => {
+    orderDialog.value = state;
+    cartStore.clearCart();
   }
 
   return {
     drawerCartState,
     tab,
     openDrawerCart,
+    orderDialog,
+    openOrderDialog,
   }
 });

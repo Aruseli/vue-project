@@ -40,7 +40,7 @@ export const useCartStore = defineStore('cartStore',
       let existingGood = cart.value.find(item => item.id === good.id) || null;
       if (existingGood) {
         existingGood.count++;
-        existingGood.price = good.price + existingGood.price;
+        existingGood.price = good.lineTotal + existingGood.price;
       }
     }
 
@@ -48,16 +48,23 @@ export const useCartStore = defineStore('cartStore',
       let existingGood = cart.value.find(item => item.id === good.id) || null;
       if (existingGood) {
         existingGood.count--;
-        existingGood.price = existingGood.price - good.price;
+        existingGood.price = existingGood.price - good.lineTotal;
       }
-      if ( existingGood.count == 0 ) cart.value = cart.value.filter(item => item.id !== good.id);
+      if ( existingGood.count == 0 ) {
+        cart.value = cart.value.filter(item => item.id !== good.id);
+      }
     };
+
+    const clearCart = () => {
+      cart.value = [];
+    }
 
     return {
       cart,
       increaseItemsCount,
       decreaseItemsCount,
       addToCart,
+      clearCart,
     }
   },
   {
