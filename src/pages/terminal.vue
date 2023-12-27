@@ -1,10 +1,11 @@
-<script setup>
+<script setup lang="ts">
   import axios  from 'axios';
   import { ref, reactive, onMounted, watch } from 'vue';
   import QrcodeVue from 'qrcode.vue';
   import { useI18n } from 'vue-i18n';
   import { useRouter } from 'vue-router';
   import { useQuasar } from 'quasar';
+import { wsSendMessage } from 'src/services';
 
   const $q = useQuasar();
 
@@ -173,6 +174,11 @@
     );
   });
 
+  const printText = ref('<print align="center" bold>text</print><printqr>hello world</printqr>');
+
+  function sendWsCommand() {
+    wsSendMessage('check-print', printText.value);
+  }
 </script>
 
 <template>
@@ -264,6 +270,8 @@
             <q-btn label="authorization" rounded type="submit" color="primary" class="fit" />
           </div>
         </q-form>
+        <q-input v-model="printText" class="q-mt-md" outlined />
+        <q-btn label="test ws" rounded color="secondary" @click="sendWsCommand" />
       </div>
 
     </div>
