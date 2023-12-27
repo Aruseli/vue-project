@@ -90,7 +90,7 @@ body.body--dark {
   color: var(--q-text);
 }
 .text-h3 {
-  font-size: calc(1.5rem + 0.5vmax);
+  font-size: calc(2rem + 0.5vmax);
   font-family: $font-family-nunito;
   font-weight: bold;
   line-height: normal;
@@ -102,12 +102,6 @@ body.body--dark {
   font-weight: bold;
   line-height: normal;
   color: var(--q-text);
-}
-.text-h5 {
-  font-size: calc(1.3rem + 0.5vmax);
-  font-weight: bold;
-  line-height: normal;
-  color: var(--q-text) !important;
 }
 .text-subtitle1 {
   font-size: calc(1.2rem + 0.4vmax);
@@ -186,22 +180,8 @@ body.body--dark {
   color: var(--q-text)
 }
 
-.q-tabs__content > *:not(:last-of-type) {
-  margin-right: 1.5rem;
-}
-
-.q-tab {
-  border-radius: 2rem;
-  background: var(--q-accent);
-  color: #FBFBFF;
-}
-
-.q-tab-panels {
-  background-color: transparent;
-}
-
 .q-tab__label {
-  font-size: calc(1.2rem + 0.5vmax);
+  font-size: calc(1.7rem + 0.5vmax);
 }
 
 .q-notification {

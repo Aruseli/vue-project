@@ -60,7 +60,7 @@
           </q-carousel>
         </q-card-section>
         <q-card-section>
-          <div class="text-h5 text-weight-regular">
+          <div class="text-h4 text-weight-regular">
             {{ selectedProduct.title }}
           </div>
         </q-card-section>

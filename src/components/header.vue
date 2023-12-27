@@ -111,4 +111,22 @@
   width: max-content;
   height: 3rem;
 }
+
+.q-tabs__content > *:not(:last-of-type) {
+  margin-right: 1.5rem;
+}
+
+.q-tab {
+  border-radius: 2rem;
+  background: var(--q-accent);
+  color: #FBFBFF;
+}
+
+.q-tab-panels {
+  background-color: transparent;
+}
+
+.q-tab__label {
+  font-size: calc(1.2rem + 0.5vmax);
+}
 </style>

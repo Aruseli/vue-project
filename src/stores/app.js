@@ -20,6 +20,7 @@ export const useAppStore = defineStore('app', () => {
   const drawerCartState = ref(false);
   const orderDialog = ref(false);
   const tab = ref('food');
+  const tabCharacteristics = ref('description');
 
   const openDrawerCart = (state) => {
     drawerCartState.value = state;
@@ -33,6 +34,7 @@ export const useAppStore = defineStore('app', () => {
   return {
     drawerCartState,
     tab,
+    tabCharacteristics,
     openDrawerCart,
     orderDialog,
     openOrderDialog,

@@ -75,7 +75,7 @@
         >
           <q-icon name="arrow_back" class="round-button-light_green" />
         </q-btn>
-        <div class="text-subtitle1 text-center text-weight-bold text-text text-uppercase col-11">
+        <div class="text-h3 text-center text-weight-bold text-text text-uppercase col-11">
           {{ $t('order') }}
         </div>
       </div>
@@ -140,7 +140,7 @@
 
           <div class="column justify-between col-8">
             <div class="row justify-between items-center">
-              <div class="text-h2 text-weight-regular">
+              <div class="text-h3 text-weight-regular">
                 {{ item.title }}
               </div>
               <q-btn unelevated round @click="removeFromCart(item.id)">
@@ -175,12 +175,12 @@
     <div class="q-pa-lg bg-white">
       <div class="bg-secondary full-width q-mb-lg" style="height: 0.3rem" />
       <div class="row justify-between items-center q-mb-md">
-        <div class="text-subtitle1">{{t('total')}}</div>
-        <div class="text-subtitle1 q-mb-md">
+        <div class="text-body1">{{t('total')}}</div>
+        <div class="text-body1 q-mb-md">
           {{ totalCost }} &ensp;THB
         </div>
         <div class="bg-negative full-width q-mb-lg" style="height: 0.1rem" />
-        <div class="text-subtitle2 order_container text-weight-regular">
+        <div class="text-body1 order_container text-weight-regular">
           <span>{{t('order')}}</span>
           <span>{{ totalQuantity }}</span>
           <span>{{ t('pieces') }}</span>
@@ -195,7 +195,7 @@
           color="accent"
           @click="openOrderDialog"
           >
-          <div class="text-subtitle1 text-center text-weight-bold text-header_bg text-uppercase">
+          <div class="text-h3 text-white text-center text-weight-bold text-header_bg text-uppercase">
             {{ $t('order') }}
           </div>
         </q-btn>

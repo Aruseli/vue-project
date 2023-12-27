@@ -74,7 +74,7 @@ const selectedProduct = computed(() => {
       </q-carousel>
     </div>
     <div>
-      <div class="text-h5 text-weight-regular">
+      <div class="text-h4 text-weight-regular">
         {{ selectedProduct.title }}
       </div>
     </div>

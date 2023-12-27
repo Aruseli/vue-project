@@ -30,4 +30,6 @@ export default {
   declare_a_discrepancy: 'declare a discrepancy',
   the_order_was_successfully_completed: 'The order was successfully completed!',
   contact_seller_for_further_information: 'Contact seller for further information',
+  description: 'description',
+  characteristics: 'characteristics',
 };
