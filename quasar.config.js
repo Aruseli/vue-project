@@ -8,14 +8,11 @@
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
 
-
 const { configure } = require('quasar/wrappers');
 const path = require('node:path');
 
 module.exports = configure(function (ctx) {
   return {
-
-
     // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
     // preFetch: true,
 
@@ -79,7 +76,7 @@ module.exports = configure(function (ctx) {
 
       // publicPath: '/',
       // analyze: true,
-      // env: {},
+      env: require('dotenv').config().parsed,
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,
@@ -114,6 +111,11 @@ module.exports = configure(function (ctx) {
           changeOrigin: true,
           cookieDomainRewrite: 'localhost',
         },
+        '/cat-api': {
+          target: process.env.VUE_CAT_URL,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/cat-api/, '/api'),
+        },
       },
     },
 
@@ -137,6 +139,7 @@ module.exports = configure(function (ctx) {
       // Quasar plugins
       plugins: [
         'LocalStorage',
+        'Loading',
         'SessionStorage',
         'Notify'
       ]

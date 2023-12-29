@@ -21,7 +21,7 @@ export function wsSendMessage(command: string, data?: string) {
 }
 
 function connect() {
-  let host = 'localhost:3000';
+  let host = 'localhost:3010';
 
   if (!host) {
     // retry later
