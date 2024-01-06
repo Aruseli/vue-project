@@ -6,6 +6,7 @@
   import { useRouter } from 'vue-router';
   import { useQuasar } from 'quasar';
   import { apiCatAuth, apiFetchCatView, wsSendMessage } from '../services';
+  import Logo from '../components/logo.vue';
 
   const $q = useQuasar();
 
@@ -243,7 +244,7 @@
 </script>
 
 <template>
-  <q-page class="flex flex-center relative" style="100%">
+  <q-page class="flex flex-center relative bg-secondary" style="100%">
     <div class="q-pa-md items-center column" style="width: 50vw">
       <q-dialog v-model="openDialog" dark class="1234">
         <q-card dark class="flex column items-center">
@@ -283,7 +284,10 @@
         </q-card>
       </q-dialog>
 
-      <div v-if="state.objectId && state.locationId">
+      <div v-if="state.objectId && state.locationId" class="fit">
+
+        <Logo class="logo_column" />
+
         <q-form
           class="text-text fit"
           @submit.prevent="onSubmitLogin"
@@ -301,6 +305,7 @@
             dark
             rounded
             outlined
+            bg-color="white"
           />
           <q-input
             v-model="state.userPassword"
@@ -316,6 +321,7 @@
             rounded
             outlined
             class="q-mb-lg"
+            bg-color="white"
           >
             <template v-slot:append>
               <q-icon
@@ -327,7 +333,7 @@
           </q-input>
 
           <div class="text-center">
-            <q-btn label="authorization" rounded type="submit" color="primary" class="fit" />
+            <q-btn label="authorization" unelevated size="xl" type="submit" color="primary" class="fit" />
           </div>
         </q-form>
         <div class="column full-width">

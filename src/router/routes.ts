@@ -15,6 +15,14 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/terminal.vue')
       },
       {
+        path: 'hello',
+        component: () => import('pages/hello.vue')
+      },
+      {
+        path: 'languages',
+        component: () => import('pages/languages.vue')
+      },
+      {
         path: 'catalog',
         component: () => import('pages/IndexPage.vue')
       },

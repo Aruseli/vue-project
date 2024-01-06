@@ -1,5 +1,4 @@
 /* app global css */
-/* app global css */
 
 $font-family-lexend: 'Lexend Zetta', sans-serif;
 $font-family-museo: 'MuseoModerno', sans-serif;
@@ -30,12 +29,23 @@ body {
   font-family: $font-family-nunito;
   color: var(--q-text);
   background: #FBFBFF;
-  // background-image: url(/src/assets/background.svg);
-  // background-position: center;
 }
 
 body.body--dark {
   color: var(--q-text);
+}
+.q-layout {
+  z-index: 11;
+}
+
+.bg_layer {
+  background-image: url(/src/assets/bg.svg);
+  background-position: center;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
 .body--dark {
@@ -66,56 +76,50 @@ body.body--dark {
 }
 
 .text-h1 {
-  font-size: calc(3rem + 0.2vmax);
+  font-size: calc(3rem + 1vmax);
   font-family: $font-family-nunito;
   font-weight: bold;
   line-height: normal;
   color: var(--q-text);
 }
 .text-h2 {
-  font-size: calc(2rem + 0.2vmax);
+  font-size: calc(3rem + 0.5vmax);
   font-family: $font-family-nunito;
   font-weight: bold;
   line-height: normal;
   color: var(--q-text);
 }
 .text-h3 {
-  font-size: calc(1.5rem + 0.2vmax);
+  font-size: calc(2rem + 0.5vmax);
   font-family: $font-family-nunito;
   font-weight: bold;
   line-height: normal;
   color: var(--q-text);
 }
 .text-h4 {
-  font-size: calc(1.4rem + 0.2vmax);
+  font-size: calc(1.4rem + 0.5vmax);
   font-family: $font-family-nunito;
   font-weight: bold;
   line-height: normal;
   color: var(--q-text);
 }
-.text-h5 {
-  font-size: calc(1.3rem + 0.5vmax);
-  font-weight: bold;
-  line-height: normal;
-  color: var(--q-text) !important;
-}
 .text-subtitle1 {
   font-size: calc(1.2rem + 0.4vmax);
   font-family: $font-family-nunito;
-  font-weight: bold;
+  // font-weight: bold;
   line-height: normal;
   // color: var(--q-text);
 }
 
 .text-subtitle2 {
-  font-size: calc(1.2rem + 0.25vmax);
+  font-size: calc(1.5rem + 0.7vmax);
   font-family: $font-family-nunito;
   line-height: normal;
   // color: var(--q-text);
 }
 
 .text-body1 {
-  font-size: calc(1.2rem + 0.5vmax);
+  font-size: calc(1.5rem + 0.5vmax);
   font-family: $font-family-nunito;
   font-weight: normal;
   line-height: normal;
@@ -143,8 +147,7 @@ body.body--dark {
 }
 
 .q-page-container {
-  // background-image: url(/src/assets/background.svg);
-  // background-position: center;
+  // margin-top: 10rem;
 }
 
 .q-img {
@@ -153,6 +156,11 @@ body.body--dark {
 
 .q-drawer--right {
   box-shadow: -1px 0px 5px 0px #d5ebd8;
+}
+
+.q-drawer__content {
+  display: grid;
+  grid-template-rows: max-content 1fr 0.1fr;
 }
 
 .q-dialog__backdrop {
@@ -172,22 +180,8 @@ body.body--dark {
   color: var(--q-text)
 }
 
-.q-tabs__content > *:not(:last-of-type) {
-  margin-right: 1.5rem;
-}
-
-.q-tab {
-  border-radius: 2rem;
-  background: var(--q-accent);
-  color: #FBFBFF;
-}
-
-.q-tab-panels {
-  background-color: transparent;
-}
-
 .q-tab__label {
-  font-size: calc(1.2rem + 0.5vmax);
+  font-size: calc(1.7rem + 0.5vmax);
 }
 
 .q-notification {
@@ -222,6 +216,18 @@ body.body--dark {
   bottom: 0;
 }
 
-// .q-field {
-//   color: var(--q-text)
-// }
+.logo_column {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-bottom: 12rem;
+}
+
+.logo_row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+}
+

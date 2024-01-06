@@ -1,13 +1,9 @@
 <script setup>
   import Catalog from '../components/catalog.vue';
   import Header from '../components/header.vue';
-  // import CartDrawer from '../components/cart-catalog/cart-drawer.vue';
   import { reactive, ref } from 'vue';
-  // import { debounce } from 'quasar';
 
   const scrollInfo = ref(true);
-
-  // const scrollInfo = reactive(0);
 
   const onScroll = (...info) => {
     if(info[0].delta.top !== 0) {

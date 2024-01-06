@@ -28,4 +28,8 @@ export default {
   list_of_active_orders: 'list of active orders',
   confirm: 'confirm',
   declare_a_discrepancy: 'declare a discrepancy',
+  the_order_was_successfully_completed: 'The order was successfully completed!',
+  contact_seller_for_further_information: 'Contact seller for further information',
+  description: 'description',
+  characteristics: 'characteristics',
 };

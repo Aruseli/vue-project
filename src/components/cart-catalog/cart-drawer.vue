@@ -1,20 +1,18 @@
 <script setup>
-  import { ref, computed, onMounted, watch } from 'vue';
+  import { ref, computed, onMounted } from 'vue';
   import { evaPlusOutline } from '@quasar/extras/eva-icons';
   import { evaMinusOutline } from '@quasar/extras/eva-icons';
   import { useI18n } from 'vue-i18n';
-  import { useGoodsStore  } from 'src/stores/products';
   import { useCartStore } from 'src/stores/cart';
   import { useAppStore } from 'src/stores/app';
+  import { useRouter } from 'vue-router';
+
+  const router = useRouter();
 
   const { t } = useI18n();
 
-  const goodsStore = useGoodsStore();
   const cartStore = useCartStore();
   const app = useAppStore();
-
-  const slide = ref(0);
-  const openOrderDialog = ref(false);
 
   // Инициализируем реактивные переменные для хранения общего количества и общей стоимости
   const totalCount = ref(0);
@@ -32,7 +30,7 @@
   });
 
   const totalCost = computed(() => {
-    return cartStore.cart.reduce((total, item) => total + item.count * item.price, 0);
+    return cartStore.cart.reduce((total, item) => total + item.price, 0);
   });
 
   // Вызываем функцию при монтировании компонента
@@ -44,33 +42,15 @@
     app.openDrawerCart(false)
   }
 
-  const orderDialog = () => {
-    openOrderDialog.value = true;
-    cartStore.cart = [];
-    // localStorage.removeItem('cart');
+  const openOrderDialog = () => {
+    app.openOrderDialog(true)
+    // setTimeout(() => {
+    //   router.push('hello');
+    // }, 2000);
   }
 
-  // получаем объект из localStorage
-  // const storedItems = localStorage.getItem('cart');
-
-  // парсим объект
-  // const parsedItems = JSON.parse(storedItems);
-
   const removeFromCart = (id) => {
-    // находим элемент который хотим удалить из localStorage
-    // const item = Object.values(parsedItems).find(item => item.id === id);
-    // удаляем элемент из localStorage
-    // let index = -1;
-    // for(let i = 0; i < parsedItems.length; i++) {
-    //   if(parsedItems[i].id === item.id) {
-    //     index = i;
-    //     break;
-    //   }
-    // }
-    // записываем изменения в localStorage
-    // localStorage.setItem('cart', JSON.stringify(parsedItems));
     cartStore.cart = cartStore.cart.filter(item => item.id !== id)
-    console.log('remove',cartStore.cart);
   }
 
 </script>
@@ -83,9 +63,8 @@
     side="right"
     overlay
     elevated
-
     behavior="mobile"
-    :width="900"
+    :width="1200"
   >
     <div class="q-px-lg">
       <div class="row items-center">
@@ -96,7 +75,7 @@
         >
           <q-icon name="arrow_back" class="round-button-light_green" />
         </q-btn>
-        <div class="text-subtitle1 text-center text-weight-bold text-text text-uppercase col-11">
+        <div class="text-h3 text-center text-weight-bold text-text text-uppercase col-11">
           {{ $t('order') }}
         </div>
       </div>
@@ -106,6 +85,7 @@
     <div v-if="!cartStore.cart.length" class="q-pa-lg text-center">
       <h2>{{ $t('empty_cart') }}</h2>
     </div>
+
     <q-scroll-area class="fit">
       <div class="row container_settings">
         <div class="cart_product_item row" v-for="(item, index) in cartStore.cart" :key="index">
@@ -160,7 +140,7 @@
 
           <div class="column justify-between col-8">
             <div class="row justify-between items-center">
-              <div class="text-h2 text-weight-regular">
+              <div class="text-h3 text-weight-regular">
                 {{ item.title }}
               </div>
               <q-btn unelevated round @click="removeFromCart(item.id)">
@@ -177,28 +157,12 @@
               </div>
               <div class="row justify-between items-center">
                 <q-btn unelevated round
-                  @click="() => {
-                    cartStore.increaseItemsCount(item);
-                    console.log('totalQuantity', totalQuantity)
-                    console.log('totalCostInc', totalCost)
-                    console.log('totalCountInc', totalCount)
-                    console.log('totalPriceInc', totalPrice)
-                    console.log('item.countInc', item.count)
-                    console.log('item.price', item.price)
-                  }" class='q-mr-lg'>
+                  @click="() => cartStore.increaseItemsCount(item)" class='q-mr-lg'>
                   <q-icon flat class="round-button-light_green" :name="evaPlusOutline"/>
                 </q-btn>
                 <h4 class='q-mr-lg q-my-none'>{{ item.count }}</h4>
                 <q-btn unelevated round
-                @click="() => {
-                  cartStore.decreaseItemsCount(item);
-                  console.log('totalQuantity', totalQuantity)
-                  console.log('totalCost', totalCost)
-                  console.log('totalCount', totalCount)
-                  console.log('totalPrice', totalPrice)
-                  console.log('item.count', item.count)
-                  console.log('item.priceDes', item.price)
-                  }">
+                @click="() => cartStore.decreaseItemsCount(item)">
                   <q-icon flat class="round-button-light_green" :name="evaMinusOutline"/>
                 </q-btn>
               </div>
@@ -208,15 +172,15 @@
       </div>
     </q-scroll-area>
 
-    <div class="q-pa-lg fixed-bottom">
+    <div class="q-pa-lg bg-white">
       <div class="bg-secondary full-width q-mb-lg" style="height: 0.3rem" />
       <div class="row justify-between items-center q-mb-md">
-        <div class="text-subtitle1">{{t('total')}}</div>
-        <div class="text-subtitle1 q-mb-md">
+        <div class="text-body1">{{t('total')}}</div>
+        <div class="text-body1 q-mb-md">
           {{ totalCost }} &ensp;THB
         </div>
         <div class="bg-negative full-width q-mb-lg" style="height: 0.1rem" />
-        <div class="text-subtitle2 order_container text-weight-regular">
+        <div class="text-body1 order_container text-weight-regular">
           <span>{{t('order')}}</span>
           <span>{{ totalQuantity }}</span>
           <span>{{ t('pieces') }}</span>
@@ -229,9 +193,9 @@
           rounded
           no-caps
           color="accent"
-          @click="orderDialog"
+          @click="openOrderDialog"
           >
-          <div class="text-subtitle1 text-center text-weight-bold text-header_bg text-uppercase">
+          <div class="text-h3 text-white text-center text-weight-bold text-header_bg text-uppercase">
             {{ $t('order') }}
           </div>
         </q-btn>
@@ -242,17 +206,31 @@
 
   <template>
     <q-dialog
-      v-model="openOrderDialog"
+      v-model="app.orderDialog"
       transition-hide="fade"
       transition-show="fade"
       transition-duration="1.8"
       dark
     >
       <div class="dialog_container">
-        <q-card class="dialog_card">
+        <q-card class="dialog_card dialog_cart">
+          <q-card-section>
+            <div class="text-h2 text-uppercase text-center text-weight-bold">
+              {{t('the_order_was_successfully_completed')}}
+            </div>
+          </q-card-section>
+          <q-card-section class="q-pt-none text-center">
+            <q-img src="src/assets/girl.svg" max-width="100%" max-height="100%" width="25rem" height="25rem" />
+          </q-card-section>
           <q-card-section class="q-pt-none">
-            <div class="text-body1 text-weight-regular">
-              thank you
+            <div class="text-subtitle2 text-center text-weight-bold">
+              {{t('contact_seller_for_further_information')}}
+            </div>
+            <div class="bg-secondary full-width q-mb-lg" style="height: 0.3rem" />
+          </q-card-section>
+          <q-card-section class="q-pt-none">
+            <div class="text-h1 text-center text-uppercase text-weight-bold">
+              {{t('thank_you')}}
             </div>
           </q-card-section>
         </q-card>
@@ -262,7 +240,6 @@
 </template>
 
 <style scoped>
-
   .container_settings {
     padding: var(--px43);
   }
@@ -291,6 +268,19 @@
     margin-right: 1rem;
   }
 
+  .dialog_cart {
+    padding: 5rem;
+  }
+
+  .dialog_cart > *:nth-child(1) {
+    margin-bottom: 5rem;
+  }
+  .dialog_cart > *:nth-child(2) {
+    margin-bottom: 1.5rem;
+  }
+  .dialog_cart > *:nth-child(2) {
+    margin-bottom: 3rem;
+  }
   .dialog_container {
     width: 70vw;
     max-width: 80vw;

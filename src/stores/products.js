@@ -15,11 +15,20 @@ export const useGoodsStore = defineStore('goodsStore',
   () => {
     const goods = ref([]);
 
-    const getGoods = async() => {
-      // TODO: Transform product to a kiosk friendly format
-      const response = await fetch('https://dummyjson.com/products');
-      const data = await response.json();
-      goods.value = data.products;
+    // const getGoods = async() => {
+    //   // TODO: Transform product to a kiosk friendly format
+    //   const response = await fetch('https://dummyjson.com/products');
+    //   const data = await response.json();
+    //   goods.value = data.products;
+    // }
+
+    const getGoods = () => {
+      fetch('https://dummyjson.com/products')
+        .then(response => response.json())
+        .then(data => {
+            goods.value = data.products;
+        })
+        .catch(error => console.error('Error:', error));
     }
 
     return {

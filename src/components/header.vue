@@ -6,7 +6,6 @@
   import { useGoodsStore } from '../stores/products';
   import { useCartStore } from '../stores/cart';
   import { useI18n } from 'vue-i18n';
-  import BinButton from './buttons/bin-button.vue';
 
   const { locale } = useI18n({ useScope: 'global' });
   const { t } = useI18n();
@@ -51,7 +50,7 @@
     reveal-offset="100"
     class="header"
   >
-    <q-toolbar class="justify-between">
+    <q-toolbar class="justify-between q-mb-lg">
       <div>
         <Switcher />
         <q-btn
@@ -63,10 +62,17 @@
           @click="switchLanguage('de-DE')"
         />
       </div>
-      <div class="absolute-right">
-        <q-btn unelevated round class="relative-position" @click="goodsStore.openDrawerCart(true)">
+      <div class="">
+        <q-btn unelevated round class="relative-position" @click="openDrawer">
           <BinIcon />
-          <q-badge align="bottom" rounded :label="totalQuantity" class="absolute-bottom-left" color="positive" />
+          <div v-if="totalQuantity > 0" class="badge_style bg-positive">
+            <div class="text-h4 text-white q-px-sm">{{ totalQuantity }}</div>
+          </div>
+          <!-- <q-badge
+            align="bottom"
+            rounded
+            :label="totalQuantity" class="absolute-bottom-left" color="positive"
+          /> -->
         </q-btn>
       </div>
     </q-toolbar>
@@ -94,5 +100,33 @@
   color: var(--q-text);
   background-color: transparent;
   padding: 1.5rem 4.8rem 1.5rem 4.8rem;
+}
+
+.badge_style {
+  position: absolute;
+  bottom: -1rem;
+  left: -1rem;
+  border-radius: 2rem;
+  min-width: 3rem;
+  width: max-content;
+  height: 3rem;
+}
+
+.q-tabs__content > *:not(:last-of-type) {
+  margin-right: 1.5rem;
+}
+
+.q-tab {
+  border-radius: 2rem;
+  background: var(--q-accent);
+  color: #FBFBFF;
+}
+
+.q-tab-panels {
+  background-color: transparent;
+}
+
+.q-tab__label {
+  font-size: calc(1.2rem + 0.5vmax);
 }
 </style>

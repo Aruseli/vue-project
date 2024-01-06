@@ -58,10 +58,10 @@ const selectedProduct = computed(() => {
         class="bg-white shadow-1 round-borders fit"
       >
         <q-carousel-slide v-for="(image, index) in selectedProduct.images" :key="index" :name="index" class="column no-wrap flex-center">
-          <div class="imgContainer bg-red">
+          <div class="">
             <q-img
               :src="image"
-              style="width: 200px; height: 200px;"
+              :ratio="4/3"
             >
               <template #loading>
                 <div class="text-subtitle1 text-black">
@@ -74,7 +74,7 @@ const selectedProduct = computed(() => {
       </q-carousel>
     </div>
     <div>
-      <div class="text-h5 text-weight-regular">
+      <div class="text-h4 text-weight-regular">
         {{ selectedProduct.title }}
       </div>
     </div>
