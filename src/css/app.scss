@@ -15,6 +15,7 @@ $font-family-nunito: 'Nunito Sans', sans-serif;
   --px43: 2.6rem;
   --px60: 3.75rem;
   --px64: 4rem;
+  --px90: 5.5rem;
   --coefficient: 5vmax;
   --coefficient_gap: 2vmin;
   --width_coefficient: 20rem;
@@ -245,4 +246,8 @@ body.body--dark {
 }
 .input_settings {
   font-size: 3rem;
+}
+
+.title_padding {
+  padding-top: var(--px64);
 }

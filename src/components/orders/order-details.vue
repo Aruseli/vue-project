@@ -22,7 +22,7 @@
   const confirmedOrder = () => {
     router.push('/issued-order');
     // Удаляем заказ из массива заказов
-    orderStore.orders.value.splice(orders.value.indexOf(orderNum), 1);
+    orderStore.orders.value.splice(orderStore.orders.value.indexOf(selectedOrderNum), 1);
   }
 
   onMounted(() => {
@@ -38,7 +38,7 @@
       <router-link :to="{ path: '/issuing-order' }" class='router_link_style text-secondary absolute-top-left'>
         {{ t('back_to_order_list') }}
       </router-link>
-      <div class="text-h1 text-uppercase text-center q-pt-xl q-mb-md">{{ t('order') }}&ensp;№{{ selectedOrder.orderNumStr }}</div>
+      <div class="text-h1 text-uppercase text-center q-mb-md title_padding">{{ t('order') }}&ensp;№{{ selectedOrder.orderNumStr }}</div>
     <DividerThin class="q-mb-xl bg-secondary" />
     </div>
     <div class="scroll_area">
