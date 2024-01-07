@@ -1,10 +1,11 @@
-<script setup>
+<script setup lang="ts">
   import axios  from 'axios';
   import { ref, reactive, onMounted, watch } from 'vue';
-  import QrcodeVue from 'qrcode.vue';
+  import QrcodeVue, { Level, RenderAs } from 'qrcode.vue';
   import { useI18n } from 'vue-i18n';
   import { useRouter, useRoute } from 'vue-router';
   import { useQuasar } from 'quasar';
+  import { apiCatAuth, apiFetchCatView, wsSendMessage } from '../services';
   import Logo from '../components/logo.vue';
 
   const $q = useQuasar();
@@ -19,22 +20,22 @@
 
   let props = defineProps({
     terminalId: {
-      type: Number,
+      type: String,
       default: null,
       require: false
     },
     objectId: {
-      type: Number,
+      type: String,
       default: null,
       require: false
     },
     locationId: {
-      type: Number,
+      type: String,
       default: null,
       require: false
     },
     requestError: {
-      type: {},
+      type: String,
       request: false,
       require: false
     },
@@ -69,6 +70,7 @@
   const renderAs = ref('svg');
 
   const sendRequest = async () => {
+    /*
     const result = await axios.post('/api/v2/addAnyTerminal',
       {
         name: 'kiosk-test',
@@ -83,9 +85,16 @@
         validateStatus: status => true
       }
     )
+    */
+    const result = {
+      data: { data: { terminal_id: 'bd9d517b-57d6-45c9-a5b5-aa4efc4d0986', object_id: 'bd9d517b-57d6-45c9-a5b5-aa4efc4d0986', location_id: 'bd9d517b-57d6-45c9-a5b5-aa4efc4d0986' } },
+      request: { response: 1 },
+      status: 200,
+    };
+
     if (!!result.request.response) openDialogRegistration.value = true;
     if (result.status >= 400) {
-      state.requestError = result.status;
+      state.requestError = result.status.toString();
       openDialog.value = true
       // $q.notify({
       //   color: 'primary',
@@ -176,22 +185,79 @@
     );
   });
 
+  const printText = ref('<print align="center" bold>text</print><printqr>hello world</printqr>');
+
+  function sendWsCommand() {
+    wsSendMessage('check-print', printText.value);
+  }
+
+  const sessionToken = localStorage.getItem('sessionToken');
+  const check1ViewId = ref('c2db028c-bee9-4504-9302-379a888a1676');
+
+  async function doAuth() {
+    $q.loading.show();
+    try {
+      const authToken = await apiCatAuth('v.kakotkin@fait.gl', '1c8b6f9f-a29a');
+
+      if (!authToken) {
+        $q.notify({
+          message: 'Auth error...',
+          icon: 'warning',
+          color: 'negative',
+        });
+      }
+      else {
+        localStorage.setItem('sessionToken', authToken);
+      }
+    }
+    catch(e) {
+      console.log(e);
+      $q.notify({
+        message: 'Error occured',
+        icon: 'warning',
+        color: 'warning',
+      });
+    }
+    finally {
+      $q.loading.hide();
+    }
+  }
+
+  async function sendCatPrintCommand() {
+    $q.loading.show();
+    try {
+      const viewData = await apiFetchCatView(check1ViewId.value);
+
+      console.log(viewData);
+      wsSendMessage('check-print', viewData);
+    }
+    catch(e) {
+      console.log(e);
+      $q.notify({
+        message: 'Error occured',
+        icon: 'warning',
+        color: 'warning',
+      });
+    }
+    finally {
+      $q.loading.hide();
+    }
+  }
 </script>
 
 <template>
   <q-page class="flex flex-center relative bg-secondary" style="100%">
     <div class="q-pa-md items-center column" style="width: 50vw">
-
-      <q-dialog v-model="openDialog" dark="true" class="1234">
-        <q-card  dark="true" class="flex column items-center">
+      <q-dialog v-model="openDialog" dark class="1234">
+        <q-card dark class="flex column items-center">
           <q-card-section>
             <div class="text-h6 q-ma-sm text-center">Page not found on the server {{ state.requestError }}</div>
           </q-card-section>
         </q-card>
       </q-dialog>
 
-      <q-dialog v-model="openDialogRegistration" dark="true" class="7654323">
-        <q-card  dark="true" class="flex column items-center">
+      <q-dialog v-model="openDialogRegistration" dark class="7654323">
+        <q-card dark class="flex column items-center">
           <q-card-section>
             <div v-if="!state.objectId && !state.locationId">
               <div class="text-h6 q-ma-sm text-center">
@@ -208,9 +274,9 @@
                 >
                   <qrcode-vue
                     :value="state.terminalId"
-                    :level="level"
-                    :render-as="renderAs"
-                    size="300"
+                    :level="(level as Level)"
+                    :render-as="(renderAs as RenderAs)"
+                    :size="300"
                     foreground="#234141"
                   />
                 </div>
@@ -234,12 +300,12 @@
             type="email"
             autofocus
             :rules="[
-              value => !!value || t('field_is_required')
+              (val: any) => !!val || t('field_is_required')
             ]"
             no-error-icon
             debounce="500"
-            dark="true"
-            round
+            dark
+            rounded
             outlined
             bg-color="white"
             input-class="input_settings"
@@ -249,13 +315,13 @@
             label="password"
             :type="isPwd ? 'password' : 'text'"
             :rules="[
-              val => !!val || t('field_is_required'),
-              val => val.length == 6 || t('password_consists_characters'),
+              (val: any) => !!val || t('field_is_required'),
+              (val: any) => val.length == 6 || t('password_consists_characters'),
             ]"
             counter
             no-error-icon
-            dark="true"
-            round
+            dark
+            rounded
             outlined
             class="q-mb-lg"
             bg-color="white"
@@ -274,8 +340,23 @@
             <q-btn label="authorization" unelevated size="xl" type="submit" color="primary" class="fit" />
           </div>
         </q-form>
+        <div class="column full-width">
+          <b>Custom device-provider command</b>
+          <q-input v-model="printText" class="q-mb-sm" outlined />
+          <q-btn label="test ws" rounded color="secondary" @click="sendWsCommand" />
+        </div>
+        <q-separator spaced />
+        <div class="column full-width">
+          <div><b>Auth</b> <span v-if="sessionToken">(already has a session token)</span></div>
+          <q-btn label="authorize" rounded color="indigo-4" @click="doAuth" />
+        </div>
+        <q-separator spaced />
+        <div class="column full-width">
+          <b>Call to CAT API for building device-provider command</b>
+          <q-input v-model="check1ViewId" class="q-mb-sm" outlined />
+          <q-btn label="test print command" rounded color="secondary" @click="sendCatPrintCommand" />
+        </div>
       </div>
-
     </div>
   </q-page>
 </template>
