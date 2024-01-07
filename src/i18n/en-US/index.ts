@@ -37,4 +37,5 @@ export default {
   back_to_order_list: 'back to order list',
   product_units: 'product units',
   order_was_issued_successfully: 'the order was issued successfully',
+  back_to_employee_actions: 'back to employee actions',
 };
