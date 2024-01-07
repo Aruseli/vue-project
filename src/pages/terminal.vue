@@ -1,189 +1,78 @@
 <script setup lang="ts">
-  import axios  from 'axios';
-  import { ref, reactive, onMounted, watch } from 'vue';
-  import QrcodeVue, { Level, RenderAs } from 'qrcode.vue';
+  import { ref, reactive } from 'vue';
+  import QrcodeVue from 'qrcode.vue';
   import { useI18n } from 'vue-i18n';
-  import { useRouter, useRoute } from 'vue-router';
   import { useQuasar } from 'quasar';
-  import { apiCatAuth, apiFetchCatView, wsSendMessage } from '../services';
+  import { wsSendMessage } from '../services';
   import Logo from '../components/logo.vue';
+  import { useAppStore, KioskState } from 'src/stores/app';
+  import { apiReportsGetView } from 'src/services/api';
 
   const $q = useQuasar();
 
   const { t } = useI18n();
-  const router = useRouter();
-  const route = useRoute();
+  const appStore = useAppStore();
 
   let isPwd = ref(true);
-  let openDialog = ref(false);
-  let openDialogRegistration = ref(false);
-
-  let props = defineProps({
-    terminalId: {
-      type: String,
-      default: null,
-      require: false
-    },
-    objectId: {
-      type: String,
-      default: null,
-      require: false
-    },
-    locationId: {
-      type: String,
-      default: null,
-      require: false
-    },
-    requestError: {
-      type: String,
-      request: false,
-      require: false
-    },
-    userName: {
-      type: String,
-      default: '',
-      require: false
-    },
-    userPassword: {
-      type: String,
-      default: '',
-      require: false
-    },
-    code: {
-      type: String,
-      default: 'kiosk-test',
-      require: false
-    },
-  });
 
   let state = reactive({
-    terminalId: props.terminalId,
-    objectId: props.objectId,
-    locationId: props.locationId,
-    requestError: props.requestError,
-    userName: props.userName,
-    userPassword: props.userPassword,
-    code: props.code,
+    userName: '',
+    userPassword: '',
   });
 
-  const level = ref('M');
-  const renderAs = ref('svg');
-
-  const sendRequest = async () => {
-    /*
-    const result = await axios.post('/api/v2/addAnyTerminal',
-      {
-        name: 'kiosk-test',
-        code: state.code,
-        type_id: '654c6b75-54c5-4153-a3c7-b0f6a3431c68',
-      },
-      {
-        // timeout: 1000,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        validateStatus: status => true
-      }
-    )
-    */
-    const result = {
-      data: { data: { terminal_id: 'bd9d517b-57d6-45c9-a5b5-aa4efc4d0986', object_id: 'bd9d517b-57d6-45c9-a5b5-aa4efc4d0986', location_id: 'bd9d517b-57d6-45c9-a5b5-aa4efc4d0986' } },
-      request: { response: 1 },
-      status: 200,
-    };
-
-    if (!!result.request.response) openDialogRegistration.value = true;
-    if (result.status >= 400) {
-      state.requestError = result.status.toString();
-      openDialog.value = true
-      // $q.notify({
-      //   color: 'primary',
-      //   position: 'center',
-      //   timeout: result.status >= 400 ? 0 : 3000,
-      //   multiLine: true,
-      //   message: `Page not found on the server. Error ${result.status}`,
-      // })
+  async function onSubmitLogin() {
+    $q.loading.show();
+    try {
+      await appStore.login(state.userName, state.userPassword)
     }
-    const { terminal_id, object_id, location_id } = result.data.data;
-    if ( !!object_id && !!location_id ) openDialogRegistration.value = false;
+    catch(e) {
+      console.log(e)
+      $q.notify({
+          color: 'warning',
+          icon: 'warning',
+          position: 'center',
+          message: t('UNSUCCESSFUL_LOGIN'),
+          timeout: 2000,
+        })
+    }
+    finally {
+      $q.loading.hide();
+    }
+  }
 
-    state.terminalId = terminal_id;
-    state.objectId = object_id;
-    state.locationId = location_id;
-  };
+  //=======================================
+  // Printer example (temp)
 
-  const onSubmitLogin = () => {
-    axios.post('/auth/login.json',
-      {
-        userName: state.userName,
-        userPassword: state.userPassword
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      }
-    )
-      .then(response => {
-        if (!!response.data) router.push('employee-actions');
-        console.log('response', !!response.data)
-        console.log('route', route)
-      })
-      .catch(err => {
-        const { userName, userPassword } = err.config.data;
-        if ( userName !== state.userName) {
-          $q.notify({
-            color: 'primary',
-            position: 'center',
-            message: 'некорректный логин: ' + state.userName,
-            timeout: 2000,
-          });
-        } else if (userPassword !== state.userPassword) {
-          $q.notify({
-            color: 'negative',
-            position: 'right',
-            message: 'некорректный пароль: ' + state.userPassword,
-            timeout: 2000,
-          });
-        } else {
-          $q.notify({
-            color: 'negative',
-            position: 'right',
-            message: 'некорректные логин и пароль: ' + state.userName + state.userPassword,
-            timeout: 2000,
-          });
-        }
-        console.log(err.config.data)
-      }
-    );
-  };
+  // const sessionToken = localStorage.getItem('sessionToken');
 
-  onMounted(() => {
-    const intervalId = setInterval(() => {
-      sendRequest().catch((error) => {
-        // Ошибка при отправке запроса, нет соединения с интернетом
-        if (error.code === 'ERR_NETWORK') {
-          $q.notify({
-            color: 'primary',
-            position: 'center',
-            message: `Internet connection lost ${error.code}`,
-          })
-        };
-        if (error.code === 'ECONNABORTED') {
-          // Ошибка тайм-аута
-          console.log('The request took too long to return');
-        }
-      });
-    }, 5000);
+  // async function doAuth() {
+  //   $q.loading.show();
+  //   try {
+  //     const authToken = await apiAuth('v.kakotkin@fait.gl', '1c8b6f9f-a29a');
 
-    watch(
-      [() => state.objectId, () => state.terminalId, () => state.locationId, () => state.requestError],
-      ([ newObjectId, newLocationId, newTerminalId, newRequestError]) => {
-        if (newObjectId && newLocationId && newTerminalId || newRequestError) {
-          clearInterval(intervalId);
-        }
-      }
-    );
-  });
+  //     if (!authToken) {
+  //       $q.notify({
+  //         message: 'Auth error...',
+  //         icon: 'warning',
+  //         color: 'negative',
+  //       });
+  //     }
+  //     else {
+  //       localStorage.setItem('sessionToken', authToken);
+  //     }
+  //   }
+  //   catch(e) {
+  //     console.log(e);
+  //     $q.notify({
+  //       message: 'Error occured',
+  //       icon: 'warning',
+  //       color: 'warning',
+  //     });
+  //   }
+  //   finally {
+  //     $q.loading.hide();
+  //   }
+  // }
 
   const printText = ref('<print align="center" bold>text</print><printqr>hello world</printqr>');
 
@@ -191,43 +80,12 @@
     wsSendMessage('check-print', printText.value);
   }
 
-  const sessionToken = localStorage.getItem('sessionToken');
   const check1ViewId = ref('c2db028c-bee9-4504-9302-379a888a1676');
-
-  async function doAuth() {
-    $q.loading.show();
-    try {
-      const authToken = await apiCatAuth('v.kakotkin@fait.gl', '1c8b6f9f-a29a');
-
-      if (!authToken) {
-        $q.notify({
-          message: 'Auth error...',
-          icon: 'warning',
-          color: 'negative',
-        });
-      }
-      else {
-        localStorage.setItem('sessionToken', authToken);
-      }
-    }
-    catch(e) {
-      console.log(e);
-      $q.notify({
-        message: 'Error occured',
-        icon: 'warning',
-        color: 'warning',
-      });
-    }
-    finally {
-      $q.loading.hide();
-    }
-  }
 
   async function sendCatPrintCommand() {
     $q.loading.show();
     try {
-      const viewData = await apiFetchCatView(check1ViewId.value);
-
+      const viewData = await apiReportsGetView(check1ViewId.value);
       console.log(viewData);
       wsSendMessage('check-print', viewData);
     }
@@ -243,50 +101,79 @@
       $q.loading.hide();
     }
   }
+  //=======================================
+
+
+  function kioskStateIsUnknown() {
+    return appStore.kioskState == KioskState.UNKNOWN
+  }
+
+  function kioskStateIsUnboundTerminal() {
+    return appStore.kioskState == KioskState.UNBOUND_TERMINAL
+  }
+
+  function kioskStateIsUnauthenticated() {
+    return appStore.kioskState == KioskState.UNAUTHENTICATED
+  }
+
+  function kioskStateIsReady() {
+    return appStore.kioskState == KioskState.READY
+  }
+
+  function kioskStateIsUnrecoverableError() {
+    return appStore.kioskState == KioskState.UNRECOVERABLE_ERROR
+  }
 </script>
 
 <template>
   <q-page class="flex flex-center relative bg-secondary" style="100%">
     <div class="q-pa-md items-center column" style="width: 50vw">
-      <q-dialog v-model="openDialog" dark class="1234">
-        <q-card dark class="flex column items-center">
+      <div v-if="kioskStateIsUnrecoverableError()">
+        <q-card>
           <q-card-section>
-            <div class="text-h6 q-ma-sm text-center">Page not found on the server {{ state.requestError }}</div>
+            <h2>{{ $t('UNRECOVERABLE_ERROR') }}</h2>
+            <p>{{ appStore.globalError?.message }}</p>
           </q-card-section>
         </q-card>
-      </q-dialog>
+      </div>
 
-      <q-dialog v-model="openDialogRegistration" dark class="7654323">
+      <div v-if="kioskStateIsUnknown()">
+        <q-card>
+          <q-card-section>
+            <q-spinner/>
+          </q-card-section>
+        </q-card>
+      </div>
+
+      <div v-if="kioskStateIsUnboundTerminal()">
         <q-card dark class="flex column items-center">
           <q-card-section>
-            <div v-if="!state.objectId && !state.locationId">
-              <div class="text-h6 q-ma-sm text-center">
-                Ожидание подтверждения регистрации в системе...
+            <div class="text-h6 q-ma-sm text-center">
+              Ожидание подтверждения регистрации в системе...
+            </div>
+            <div>
+              <div class="text-h6 text-center q-mb-md text-weight-bold">
+                Код терминала <code style="font-family: 'Courier New', monospace">{{ appStore.terminal.code }}</code>
               </div>
-              <div>
-                <div class="text-h6 text-center q-mb-md text-weight-bold">
-                  Код терминала <code style="font-family: 'Courier New', monospace">{{ state.code }}</code>
-                </div>
-                <div
-                  v-if="state.terminalId"
-                  class="q-mx-auto q-mb-md"
-                  style="width: 300px; height: 300px"
-                >
-                  <qrcode-vue
-                    :value="state.terminalId"
-                    :level="(level as Level)"
-                    :render-as="(renderAs as RenderAs)"
-                    :size="300"
-                    foreground="#234141"
-                  />
-                </div>
+              <div
+                v-if="appStore.terminal.params?.terminal_id"
+                class="q-mx-auto q-mb-md"
+                style="width: 300px; height: 300px"
+              >
+                <qrcode-vue
+                  :value="appStore.terminal.params?.terminal_id"
+                  level="M"
+                  render-as="svg"
+                  :size="300"
+                  foreground="#234141"
+                />
               </div>
             </div>
           </q-card-section>
         </q-card>
-      </q-dialog>
+      </div>
 
-      <div v-if="state.objectId && state.locationId" class="fit">
+      <div v-if="kioskStateIsUnauthenticated()" class="fit">
 
         <Logo class="logo_column" />
 
@@ -304,7 +191,7 @@
             ]"
             no-error-icon
             debounce="500"
-            dark
+            :dark="false"
             rounded
             outlined
             bg-color="white"
@@ -320,7 +207,7 @@
             ]"
             counter
             no-error-icon
-            dark
+            :dark="false"
             rounded
             outlined
             class="q-mb-lg"
@@ -340,22 +227,34 @@
             <q-btn label="authorization" unelevated size="xl" type="submit" color="primary" class="fit" />
           </div>
         </q-form>
-        <div class="column full-width">
-          <b>Custom device-provider command</b>
-          <q-input v-model="printText" class="q-mb-sm" outlined />
-          <q-btn label="test ws" rounded color="secondary" @click="sendWsCommand" />
-        </div>
-        <q-separator spaced />
-        <div class="column full-width">
-          <div><b>Auth</b> <span v-if="sessionToken">(already has a session token)</span></div>
-          <q-btn label="authorize" rounded color="indigo-4" @click="doAuth" />
-        </div>
-        <q-separator spaced />
-        <div class="column full-width">
-          <b>Call to CAT API for building device-provider command</b>
-          <q-input v-model="check1ViewId" class="q-mb-sm" outlined />
-          <q-btn label="test print command" rounded color="secondary" @click="sendCatPrintCommand" />
-        </div>
+      </div>
+      <div v-if="kioskStateIsReady()">
+        <q-card dark class="flex column items-center">
+          <h5>Temp page</h5>
+          <p>Consider merging with employee-actions page</p>
+          <q-card-section>
+            <q-btn label="Go to actions" color="primary" to="/employee-actions" />
+          </q-card-section>
+        </q-card>
+        <q-card>
+          <h5>Printer example (will be removed in production)</h5>
+          <div class="column full-width">
+            <b>Custom device-provider command</b>
+            <q-input v-model="printText" :dark="false" class="q-mb-sm" outlined />
+            <q-btn label="test ws" rounded color="secondary" @click="sendWsCommand" />
+          </div>
+          <!-- <q-separator spaced inset />
+          <div class="column full-width">
+            <div><b>Auth</b> <span v-if="sessionToken">(already has a session token)</span></div>
+            <q-btn label="authorize" rounded color="indigo-4" @click="doAuth" />
+          </div> -->
+          <q-separator spaced inset />
+          <div class="column full-width">
+            <b>Call to CAT API for building device-provider command</b>
+            <q-input v-model="check1ViewId" :dark="false" class="q-mb-sm" outlined />
+            <q-btn label="test print command" rounded color="secondary" @click="sendCatPrintCommand" />
+          </div>
+        </q-card>
       </div>
     </div>
   </q-page>

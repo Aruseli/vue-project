@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { watch, ref, computed } from 'vue';
-import { useGoodsStore } from './products';
-import { serialize } from '../converter';
+// import { useGoodsStore } from './products';
+// import { serialize } from '../converter';
 
 /*
   Хранит корзину

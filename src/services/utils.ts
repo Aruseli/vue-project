@@ -51,3 +51,37 @@ export function isPlainObject(value: any): value is Record<string | number | sym
 export function isString(value: any): value is string {
   return typeof value === 'string' || value instanceof String;
 }
+
+export function delay(milliseconds: number) {
+  return new Promise(f => setTimeout(f, milliseconds))
+}
+
+/**
+ * Synchronization primitive:
+ * const deferred = new Deferred()
+ * thread 1: await deferred.promise
+ * thread 2: deferred.resolve(value) or deferred.reject(value)
+ */
+export class Deferred<T> {
+  promise: Promise<T>
+  // Resolve and reject are reentrant:
+  // https://262.ecma-international.org/6.0/#sec-promise-resolve-functions
+  resolve: (value: T | PromiseLike<T>) => void
+  // https://262.ecma-international.org/6.0/#sec-promise-reject-functions
+  reject: (reason?: any) => void
+  constructor() {
+      let cResolve = undefined
+      let cReject = undefined
+      this.promise = new Promise((resolve, reject) => {
+          cResolve = resolve
+          cReject = reject
+      })
+      if (!cResolve || !cReject) {
+          // Expected to be impossible:
+          // https://262.ecma-international.org/6.0/#sec-promise-constructor
+          throw new Error("Invalid Promise constructor")
+      }
+      this.resolve = cResolve
+      this.reject = cReject
+  }
+}
