@@ -8,14 +8,14 @@
   const app = useAppStore();
 
   onMounted(() => {
-    goodsStore.getGoods();
+    goodsStore.updateGoods();
   })
 
 </script>
 
 <template>
   <q-tab-panels v-model="app.tab" animated swipeable class="fit">
-    <q-tab-panel name="food" dark>
+    <q-tab-panel name="food">
       <div class="image_grid">
         <q-intersection
           v-for="(good, index) in goodsStore.goods"
@@ -25,7 +25,6 @@
           transition-duration="0.5"
           ssr-prerender
           class="intersection_card_settings"
-          style="width: max-content; height: 845px"
         >
           <ProductCard
             :images="good.images"
@@ -50,7 +49,6 @@
           transition-duration="0.5"
           ssr-prerender
           class="intersection_card_settings"
-          style="width: max-content; height: 845px"
         >
           <ProductCard
             :images="good.images"
@@ -75,7 +73,6 @@
           transition-duration="0.5"
           ssr-prerender
           class="intersection_card_settings"
-          style="width: max-content; height: 845px"
         >
           <ProductCard
             :images="good.images"
@@ -100,7 +97,6 @@
           transition-duration="0.5"
           ssr-prerender
           class="intersection_card_settings"
-          style="width: max-content; height: 845px"
         >
           <ProductCard
             :images="good.images"
@@ -131,7 +127,8 @@
   justify-content: center;
   margin-top: 2rem;
 }
-.intersection_card_settings{
-  min-height: 46rem;
+.intersection_card_settings {
+  height: 55rem;
+  width: $calc_width;
 }
 </style>

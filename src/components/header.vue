@@ -50,8 +50,8 @@
     reveal-offset="100"
     class="header"
   >
-    <q-toolbar class="justify-between q-mb-lg">
-      <div>
+    <q-toolbar class="justify-end q-mb-lg">
+      <!-- <div>
         <Switcher />
         <q-btn
           label="En"
@@ -61,7 +61,7 @@
           label="Gr"
           @click="switchLanguage('de-DE')"
         />
-      </div>
+      </div> -->
       <div class="">
         <q-btn unelevated round class="relative-position" @click="openDrawer">
           <BinIcon />

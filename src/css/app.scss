@@ -28,7 +28,8 @@ $font-family-nunito: 'Nunito Sans', sans-serif;
 body {
   font-family: $font-family-nunito;
   color: var(--q-text);
-  background: #FBFBFF;
+  background: transparent;
+  // background: #FBFBFF;
 }
 
 body.body--dark {
@@ -58,7 +59,8 @@ body.body--dark {
   --q-green-light: #ecffda;
   --q-header_bg: #fefefe;
   // --q-dark-page: url(/src/assets/background.svg);
-  --q-dark-page: #FBFBFF;
+  --q-dark-page: transparent;
+  // --q-dark-page: #FBFBFF;
   --q-text: #1E1E1E;
   --q-dark: #FBFBFF;
 }
@@ -184,6 +186,13 @@ body.body--dark {
   font-size: calc(1.7rem + 0.5vmax);
 }
 
+.q-tab-panel {
+  background-color: transparent;
+}
+.q-tab-panels {
+  background-color: transparent;
+}
+
 .q-notification {
   // background-image: url(/src/assets/order_button.svg);
   // background-position: center;
@@ -231,3 +240,9 @@ body.body--dark {
   flex-direction: row;
 }
 
+.q-field__control{
+  height: 5rem;
+}
+.input_settings {
+  font-size: 3rem;
+}

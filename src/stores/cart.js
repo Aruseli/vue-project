@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { watch, ref, computed } from 'vue';
 import { useGoodsStore } from './products';
+import { serialize } from '../converter';
 
 /*
   Хранит корзину
@@ -55,6 +56,15 @@ export const useCartStore = defineStore('cartStore',
       }
     };
 
+    // Вычисляемые свойства для общего количества и общей стоимости
+    const totalQuantity = computed(() => {
+      return cart.value.reduce((total, item) => total + item.count, 0);
+    });
+
+    const totalCost = computed(() => {
+      return cart.value.reduce((total, item) => total + item.price, 0);
+    });
+
     const clearCart = () => {
       cart.value = [];
     }
@@ -63,6 +73,8 @@ export const useCartStore = defineStore('cartStore',
       cart,
       increaseItemsCount,
       decreaseItemsCount,
+      totalQuantity,
+      totalCost,
       addToCart,
       clearCart,
     }
