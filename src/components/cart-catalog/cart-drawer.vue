@@ -56,13 +56,13 @@
 
 <template>
   <q-drawer
-    dark="true"
+    dark
     v-model="app.drawerCartState"
     side="right"
     overlay
     elevated
     behavior="mobile"
-    width="1200"
+    :width="1200"
   >
     <div class="q-px-lg">
       <div class="row items-center">
@@ -208,7 +208,7 @@
       transition-hide="fade"
       transition-show="fade"
       transition-duration="1.8"
-      dark="true"
+      dark
     >
       <div class="dialog_container">
         <q-card class="dialog_card dialog_cart">
