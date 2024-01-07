@@ -109,10 +109,16 @@ module.exports = configure(function (ctx) {
       open: true, // opens browser window automatically
       proxy: {
         '/api': {
-          target: 'http://158.255.7.105:60480',
+          target: 'https://stage-kiosk.high-thai.com',
           changeOrigin: true,
           cookieDomainRewrite: 'localhost',
         },
+        '/auth': {
+          target: 'https://stage-kiosk.high-thai.com',
+          changeOrigin: true,
+          cookieDomainRewrite: 'localhost',
+        },
+
       },
     },
 

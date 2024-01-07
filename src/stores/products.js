@@ -15,14 +15,14 @@ export const useGoodsStore = defineStore('goodsStore',
   () => {
     const goods = ref([]);
 
-    // const getGoods = async() => {
+    // const updateGoods = async() => {
     //   // TODO: Transform product to a kiosk friendly format
     //   const response = await fetch('https://dummyjson.com/products');
     //   const data = await response.json();
     //   goods.value = data.products;
     // }
 
-    const getGoods = () => {
+    const updateGoods = () => {
       fetch('https://dummyjson.com/products')
         .then(response => response.json())
         .then(data => {
@@ -33,11 +33,11 @@ export const useGoodsStore = defineStore('goodsStore',
 
     return {
       goods,
-      getGoods,
+      updateGoods,
     }
   },
-  {
-    persist: true,
-  },
+  // {
+  //   persist: true,
+  // },
 )
 

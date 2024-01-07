@@ -6,12 +6,16 @@
   import { useCartStore } from 'src/stores/cart';
   import { useAppStore } from 'src/stores/app';
   import { useRouter } from 'vue-router';
+  import DividerBold from '../dividers/divider-bold.vue';
+  import DividerThin from '../dividers/divider-thin.vue';
+  import { useOrderStore } from 'src/stores/order';
 
   const router = useRouter();
 
   const { t } = useI18n();
 
   const cartStore = useCartStore();
+  const orderStore = useOrderStore();
   const app = useAppStore();
 
   // Инициализируем реактивные переменные для хранения общего количества и общей стоимости
@@ -24,15 +28,6 @@
     totalPrice.value = cartStore.cart.reduce((acc, item) => acc + item.count * item.price, 0);
   };
 
-  // Вычисляемые свойства для общего количества и общей стоимости
-  const totalQuantity = computed(() => {
-    return cartStore.cart.reduce((total, item) => total + item.count, 0);
-  });
-
-  const totalCost = computed(() => {
-    return cartStore.cart.reduce((total, item) => total + item.price, 0);
-  });
-
   // Вызываем функцию при монтировании компонента
   onMounted(() => {
     calculateTotal();
@@ -43,10 +38,13 @@
   }
 
   const openOrderDialog = () => {
-    app.openOrderDialog(true)
+    orderStore.existOrder();
+    setTimeout(() => {
+      app.openOrderDialog(true)
+    }, 3000);
     // setTimeout(() => {
     //   router.push('hello');
-    // }, 2000);
+    // }, 7000);
   }
 
   const removeFromCart = (id) => {
@@ -153,7 +151,7 @@
             </div> -->
             <div class="row justify-between items-center">
               <div class="text-h3">
-                {{ item.price }}&ensp;THB
+                {{ item.price }}&ensp;&#3647
               </div>
               <div class="row justify-between items-center">
                 <q-btn unelevated round
@@ -173,16 +171,16 @@
     </q-scroll-area>
 
     <div class="q-pa-lg bg-white">
-      <div class="bg-secondary full-width q-mb-lg" style="height: 0.3rem" />
+      <DividerBold class="q-mb-lg" />
       <div class="row justify-between items-center q-mb-md">
         <div class="text-body1">{{t('total')}}</div>
         <div class="text-body1 q-mb-md">
-          {{ totalCost }} &ensp;THB
+          {{ cartStore.totalCost }} &ensp;&#3647
         </div>
-        <div class="bg-negative full-width q-mb-lg" style="height: 0.1rem" />
+        <DividerThin class="bg-negative q-mb-lg" />
         <div class="text-body1 order_container text-weight-regular">
           <span>{{t('order')}}</span>
-          <span>{{ totalQuantity }}</span>
+          <span>{{ cartStore.totalQuantity }}</span>
           <span>{{ t('pieces') }}</span>
         </div>
       </div>
@@ -216,7 +214,7 @@
         <q-card class="dialog_card dialog_cart">
           <q-card-section>
             <div class="text-h2 text-uppercase text-center text-weight-bold">
-              {{t('the_order_was_successfully_completed')}}
+              {{t('order_was_successfully_completed')}}
             </div>
           </q-card-section>
           <q-card-section class="q-pt-none text-center">
@@ -226,7 +224,7 @@
             <div class="text-subtitle2 text-center text-weight-bold">
               {{t('contact_seller_for_further_information')}}
             </div>
-            <div class="bg-secondary full-width q-mb-lg" style="height: 0.3rem" />
+            <DividerBold class="q-mb-lg" />
           </q-card-section>
           <q-card-section class="q-pt-none">
             <div class="text-h1 text-center text-uppercase text-weight-bold">

@@ -3,7 +3,7 @@
   import { ref, reactive, onMounted, watch } from 'vue';
   import QrcodeVue from 'qrcode.vue';
   import { useI18n } from 'vue-i18n';
-  import { useRouter } from 'vue-router';
+  import { useRouter, useRoute } from 'vue-router';
   import { useQuasar } from 'quasar';
   import Logo from '../components/logo.vue';
 
@@ -11,6 +11,7 @@
 
   const { t } = useI18n();
   const router = useRouter();
+  const route = useRoute();
 
   let isPwd = ref(true);
   let openDialog = ref(false);
@@ -103,7 +104,7 @@
   };
 
   const onSubmitLogin = () => {
-    axios.post('http://158.255.7.105:60480/auth/login.json',
+    axios.post('/auth/login.json',
       {
         userName: state.userName,
         userPassword: state.userPassword
@@ -114,8 +115,9 @@
       }
     )
       .then(response => {
-        if (!!response.data) router.push('catalog');
+        if (!!response.data) router.push('employee-actions');
         console.log('response', !!response.data)
+        console.log('route', route)
       })
       .catch(err => {
         const { userName, userPassword } = err.config.data;
@@ -240,6 +242,7 @@
             round
             outlined
             bg-color="white"
+            input-class="input_settings"
           />
           <q-input
             v-model="state.userPassword"
@@ -256,6 +259,7 @@
             outlined
             class="q-mb-lg"
             bg-color="white"
+            input-class="input_settings"
           >
             <template v-slot:append>
               <q-icon

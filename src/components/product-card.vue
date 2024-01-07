@@ -141,7 +141,7 @@
                 {{ t('product_price') }}
               </div>
               <div class="text-h3">
-                {{ props.price }}&ensp;THB
+                {{ props.price }}&ensp;&#3647
               </div>
             </div>
           </div>
@@ -170,11 +170,11 @@
           </div>
         </q-btn>
         <div class="row justify-between items-center" v-else>
-          <q-btn unelevated round @click="increase(selectedGood)">
+          <q-btn unelevated round @click="increase(existGood)">
             <q-icon flat class="round-button-light_green" :name="evaPlusOutline"/>
           </q-btn>
           <div class="text-h4 q-ma-none">{{ existGood.count }}</div>
-          <q-btn unelevated round @click="decrease(selectedGood)">
+          <q-btn unelevated round @click="decrease(existGood)">
             <q-icon flat class="round-button-light_green" :name="evaMinusOutline"/>
           </q-btn>
         </div>
@@ -266,7 +266,7 @@
                 no-caps
                 color="primary"
                 text-color="white"
-                @click="addGoodToCart"
+                @click="addGoodToCart(selectedGood)"
                 size="xl"
                 >
                 <div class="text-center text-weight-bold text-h3 text-white">
@@ -274,11 +274,11 @@
                 </div>
               </q-btn>
               <div class="row justify-between items-center" v-else>
-                <q-btn unelevated round @click="increase(selectedGood)" size="xl">
+                <q-btn unelevated round @click="increase(existGood)" size="xl">
                   <q-icon flat class="round-button-light_green" :name="evaPlusOutline"/>
                 </q-btn>
                 <div class="text-h4 q-ma-none">{{ existGood.count }}</div>
-                <q-btn unelevated round @click="decrease(selectedGood)" size="xl">
+                <q-btn unelevated round @click="decrease(existGood)" size="xl">
                   <q-icon flat class="round-button-light_green" :name="evaMinusOutline"/>
                 </q-btn>
               </div>
@@ -299,7 +299,7 @@
     box-shadow: var(--box-shadow--product_cart);
     width: max-content;
     max-width: calc(var(--width_coefficient) + var(--coefficient));
-    min-height: 53rem;
+    height: 55rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -332,20 +332,5 @@
     /* position: absolute; */
     /* right: 0 */
   }
-
-//   .q-tabs__content > *:not(:last-of-type) {
-//   margin-right: 1.5rem;
-// }
-
-// .q-tab {
-//   background: var(--q-accent);
-//   color: #FBFBFF;
-// }
-
-// .q-tab-panels {
-//   background-color: transparent;
-// }
-
-
 
 </style>
