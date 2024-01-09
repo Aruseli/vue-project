@@ -28,18 +28,42 @@
     totalPrice.value = cartStore.cart.reduce((acc, item) => acc + item.count * item.price, 0);
   };
 
+  // Если успользовать loading на кнопку Заказа, то при нажатии на кнопку будет отображаться прогресс загрузки
+  const progress = ref({ loading: false, percentage: 0 });
+  const interval = null;
+  const emulateLoading = (progress) => {
+  // Установить флаг загрузки в true
+    progress.value.loading = true;
+
+    // Запустить таймер обратного отсчета
+    const timer = setInterval(() => {
+      // Увеличить процент загрузки
+      progress.value.percentage += 1;
+
+      // Если процент загрузки достиг 100, остановить таймер и установить флаг загрузки в false
+      if (progress.value.percentage === 100) {
+        clearInterval(timer);
+        progress.value.loading = false;
+      }
+    }, 1000);
+  }
+
   // Вызываем функцию при монтировании компонента
   onMounted(() => {
     calculateTotal();
-    console.log('!cartStore.cart.length', !cartStore.cart.length)
   });
 
   const closeDrawerCart = () => {
     app.openDrawerCart(false)
   }
 
-  const openOrderDialog = () => {
+  const isDisabled = ref(false);
+
+  function openOrderDialog() {
     orderStore.existOrder();
+    // кнопка будет недоступна для повторного клика
+    isDisabled.value = true;
+    // emulateLoading(progress);
     app.openOrderDialog(true);
     setTimeout(() => {
       cartStore.clearCart();
@@ -152,15 +176,16 @@
           <span>{{ t('pieces') }}</span>
         </div>
       </div>
-      <div class="full-width">
+      <div class="full-width" v-show="cartStore.cart.length">
         <q-btn
           class="full-width text-style q-py-lg"
           unelevated
           rounded
           no-caps
           color="accent"
-          :disable="!cartStore.cart.length"
+          :disable="isDisabled"
           @click="openOrderDialog"
+
           >
           <div class="text-h3 text-white text-center text-weight-bold text-header_bg text-uppercase">
             {{ $t('order') }}
