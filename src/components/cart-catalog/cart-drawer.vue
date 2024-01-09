@@ -31,6 +31,7 @@
   // Вызываем функцию при монтировании компонента
   onMounted(() => {
     calculateTotal();
+    console.log('!cartStore.cart.length', !cartStore.cart.length)
   });
 
   const closeDrawerCart = () => {
@@ -39,9 +40,10 @@
 
   const openOrderDialog = () => {
     orderStore.existOrder();
+    app.openOrderDialog(true);
     setTimeout(() => {
-      app.openOrderDialog(true)
-    }, 3000);
+      cartStore.clearCart();
+    }, 2000);
     // setTimeout(() => {
     //   router.push('hello');
     // }, 7000);
@@ -101,40 +103,6 @@
               </template>
             </q-img>
           </div>
-          <!-- <div>
-            <q-carousel
-              transition-prev="slide-right"
-              transition-next="slide-left"
-              v-model="slide"
-              :navigation-icon="ionEllipse"
-              control-color="primary"
-              swipeable
-              animated
-              infinite
-              navigation
-              class="bg-white shadow-1 round-borders fit"
-            >
-              <q-carousel-slide
-                v-for="(image, index) in item.images"
-                :key="index"
-                :name="index"
-                class="column no-wrap flex-center"
-              >
-                <div style="width: 300px; height: 200px;">
-                  <q-img
-                    :src="image"
-                    :ration="4/3"
-                  >
-                    <template #loading>
-                      <div class="text-subtitle1 text-black">
-                        Loading...
-                      </div>
-                    </template>
-                  </q-img>
-                </div>
-              </q-carousel-slide>
-            </q-carousel>
-          </div> -->
 
           <div class="column justify-between col-8">
             <div class="row justify-between items-center">
@@ -191,6 +159,7 @@
           rounded
           no-caps
           color="accent"
+          :disable="!cartStore.cart.length"
           @click="openOrderDialog"
           >
           <div class="text-h3 text-white text-center text-weight-bold text-header_bg text-uppercase">

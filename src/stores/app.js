@@ -30,7 +30,6 @@ export const useAppStore = defineStore('app', () => {
 
   const openOrderDialog = (state) => {
     orderDialog.value = state;
-    cartStore.clearCart();
   }
 
   return {
