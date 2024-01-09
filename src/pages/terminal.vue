@@ -247,8 +247,8 @@
 
 <template>
   <q-page class="flex flex-center relative bg-secondary" style="100%">
-    <div class="q-pa-md items-center column" style="width: 50vw">
-      <q-dialog v-model="openDialog" dark class="1234">
+    <div class="q-pa-xl items-center column" style="width: 50vw">
+      <q-dialog v-model="openDialog" dark>
         <q-card dark class="flex column items-center">
           <q-card-section>
             <div class="text-h6 q-ma-sm text-center">Page not found on the server {{ state.requestError }}</div>
@@ -256,7 +256,7 @@
         </q-card>
       </q-dialog>
 
-      <q-dialog v-model="openDialogRegistration" dark class="7654323">
+      <q-dialog v-model="openDialogRegistration" dark="true">
         <q-card dark class="flex column items-center">
           <q-card-section>
             <div v-if="!state.objectId && !state.locationId">
@@ -304,11 +304,13 @@
             ]"
             no-error-icon
             debounce="500"
-            dark
-            rounded
+            :dark="false"
+            color="black"
             outlined
+            rounded
             bg-color="white"
             input-class="input_settings"
+            class="q-mb-md"
           />
           <q-input
             v-model="state.userPassword"
@@ -320,9 +322,10 @@
             ]"
             counter
             no-error-icon
-            dark
-            rounded
+            :dark="false"
+            color="black"
             outlined
+            rounded
             class="q-mb-lg"
             bg-color="white"
             input-class="input_settings"
@@ -362,4 +365,5 @@
 </template>
 
 <style scoped>
+
 </style>

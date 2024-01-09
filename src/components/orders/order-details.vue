@@ -58,12 +58,12 @@
       <div class="row justify-between items-center q-mb-md">
         <div class="text-h4">{{t('total')}}</div>
         <div class="text-h3 q-mb-md">
-          {{ orderStore.orders[0].totalCost }} &ensp;&#3647
+          {{ selectedOrder.totalCost }} &ensp;&#3647
         </div>
         <DividerThin class="bg-negative q-mb-lg" />
         <div class="text-h4 order_container text-weight-regular">
           <span>{{t('order')}}</span>&ensp;
-          <span>{{ orderStore.orders[0].totalCount }}</span>&ensp;
+          <span>{{ selectedOrder.totalCount }}</span>&ensp;
           <span>{{ t('product_units') }}</span>
         </div>
       </div>

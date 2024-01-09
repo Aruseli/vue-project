@@ -231,7 +231,7 @@ body.body--dark {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  margin-bottom: 12rem;
+  margin-bottom: 8rem;
 }
 
 .logo_row {
@@ -241,13 +241,23 @@ body.body--dark {
   flex-direction: row;
 }
 
-.q-field__control{
-  height: 5rem;
+.q-field__control {
+  height: 4rem;
+  align-items: center;
 }
 .input_settings {
-  font-size: 3rem;
+  font-size: 2rem;
 }
 
 .title_padding {
   padding-top: var(--px64);
+}
+
+.q-field--error .q-field__bottom {
+  color: white;
+  font-size: 1rem;
+}
+
+.q-field--outlined.q-field--rounded .q-field__control {
+  border-radius: 1rem;
 }
