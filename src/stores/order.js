@@ -42,11 +42,11 @@ export const useOrderStore = defineStore('orderStore',
 
       // Создаем новый массив заказа
       const newOrder = {
-        ...newOrderRef.value,
         totalCost,
         totalCount,
         allTitles,
         orderNumStr,
+        items: newOrderRef.value,
       };
 
       // Добавляем новый массив в массив заказов

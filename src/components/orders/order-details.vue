@@ -2,7 +2,7 @@
   import DividerThin from '../dividers/divider-thin.vue';
   import DividerBold from '../dividers/divider-bold.vue';
   import OrderCard from './order-card.vue';
-  import { computed, onMounted } from 'vue';
+  import { computed } from 'vue';
   import { useOrderStore } from 'src/stores/order';
   import { useRouter, useRoute } from 'vue-router';
   import { useI18n } from 'vue-i18n';
@@ -25,11 +25,6 @@
     orderStore.orders.value.splice(orderStore.orders.value.indexOf(selectedOrderNum), 1);
   }
 
-  onMounted(() => {
-    console.log('route', route);
-    console.log('selectedOrder', selectedOrder.value);
-    console.log('orderStore.orders', orderStore.orders);
-  })
 </script>
 
 <template>
@@ -44,7 +39,7 @@
     <div class="scroll_area">
       <div class="orders_container">
         <OrderCard
-          v-for="order in selectedOrder"
+          v-for="order in selectedOrder.items"
           :key="order.id"
           :good_title="order.title"
           :good_price="order.price"
