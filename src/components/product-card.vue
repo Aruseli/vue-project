@@ -20,35 +20,36 @@
   const goodsStore = useGoodsStore();
   const app = useAppStore();
 
-  const props = defineProps({
-    images: {
-      type: [String],
-      required: false,
-    },
-    alt: {
-      type: String,
-      required: false
-    },
-    title: {
-      type: String,
-      required: false
-    },
-    price: {
-      type: Number,
-      required: false
-    },
-    count: {
-      type: Number,
-      required: false
-    },
-    description: {
-      type: String,
-      required: false
-    },
-    itemId: {
-      type: Number,
-    },
-  })
+const props = defineProps({
+  images: {
+    type: Array,
+    required: false,
+  },
+  alt: {
+    type: String,
+    required: false
+  },
+  title: {
+    type: String,
+    required: false
+  },
+  price: {
+    type: Number,
+    required: false
+  },
+  count: {
+    type: Number,
+    required: false
+  },
+  description: {
+    type: String,
+    required: false
+  },
+  itemId: {
+    type: Number,
+  }
+})
+
 
   const showNotify = () => {
     $q.notify({
