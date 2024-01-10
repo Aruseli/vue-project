@@ -37,7 +37,7 @@
       type: Number,
       required: false
     },
-    count: {
+    stock: {
       type: Number,
       required: false
     },

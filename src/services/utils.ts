@@ -56,6 +56,10 @@ export function delay(milliseconds: number) {
   return new Promise(f => setTimeout(f, milliseconds))
 }
 
+export function throwErr<TErr>(err: TErr): never {
+  throw err
+}
+
 /**
  * Synchronization primitive:
  * const deferred = new Deferred()

@@ -11,7 +11,7 @@ import { watch, ref, computed } from 'vue';
  - обновление (получение с сервера) остатков
  */
 
-export const useGoodsStore = defineStore('goodsStore',
+export const useGoodsStore = defineStore('goodsStoreOld',
   () => {
     const goods = ref([]);
 
