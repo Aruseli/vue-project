@@ -2,7 +2,7 @@
   import DividerThin from '../dividers/divider-thin.vue';
   import DividerBold from '../dividers/divider-bold.vue';
   import OrderCard from './order-card.vue';
-  import { computed } from 'vue';
+  import { computed, onMounted, ref } from 'vue';
   import { useOrderStore } from 'src/stores/order';
   import { useRouter, useRoute } from 'vue-router';
   import { useI18n } from 'vue-i18n';
@@ -25,6 +25,19 @@
     orderStore.orders.value.splice(orderStore.orders.value.indexOf(selectedOrderNum), 1);
   }
 
+  const scannedItem = ref(false);
+  const emulateScan = (id) => {
+    const block = document.getElementById(id);
+    let selectedItem = selectedOrder.value.items.find(item => item.id === id);
+    if (selectedItem.id === id) {
+      scannedItem.value = true;
+      block.classList.remove('bg-white');
+      block.classList.add('bg-positive');
+    }
+    console.log('selectedItem', selectedItem.id === id);
+    console.log('block', block);
+  }
+
 </script>
 
 <template>
@@ -45,6 +58,12 @@
           :good_price="order.price"
           :good_quant="order.count"
           :good_src="order.src"
+          :id="order.id"
+          @click="() => {
+            emulateScan(order.id);
+            console.log('id', order.id)
+          }"
+          :scannedItem="scannedItem"
         />
       </div>
     </div>
