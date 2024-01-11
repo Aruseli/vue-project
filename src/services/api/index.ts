@@ -85,13 +85,19 @@ export async function apiReportsGetView(viewId: string, parameters?: Record<stri
   return response.data
 }
 
+export type ApiGoodCategory = {
+  id: string,
+  title: string,
+  goods: ApiGood[],
+}
+
 export type ApiGood = {
   id: string,
   title: string,
   description: string,
   price: number,
   stock: number,
-  imageIds: string[],
+  images_ids: string[],
 }
 
 export async function apiGetGoods(location_id: string, locale: string) {
@@ -108,41 +114,47 @@ export async function apiGetGoods(location_id: string, locale: string) {
     stock: 10,
   }
   await delay(5000)
-  return <ApiGood[]>[
+  return <ApiGoodCategory[]>[
     {
-      ...good,
-      id: "d5e2b7e3-c2ae-4307-853a-a00152eac75b",
-      imageIds: [
-        "75c5f41f-20b2-4c89-9e0d-3e1fa2d7cc89",
-        "c5517411-9e32-4984-a13c-6165e8570773",
-      ]
-    },
-    {
-      ...good,
-      id: "d5e2b7e3-c2ae-4307-853a-a00152eac76b",
-      imageIds: [
-        "b2aa61cf-5c20-43bf-9ac2-c78d97e148b1",
-        "6e6ba853-de57-4393-b0ea-4663232decae",
-        "52b2db42-f9ee-403b-92a8-c021bf2650fd",
-      ]
-    },
-    {
-      ...good,
-      id: "d5e2b7e3-c2ae-4307-853a-a00152eac77b",
-      imageIds: [
-        "11e32b46-9b2f-4c7a-866c-31bc64c345c0",
-        "44843806-f11f-46ff-af1a-f22a7df4813e",
-      ]
-    },
-    {
-      ...good,
-      id: "d5e2b7e3-c2ae-4307-853a-a00152eac78b",
-      imageIds: [
-        "f44dcfbc-919e-4253-9e61-6b344db471be",
-        "93a28fe1-0436-4dd3-913d-bf989779dfbc",
-        "d7268cac-123f-4bc1-b876-a3d3107a2470",
-        "d7268cac-123f-4bc1-b876-a3d3107a2471",
-      ]
+      id: "f5e2b7e3-c2ae-4307-853a-a00152eac75b",
+      title: "My Category",
+      goods: [
+        {
+          ...good,
+          id: "d5e2b7e3-c2ae-4307-853a-a00152eac75b",
+          images_ids: [
+            "75c5f41f-20b2-4c89-9e0d-3e1fa2d7cc89",
+            "c5517411-9e32-4984-a13c-6165e8570773",
+          ]
+        },
+        {
+          ...good,
+          id: "d5e2b7e3-c2ae-4307-853a-a00152eac76b",
+          images_ids: [
+            "b2aa61cf-5c20-43bf-9ac2-c78d97e148b1",
+            "6e6ba853-de57-4393-b0ea-4663232decae",
+            "52b2db42-f9ee-403b-92a8-c021bf2650fd",
+          ]
+        },
+        {
+          ...good,
+          id: "d5e2b7e3-c2ae-4307-853a-a00152eac77b",
+          images_ids: [
+            "11e32b46-9b2f-4c7a-866c-31bc64c345c0",
+            "44843806-f11f-46ff-af1a-f22a7df4813e",
+          ]
+        },
+        {
+          ...good,
+          id: "d5e2b7e3-c2ae-4307-853a-a00152eac78b",
+          images_ids: [
+            "f44dcfbc-919e-4253-9e61-6b344db471be",
+            "93a28fe1-0436-4dd3-913d-bf989779dfbc",
+            "d7268cac-123f-4bc1-b876-a3d3107a2470",
+            "d7268cac-123f-4bc1-b876-a3d3107a2471",
+          ]
+        },
+      ],
     },
   ]
 }

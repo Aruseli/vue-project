@@ -1,14 +1,14 @@
 <script setup>
   import { onMounted } from 'vue';
   import ProductCard from '../components/product-card.vue';
-  import { useGoodsStore } from '../stores/products';
+  import { useGoodsStore } from '../stores/goods';
   import { useAppStore } from 'src/stores/app';
 
   const goodsStore = useGoodsStore();
   const app = useAppStore();
 
   onMounted(() => {
-    goodsStore.updateGoods();
+    goodsStore.setLocale('ru');
   })
 
 </script>
@@ -31,7 +31,7 @@
             :alt="good.title"
             :title="good.title"
             :price="good.price"
-            :count="good.count"
+            :stock="good.stock"
             :description="good.description"
             :itemId="good.id"
           />
@@ -55,7 +55,7 @@
             :alt="good.title"
             :title="good.title"
             :price="good.price"
-            :count="good.count"
+            :stock="good.stock"
             :description="good.description"
             :itemId="good.id"
           />
@@ -79,7 +79,7 @@
             :alt="good.title"
             :title="good.title"
             :price="good.price"
-            :count="good.count"
+            :stock="good.stock"
             :description="good.description"
             :itemId="good.id"
           />
@@ -103,7 +103,7 @@
             :alt="good.title"
             :title="good.title"
             :price="good.price"
-            :count="good.count"
+            :stock="good.stock"
             :description="good.description"
             :itemId="good.id"
           />

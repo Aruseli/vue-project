@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
-import { ApiGood, Deferred, apiGetGoods, apiGetGoodsImages, delay, throwErr } from 'src/services';
+import { ApiGoodCategory, Deferred, apiGetGoods, apiGetGoodsImages, delay, throwErr } from 'src/services';
 import { ref } from 'vue';
 import { useAppStore } from './app';
 
-export type LocalizedGood = {
+export type Good = {
   id: string,
   title: string,
   description: string,
@@ -15,16 +15,23 @@ export type LocalizedGood = {
   }[],
 }
 
+export type GoodCategory = {
+  id: string,
+  title: string,
+  goods: Good[],
+}
+
 /**
  * NOTES:
- * 1. Перед отображением вызывать waitGoodsReady
- * 2. TODO: Retries
+ * 1. Перед отображением вызывать waitGoodsReady или проверять goodsLoading
  */
 export const useGoodsStore = defineStore('goodsStore', () => {
   const _appStore = useAppStore()
-  const _goods = ref([] as LocalizedGood[]);
+  const _goods = ref<GoodCategory[]>([]);
   const _images = new Map<string, string>() // id -> base64 image
+  const _goodsLoading = ref(false)
   let _goodsWaiter = new Deferred()
+  _goodsWaiter.resolve(true)
   const _locale = ref('en-US')
 
   const fetchImages = async (imageIds: string[]) => {
@@ -40,26 +47,36 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     }
   }
 
-  const populateImages = async (goods: ApiGood[]) => {
-    const allImagesIds = goods.flatMap(g => g.imageIds)
+  const populateImages = async (goods: ApiGoodCategory[]) => {
+    const allImagesIds = goods.flatMap(gc => gc.goods.flatMap(g => g.images_ids))
     const toFetch = allImagesIds.filter(id => !_images.has(id))
     await fetchImages(toFetch)
-    return goods.map(g => ({
-      ...g,
-      images: g.imageIds.map(id => ({
-        id,
-        image: _images.get(id) ?? throwErr(new Error(`Image is missing: ${id}`)),
-      }))
+    return <GoodCategory[]>goods.map(gc => ({
+      ...gc,
+      goods: gc.goods.map(g => ({
+        ...g,
+        images: g.images_ids.map(id => ({
+          id,
+          image: _images.get(id) ?? throwErr(new Error(`Image is missing: ${id}`)),
+        })),
+      })),
     }))
   }
 
   const updateGoods = async () => {
-    _goodsWaiter.reject("Cancelled")
+    if (_goodsLoading.value) {
+      await _goodsWaiter.promise
+      return
+    }
+    _goodsLoading.value = true
     _goodsWaiter = new Deferred()
     while (true) {
       try {
-        const fetchedGoods = await apiGetGoods(_appStore.terminal.params?.location_id ?? '', _locale.value)
+        const location_id = _appStore.terminal.params?.location_id ?? ''
+        const locale = _locale.value
+        const fetchedGoods = await apiGetGoods(location_id, locale)
         _goods.value = await populateImages(fetchedGoods)
+        _goodsLoading.value = false
         _goodsWaiter.resolve(true)
         return
       }
@@ -81,7 +98,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
   }
 
   const waitGoodsReady = async () => {
-    await delay(5000) // TODO
+    await _goodsWaiter.promise
   }
 
   return {
@@ -90,6 +107,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
 
     updateGoods,
     setLocale,
+    goodsLoading: _goodsLoading,
     waitGoodsReady,
   }
 })

@@ -6,7 +6,7 @@
   import { useI18n } from 'vue-i18n';
   import { computed, ref, onMounted } from 'vue';
   import { useCartStore } from '../stores/cart';
-  import { useGoodsStore } from '../stores/products';
+  import { useGoodsStore } from '../stores/goods';
   import { useAppStore } from 'src/stores/app';
   import { useQuasar } from 'quasar';
 
@@ -22,7 +22,6 @@
 
   const props = defineProps({
     images: {
-      type: [String],
       required: false,
     },
     alt: {
@@ -46,7 +45,7 @@
       required: false
     },
     itemId: {
-      type: Number,
+      type: String,
     },
   })
 
@@ -67,6 +66,7 @@
   }
 
   const selectedGood = computed(() => {
+    console.log(props.itemId, goodsStore.goods.find((item) => item.id === props.itemId))
     return goodsStore.goods.find((item) => item.id === props.itemId);
   })
 
@@ -81,7 +81,7 @@
   const addGoodToCart = (selectedGood) => {
     cartStore.addToCart(selectedGood);
     showNotify();
-    console.log('existGood', existGood.value.count)
+    console.log('existGood', existGood.value.stock)
     console.log('selectedGood', selectedGood)
     console.log('count', cartStore.cart)
   }
@@ -120,7 +120,7 @@
       <div class="content_container">
         <div class="img_container">
           <q-img
-            :src="props.images[0]"
+            :src="props.images[0].image"
             :alt="props.alt"
             ratio="1"
           >
@@ -214,7 +214,7 @@
               >
                 <div>
                   <q-img
-                    :src="image"
+                    :src="image.image"
                     ration="1"
                     style="width: calc(70vw - 8rem); height: calc(70vw - 8rem);"
                   >
