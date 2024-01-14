@@ -21,6 +21,7 @@ $font-family-nunito: 'Nunito Sans', sans-serif;
   --width_coefficient: 20rem;
   --width_coefficient: 21rem;
   --border-sm: 1.3rem;
+  --border-md: 2rem;
   --box-shadow--product_cart: 0 0 3px 2px #00000039;
   // --calc_width: calc($width_coefficient + var(--coefficient));
 }
@@ -55,7 +56,7 @@ body.body--dark {
   --q-secondary: #1e1e1e;
   --q-positive: #0EB60B;
   --q-negative: #C6C9D1;
-  --q-warning: #EE7474;
+  --q-warning: #E14444;
   --q-accent: #3C3C3C;
   --q-green-light: #ecffda;
   --q-header_bg: #fefefe;
@@ -67,7 +68,7 @@ body.body--dark {
 }
 
 .body--light {
-  --q-primary: #7143ba;
+  --q-primary: #234141;
   --q-secondary: #1e1e1e;
   --q-positive: #0EB60B;
   --q-negative: #C6C9D1;
@@ -75,7 +76,11 @@ body.body--dark {
   --q-accent: #3C3C3C;
   --q-green-light: #ecffda;
   --q-header_bg: #fefefe;
+  // --q-dark-page: url(/src/assets/background.svg);
+  --q-dark-page: transparent;
+  // --q-dark-page: #FBFBFF;
   --q-text: #1E1E1E;
+  --q-dark: #FBFBFF;
 }
 
 .text-h1 {
@@ -86,21 +91,24 @@ body.body--dark {
   color: var(--q-text);
 }
 .text-h2 {
-  font-size: calc(3rem + 0.5vmax);
+  font-size: 3.5rem;
+  // font-size: calc(3rem + 0.5vmax);
   font-family: $font-family-nunito;
   font-weight: bold;
   line-height: normal;
   color: var(--q-text);
 }
 .text-h3 {
-  font-size: calc(2rem + 0.5vmax);
+  font-size: 3rem;
+  // font-size: calc(2rem + 0.5vmax);
   font-family: $font-family-nunito;
   font-weight: bold;
   line-height: normal;
   color: var(--q-text);
 }
 .text-h4 {
-  font-size: calc(1.4rem + 0.5vmax);
+  font-size: 2.5rem;
+  // font-size: calc(1.4rem + 0.5vmax);
   font-family: $font-family-nunito;
   font-weight: bold;
   line-height: normal;
@@ -123,6 +131,13 @@ body.body--dark {
 
 .text-body1 {
   font-size: calc(1.5rem + 0.5vmax);
+  font-family: $font-family-nunito;
+  font-weight: normal;
+  line-height: normal;
+  color: var(--q-text);
+}
+.text-txt {
+  font-size: 1.5rem;
   font-family: $font-family-nunito;
   font-weight: normal;
   line-height: normal;
@@ -244,13 +259,14 @@ body.body--dark {
 .q-field__control {
   height: 4rem;
   align-items: center;
+  box-shadow: inset var(--box-shadow--product_cart);
 }
 .input_settings {
   font-size: 2rem;
 }
 
 .title_padding {
-  padding-top: var(--px64);
+  padding-top: var(--px90);
 }
 
 .q-field--error .q-field__bottom {
@@ -260,4 +276,13 @@ body.body--dark {
 
 .q-field--outlined.q-field--rounded .q-field__control {
   border-radius: 1rem;
+}
+
+.input_style {
+  width: 3rem;
+}
+
+.q-field__inner {
+
+
 }

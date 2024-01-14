@@ -27,15 +27,15 @@
     },
     {
       name:'selective_inventory',
-      path: () => route(''),
+      path: () => route('selective-inventory'),
     },
     {
       name: 'complete_inventory',
-      path: () => route(''),
+      path: () => route('complete-inventory'),
     },
     {
       name: 'arrival_goods',
-      path: () => route(''),
+      path: () => route('arrival-goods'),
     },
     {
       name: 'print_leftovers',

@@ -22,7 +22,7 @@
 <template>
   <div class="main_container full-height">
     <div class="relative-position">
-      <router-link :to="{ path: '/issuing-order' }" class='router_link_style text-secondary absolute-top-left'>
+      <router-link :to="{ path: '/employee-actions' }" class='router_link_style text-secondary absolute-top-left'>
         {{ t('back_to_employee_actions') }}
       </router-link>
       <div class="text-h1 text-uppercase text-center q-mb-md title_padding">{{ t('open_orders') }}</div>

@@ -296,7 +296,7 @@
         >
           <q-input
             v-model="state.userName"
-            label="login"
+            placeholder="login"
             type="email"
             autofocus
             :rules="[
@@ -314,7 +314,7 @@
           />
           <q-input
             v-model="state.userPassword"
-            label="password"
+            placeholder="password"
             :type="isPwd ? 'password' : 'text'"
             :rules="[
               (val: any) => !!val || t('field_is_required'),

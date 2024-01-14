@@ -41,12 +41,12 @@ import RectangularButton from 'src/components/buttons/rectangular-button.vue';
       </div>
       <div class="column justify-center full-width ">
         <RectangularButton
-          :name="t('back_to_order_list')"
+          name="back_to_order_list"
           @click="goToOrderedList"
           class="q-mb-xl"
         />
         <RectangularButton
-          :name="t('back_to_employee_actions')"
+          name="back_to_employee_actions"
           @click="goToEmployeeActions"
         />
       </div>
