@@ -27,6 +27,12 @@
       required: false,
       default: 'src/assets/smoke.jpeg'
     },
+    scannedItem: {
+      type: Boolean,
+      required: false,
+      default: false,
+
+    }
   })
 
   const emit = defineEmits(['click']);
@@ -36,7 +42,10 @@
 </script>
 
 <template>
-  <div class="cart_product_item row" @click="click">
+  <div
+    class="cart_product_item row bg-white"
+    v-bind="$attrs"
+    @click="click">
     <div class="col-3 q-pr-lg">
       <q-img
         :src="props.good_src"

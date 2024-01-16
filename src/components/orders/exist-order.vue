@@ -22,7 +22,7 @@
       required: false,
     },
     order_number: {
-      type: Number,
+      type: String,
       required: false
     },
     good_id: {

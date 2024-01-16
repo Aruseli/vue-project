@@ -14,6 +14,18 @@ const routes: RouteRecordRaw[] = [
         component: () => import("pages/employee-actions.vue"),
       },
       {
+        path: "complete-inventory",
+        component: () => import("pages/complete-inventory.vue"),
+      },
+      {
+        path: "selective-inventory",
+        component: () => import("pages/selective-inventory.vue"),
+      },
+      {
+        path: "arrival-goods",
+        component: () => import("pages/arrival-goods.vue"),
+      },
+      {
         path: "issuing-order",
         component: () => import("pages/issuing-order.vue"),
       },

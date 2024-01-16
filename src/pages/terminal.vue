@@ -127,7 +127,7 @@
 
 <template>
   <q-page class="flex flex-center relative bg-secondary" style="100%">
-    <div class="q-pa-md items-center column" style="width: 50vw">
+    <div class="q-pa-xl items-center column" style="width: 50vw">
       <div v-if="kioskStateIsUnrecoverableError()">
         <q-card>
           <q-card-section>
@@ -183,7 +183,7 @@
         >
           <q-input
             v-model="state.userName"
-            label="login"
+            placeholder="login"
             type="email"
             autofocus
             :rules="[
@@ -192,14 +192,16 @@
             no-error-icon
             debounce="500"
             :dark="false"
+            color="black"
             rounded
             outlined
             bg-color="white"
             input-class="input_settings"
+            class="q-mb-md"
           />
           <q-input
             v-model="state.userPassword"
-            label="password"
+            placeholder="password"
             :type="isPwd ? 'password' : 'text'"
             :rules="[
               (val: any) => !!val || t('field_is_required'),
@@ -208,8 +210,9 @@
             counter
             no-error-icon
             :dark="false"
-            rounded
+            color="black"
             outlined
+            rounded
             class="q-mb-lg"
             bg-color="white"
             input-class="input_settings"
@@ -261,4 +264,5 @@
 </template>
 
 <style scoped>
+
 </style>

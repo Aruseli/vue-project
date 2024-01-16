@@ -28,6 +28,26 @@
     totalPrice.value = cartStore.cart.reduce((acc, item) => acc + item.count * item.price, 0);
   };
 
+  // Если успользовать loading на кнопку Заказа, то при нажатии на кнопку будет отображаться прогресс загрузки
+  const progress = ref({ loading: false, percentage: 0 });
+  const interval = null;
+  const emulateLoading = (progress) => {
+  // Установить флаг загрузки в true
+    progress.value.loading = true;
+
+    // Запустить таймер обратного отсчета
+    const timer = setInterval(() => {
+      // Увеличить процент загрузки
+      progress.value.percentage += 1;
+
+      // Если процент загрузки достиг 100, остановить таймер и установить флаг загрузки в false
+      if (progress.value.percentage === 100) {
+        clearInterval(timer);
+        progress.value.loading = false;
+      }
+    }, 1000);
+  }
+
   // Вызываем функцию при монтировании компонента
   onMounted(() => {
     calculateTotal();
@@ -37,11 +57,17 @@
     app.openDrawerCart(false)
   }
 
-  const openOrderDialog = () => {
+  const isDisabled = ref(false);
+
+  function openOrderDialog() {
     orderStore.existOrder();
+    // кнопка будет недоступна для повторного клика
+    isDisabled.value = true;
+    // emulateLoading(progress);
+    app.openOrderDialog(true);
     setTimeout(() => {
-      app.openOrderDialog(true)
-    }, 3000);
+      cartStore.clearCart();
+    }, 2000);
     // setTimeout(() => {
     //   router.push('hello');
     // }, 7000);
@@ -101,40 +127,6 @@
               </template>
             </q-img>
           </div>
-          <!-- <div>
-            <q-carousel
-              transition-prev="slide-right"
-              transition-next="slide-left"
-              v-model="slide"
-              :navigation-icon="ionEllipse"
-              control-color="primary"
-              swipeable
-              animated
-              infinite
-              navigation
-              class="bg-white shadow-1 round-borders fit"
-            >
-              <q-carousel-slide
-                v-for="(image, index) in item.images"
-                :key="index"
-                :name="index"
-                class="column no-wrap flex-center"
-              >
-                <div style="width: 300px; height: 200px;">
-                  <q-img
-                    :src="image"
-                    :ration="4/3"
-                  >
-                    <template #loading>
-                      <div class="text-subtitle1 text-black">
-                        Loading...
-                      </div>
-                    </template>
-                  </q-img>
-                </div>
-              </q-carousel-slide>
-            </q-carousel>
-          </div> -->
 
           <div class="column justify-between col-8">
             <div class="row justify-between items-center">
@@ -184,14 +176,16 @@
           <span>{{ t('pieces') }}</span>
         </div>
       </div>
-      <div class="full-width">
+      <div class="full-width" v-show="cartStore.cart.length">
         <q-btn
           class="full-width text-style q-py-lg"
           unelevated
           rounded
           no-caps
           color="accent"
+          :disable="isDisabled"
           @click="openOrderDialog"
+
           >
           <div class="text-h3 text-white text-center text-weight-bold text-header_bg text-uppercase">
             {{ $t('order') }}

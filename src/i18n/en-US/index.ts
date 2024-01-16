@@ -38,4 +38,9 @@ export default {
   product_units: 'product units',
   order_was_issued_successfully: 'the order was issued successfully',
   UNSUCCESSFUL_LOGIN: 'Login attempt was unsuccessful',
+  back_to_employee_actions: 'back to employee actions',
+  remaining_goods: 'remaining goods',
+  product_name: 'product name',
+  estimated_quantity: 'estimated quantity',
+  actual_quantity: 'actual quantity',
 };
