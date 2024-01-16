@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ApiGoodCategory, Deferred, apiGetGoods, apiGetGoodsImages, delay, throwErr } from 'src/services';
 import { ref } from 'vue';
-import { useAppStore } from './app';
+import { KioskState, useAppStore } from './app';
 
 export type Good = {
   id: string,
@@ -48,12 +48,15 @@ export const useGoodsStore = defineStore('goodsStore', () => {
   }
 
   const populateImages = async (goods: ApiGoodCategory[]) => {
-    const allImagesIds = goods.flatMap(gc => gc.goods.flatMap(g => g.images_ids))
+    const allImagesIds = goods.flatMap(gc =>
+        gc.goods.filter(g => !!g)
+                .flatMap(g => g.images_ids)
+      );
     const toFetch = allImagesIds.filter(id => !_images.has(id))
     await fetchImages(toFetch)
     return <GoodCategory[]>goods.map(gc => ({
       ...gc,
-      goods: gc.goods.map(g => ({
+      goods: gc.goods.filter(g => !!g).map(g => ({
         ...g,
         images: g.images_ids.map(id => ({
           id,
@@ -72,10 +75,15 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     _goodsWaiter = new Deferred()
     while (true) {
       try {
+        if (_appStore.kioskState != KioskState.READY) {
+          await delay(100)
+          continue;
+        }
         const location_id = _appStore.terminal.params?.location_id ?? ''
         const locale = _locale.value
         const fetchedGoods = await apiGetGoods(location_id, locale)
         _goods.value = await populateImages(fetchedGoods)
+        _appStore.tab = fetchedGoods[0].id
         _goodsLoading.value = false
         _goodsWaiter.resolve(true)
         return
@@ -83,13 +91,13 @@ export const useGoodsStore = defineStore('goodsStore', () => {
       catch (e) {
         console.error("goodsStore", "updateGoods", e)
       }
-      await delay(100)
+      await delay(1000)
     }
 
   }
 
   const getGoodById = (id: string) => {
-    return _goods.value.find(g => g.id == id)
+    return _goods.value.flatMap(gc => gc.goods).find(g => g.id == id)
   }
 
   const setLocale = async (locale: string) => {

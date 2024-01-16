@@ -66,8 +66,7 @@
   }
 
   const selectedGood = computed(() => {
-    console.log(props.itemId, goodsStore.goods.find((item) => item.id === props.itemId))
-    return goodsStore.goods.find((item) => item.id === props.itemId);
+    return goodsStore.getGoodById(props.itemId);
   })
 
   const existGood = computed(() => {

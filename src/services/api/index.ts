@@ -101,11 +101,11 @@ export type ApiGood = {
 }
 
 export async function apiGetGoods(location_id: string, locale: string) {
-  // const response = await fetchApi('/api/v2/kiosk/getGoods', {
-  //   location_id,
-  //   locale,
-  // })
-  // return response.data as ApiGood[]
+  const response = await fetchApi('/api/v2/kiosk/getGoods', {
+    location_id,
+    locale,
+  })
+  return response.data.goodTypes as ApiGoodCategory[]
   const good = {
     id: "d5e2b7e3-c2ae-4307-853a-a00152eac75b",
     price: 500,
@@ -113,7 +113,7 @@ export async function apiGetGoods(location_id: string, locale: string) {
     description: "My very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very long description",
     stock: 10,
   }
-  await delay(5000)
+  // await delay(5000)
   return <ApiGoodCategory[]>[
     {
       id: "f5e2b7e3-c2ae-4307-853a-a00152eac75b",
@@ -160,14 +160,14 @@ export async function apiGetGoods(location_id: string, locale: string) {
 }
 
 export async function apiGetGoodsImages(imageIds: string[]) {
-  // const response = await fetchApi('/api/v2/kiosk/getGoodsImages', {
-  //   imageIds,
-  //   type: 'FULLSIZE',
-  // },'text')
-  // return response.data.images as {
-  //   id: string,
-  //   image: string,
-  // }[]
+  const response = await fetchApi('/api/v2/kiosk/getGoodsImages', {
+    imageIds,
+    type: 'FULLSIZE',
+  });
+  return response.data.images as {
+    id: string,
+    image: string,
+  }[];
 
   const ids = [
     "75c5f41f-20b2-4c89-9e0d-3e1fa2d7cc89",

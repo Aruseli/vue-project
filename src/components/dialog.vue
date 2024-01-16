@@ -46,7 +46,7 @@
             <q-carousel-slide v-for="(image, index) in selectedProduct.images" :key="index" :name="index" class="column no-wrap flex-center">
               <div class="imgContainer bg-red">
                 <q-img
-                  :src="image"
+                  :src="image.image"
                   style="width: 200px; height: 200px;"
                 >
                   <template #loading>
