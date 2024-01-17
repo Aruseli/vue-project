@@ -42,4 +42,5 @@ export default {
   product_name: 'product name',
   estimated_quantity: 'estimated quantity',
   actual_quantity: 'actual quantity',
+  UNSUCCESSFUL_LOGIN: 'Login attempt was unsuccessful',
 };

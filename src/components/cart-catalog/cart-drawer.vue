@@ -115,7 +115,7 @@
         <div class="cart_product_item row" v-for="(item, index) in cartStore.cart" :key="index">
           <div class="col-4 q-pr-md">
             <q-img
-              :src="item.images[0]"
+              :src="item.images[0].image"
               ration="16/9"
               height="150px"
               fit="unset"

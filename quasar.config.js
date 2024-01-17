@@ -107,12 +107,12 @@ module.exports = configure(function (ctx) {
       open: true, // opens browser window automatically
       proxy: {
         '/api': {
-          target: 'https://stage-kiosk.high-thai.com',
+          target: process.env.VUE_CAT_URL,
           changeOrigin: true,
           cookieDomainRewrite: 'localhost',
         },
         '/auth': {
-          target: 'https://stage-kiosk.high-thai.com',
+          target: process.env.VUE_CAT_URL,
           changeOrigin: true,
           cookieDomainRewrite: 'localhost',
         },

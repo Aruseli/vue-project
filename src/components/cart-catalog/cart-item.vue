@@ -60,7 +60,7 @@ const selectedProduct = computed(() => {
         <q-carousel-slide v-for="(image, index) in selectedProduct.images" :key="index" :name="index" class="column no-wrap flex-center">
           <div class="">
             <q-img
-              :src="image"
+              :src="image.image"
               :ratio="4/3"
             >
               <template #loading>

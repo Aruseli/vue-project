@@ -3,15 +3,15 @@
   import Switcher from './switcher.vue';
   import { ref, computed, onMounted } from 'vue';
   import { useAppStore } from 'src/stores/app';
-  import { useGoodsStore } from '../stores/products';
   import { useCartStore } from '../stores/cart';
+  import { useGoodsStore } from '../stores/goods';
   import { useI18n } from 'vue-i18n';
 
   const { locale } = useI18n({ useScope: 'global' });
   const { t } = useI18n();
 
-  const goodsStore = useGoodsStore();
   const cartStore = useCartStore();
+  const goodsStore = useGoodsStore();
   const app = useAppStore();
 
   // Инициализируем реактивные переменные для хранения общего количества и общей стоимости
@@ -86,10 +86,7 @@
         active-color="white"
         align="justify"
       >
-        <q-tab name="food" :label="t('food')" />
-        <q-tab name="roll_sets" :label="t('roll_sets')" />
-        <q-tab name="weight_sets" :label="t('weight_sets')" />
-        <q-tab name="consumption_sets" :label="t('consumption_sets')" />
+        <q-tab v-for="goodCategory in goodsStore.goods" :name="goodCategory.id" :label="goodCategory.title" />
       </q-tabs>
     </div>
   </q-header>

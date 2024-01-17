@@ -6,7 +6,7 @@
   import { useI18n } from 'vue-i18n';
   import { computed, ref, onMounted } from 'vue';
   import { useCartStore } from '../stores/cart';
-  import { useGoodsStore } from '../stores/products';
+  import { useGoodsStore } from '../stores/goods';
   import { useAppStore } from 'src/stores/app';
   import { useQuasar } from 'quasar';
 
@@ -20,36 +20,34 @@
   const goodsStore = useGoodsStore();
   const app = useAppStore();
 
-const props = defineProps({
-  images: {
-    type: Array,
-    required: false,
-  },
-  alt: {
-    type: String,
-    required: false
-  },
-  title: {
-    type: String,
-    required: false
-  },
-  price: {
-    type: Number,
-    required: false
-  },
-  count: {
-    type: Number,
-    required: false
-  },
-  description: {
-    type: String,
-    required: false
-  },
-  itemId: {
-    type: Number,
-  }
-})
-
+  const props = defineProps({
+    images: {
+      required: false,
+    },
+    alt: {
+      type: String,
+      required: false
+    },
+    title: {
+      type: String,
+      required: false
+    },
+    price: {
+      type: Number,
+      required: false
+    },
+    stock: {
+      type: Number,
+      required: false
+    },
+    description: {
+      type: String,
+      required: false
+    },
+    itemId: {
+      type: String,
+    },
+  })
 
   const showNotify = () => {
     $q.notify({
@@ -68,7 +66,7 @@ const props = defineProps({
   }
 
   const selectedGood = computed(() => {
-    return goodsStore.goods.find((item) => item.id === props.itemId);
+    return goodsStore.getGoodById(props.itemId);
   })
 
   const existGood = computed(() => {
@@ -82,7 +80,7 @@ const props = defineProps({
   const addGoodToCart = (selectedGood) => {
     cartStore.addToCart(selectedGood);
     showNotify();
-    console.log('existGood', existGood.value.count)
+    console.log('existGood', existGood.value.stock)
     console.log('selectedGood', selectedGood)
     console.log('count', cartStore.cart)
   }
@@ -121,7 +119,7 @@ const props = defineProps({
       <div class="content_container">
         <div class="img_container">
           <q-img
-            :src="props.images[0]"
+            :src="props.images[0].image"
             :alt="props.alt"
             ratio="1"
           >
@@ -215,7 +213,7 @@ const props = defineProps({
               >
                 <div>
                   <q-img
-                    :src="image"
+                    :src="image.image"
                     ration="1"
                     style="width: calc(70vw - 8rem); height: calc(70vw - 8rem);"
                   >
