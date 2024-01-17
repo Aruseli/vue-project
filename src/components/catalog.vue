@@ -14,7 +14,7 @@
 </script>
 
 <template>
-  <q-tab-panels v-model="app.tab" animated swipeable class="fit">
+  <q-tab-panels v-model="app.tab" animated swipeable class="window-height window-width">
     <q-tab-panel v-for="goodCategory in goodsStore.goods" :name="goodCategory.id">
       <div class="image_grid">
         <q-intersection
@@ -50,13 +50,14 @@
   grid-template-columns: repeat(auto-fill, $calc_width);
   gap: $calc_gap;
   width: 100%;
-  height: 100%;
+  height: max-content;
   padding: 0 3.75rem;
   justify-content: center;
   margin-top: 2rem;
 }
 .intersection_card_settings {
-  height: 55rem;
+  // min-height: 50rem;
+  // height: 55rem;
   width: $calc_width;
 }
 </style>

@@ -146,9 +146,8 @@
           </div>
         </div>
 
-        <div class="text-body1 ellipsis-2-lines">
-          {{ props.description }}
-        </div>
+        <div class="text-body1 ellipsis-2-lines block_description" v-html="props.description"/>
+
 
         <q-btn @click="goodDetails">{{ $t('read') }}</q-btn>
       </div>
@@ -215,7 +214,7 @@
                   <q-img
                     :src="image.image"
                     ration="1"
-                    style="width: calc(70vw - 8rem); height: calc(70vw - 8rem);"
+                    class="dialog_img"
                   >
                     <template #loading>
                       <div class="text-subtitle1 text-black">
@@ -244,9 +243,7 @@
             </q-tabs>
             <q-tab-panels v-model="app.tabCharacteristics" animated swipeable class="fit">
               <q-tab-panel name="description" dark>
-                <div class="text-body1 text-weight-regular">
-                  {{ selectedGood.description }}
-                </div>
+                <div class="text-body1 text-weight-regular" v-html="selectedGood.description"/>
               </q-tab-panel>
               <q-tab-panel name="characteristics" dark>
                 <div class="text-body1 text-weight-regular">
@@ -296,9 +293,10 @@
   .card_setting {
     border-radius: var(--border-sm);
     box-shadow: var(--box-shadow--product_cart);
-    width: max-content;
-    max-width: calc(var(--width_coefficient) + var(--coefficient));
-    height: 55rem;
+    // width: max-content;
+    width: calc(var(--width_coefficient) + var(--coefficient));
+    height: 100%;
+    // height: 55rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -306,11 +304,14 @@
     background-color: var(--q-header_bg);
   }
   .img_container {
+    // width: $calc_width;
+    // height: $calc_width;
     max-width: $calc_width;
     max-height: $calc_width;
     border-radius : var(--px30);
     overflow: hidden;
     margin-bottom: 1.5rem;
+    border: thin solid var(--q-accent);
   }
 
   .content_container > *:nth-child(n+2){
@@ -327,9 +328,14 @@
     height: max-content;
   }
 
-  .button-close-dialog {
-    /* position: absolute; */
-    /* right: 0 */
+  .dialog_img {
+    width: calc(70vw - 8rem);
+    height: calc(70vw - 8rem);
+    border: thin solid var(--q-accent);
   }
+
+.block_description {
+  min-height: 6.3125rem;
+}
 
 </style>
