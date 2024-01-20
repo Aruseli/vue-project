@@ -28,8 +28,8 @@
         >
           <ProductCard
             :images="good.images"
-            :alt="good.title"
-            :title="good.title"
+            :alt="good.name"
+            :title="good.name"
             :price="good.price"
             :stock="good.stock"
             :description="good.description"
@@ -50,7 +50,7 @@
   grid-template-columns: repeat(auto-fill, $calc_width);
   gap: $calc_gap;
   width: 100%;
-  height: max-content;
+  height: auto;
   padding: 0 3.75rem;
   justify-content: center;
   margin-top: 2rem;

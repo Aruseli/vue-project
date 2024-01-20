@@ -26,7 +26,7 @@ export const useCartStore = defineStore('cartStore',
       } else {
         cart.value.push({
           id: good.id,
-          title: good.title,
+          title: good.name,
           price: good.price,
           images: [...good.images],
           alt: good.title,

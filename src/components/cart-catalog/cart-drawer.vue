@@ -1,6 +1,6 @@
 <script setup>
   import { ref, computed, onMounted } from 'vue';
-  import { evaPlusOutline } from '@quasar/extras/eva-icons';
+  import { evaArrowBack, evaPlusOutline } from '@quasar/extras/eva-icons';
   import { evaMinusOutline } from '@quasar/extras/eva-icons';
   import { useI18n } from 'vue-i18n';
   import { useCartStore } from 'src/stores/cart';
@@ -9,6 +9,8 @@
   import DividerBold from '../dividers/divider-bold.vue';
   import DividerThin from '../dividers/divider-thin.vue';
   import { useOrderStore } from 'src/stores/order';
+  import IconButton from '../buttons/icon-button.vue';
+  import RectangularButton from '../buttons/rectangular-button.vue';
 
   const router = useRouter();
 
@@ -77,6 +79,10 @@
     cartStore.cart = cartStore.cart.filter(item => item.id !== id)
   }
 
+  onMounted(() => {
+    console.log('cartStore.cart', cartStore.cart)
+  })
+
 </script>
 
 
@@ -90,16 +96,22 @@
     behavior="mobile"
     :width="1200"
   >
-    <div class="q-px-lg">
-      <div class="row items-center">
-        <q-btn
+    <div class="q-pa-md">
+      <div class="row items-center q-mb-md">
+        <!-- <q-btn
           unelevated round
           @click="closeDrawerCart"
           class="q-pa-md col-1"
         >
           <q-icon name="arrow_back" class="round-button-light_green" />
-        </q-btn>
-        <div class="text-h3 text-center text-weight-bold text-text text-uppercase col-11">
+        </q-btn> -->
+        <IconButton
+          round
+          :icon="evaArrowBack"
+          @click="closeDrawerCart"
+          class="q-pa-xs"
+        />
+        <div class="text-h1 text-center text-text text-uppercase col-11">
           {{ $t('order') }}
         </div>
       </div>
@@ -143,18 +155,22 @@
             </div> -->
             <div class="row justify-between items-center">
               <div class="text-h3">
-                {{ item.price }}&ensp;&#3647
+                &#3647&ensp;{{ item.price }}
               </div>
               <div class="row justify-between items-center">
-                <q-btn unelevated round
-                  @click="() => cartStore.increaseItemsCount(item)" class='q-mr-lg'>
-                  <q-icon flat class="round-button-light_green" :name="evaPlusOutline"/>
-                </q-btn>
-                <h4 class='q-mr-lg q-my-none'>{{ item.count }}</h4>
-                <q-btn unelevated round
-                @click="() => cartStore.decreaseItemsCount(item)">
-                  <q-icon flat class="round-button-light_green" :name="evaMinusOutline"/>
-                </q-btn>
+                <IconButton
+                  round
+                  :icon="evaPlusOutline"
+                  @click="() => cartStore.increaseItemsCount(item)"
+                  class="q-pa-xs"
+                />
+                <h4 class='q-mx-md q-my-none'>{{ item.count }}</h4>
+                <IconButton
+                  round
+                  :icon="evaMinusOutline"
+                  @click="() => cartStore.decreaseItemsCount(item)"
+                  class="q-pa-xs"
+                />
               </div>
             </div>
           </div>
@@ -162,35 +178,27 @@
       </div>
     </q-scroll-area>
 
-    <div class="q-pa-lg bg-white">
-      <DividerBold class="q-mb-lg" />
+    <div class="q-pa-md bg-white">
+      <DividerBold class="q-mb-md" />
       <div class="row justify-between items-center q-mb-md">
-        <div class="text-body1">{{t('total')}}</div>
-        <div class="text-body1 q-mb-md">
+        <div class="text-h2">{{t('total')}}</div>
+        <div class="text-h2 q-mb-md">
           {{ cartStore.totalCost }} &ensp;&#3647
         </div>
-        <DividerThin class="bg-negative q-mb-lg" />
-        <div class="text-body1 order_container text-weight-regular">
+        <DividerThin class="bg-negative q-mb-md" />
+        <div class="text-h4 order_container text-weight-regular">
           <span>{{t('order')}}</span>
           <span>{{ cartStore.totalQuantity }}</span>
           <span>{{ t('pieces') }}</span>
         </div>
       </div>
       <div class="full-width" v-show="cartStore.cart.length">
-        <q-btn
-          class="full-width text-style q-py-lg"
-          unelevated
-          rounded
-          no-caps
-          color="accent"
+        <RectangularButton
+          class="fit"
+          name="checkout"
           :disable="isDisabled"
           @click="openOrderDialog"
-
-          >
-          <div class="text-h3 text-white text-center text-weight-bold text-header_bg text-uppercase">
-            {{ $t('order') }}
-          </div>
-        </q-btn>
+        />
       </div>
     </div>
 

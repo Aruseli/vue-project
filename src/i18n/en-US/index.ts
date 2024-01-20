@@ -43,4 +43,8 @@ export default {
   estimated_quantity: 'estimated quantity',
   actual_quantity: 'actual quantity',
   UNSUCCESSFUL_LOGIN: 'Login attempt was unsuccessful',
+  tap_on_screen: 'Tap anywhere on the screen',
+  find_your_experience: 'find your experience',
+  buy: 'buy',
+  checkout: 'checkout',
 };

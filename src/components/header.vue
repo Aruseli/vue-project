@@ -1,11 +1,12 @@
 <script setup>
-  import BinIcon from './buttons/bin-icon.vue';
+  import BinIconNew from './buttons/bin-icon-new.vue';
   import Switcher from './switcher.vue';
   import { ref, computed, onMounted } from 'vue';
   import { useAppStore } from 'src/stores/app';
   import { useCartStore } from '../stores/cart';
   import { useGoodsStore } from '../stores/goods';
   import { useI18n } from 'vue-i18n';
+import LogoSimple from './logo-simple.vue';
 
   const { locale } = useI18n({ useScope: 'global' });
   const { t } = useI18n();
@@ -50,7 +51,7 @@
     :reveal-offset=100
     class="header"
   >
-    <q-toolbar class="justify-end q-mb-lg">
+    <q-toolbar class="justify-between q-mb-lg">
       <!-- <div>
         <Switcher />
         <q-btn
@@ -62,10 +63,11 @@
           @click="switchLanguage('de-DE')"
         />
       </div> -->
+      <LogoSimple />
       <div class="">
         <q-btn unelevated round class="relative-position" @click="openDrawer">
-          <BinIcon />
-          <div v-if="totalQuantity > 0" class="badge_style bg-positive">
+          <BinIconNew />
+          <div v-if="totalQuantity > 0" class="badge_style bg-positive flex items-center">
             <div class="text-h4 text-white q-px-sm">{{ totalQuantity }}</div>
           </div>
           <!-- <q-badge
@@ -80,13 +82,12 @@
     <div class="relative-position">
       <q-tabs
         v-model="app.tab"
-        inline-label
+        dense
+        narrow-indicator
         no-caps
-        indicator-color="transparent"
-        active-color="white"
-        align="justify"
+        align="start"
       >
-        <q-tab v-for="goodCategory in goodsStore.goods" :name="goodCategory.id" :label="goodCategory.title" />
+        <q-tab v-for="goodCategory in goodsStore.goods" :name="goodCategory.id" :label="goodCategory.title" content-class="category_tab_label_style" />
       </q-tabs>
     </div>
   </q-header>
@@ -96,34 +97,20 @@
 .header {
   color: var(--q-text);
   background-color: transparent;
-  padding: 1.5rem 4.8rem 1.5rem 4.8rem;
+  padding: var(--px90) 4.8rem 1.5rem 4.8rem;
 }
 
 .badge_style {
   position: absolute;
   bottom: -1rem;
   left: -1rem;
-  border-radius: 2rem;
+  border-radius: 2.5rem;
   min-width: 3rem;
   width: max-content;
-  height: 3rem;
+  height: 4.5rem;
 }
 
 .q-tabs__content > *:not(:last-of-type) {
   margin-right: 1.5rem;
-}
-
-.q-tab {
-  border-radius: 2rem;
-  background: var(--q-accent);
-  color: #FBFBFF;
-}
-
-.q-tab-panels {
-  background-color: transparent;
-}
-
-.q-tab__label {
-  font-size: calc(1.2rem + 0.5vmax);
 }
 </style>
