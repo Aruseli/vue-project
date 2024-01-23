@@ -3,10 +3,8 @@
   import QrcodeVue from 'qrcode.vue';
   import { useI18n } from 'vue-i18n';
   import { useQuasar } from 'quasar';
-  import { wsSendMessage } from '../services';
   import Logo from '../components/logo.vue';
-  import { useAppStore, KioskState } from 'src/stores/app';
-  import { apiReportsGetView } from 'src/services/api';
+  import { useAppStore, KioskStatus } from 'src/stores/app';
 
   const $q = useQuasar();
 
@@ -40,104 +38,36 @@
     }
   }
 
-  //=======================================
-  // Printer example (temp)
-
-  // const sessionToken = localStorage.getItem('sessionToken');
-
-  // async function doAuth() {
-  //   $q.loading.show();
-  //   try {
-  //     const authToken = await apiAuth('v.kakotkin@fait.gl', '1c8b6f9f-a29a');
-
-  //     if (!authToken) {
-  //       $q.notify({
-  //         message: 'Auth error...',
-  //         icon: 'warning',
-  //         color: 'negative',
-  //       });
-  //     }
-  //     else {
-  //       localStorage.setItem('sessionToken', authToken);
-  //     }
-  //   }
-  //   catch(e) {
-  //     console.log(e);
-  //     $q.notify({
-  //       message: 'Error occured',
-  //       icon: 'warning',
-  //       color: 'warning',
-  //     });
-  //   }
-  //   finally {
-  //     $q.loading.hide();
-  //   }
-  // }
-
-  const printText = ref('<print align="center" bold>text</print><printqr>hello world</printqr>');
-
-  function sendWsCommand() {
-    wsSendMessage('check-print', printText.value);
+  function kioskStatusIsUnknown() {
+    return appStore.kioskState.status == KioskStatus.UNKNOWN
   }
 
-  const check1ViewId = ref('c2db028c-bee9-4504-9302-379a888a1676');
-
-  async function sendCatPrintCommand() {
-    $q.loading.show();
-    try {
-      const viewData = await apiReportsGetView(check1ViewId.value);
-      console.log(viewData);
-      wsSendMessage('check-print', viewData);
-    }
-    catch(e) {
-      console.log(e);
-      $q.notify({
-        message: 'Error occured',
-        icon: 'warning',
-        color: 'warning',
-      });
-    }
-    finally {
-      $q.loading.hide();
-    }
-  }
-  //=======================================
-
-
-  function kioskStateIsUnknown() {
-    return appStore.kioskState == KioskState.UNKNOWN
+  function kioskStatusIsUnboundTerminal() {
+    return appStore.kioskState.status == KioskStatus.UNBOUND_TERMINAL
   }
 
-  function kioskStateIsUnboundTerminal() {
-    return appStore.kioskState == KioskState.UNBOUND_TERMINAL
+  function kioskStatusIsUnauthenticated() {
+    return appStore.kioskState.status == KioskStatus.UNAUTHENTICATED
   }
 
-  function kioskStateIsUnauthenticated() {
-    return appStore.kioskState == KioskState.UNAUTHENTICATED
-  }
-
-  function kioskStateIsReady() {
-    return appStore.kioskState == KioskState.READY
-  }
-
-  function kioskStateIsUnrecoverableError() {
-    return appStore.kioskState == KioskState.UNRECOVERABLE_ERROR
+  function kioskStatusIsUnrecoverableError() {
+    return appStore.kioskState.status == KioskStatus.UNRECOVERABLE_ERROR
   }
 </script>
 
 <template>
   <q-page class="flex flex-center relative bg-secondary" style="100%">
     <div class="q-pa-xl items-center column" style="width: 50vw">
-      <div v-if="kioskStateIsUnrecoverableError()">
+      <div v-if="kioskStatusIsUnrecoverableError()">
         <q-card>
           <q-card-section>
             <h2>{{ $t('UNRECOVERABLE_ERROR') }}</h2>
-            <p>{{ appStore.globalError?.message }}</p>
+            <p>{{ appStore.kioskState.globalError?.message }}</p>
           </q-card-section>
         </q-card>
       </div>
 
-      <div v-if="kioskStateIsUnknown()">
+      <div v-if="kioskStatusIsUnknown()">
         <q-card>
           <q-card-section>
             <q-spinner/>
@@ -145,7 +75,7 @@
         </q-card>
       </div>
 
-      <div v-if="kioskStateIsUnboundTerminal()">
+      <div v-if="kioskStatusIsUnboundTerminal()">
         <q-card dark class="flex column items-center">
           <q-card-section>
             <div class="text-h6 q-ma-sm text-center">
@@ -153,15 +83,15 @@
             </div>
             <div>
               <div class="text-h6 text-center q-mb-md text-weight-bold">
-                Код терминала <code style="font-family: 'Courier New', monospace">{{ appStore.terminal.code }}</code>
+                Код терминала <code style="font-family: 'Courier New', monospace">{{ appStore.kioskState.code }}</code>
               </div>
               <div
-                v-if="appStore.terminal.params?.terminal_id"
+                v-if="appStore.kioskState.params?.terminal_id"
                 class="q-mx-auto q-mb-md"
                 style="width: 300px; height: 300px"
               >
                 <qrcode-vue
-                  :value="appStore.terminal.params?.terminal_id"
+                  :value="appStore.kioskState.params?.terminal_id"
                   level="M"
                   render-as="svg"
                   :size="300"
@@ -173,7 +103,7 @@
         </q-card>
       </div>
 
-      <div v-if="kioskStateIsUnauthenticated()" class="fit">
+      <div v-if="kioskStatusIsUnauthenticated()" class="fit">
 
         <Logo class="logo_column" />
 
@@ -228,34 +158,6 @@
             <q-btn label="authorization" unelevated size="xl" type="submit" color="primary" class="fit" />
           </div>
         </q-form>
-      </div>
-      <div v-if="kioskStateIsReady()">
-        <q-card dark class="flex column items-center">
-          <h5>Temp page</h5>
-          <p>Consider merging with employee-actions page</p>
-          <q-card-section>
-            <q-btn label="Go to actions" color="primary" to="/employee-actions" />
-          </q-card-section>
-        </q-card>
-        <q-card>
-          <h5>Printer example (will be removed in production)</h5>
-          <div class="column full-width">
-            <b>Custom device-provider command</b>
-            <q-input v-model="printText" :dark="false" class="q-mb-sm" outlined />
-            <q-btn label="test ws" rounded color="secondary" @click="sendWsCommand" />
-          </div>
-          <!-- <q-separator spaced inset />
-          <div class="column full-width">
-            <div><b>Auth</b> <span v-if="sessionToken">(already has a session token)</span></div>
-            <q-btn label="authorize" rounded color="indigo-4" @click="doAuth" />
-          </div> -->
-          <q-separator spaced inset />
-          <div class="column full-width">
-            <b>Call to CAT API for building device-provider command</b>
-            <q-input v-model="check1ViewId" :dark="false" class="q-mb-sm" outlined />
-            <q-btn label="test print command" rounded color="secondary" @click="sendCatPrintCommand" />
-          </div>
-        </q-card>
       </div>
     </div>
   </q-page>

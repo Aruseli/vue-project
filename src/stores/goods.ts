@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ApiGoodCategory, Deferred, apiGetGoods, apiGetGoodsImages, delay, throwErr } from 'src/services';
 import { ref } from 'vue';
-import { KioskState, useAppStore } from './app';
+import { KioskStatus, useAppStore } from './app';
 
 export type Good = {
   id: string,
@@ -75,11 +75,11 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     _goodsWaiter = new Deferred()
     while (true) {
       try {
-        if (_appStore.kioskState != KioskState.READY) {
+        if (_appStore.kioskState.status != KioskStatus.READY) {
           await delay(100)
           continue;
         }
-        const location_id = _appStore.terminal.params?.location_id ?? ''
+        const location_id = _appStore.kioskState.params?.location_id ?? ''
         const locale = _locale.value
         const fetchedGoods = await apiGetGoods(location_id, locale)
         _goods.value = await populateImages(fetchedGoods)
