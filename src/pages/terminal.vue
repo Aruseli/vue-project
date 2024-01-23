@@ -193,7 +193,6 @@
             debounce="500"
             :dark="false"
             color="black"
-            rounded
             outlined
             bg-color="white"
             input-class="input_settings"
@@ -212,7 +211,6 @@
             :dark="false"
             color="black"
             outlined
-            rounded
             class="q-mb-lg"
             bg-color="white"
             input-class="input_settings"

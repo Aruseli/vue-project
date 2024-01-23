@@ -9,6 +9,7 @@
   import { useGoodsStore } from '../stores/goods';
   import { useAppStore } from 'src/stores/app';
   import { useQuasar } from 'quasar';
+  import IconButton from '../components/buttons/icon-button.vue';
 
   const $q = useQuasar();
   const openDialog = ref(false);
@@ -92,7 +93,7 @@
 
   const decrease = (selectedGood) => {
     cartStore.decreaseItemsCount(selectedGood);
-    showNotify();
+    // showNotify();
   }
 
   const increase = (selectedGood) => {
@@ -121,7 +122,7 @@
           <q-img
             :src="props.images[0].image"
             :alt="props.alt"
-            ratio="1"
+            :ratio="4/3"
           >
             <template #loading>
               <div class="text-subtitle1 text-black">
@@ -132,50 +133,48 @@
         </div>
         <div>
           <div class="column no-wrap items-left">
-            <div class="text-h4 text-weight-regular q-mb-sm ellipsis">
+            <div class="text-h4 q-mb-sm ellipsis first_letter">
               {{ props.title }}
             </div>
-            <div class="row no-wrap justify-between">
-              <div class="text-subtitle2">
-                {{ t('product_price') }}
-              </div>
-              <div class="text-h3">
-                {{ props.price }}&ensp;&#3647
-              </div>
+
+            <div class="text-h3">
+              &#3647&ensp;{{ props.price }}
             </div>
           </div>
         </div>
 
-        <div class="text-body1 ellipsis-2-lines">
-          {{ props.description }}
-        </div>
+        <div class="text-body1 ellipsis-2-lines block_description" v-html="props.description"/>
+
 
         <q-btn @click="goodDetails">{{ $t('read') }}</q-btn>
       </div>
 
       <div>
         <q-btn v-if="!existGood"
-          class="full-width text-style"
+          class="full-width"
           unelevated
           rounded
           no-caps
           color="primary"
           text-color="white"
-          size="xl"
           @click="addGoodToCart(selectedGood)"
           >
-          <div class="text-center text-weight-bold text-subtitle1">
-            {{ $t('add') }}
+          <div class="text-center text-h3 q-py-xs">
+            {{ $t('buy') }}
           </div>
         </q-btn>
         <div class="row justify-between items-center" v-else>
-          <q-btn unelevated round @click="increase(existGood)">
-            <q-icon flat class="round-button-light_green" :name="evaPlusOutline"/>
-          </q-btn>
+          <IconButton
+            :icon="evaPlusOutline"
+            @click="increase(existGood)"
+            class="q-pa-xs"
+          />
           <div class="text-h4 q-ma-none">{{ existGood.count }}</div>
-          <q-btn unelevated round @click="decrease(existGood)">
-            <q-icon flat class="round-button-light_green" :name="evaMinusOutline"/>
-          </q-btn>
+          <IconButton
+            :icon="evaMinusOutline"
+            @click="decrease(existGood)"
+            class="q-pa-xs"
+          />
         </div>
       </div>
     </div>
@@ -188,10 +187,12 @@
       transition-show="fade"
       transition-duration="1.8"
       dark="true"
+      class="relative-position"
     >
       <div class="dialog_container">
         <q-card class="dialog_card">
-          <q-card-section>
+          <q-btn flat label="Turn on Wifi" color="primary" class="absolute-top-right" v-close-popup />
+          <q-card-section class="q-mb-sm">
             <q-carousel
               transition-prev="slide-right"
               transition-next="slide-left"
@@ -211,11 +212,11 @@
                 :name="index"
                 class="column no-wrap flex-center"
               >
-                <div>
+                <div class="img_container_dialog">
                   <q-img
                     :src="image.image"
-                    ration="1"
-                    style="width: calc(70vw - 8rem); height: calc(70vw - 8rem);"
+                    :ratio="4/3"
+                    class="dialog_img"
                   >
                     <template #loading>
                       <div class="text-subtitle1 text-black">
@@ -227,35 +228,41 @@
               </q-carousel-slide>
             </q-carousel>
           </q-card-section>
-          <q-card-section>
-            <div class="text-h3 text-weight-regular">
-              {{ selectedGood.title }}
+          <q-card-section class="q-mb-sm">
+            <div class="text-h3">
+              {{ selectedGood.name }}
             </div>
           </q-card-section>
-          <q-card-section class="q-pt-none">
+          <q-card-section class="q-mb-md">
+            <div class="text-h2">
+              &#3647&ensp;{{ selectedGood.price }}
+            </div>
+          </q-card-section>
+          <q-separator color="secondary" class="q-mb-md" />
+          <q-card-section class="q-pt-none q-mb-lg">
             <q-tabs
               v-model="app.tabCharacteristics"
               narrow-indicator
               dense
+              no-caps
               align="start"
+              class="q-mb-xs"
             >
-              <q-tab :ripple="false" name="description" :label="t('description')" />
-              <q-tab :ripple="false" name="characteristics" :label="t('characteristics')" />
+              <q-tab :ripple="false" name="description" :label="t('description')" content-class="product_tab_label_style" />
+              <q-tab :ripple="false" name="characteristics" :label="t('characteristics')" content-class="product_tab_label_style" />
             </q-tabs>
             <q-tab-panels v-model="app.tabCharacteristics" animated swipeable class="fit">
               <q-tab-panel name="description" dark>
-                <div class="text-body1 text-weight-regular">
-                  {{ selectedGood.description }}
-                </div>
+                <div class="text-body1" v-html="selectedGood.description"/>
               </q-tab-panel>
               <q-tab-panel name="characteristics" dark>
-                <div class="text-body1 text-weight-regular">
+                <div class="text-body1">
                   {{ selectedGood.description }}
                 </div>
               </q-tab-panel>
             </q-tab-panels>
           </q-card-section>
-          <q-card-actions>
+          <q-card-section>
             <div class="full-width">
               <q-btn
                 v-if="!existGood"
@@ -266,23 +273,26 @@
                 color="primary"
                 text-color="white"
                 @click="addGoodToCart(selectedGood)"
-                size="xl"
                 >
-                <div class="text-center text-weight-bold text-h3 text-white">
-                  {{ $t('add') }}
+                <div class="text-center text-weight-bold text-h3 text-white q-py-xl">
+                  {{ $t('buy') }}
                 </div>
               </q-btn>
               <div class="row justify-between items-center" v-else>
-                <q-btn unelevated round @click="increase(existGood)" size="xl">
-                  <q-icon flat class="round-button-light_green" :name="evaPlusOutline"/>
-                </q-btn>
+                <IconButton
+                  :icon="evaPlusOutline"
+                  @click="increase(existGood)"
+                  class="q-pa-xl"
+                />
                 <div class="text-h4 q-ma-none">{{ existGood.count }}</div>
-                <q-btn unelevated round @click="decrease(existGood)" size="xl">
-                  <q-icon flat class="round-button-light_green" :name="evaMinusOutline"/>
-                </q-btn>
+                <IconButton
+                  :icon="evaMinusOutline"
+                  @click="decrease(existGood)"
+                  class="q-pa-xl"
+                />
               </div>
             </div>
-          </q-card-actions>
+          </q-card-section>
         </q-card>
       </div>
     </q-dialog>
@@ -296,9 +306,10 @@
   .card_setting {
     border-radius: var(--border-sm);
     box-shadow: var(--box-shadow--product_cart);
-    width: max-content;
-    max-width: calc(var(--width_coefficient) + var(--coefficient));
-    height: 55rem;
+    // width: max-content;
+    width: calc(var(--width_coefficient) + var(--coefficient));
+    height: 100%;
+    // height: 55rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -306,11 +317,21 @@
     background-color: var(--q-header_bg);
   }
   .img_container {
+    // width: $calc_width;
+    // height: $calc_width;
     max-width: $calc_width;
     max-height: $calc_width;
     border-radius : var(--px30);
     overflow: hidden;
     margin-bottom: 1.5rem;
+    border: thin solid var(--q-accent);
+  }
+  .img_container_dialog {
+    width: 100%;
+    height: 100%;
+    border-radius : var(--px30);
+    overflow: hidden;
+    border: thin solid var(--q-accent);
   }
 
   .content_container > *:nth-child(n+2){
@@ -322,14 +343,18 @@
   }
 
   .dialog_container {
-    width: 70vw;
+    width: 60vw;
     max-width: 80vw;
     height: max-content;
   }
 
-  .button-close-dialog {
-    /* position: absolute; */
-    /* right: 0 */
+  .dialog_img {
+    width: 100%;
+    // height: calc(70vw - 8rem);
+    border: thin solid var(--q-accent);
   }
 
+.block_description {
+  min-height: 3.2rem;
+}
 </style>
