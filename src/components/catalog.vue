@@ -58,7 +58,40 @@
 
   })
 
+  const showNotify = () => {
+    $q.notify({
+      color: 'warning',
+      icon: 'warning',
+      position: 'center',
+      message: "Ваша корзина будет очищена через 1 минуту.",
+      timeout: 2000,
+    })
+  }
 
+
+  // Проверяем, есть ли товары в корзине
+  if (cartStore.cart.length) {
+
+    // Проверяем, не прошло ли 15 минут
+    if (Date.now() - startTime < 15000) {
+    // Запускаем таймер на 15 минут
+      timer.value = setInterval(() => {
+        // Показываем сообщение о том, что корзина будет очищена
+        showNotify();
+      }, 5000);
+    // Останавливаем таймер
+    clearTimeout(timer.value);
+    // Очищаем корзину
+    cartStore.clearCart();
+
+  }
+  // Обрабатываем событие нажатия кнопки Купить
+// const onClickBuy = () => {
+//   // Останавливаем таймер
+//   clearTimeout(timer.value);
+//   // Очищаем корзину
+//   clearCart();
+// };
 </script>
 
 <template>
