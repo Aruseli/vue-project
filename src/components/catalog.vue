@@ -1,15 +1,63 @@
 <script setup>
-  import { onMounted } from 'vue';
+  import { onMounted, ref } from 'vue';
   import ProductCard from '../components/product-card.vue';
   import { useGoodsStore } from '../stores/goods';
   import { useAppStore } from 'src/stores/app';
+  import { useRouter } from 'vue-router';
+  import { useCartStore } from 'src/stores/cart';
+  import { useQuasar } from 'quasar';
 
+  const $q = useQuasar();
   const goodsStore = useGoodsStore();
   const app = useAppStore();
+  const cartStore = useCartStore();
+  const router = useRouter();
+
+  const timer = ref(null);
+
+  // Функция проверки взаимодействия пользователя со страницей
+  function isUserActive() {
+    return (
+      document.body.clickCount > 0 ||
+      document.body.touchCount > 0 ||
+      document.body.scrollTop > 0 ||
+      document.body.scrollLeft > 0
+    );
+  }
+
+  // Функция-обработчик, которая переведет на новую страницу
+  function redirect() {
+    router.push('hello');
+  }
+
+  // Сохраняем время начала таймера
+  const startTime = ref(Date.now());
 
   onMounted(() => {
     goodsStore.setLocale('ru');
+    // Запускаем таймер
+    timer.value = setInterval(redirect, 20000);
+
+    // Обрабатываем события
+    document.addEventListener("mousemove", () => {
+      clearTimeout(timer.value);
+      timer.value = setInterval(redirect, 20000);
+    });
+    document.addEventListener("keydown", () => {
+      clearTimeout(timer.value);
+      timer.value = setInterval(redirect, 20000);
+    });
+    document.addEventListener("click", () => {
+      clearTimeout(timer.value);
+      timer.value = setInterval(redirect, 20000);
+    });
+    document.addEventListener("scroll", () => {
+      clearTimeout(timer.value);
+      timer.value = setInterval(redirect, 20000);
+    });
+
   })
+
 
 </script>
 

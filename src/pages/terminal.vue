@@ -4,7 +4,7 @@
   import { useI18n } from 'vue-i18n';
   import { useQuasar } from 'quasar';
   import { wsSendMessage } from '../services';
-  import Logo from '../components/logo.vue';
+  import Logo from '../components/logo/logo.vue';
   import { useAppStore, KioskState } from 'src/stores/app';
   import { apiReportsGetView } from 'src/services/api';
 

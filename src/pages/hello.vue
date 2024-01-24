@@ -1,8 +1,9 @@
 <script setup>
-  import Logo from 'src/components/logo.vue';
+  import Logo from 'src/components/logo/logo.vue';
   import { useRouter } from 'vue-router';
   import { useI18n } from 'vue-i18n';
   import { ref } from 'vue';
+  import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
 
   const { t } = useI18n();
   const router = useRouter();
@@ -13,7 +14,11 @@
 <template>
   <q-page class="flex flex-center relative bg-secondary">
     <div class="column justify-between window-height full-width container" @click="router.push('languages')">
-      <Logo class="logo_row self-start" classes="q-mr-lg" />
+      <Logo class="logo_row self-start" classes="q-mr-md">
+        <LogoSvgWhite />
+      </Logo>
+
+      <!-- <Logo class="logo_row self-start" classes="q-mr-md" /> -->
       <Transition name="slide-fade" mode="out-in">
           <p v-show="show" class="text-h1 text-center text-white text-uppercase">
             {{ t('find_your_experience') }}

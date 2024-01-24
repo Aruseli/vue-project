@@ -1,11 +1,14 @@
 <script setup>
-  import Logo from 'src/components/logo.vue';
+  import Logo from 'src/components/logo/logo.vue';
   import language from 'src/components/language.vue';
+import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
 </script>
 
 <template>
   <q-page class="column justify-center items-center relative bg-secondary window-height">
-    <Logo class="logo_row logo" />
+    <Logo class="logo_row logo" classes="q-mr-md">
+      <LogoSvgWhite />
+    </Logo>
     <div class="column bg-primary container">
       <language />
       <language />

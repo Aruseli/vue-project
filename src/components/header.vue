@@ -6,7 +6,8 @@
   import { useCartStore } from '../stores/cart';
   import { useGoodsStore } from '../stores/goods';
   import { useI18n } from 'vue-i18n';
-import LogoSimple from './logo-simple.vue';
+  import LogoSimple from './logo/logo-simple.vue';
+  import LogoSvgGradient from './logo/logo-svg-gradient.vue';
 
   const { locale } = useI18n({ useScope: 'global' });
   const { t } = useI18n();
@@ -52,18 +53,11 @@ import LogoSimple from './logo-simple.vue';
     class="header"
   >
     <q-toolbar class="justify-between q-mb-lg">
-      <!-- <div>
-        <Switcher />
-        <q-btn
-          label="En"
-          @click="switchLanguage('en-US')"
-        />
-        <q-btn
-          label="Gr"
-          @click="switchLanguage('de-DE')"
-        />
-      </div> -->
-      <LogoSimple />
+
+      <LogoSimple>
+        <LogoSvgGradient :width="100" :height="100" />
+      </LogoSimple>
+
       <div class="">
         <q-btn unelevated round class="relative-position" @click="openDrawer">
           <BinIconNew />
@@ -85,7 +79,7 @@ import LogoSimple from './logo-simple.vue';
         dense
         narrow-indicator
         no-caps
-        align="start"
+        align="left"
       >
         <q-tab v-for="goodCategory in goodsStore.goods" :name="goodCategory.id" :label="goodCategory.title" content-class="category_tab_label_style" />
       </q-tabs>
