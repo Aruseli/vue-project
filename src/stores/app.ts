@@ -64,7 +64,7 @@ export const useAppStore = defineStore('app', () => {
     while (true) {
       try {
         const lang_codes = await apiGetLocalesList(kioskState.params!.object_id!, kioskState.params!.location_id!)
-        .then(r => r?.map(l => l?.langcode))
+          .then(r => r?.map(l => l?.langcode))
         console.log('lang_codes', lang_codes);
         const locales = Object.assign({}, ...await Promise.all(lang_codes?.map(async l => ({
             [l]: await apiGetLocale(l),
@@ -75,7 +75,7 @@ export const useAppStore = defineStore('app', () => {
         break
       } catch {
       }
-      await delay(10000)
+      await delay(1000)
     }
 
     if (!inited) {
@@ -104,7 +104,7 @@ export const useAppStore = defineStore('app', () => {
 
 
   eventEmitter.on('local-ws', async evt => {
-    if (evt.cmd == 'barcode' && evt.data.startsWith("220") && evt.data.length == 1) {
+    if (evt.cmd == 'barcode' && evt.data.startsWith("220") && evt.data.length == 13) {
       // Используем коды EAN13: EAN-13 (полный) — кодируется 13 цифр (12 значащих + 1 контрольная сумма).
       // Структура кода:
       // 3 знака - префикс
@@ -216,6 +216,7 @@ async function updateCurrentUser(kioskState: KioskState) {
     const result = await apiUsersWhoami()
     kioskState.user = result
     console.log('whoami', result)
+    updateKioskStatus(kioskState)
   } catch (e: any) {
     if (e?.message?.includes("ERR_AUTH")) {
       kioskState.user = undefined
@@ -229,7 +230,6 @@ async function updateCurrentUser(kioskState: KioskState) {
       });
     }
   }
-  updateKioskStatus(kioskState)
 }
 
 function updateKioskStatus(kioskState: KioskState) {
