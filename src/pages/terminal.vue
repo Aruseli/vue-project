@@ -5,6 +5,7 @@
   import { useQuasar } from 'quasar';
   import { wsSendMessage } from '../services';
   import Logo from '../components/logo/logo.vue';
+  import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
   import { useAppStore, KioskStatus } from 'src/stores/app';
   import { apiReportsGetView } from 'src/services/api';
 
@@ -107,7 +108,9 @@
 
       <div v-if="kioskStatusIsUnauthenticated()" class="fit">
 
-        <Logo class="logo_column" />
+        <Logo class="logo_column">
+          <LogoSvgWhite />
+        </Logo>
 
         <q-form
           class="text-text fit"

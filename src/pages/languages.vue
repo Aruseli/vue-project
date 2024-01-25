@@ -1,7 +1,51 @@
 <script setup>
   import Logo from 'src/components/logo/logo.vue';
   import language from 'src/components/language.vue';
-import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
+  import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
+  import { useI18n } from 'vue-i18n';
+  import { useRouter } from 'vue-router';
+
+  const router = useRouter();
+
+  const languages = [
+    {
+      locale: 'en',
+      flag: 'src/assets/flags/gb.webp',
+      language: 'English',
+    },
+    {
+      locale: 'th',
+      flag: 'src/assets/flags/th.webp',
+      language: 'Thai',
+    },
+    {
+      locale: 'ru',
+      flag: 'src/assets/flags/ru.webp',
+      language: 'Russian',
+    },
+    {
+      locale: 'de',
+      flag: 'src/assets/flags/de.webp',
+      language: 'German',
+    },
+    {
+      locale: 'es',
+      flag: 'src/assets/flags/es.webp',
+      language: 'Spanish',
+    },
+    {
+      locale: 'uk',
+      flag: 'src/assets/flags/ua.webp',
+      language: 'Ukrainian',
+    },
+  ];
+
+  const changeLanguage = (newLocale) => {
+    useI18n.locale = newLocale;
+    console.log(newLocale);
+    router.push('catalog');
+  }
+
 </script>
 
 <template>
@@ -10,14 +54,13 @@ import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
       <LogoSvgWhite />
     </Logo>
     <div class="column bg-primary container">
-      <language />
-      <language />
-      <language />
-      <language />
-      <language />
-      <language />
-      <language />
-      <language />
+      <language v-for="lang in languages"
+        :key="lang.locale"
+        :src="lang.flag"
+        :alt="lang.language"
+        :language="lang.language"
+        @click="changeLanguage(lang.locale)"
+      />
     </div>
   </q-page>
 </template>
