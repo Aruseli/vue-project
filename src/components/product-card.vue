@@ -77,13 +77,25 @@
   const goodDetails = () => {
     openDialog.value = true;
   }
+  const timer = ref(null);
 
   const addGoodToCart = (selectedGood) => {
     cartStore.addToCart(selectedGood);
     showNotify();
+    // Запускаем таймер на 15 минут
+    timer.value = setInterval(() => {
+      $q.notify({
+        color: 'warning',
+        icon: 'warning',
+        position: 'center',
+        message: "Ваша корзина будет очищена через 1 минуту.",
+        // timeout: 2000,
+      })
+    }, 6000);
     console.log('existGood', existGood.value.stock)
     console.log('selectedGood', selectedGood)
     console.log('count', cartStore.cart)
+    console.log('timer', timer.value)
   }
 
   const selectedCount = computed(() => {

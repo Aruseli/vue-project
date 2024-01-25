@@ -15,23 +15,11 @@
 
   const timer = ref(null);
 
-  // Функция проверки взаимодействия пользователя со страницей
-  function isUserActive() {
-    return (
-      document.body.clickCount > 0 ||
-      document.body.touchCount > 0 ||
-      document.body.scrollTop > 0 ||
-      document.body.scrollLeft > 0
-    );
-  }
-
   // Функция-обработчик, которая переведет на новую страницу
   function redirect() {
     router.push('hello');
+    cartStore.clearCart();
   }
-
-  // Сохраняем время начала таймера
-  const startTime = ref(Date.now());
 
   onMounted(() => {
     goodsStore.setLocale('ru');
@@ -55,43 +43,8 @@
       clearTimeout(timer.value);
       timer.value = setInterval(redirect, 20000);
     });
-
   })
 
-  const showNotify = () => {
-    $q.notify({
-      color: 'warning',
-      icon: 'warning',
-      position: 'center',
-      message: "Ваша корзина будет очищена через 1 минуту.",
-      timeout: 2000,
-    })
-  }
-
-
-  // Проверяем, есть ли товары в корзине
-  if (cartStore.cart.length) {
-
-    // Проверяем, не прошло ли 15 минут
-    if (Date.now() - startTime < 15000) {
-    // Запускаем таймер на 15 минут
-      timer.value = setInterval(() => {
-        // Показываем сообщение о том, что корзина будет очищена
-        showNotify();
-      }, 5000);
-    // Останавливаем таймер
-    clearTimeout(timer.value);
-    // Очищаем корзину
-    cartStore.clearCart();
-
-  }
-  // Обрабатываем событие нажатия кнопки Купить
-// const onClickBuy = () => {
-//   // Останавливаем таймер
-//   clearTimeout(timer.value);
-//   // Очищаем корзину
-//   clearCart();
-// };
 </script>
 
 <template>
