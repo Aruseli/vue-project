@@ -118,5 +118,10 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     goodsLoading: _goodsLoading,
     waitGoodsReady,
   }
-})
+},
+  {
+    persist: true,
+  }
+
+)
 
