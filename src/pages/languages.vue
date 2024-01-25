@@ -2,8 +2,13 @@
   import Logo from 'src/components/logo/logo.vue';
   import language from 'src/components/language.vue';
   import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
-  import { useI18n } from 'vue-i18n';
   import { useRouter } from 'vue-router';
+  import { useAppStore } from 'src/stores/app';
+import { useGoodsStore } from 'src/stores/goods';
+
+
+  const app = useAppStore();
+  const goodsStore = useGoodsStore();
 
   const router = useRouter();
 
@@ -41,9 +46,9 @@
   ];
 
   const changeLanguage = (newLocale) => {
-    useI18n.locale = newLocale;
-    console.log(newLocale);
+    goodsStore.updateGoods(newLocale);
     router.push('catalog');
+    console.log('changeLanguage', newLocale);
   }
 
 </script>

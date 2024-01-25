@@ -4,6 +4,7 @@ import { ref } from 'vue';
 import { KioskStatus, useAppStore } from './app';
 import Dexie, { Table } from 'dexie';
 import { IMAGES_CACHE_CLEANUP_INTERVAL } from 'src/services/consts';
+import { useI18n } from 'vue-i18n';
 
 export type Good = {
   id: string,
@@ -47,7 +48,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
   const _goodsLoading = ref(false)
   let _goodsWaiter = new Deferred()
   _goodsWaiter.resolve(true)
-  const _locale = ref('en-US')
+  // const _locale = ref('en-US')
   let _imageCacheCleanupAfter = Date.now()
 
   const cleanupImagesCache = async () => {
@@ -110,10 +111,11 @@ export const useGoodsStore = defineStore('goodsStore', () => {
           continue;
         }
         const location_id = _appStore.kioskState.params?.location_id ?? ''
-        const locale = _locale.value
+        // const locale = _locale.value
         const terminal_settings = _appStore.kioskState.params?.terminal_settings
         const [fetchedGoods, stockRemains] = await Promise.all([
-          apiGetGoods(location_id, locale),
+          apiGetGoods(location_id, useI18n({ useScope: 'global' }).locale.value
+          ),
           apiGetStockRemains(terminal_settings?.kiosk_corr_id ?? ''),
         ]);
         fetchedGoods.forEach(gc => gc.goods.forEach(g => {
@@ -207,7 +209,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
   }
 
   const setLocale = async (locale: string) => {
-    _locale.value = locale
+    // _locale.value = locale
     await updateGoods()
   }
 
@@ -225,9 +227,9 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     waitGoodsReady,
   }
 },
-  {
-    persist: true,
-  }
+  // {
+  //   persist: true,
+  // }
 
 )
 

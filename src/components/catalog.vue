@@ -6,6 +6,9 @@
   import { useRouter } from 'vue-router';
   import { useCartStore } from 'src/stores/cart';
   import { useQuasar } from 'quasar';
+  import { useI18n } from 'vue-i18n';
+
+  const i18n = useI18n();
 
   const $q = useQuasar();
   const goodsStore = useGoodsStore();
@@ -22,7 +25,7 @@
   }
 
   onMounted(() => {
-    goodsStore.setLocale('ru');
+    goodsStore.updateGoods('ru');
     // Запускаем таймер
     timer.value = setInterval(redirect, 20000);
 
@@ -43,6 +46,8 @@
       clearTimeout(timer.value);
       timer.value = setInterval(redirect, 20000);
     });
+
+    console.log('i18n2', i18n.messages.value);
   })
 
 </script>

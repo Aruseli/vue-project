@@ -23,6 +23,7 @@ import { eventEmitter } from 'src/services';
  */
 export const useAppStore = defineStore('app', () => {
   const { t } = useI18n();
+  const i18n = useI18n();
   const cartStore = useCartStore();
   const router = useRouter();
   const drawerCartState = ref(false);
@@ -66,12 +67,10 @@ export const useAppStore = defineStore('app', () => {
         const lang_codes = await apiGetLocalesList(kioskState.params!.object_id!, kioskState.params!.location_id!)
           .then(r => r?.map(l => l?.langcode))
         console.log('lang_codes', lang_codes);
-        const locales = Object.assign({}, ...await Promise.all(lang_codes?.map(async l => ({
-            [l]: await apiGetLocale(l),
-          }))))
-        console.log('locales', locales)
-        kioskState.locales = locales
-        // TODO: Update i18n here if needed
+        lang_codes.forEach(async(lc) => {
+          // Update i18n here
+          i18n.setLocaleMessage(lc, await apiGetLocale(lc))
+        })
         break
       } catch {
       }
