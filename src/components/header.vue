@@ -49,7 +49,7 @@
 <template>
   <q-header
     reveal
-    :reveal-offset=100
+    :reveal-offset="100"
     class="header"
   >
     <q-toolbar class="justify-between q-mb-lg">
