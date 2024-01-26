@@ -257,7 +257,7 @@
               narrow-indicator
               dense
               no-caps
-              align="start"
+              align="left"
               class="q-mb-xs"
             >
               <q-tab :ripple="false" name="description" :label="t('description')" content-class="product_tab_label_style" />

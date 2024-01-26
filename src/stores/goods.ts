@@ -42,6 +42,8 @@ const goodsDb = new GoodsDexie();
  * 1. Перед отображением вызывать waitGoodsReady или проверять goodsLoading
  */
 export const useGoodsStore = defineStore('goodsStore', () => {
+  const i18n = useI18n({ useScope: 'global' }).locale.value;
+  const { locale } = useI18n();
   const _appStore = useAppStore()
   const _goods = ref<GoodCategory[]>([]);
   const _images = new Map<string, string>() // id -> base64 image
@@ -97,7 +99,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     }))
   }
 
-  const updateGoods = async () => {
+  const updateGoods = async (locale: string) => {
     if (_goodsLoading.value) {
       await _goodsWaiter.promise
       return
@@ -114,11 +116,10 @@ export const useGoodsStore = defineStore('goodsStore', () => {
         // const locale = _locale.value
         const terminal_settings = _appStore.kioskState.params?.terminal_settings
         const [fetchedGoods, stockRemains] = await Promise.all([
-          apiGetGoods(location_id, useI18n({ useScope: 'global' }).locale.value
-          ),
+          apiGetGoods(location_id, locale),
           apiGetStockRemains(terminal_settings?.kiosk_corr_id ?? ''),
         ]);
-        fetchedGoods.forEach(gc => gc.goods.forEach(g => {
+        fetchedGoods.forEach(gc => gc.goods.filter(g => !!g).forEach(g => {
           g.stock = stockRemains.find(v => v.good_id == g.id)?.remain_quant ?? 0
         }))
         // if (!stockRemains.length) {
@@ -210,7 +211,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
 
   const setLocale = async (locale: string) => {
     // _locale.value = locale
-    await updateGoods()
+    await updateGoods(locale)
   }
 
   const waitGoodsReady = async () => {

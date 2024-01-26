@@ -27,27 +27,28 @@
   onMounted(() => {
     goodsStore.updateGoods('ru');
     // Запускаем таймер
-    timer.value = setInterval(redirect, 20000);
+    // timer.value = setInterval(redirect, 20000);
 
-    // Обрабатываем события
-    document.addEventListener("mousemove", () => {
-      clearTimeout(timer.value);
-      timer.value = setInterval(redirect, 20000);
-    });
-    document.addEventListener("keydown", () => {
-      clearTimeout(timer.value);
-      timer.value = setInterval(redirect, 20000);
-    });
-    document.addEventListener("click", () => {
-      clearTimeout(timer.value);
-      timer.value = setInterval(redirect, 20000);
-    });
-    document.addEventListener("scroll", () => {
-      clearTimeout(timer.value);
-      timer.value = setInterval(redirect, 20000);
-    });
+    // // Обрабатываем события
+    // document.addEventListener("mousemove", () => {
+    //   clearTimeout(timer.value);
+    //   timer.value = setInterval(redirect, 20000);
+    // });
+    // document.addEventListener("keydown", () => {
+    //   clearTimeout(timer.value);
+    //   timer.value = setInterval(redirect, 20000);
+    // });
+    // document.addEventListener("click", () => {
+    //   clearTimeout(timer.value);
+    //   timer.value = setInterval(redirect, 20000);
+    // });
+    // document.addEventListener("scroll", () => {
+    //   clearTimeout(timer.value);
+    //   timer.value = setInterval(redirect, 20000);
+    // });
 
     console.log('i18n2', i18n.messages.value);
+    console.log('goodsStore', goodsStore.goods);
   })
 
 </script>
