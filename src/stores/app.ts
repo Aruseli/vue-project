@@ -24,6 +24,7 @@ import { eventEmitter } from 'src/services';
 export const useAppStore = defineStore('app', () => {
   const { t } = useI18n();
   const i18n = useI18n();
+  const { locale } = useI18n();
   const cartStore = useCartStore();
   const router = useRouter();
   const drawerCartState = ref(false);
@@ -84,7 +85,7 @@ export const useAppStore = defineStore('app', () => {
   })
 
   const setLocale = async (langcode: string) => {
-    useI18n({ useScope: 'global' }).locale.value = langcode
+    locale.value = langcode
   }
 
   const resetLocale = async () => {

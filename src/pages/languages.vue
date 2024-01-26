@@ -47,6 +47,7 @@ import { useGoodsStore } from 'src/stores/goods';
 
   const changeLanguage = (newLocale) => {
     goodsStore.updateGoods(newLocale);
+    app.setLocale(newLocale);
     router.push('catalog');
     console.log('changeLanguage', newLocale);
   }
