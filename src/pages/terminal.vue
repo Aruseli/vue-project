@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, reactive } from 'vue';
+  import { ref, reactive, onMounted } from 'vue';
   import QrcodeVue from 'qrcode.vue';
   import { useI18n } from 'vue-i18n';
   import { useQuasar } from 'quasar';
@@ -10,6 +10,7 @@
   import { apiReportsGetView } from 'src/services/api';
 
   const $q = useQuasar();
+  const i18n = useI18n();
 
   const { t } = useI18n();
   const appStore = useAppStore();
@@ -56,6 +57,10 @@
   function kioskStatusIsUnrecoverableError() {
     return appStore.kioskState.status == KioskStatus.UNRECOVERABLE_ERROR
   }
+
+  onMounted(() => {
+    console.log('i18n2', i18n.messages.value);
+  })
 </script>
 
 <template>

@@ -2,13 +2,20 @@
   import Logo from 'src/components/logo/logo.vue';
   import { useRouter } from 'vue-router';
   import { useI18n } from 'vue-i18n';
-  import { ref } from 'vue';
+  import { ref, onMounted } from 'vue';
   import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
+
+
+const i18n = useI18n();
 
   const { t } = useI18n();
   const router = useRouter();
 
   const show = ref(true);
+
+  onMounted(() => {
+    console.log('i18n2', i18n.messages.value);
+  })
 </script>
 
 <template>
