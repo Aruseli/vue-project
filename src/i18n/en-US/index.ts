@@ -16,7 +16,7 @@ export default {
   weight_sets: 'weight sets',
   consumption_sets: 'consumption sets',
   total: 'total',
-  pieces: 'pieces',
+  pieces: 'piece | pieces',
   pcs: 'pcs',
   placing_an_order: 'placing an order',
   open_shift: 'open a shift',
