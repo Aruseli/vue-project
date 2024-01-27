@@ -37,8 +37,8 @@ export const useOrderStore = defineStore('orderStore',
 
       // Создаем номер заказа
       const orderNum = orders.value.length + 1;
-       // Конвертируем номер заказа в строку
-       const orderNumStr = String(orderNum);
+      // Конвертируем номер заказа в строку
+      const orderNumStr = String(orderNum);
 
       // Создаем новый массив заказа
       const newOrder = {

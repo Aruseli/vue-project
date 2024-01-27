@@ -11,12 +11,15 @@
   import { useOrderStore } from 'src/stores/order';
   import IconButton from '../buttons/icon-button.vue';
   import RectangularButton from '../buttons/rectangular-button.vue';
+  import { apiSaveDocument } from 'src/services';
+
 
   const router = useRouter();
 
   const { t } = useI18n();
 
   const cartStore = useCartStore();
+  const appStore = useAppStore();
   const orderStore = useOrderStore();
   const app = useAppStore();
 
@@ -61,18 +64,55 @@
 
   const isDisabled = ref(false);
 
+  const terminal_settings = appStore.kioskState.params?.terminal_settings;
+
+  function createDoc(cartItem) {
+    return {
+      id: undefined, // Предположим, что это поле заполняется на сервере
+      state: 2,
+      doc_type: terminal_settings?.invoice_doc_type_id ?? '',
+      abbr_text: undefined,
+      abbr_num: undefined,
+      doc_date: new Date().toISOString(),
+      doc_order: 0,
+      corr_from_ref: terminal_settings?.kiosk_corr_id ?? '',
+      corr_to_ref: terminal_settings?.client_corr_id ?? '',
+      respperson_ref: appStore.kioskState.user?.id ?? '',
+      currency_ref: terminal_settings?.currency_id ?? '',
+      curr_rate: 1,
+      comment: undefined,
+      details: cartStore.cart.map((item, index) => ({
+        state: 0,
+        rec_order: index + 1,
+        munit_id: terminal_settings?.munit_id ?? '',
+
+        doc_detail_type: terminal_settings?.invoice_docdetail_type_id ?? '',
+        quant: item.count,
+        good_id: item.id,
+        total: item.price,
+      }))
+    };
+  }
+  const docsToBeSent = cartStore.cart.reduce((obj, item) => {
+    obj = createDoc(item);
+    return obj;
+  }, {});
+
   function openOrderDialog() {
     orderStore.existOrder();
     // кнопка будет недоступна для повторного клика
     isDisabled.value = true;
     // emulateLoading(progress);
     app.openOrderDialog(true);
+    console.log(cartStore.cart);
+    console.log(docsToBeSent);
+    apiSaveDocument(docsToBeSent);
     setTimeout(() => {
       cartStore.clearCart();
     }, 2000);
-    // setTimeout(() => {
-    //   router.push('hello');
-    // }, 7000);
+    setTimeout(() => {
+      router.push('hello');
+    }, 7000);
   }
 
   const removeFromCart = (id) => {
