@@ -27,7 +27,7 @@ import { onUnmounted } from 'vue';
   }
 
   const warnRedirect = () => {
-    const n = $q.notify({
+    $q.notify({
       progress: true,
       color: 'warning',
       icon: 'warning',
@@ -59,6 +59,8 @@ import { onUnmounted } from 'vue';
   })
 
   onUnmounted(() => {
+    clearTimeout(timerRedirect.value);
+    clearTimeout(timerWarn.value);
     ["mousemove", "keydown", "click", "scroll"].forEach(e =>
       document.removeEventListener(e, boundResetTimer)
     )
