@@ -20,19 +20,18 @@
     good_quant: {
       type: Number,
       required: false,
-      default: 1
+      default: 0,
+    },
+    good_issued: {
+      type: Number,
+      required: false,
+      default: 0,
     },
     good_src: {
       type: String,
       required: false,
       default: 'src/assets/smoke.jpeg'
     },
-    scannedItem: {
-      type: Boolean,
-      required: false,
-      default: false,
-
-    }
   })
 
   const emit = defineEmits(['click']);
@@ -43,7 +42,7 @@
 
 <template>
   <div
-    class="cart_product_item row bg-white"
+    :class="'cart_product_item row ' + (props.good_issued != props.good_quant ? 'bg-white' : 'bg-positive')"
     v-bind="$attrs"
     @click="click">
     <div class="col-3 q-pr-lg">
@@ -70,7 +69,7 @@
         <div class="text-h2">
           &#3647&ensp;{{ props.good_price }}
         </div>
-        <div class="text-h3">{{ props.good_quant }}{{ t('pcs') }}</div>
+        <div class="text-h3">{{ props.good_issued > 0 ? props.good_issued + ' / ' : '' }}{{ props.good_quant }}{{ t('pcs') }}</div>
       </div>
     </div>
   </div>

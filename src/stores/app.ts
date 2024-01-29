@@ -1,13 +1,15 @@
 import { defineStore } from 'pinia';
 import { reactive, ref } from 'vue';
-import { useCartStore } from './cart';
-import { TerminalParams, apiAddAnyTerminal, apiAuth, apiAuthBearer, apiGetLocale, apiGetLocalesList, apiUsersWhoami } from 'src/services/api';
-import { Router, useRouter } from 'vue-router';
+import { apiAddAnyTerminal, apiAuth, apiAuthBearer, apiUsersWhoami } from 'src/services/api';
+import { Router, useRoute, useRouter } from 'vue-router';
 import { TERMINAL_REGISTRATION_ATTEMPT_INTERVAL, TERMINAL_STATUS_UPDATE_INTERVAL, USER_INFO_UPDATE_INTERVAL } from 'src/services/consts';
 import { useI18n } from 'vue-i18n';
 import { Notify } from 'quasar';
 import { delay } from 'src/services/utils';
-import { eventEmitter } from 'src/services';
+import { eventEmitter, initLocalDeviceWsService } from 'src/services';
+import { KioskState } from 'src/types/kiosk-state';
+import { updateCatalogLocales } from 'src/services/locales';
+import { i18n } from 'src/boot/i18n'
 
 /*
  This is 'app' or 'main' store.
@@ -22,14 +24,12 @@ import { eventEmitter } from 'src/services';
  с комментарием "//TODO fetch"
  */
 export const useAppStore = defineStore('app', () => {
-  const { t } = useI18n();
-  const i18n = useI18n();
-  const { locale } = useI18n();
-  const cartStore = useCartStore();
+  const { t, locale } = i18n.global;
+  const route = useRoute();
   const router = useRouter();
   const drawerCartState = ref(false);
   const orderDialog = ref(false);
-  const tab = ref('food');
+  const tab = ref('');
   const tabCharacteristics = ref('description');
 
   const openDrawerCart = (state: boolean) => {
@@ -44,44 +44,17 @@ export const useAppStore = defineStore('app', () => {
   // TERMINAL INIT
 
   const kioskState = reactive<KioskState>({
-    status: KioskStatus.UNKNOWN,
+    status: 'Unknown',
     name: getTerminalName(router),
     code: getTerminalCode(router),
   })
   if (!kioskState.code) {
-    kioskState.globalError = new Error(t('NO_TERMINAL_CODE_PROVIDED_ON_STARTUP'))
-    kioskState.status = KioskStatus.UNRECOVERABLE_ERROR
+    kioskState.globalError = new Error(t('no_terminal_code_provided_on_startup'))
+    kioskState.status = 'UnrecoverableError'
   }
 
   setTimeout(loopUpdateTerminalParams, 0, kioskState);
   setTimeout(loopUpdateCurrentUser, 0, kioskState)
-
-  let inited = false;
-  eventEmitter.on('kioskState.status', async ({ newStatus }) => {
-    if (newStatus != KioskStatus.READY) {
-      return
-    }
-    // Update locales
-    while (true) {
-      try {
-        const lang_codes = await apiGetLocalesList(kioskState.params!.object_id!, kioskState.params!.location_id!)
-          .then(r => r?.map(l => l?.langcode))
-        console.log('lang_codes', lang_codes);
-        lang_codes.forEach(async(lc) => {
-          // Update i18n here
-          i18n.setLocaleMessage(lc, await apiGetLocale(lc))
-        })
-        break
-      } catch {
-      }
-      await delay(1000)
-    }
-
-    if (!inited) {
-      inited = true
-      router.push('/employee-actions')
-    }
-  })
 
   const setLocale = async (langcode: string) => {
     locale.value = langcode
@@ -97,25 +70,24 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const loginByToken = async (token: string) => {
-    await apiAuthBearer(token)
+    const sessionToken = await apiAuthBearer(token)
     await updateCurrentUser(kioskState)
+    return !!sessionToken
   }
 
-
-  eventEmitter.on('local-ws', async evt => {
-    if (evt.cmd == 'barcode' && evt.data.startsWith("220") && evt.data.length == 13) {
-      // Используем коды EAN13: EAN-13 (полный) — кодируется 13 цифр (12 значащих + 1 контрольная сумма).
-      // Структура кода:
-      // 3 знака - префикс
-      // 9 знаков - код сущности
-      // 1 знак - контрольная сумма
-      // Префиксы 200-299 - зарезервированны в стандарте для внутренних целей. Используем их таким образом:
-      // 200: внутрениие товары
-      // 210: товары для продажи
-      // 220: сотрудники
-      await loginByToken(evt.data.slice(3, 12))
-      router.push('/employee-actions')
+  let inited = false;
+  eventEmitter.on('kioskState.status', async ({ newStatus }) => {
+    if (newStatus != 'Ready') {
+      return
     }
+    if (!inited) {
+      inited = true
+      await resetLocale()
+      router.push('/employee-actions') // Redirect to employee-actions on startup
+    }
+
+    // Init locales
+    await updateCatalogLocales(kioskState, i18n.global)
   })
 
   //===================================
@@ -131,38 +103,22 @@ export const useAppStore = defineStore('app', () => {
 
     kioskState,
     login,
+    loginByToken,
     setLocale,
     resetLocale,
   }
 });
 
-export const enum KioskStatus {
-  UNKNOWN = 'UNKNOWN',
-  UNBOUND_TERMINAL = 'UNBOUND_TERMINAL',
-  UNAUTHENTICATED = 'UNAUTHENTICATED',
-  READY = 'READY',
-  UNRECOVERABLE_ERROR = 'UNRECOVERABLE_ERROR',
-}
-
-export type KioskState = {
-  status: KioskStatus, //'UNKNOWN' | 'UNBOUND_TERMINAL',// KioskStatus,
-  name: string,
-  code: string,
-  params?: TerminalParams,
-  globalError?: Error,
-  user?: any,
-  locales?: { [langcode: string]: any }
-}
-
 async function loopUpdateTerminalParams(kioskState: KioskState) {
   while(true) {
-    if (kioskState.status == KioskStatus.UNRECOVERABLE_ERROR) {
+    if (kioskState.status == 'UnrecoverableError') {
       return
     }
     let terminalParams = await tryFetchTerminalParams(kioskState.name, kioskState.code);
     if (terminalParams) {
       kioskState.params = terminalParams
       console.log('terminalParams', terminalParams)
+      initLocalDeviceWsService(terminalParams.terminal_settings?.tdp ?? "localhost:3010")
       updateKioskStatus(kioskState)
     }
     await delay(
@@ -193,7 +149,7 @@ async function tryFetchTerminalParams(terminalName: string, terminalCode: string
     return await apiAddAnyTerminal(terminalName, terminalCode);
   }
   catch {
-    const { t } = useI18n();
+    const { t } = i18n.global;
     Notify.create({
       color: 'warning',
       position: 'center',
@@ -221,7 +177,7 @@ async function updateCurrentUser(kioskState: KioskState) {
       kioskState.user = undefined
       console.log('whoami', undefined)
     } else {
-      const { t } = useI18n();
+      const { t } = i18n.global;
       Notify.create({
         color: 'warning',
         position: 'center',
@@ -233,18 +189,18 @@ async function updateCurrentUser(kioskState: KioskState) {
 
 function updateKioskStatus(kioskState: KioskState) {
   const oldStatus = kioskState.status
-  let newStatus = deduceStatus(kioskState)
+  let newStatus: KioskState['status'] = deduceStatus(kioskState)
 
   // Erroneous transitions
-  if (oldStatus == KioskStatus.READY &&
+  if (oldStatus == 'Ready' &&
       [
-        KioskStatus.UNKNOWN,
-        KioskStatus.UNBOUND_TERMINAL,
+        'Unknown',
+        'UnboundTerminal',
       ].findIndex(s => s == newStatus) >= 0
     ) {
-      const { t } = useI18n()
+      const { t } = i18n.global
       kioskState.globalError = new Error(t('TERMINAL_WAS_UNREGISTERED'))
-      newStatus = KioskStatus.UNRECOVERABLE_ERROR
+      newStatus = 'UnrecoverableError'
   }
 
   if (oldStatus != newStatus) {
@@ -254,19 +210,19 @@ function updateKioskStatus(kioskState: KioskState) {
 }
 
 function deduceStatus(kioskState: KioskState) {
-  if (kioskState.globalError || kioskState.status == KioskStatus.UNRECOVERABLE_ERROR) {
-    return KioskStatus.UNRECOVERABLE_ERROR
+  if (kioskState.globalError || kioskState.status == 'UnrecoverableError') {
+    return 'UnrecoverableError'
   }
   if (!kioskState.params?.terminal_id) {
-    return KioskStatus.UNKNOWN
+    return 'Unknown'
   }
   if (!kioskState.params?.location_id || !kioskState.params?.object_id) {
-    return KioskStatus.UNBOUND_TERMINAL
+    return 'UnboundTerminal'
   }
   if (!kioskState.user) {
-    return KioskStatus.UNAUTHENTICATED
+    return 'Unauthenticated'
   }
-  return KioskStatus.READY
+  return 'Ready'
 }
 
 

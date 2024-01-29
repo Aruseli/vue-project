@@ -1,7 +1,4 @@
 <script setup>
-  import { useI18n } from 'vue-i18n';
-
-  const { t } = useI18n();
   const props = defineProps({
     name: {
       type: String,
@@ -32,7 +29,7 @@
 </script>
 
 <template>
-   <q-btn :size="size" unelevated rounded :color="color" :text-color="textColor" @click="click" v-bind="$attrs">{{ t(props.name) }}</q-btn>
+   <q-btn :size="size" unelevated rounded :color="color" :text-color="textColor" @click="click" v-bind="$attrs">{{ $t(props.name) }}</q-btn>
 </template>
 
 <style scoped>

@@ -8,7 +8,6 @@
   import { useRouter } from 'vue-router';
   import DividerBold from '../dividers/divider-bold.vue';
   import DividerThin from '../dividers/divider-thin.vue';
-  import { useOrderStore } from 'src/stores/order';
   import IconButton from '../buttons/icon-button.vue';
   import RectangularButton from '../buttons/rectangular-button.vue';
   import { apiSaveDocument } from 'src/services';
@@ -18,45 +17,28 @@
 
   const { t } = useI18n();
 
-  const cartStore = useCartStore();
-  const appStore = useAppStore();
-  const orderStore = useOrderStore();
   const app = useAppStore();
+  const cartStore = useCartStore();
 
-  // Инициализируем реактивные переменные для хранения общего количества и общей стоимости
-  const totalCount = ref(0);
-  const totalPrice = ref(0);
+  // // Если успользовать loading на кнопку Заказа, то при нажатии на кнопку будет отображаться прогресс загрузки
+  // const progress = ref({ loading: false, percentage: 0 });
+  // const interval = null;
+  // const emulateLoading = (progress) => {
+  // // Установить флаг загрузки в true
+  //   progress.value.loading = true;
 
-   // Функция для подсчета общего количества и общей стоимости
-   const calculateTotal = () => {
-    totalCount.value = cartStore.cart.reduce((acc, item) => acc + item.count, 0);
-    totalPrice.value = cartStore.cart.reduce((acc, item) => acc + item.count * item.price, 0);
-  };
+  //   // Запустить таймер обратного отсчета
+  //   const timer = setInterval(() => {
+  //     // Увеличить процент загрузки
+  //     progress.value.percentage += 1;
 
-  // Если успользовать loading на кнопку Заказа, то при нажатии на кнопку будет отображаться прогресс загрузки
-  const progress = ref({ loading: false, percentage: 0 });
-  const interval = null;
-  const emulateLoading = (progress) => {
-  // Установить флаг загрузки в true
-    progress.value.loading = true;
-
-    // Запустить таймер обратного отсчета
-    const timer = setInterval(() => {
-      // Увеличить процент загрузки
-      progress.value.percentage += 1;
-
-      // Если процент загрузки достиг 100, остановить таймер и установить флаг загрузки в false
-      if (progress.value.percentage === 100) {
-        clearInterval(timer);
-        progress.value.loading = false;
-      }
-    }, 1000);
-  }
-
-  // Вызываем функцию при монтировании компонента
-  onMounted(() => {
-    calculateTotal();
-  });
+  //     // Если процент загрузки достиг 100, остановить таймер и установить флаг загрузки в false
+  //     if (progress.value.percentage === 100) {
+  //       clearInterval(timer);
+  //       progress.value.loading = false;
+  //     }
+  //   }, 1000);
+  // }
 
   const closeDrawerCart = () => {
     app.openDrawerCart(false)
@@ -64,59 +46,29 @@
 
   const isDisabled = ref(false);
 
-  const terminal_settings = appStore.kioskState.params?.terminal_settings;
-
-  function createDoc(cartItem) {
-    return {
-      id: undefined, // Предположим, что это поле заполняется на сервере
-      state: 2,
-      doc_type: terminal_settings?.invoice_doc_type_id ?? '',
-      abbr_text: undefined,
-      abbr_num: undefined,
-      doc_date: new Date().toISOString(),
-      doc_order: 0,
-      corr_from_ref: terminal_settings?.kiosk_corr_id ?? '',
-      corr_to_ref: terminal_settings?.client_corr_id ?? '',
-      respperson_ref: appStore.kioskState.user?.id ?? '',
-      currency_ref: terminal_settings?.currency_id ?? '',
-      curr_rate: 1,
-      comment: undefined,
-      details: cartStore.cart.map((item, index) => ({
-        state: 0,
-        rec_order: index + 1,
-        munit_id: terminal_settings?.munit_id ?? '',
-
-        doc_detail_type: terminal_settings?.invoice_docdetail_type_id ?? '',
-        quant: item.count,
-        good_id: item.id,
-        total: item.price,
-      }))
-    };
-  }
-  const docsToBeSent = cartStore.cart.reduce((obj, item) => {
-    obj = createDoc(item);
-    return obj;
-  }, {});
-
-  function openOrderDialog() {
-    orderStore.existOrder();
+  async function submitOrder() {
+    // orderStore.existOrder();
     // кнопка будет недоступна для повторного клика
     isDisabled.value = true;
     // emulateLoading(progress);
-    app.openOrderDialog(true);
-    console.log(cartStore.cart);
-    console.log(docsToBeSent);
-    apiSaveDocument(docsToBeSent);
-    setTimeout(() => {
-      cartStore.clearCart();
-    }, 2000);
-    setTimeout(() => {
-      router.push('hello');
-    }, 7000);
-  }
-
-  const removeFromCart = (id) => {
-    cartStore.cart = cartStore.cart.filter(item => item.id !== id)
+    try {
+      await cartStore.submitOrder()
+      app.openOrderDialog(true);
+      setTimeout(() => {
+        router.push('hello');
+      }, 7000);
+    } catch {
+      console.error('ordersStore.selectOrder error:', err)
+      $q.notify({
+        color: 'warning',
+        icon: 'warning',
+        position: 'center',
+        message: t('unable_to_submit_order'),
+        timeout: 6000,
+      })
+    } finally {
+      isDisabled.value = false
+    }
   }
 
   onMounted(() => {
@@ -164,10 +116,10 @@
 
     <q-scroll-area class="fit">
       <div class="row container_settings">
-        <div class="cart_product_item row" v-for="(item, index) in cartStore.cart" :key="index">
+        <div class="cart_product_item row" v-for="(item, index) in cartStore.cartExtended" :key="index">
           <div class="col-4 q-pr-md">
             <q-img
-              :src="item.images[0].image"
+              :src="item.image"
               ration="16/9"
               height="150px"
               fit="unset"
@@ -185,7 +137,7 @@
               <div class="text-h3 text-weight-regular">
                 {{ item.title }}
               </div>
-              <q-btn unelevated round @click="removeFromCart(item.id)">
+              <q-btn unelevated round @click="cartStore.removeFromCart(item.id)">
                 <q-icon name="img:src/assets/bin.svg" size="2.5rem" />
               </q-btn>
             </div>
@@ -204,7 +156,7 @@
                   @click="() => cartStore.increaseItemsCount(item)"
                   class="q-pa-xs"
                 />
-                <h4 class='q-mx-md q-my-none'>{{ item.count }}</h4>
+                <h4 class='q-mx-md q-my-none'>{{ item.quant }}</h4>
                 <IconButton
                   round
                   :icon="evaMinusOutline"
@@ -221,15 +173,15 @@
     <div class="q-pa-md bg-white">
       <DividerBold class="q-mb-md" />
       <div class="row justify-between items-center q-mb-md">
-        <div class="text-h2">{{t('total')}}</div>
+        <div class="text-h2">{{ $t('total') }}</div>
         <div class="text-h2 q-mb-md">
-          {{ cartStore.totalCost }} &ensp;&#3647
+          {{ cartStore.totalPrice }} &ensp;&#3647
         </div>
         <DividerThin class="bg-negative q-mb-md" />
         <div class="text-h4 order_container text-weight-regular">
-          <span>{{t('order')}}</span>
+          <span>{{ $t('order') }}</span>
           <span>{{ cartStore.totalQuantity }}</span>
-          <span>{{ t('pieces') }}</span>
+          <span>{{ $t('pieces') }}</span>
         </div>
       </div>
       <div class="full-width" v-show="cartStore.cart.length">
@@ -237,7 +189,7 @@
           class="fit"
           name="checkout"
           :disable="isDisabled"
-          @click="openOrderDialog"
+          @click="submitOrder"
         />
       </div>
     </div>

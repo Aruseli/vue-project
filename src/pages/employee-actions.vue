@@ -1,12 +1,9 @@
 <script setup>
   import { useRouter } from 'vue-router';
-  import { useI18n } from 'vue-i18n';
-  import { ref, onMounted } from 'vue';
+  import { ref } from 'vue';
   import RectangularButton from '../components/buttons/rectangular-button.vue';
 
   const router = useRouter();
-  const { t } = useI18n();
-  const i18n = useI18n();
   const route = (path) => {
     router.push(path);
     console.log('path', path);
@@ -46,9 +43,6 @@
       path: () => route(''),
     },
   ])
-  onMounted(() => {
-    console.log('i18n2', i18n.messages.value);
-  })
 </script>
 
 <template>

@@ -4,52 +4,19 @@
   import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
   import { useRouter } from 'vue-router';
   import { useAppStore } from 'src/stores/app';
-import { useGoodsStore } from 'src/stores/goods';
+  import { useGoodsStore } from 'src/stores/goods';
 
 
   const app = useAppStore();
   const goodsStore = useGoodsStore();
 
   const router = useRouter();
-
-  const languages = [
-    {
-      locale: 'en',
-      flag: 'src/assets/flags/gb.webp',
-      language: 'English',
-    },
-    {
-      locale: 'th',
-      flag: 'src/assets/flags/th.webp',
-      language: 'Thai',
-    },
-    {
-      locale: 'ru',
-      flag: 'src/assets/flags/ru.webp',
-      language: 'Russian',
-    },
-    {
-      locale: 'de',
-      flag: 'src/assets/flags/de.webp',
-      language: 'German',
-    },
-    {
-      locale: 'es',
-      flag: 'src/assets/flags/es.webp',
-      language: 'Spanish',
-    },
-    {
-      locale: 'uk',
-      flag: 'src/assets/flags/ua.webp',
-      language: 'Ukrainian',
-    },
-  ];
-
-  const changeLanguage = (newLocale) => {
-    goodsStore.updateGoods(newLocale);
+  const changeLanguage = async (newLocale) => {
+    console.log('changingLanguage', newLocale);
+    await goodsStore.updateGoods(newLocale);
     app.setLocale(newLocale);
+    console.log('changedLanguage', newLocale);
     router.push('catalog');
-    console.log('changeLanguage', newLocale);
   }
 
 </script>
@@ -60,7 +27,7 @@ import { useGoodsStore } from 'src/stores/goods';
       <LogoSvgWhite />
     </Logo>
     <div class="column bg-primary container">
-      <language v-for="lang in languages"
+      <language v-for="lang in app.kioskState.catalogLocales"
         :key="lang.locale"
         :src="lang.flag"
         :alt="lang.language"

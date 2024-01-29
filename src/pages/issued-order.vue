@@ -1,12 +1,12 @@
 <script setup>
   import { useRouter } from 'vue-router';
   import { useI18n } from 'vue-i18n';
-  import { useOrderStore } from 'src/stores/order';
-import DividerBold from 'src/components/dividers/divider-bold.vue';
-import DividerThin from 'src/components/dividers/divider-thin.vue';
-import RectangularButton from 'src/components/buttons/rectangular-button.vue';
+  import { useOrdersStore } from 'src/stores/orders';
+  import DividerBold from 'src/components/dividers/divider-bold.vue';
+  import DividerThin from 'src/components/dividers/divider-thin.vue';
+  import RectangularButton from 'src/components/buttons/rectangular-button.vue';
 
-  const orderStore = useOrderStore();
+  const ordersStore = useOrdersStore();
   const router = useRouter();
   const { t } = useI18n();
 
@@ -29,13 +29,13 @@ import RectangularButton from 'src/components/buttons/rectangular-button.vue';
         <div class="q-mb-md row justify-between items-center full-width">
           <div class="text-h2">{{t('total')}}</div>
           <div class="text-h2">
-            {{ orderStore.orders[0].totalCost }} &ensp;&#3647
+            {{ ordersStore.currentOrder.totalPrice }} &ensp;&#3647
           </div>
         </div>
         <DividerThin class="bg-negative q-mb-md" />
         <div class="text-h2 order_container text-weight-regular self-start">
           <span>{{t('order')}}</span>&ensp;
-          <span>{{ orderStore.orders[0].totalCount }}</span>&ensp;
+          <span>{{ ordersStore.currentOrder.totalCount }}</span>&ensp;
           <span>{{ t('product_units') }}</span>
         </div>
       </div>

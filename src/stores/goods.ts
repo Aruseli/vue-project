@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ApiGoodCategory, Deferred, apiGetDocuments, apiGetGoods, apiGetGoodsImages, apiGetStockRemains, apiSaveDocument, delay, throwErr } from 'src/services';
 import { ref } from 'vue';
-import { KioskStatus, useAppStore } from './app';
+import { useAppStore } from './app';
 import Dexie, { Table } from 'dexie';
 import { IMAGES_CACHE_CLEANUP_INTERVAL } from 'src/services/consts';
 import { useI18n } from 'vue-i18n';
@@ -37,24 +37,17 @@ class GoodsDexie extends Dexie {
 
 const goodsDb = new GoodsDexie();
 
-/**
- * NOTES:
- * 1. Перед отображением вызывать waitGoodsReady или проверять goodsLoading
- */
 export const useGoodsStore = defineStore('goodsStore', () => {
-  const i18n = useI18n({ useScope: 'global' }).locale.value;
-  const { locale } = useI18n();
-  const _appStore = useAppStore()
-  const _goods = ref<GoodCategory[]>([]);
-  const _images = new Map<string, string>() // id -> base64 image
-  const _goodsLoading = ref(false)
-  let _goodsWaiter = new Deferred()
-  _goodsWaiter.resolve(true)
-  // const _locale = ref('en-US')
-  let _imageCacheCleanupAfter = Date.now()
+  const appStore = useAppStore()
+  const goods = ref<GoodCategory[]>([]);
+  const imagesCache = ref(new Map<string, string>()) // id -> base64 image
+  const goodsLoading = ref(false)
+  const goodsLoadingWaiter = ref(new Deferred())
+  goodsLoadingWaiter.value.resolve(false)
+  const imagesCacheExpirationAt = ref(Date.now())
 
   const cleanupImagesCache = async () => {
-    const allImagesIds = new Set(_goods.value.flatMap(gc =>
+    const allImagesIds = new Set(goods.value.flatMap(gc =>
       gc.goods.flatMap(g => g.images.map(i => i.id))
     ))
     const allCachedImagesIds = await goodsDb.images.orderBy('id').primaryKeys() as string[]
@@ -70,22 +63,22 @@ export const useGoodsStore = defineStore('goodsStore', () => {
       const result = await apiGetGoodsImages(portion)
       goodsDb.images.bulkPut(result)
       result.forEach(i => {
-        _images.set(i.id, i.image)
+        imagesCache.value.set(i.id, i.image)
       })
     }
   }
 
   const populateImages = async (goods: ApiGoodCategory[]) => {
-    if (_images.size == 0) {
+    if (imagesCache.value.size == 0) {
       await goodsDb.images.each(i => {
-        _images.set(i.id, i.image)
+        imagesCache.value.set(i.id, i.image)
       })
     }
     const allImagesIds = goods.flatMap(gc =>
         gc.goods.filter(g => !!g)
                 .flatMap(g => g.images_ids)
       );
-    const toFetch = allImagesIds.filter(id => !_images.has(id))
+    const toFetch = allImagesIds.filter(id => !imagesCache.value.has(id))
     await fetchImages(toFetch)
     return <GoodCategory[]>goods.map(gc => ({
       ...gc,
@@ -93,28 +86,28 @@ export const useGoodsStore = defineStore('goodsStore', () => {
         ...g,
         images: g.images_ids.map(id => ({
           id,
-          image: _images.get(id) ?? throwErr(new Error(`Image is missing: ${id}`)),
+          image: imagesCache.value.get(id) ?? throwErr(new Error(`Image is missing: ${id}`)),
         })),
       })),
     }))
   }
 
   const updateGoods = async (locale: string) => {
-    if (_goodsLoading.value) {
-      await _goodsWaiter.promise
+    if (goodsLoading.value) {
+      await goodsLoadingWaiter.value.promise
       return
     }
-    _goodsLoading.value = true
-    _goodsWaiter = new Deferred()
+    goodsLoading.value = true
+    goodsLoadingWaiter.value = new Deferred()
     while (true) {
       try {
-        if (_appStore.kioskState.status != KioskStatus.READY) {
+        if (appStore.kioskState.status != 'Ready') {
           await delay(100)
           continue;
         }
-        const location_id = _appStore.kioskState.params?.location_id ?? ''
+        const location_id = appStore.kioskState.params?.location_id ?? ''
         // const locale = _locale.value
-        const terminal_settings = _appStore.kioskState.params?.terminal_settings
+        const terminal_settings = appStore.kioskState.params?.terminal_settings
         const [fetchedGoods, stockRemains] = await Promise.all([
           apiGetGoods(location_id, locale),
           apiGetStockRemains(terminal_settings?.kiosk_corr_id ?? ''),
@@ -150,51 +143,14 @@ export const useGoodsStore = defineStore('goodsStore', () => {
         //     })),
         //   }
         //   console.log('Debug arrival goods', await apiSaveDocument(goodsArrivalDoc))
-        // } else if (false) {
-        //   // New invoice
-        //   const invoiceDoc = {
-        //     id: undefined,
-        //     state: 2,
-        //     doc_type: terminal_settings?.invoice_doc_type_id ?? '',
-        //     abbr_text: undefined,
-        //     abbr_num: undefined,
-        //     doc_date: new Date().toISOString(),
-        //     doc_order: 0,
-        //     corr_from_ref: terminal_settings?.kiosk_corr_id ?? '',
-        //     corr_to_ref: terminal_settings?.client_corr_id ?? '',
-        //     respperson_ref: _appStore.kioskState.user?.id ?? '',
-        //     currency_ref: terminal_settings?.currency_id ?? '',
-        //     curr_rate: 1,
-        //     comment: undefined,
-        //     details: fetchedGoods[0].goods.map(g => ({
-        //       id: undefined,
-        //       state: 0,
-        //       rec_order: 0,
-        //       good_id: g.id,
-        //       munit_id: terminal_settings?.munit_id ?? '', // default
-        //       quant: 10,
-        //       total: stock-quant,
-        //       doc_detail_link: undefined,
-        //       doc_detail_type: terminal_settings?.invoice_docdetail_type_id ?? '',
-        //     })),
-        //   }
-        //   console.log('Invoice', await apiSaveDocument(invoiceDoc))
-        // } else {
-        //   const invoices = await apiGetDocuments([terminal_settings!.invoice_doc_type_id!], [2])
-        //   console.log('Invoices', invoices)
-        //   const invoiceDoc = invoices.find(d => d.id == '285ecd3c-84c2-428c-ab6e-1a30005cbf5e')
-        //   if (invoiceDoc) {
-        //     invoiceDoc.state = 0
-        //     console.log('Issue goods', await apiSaveDocument(invoiceDoc))
-        //   }
         // }
-        _goods.value = await populateImages(fetchedGoods)
-        _appStore.tab = fetchedGoods[0].id
-        _goodsLoading.value = false
-        _goodsWaiter.resolve(true)
-        if (_imageCacheCleanupAfter < Date.now()) {
-          _imageCacheCleanupAfter = Date.now() + IMAGES_CACHE_CLEANUP_INTERVAL
-          cleanupImagesCache()
+        goods.value = await populateImages(fetchedGoods)
+        appStore.tab = fetchedGoods[0].id
+        goodsLoading.value = false
+        goodsLoadingWaiter.value.resolve(true)
+        if (imagesCacheExpirationAt.value < Date.now()) {
+          imagesCacheExpirationAt.value = Date.now() + IMAGES_CACHE_CLEANUP_INTERVAL
+          cleanupImagesCache() // do not await intentionally
         }
         return
       }
@@ -205,26 +161,29 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     }
   }
 
+  const getGoodByIdHits = ref(0)
   const getGoodById = (id: string) => {
-    return _goods.value.flatMap(gc => gc.goods).find(g => g.id == id)
-  }
-
-  const setLocale = async (locale: string) => {
-    // _locale.value = locale
-    await updateGoods(locale)
+    getGoodByIdHits.value += 1
+    if (getGoodByIdHits.value % 100 == 0) {
+      console.log('getGoodById hits', getGoodByIdHits.value)
+    }
+    return goods.value.flatMap(gc => gc.goods).find(g => g.id == id)
   }
 
   const waitGoodsReady = async () => {
-    await _goodsWaiter.promise
+    await goodsLoadingWaiter.value.promise
   }
 
   return {
-    goods: _goods,
+    goods: goods,
     getGoodById,
+    getGoodByIdHits, // debug
 
     updateGoods,
-    setLocale,
-    goodsLoading: _goodsLoading,
+    goodsLoading,
+    goodsLoadingWaiter,
+    imagesCache,
+    imagesCacheExpirationAt,
     waitGoodsReady,
   }
 },

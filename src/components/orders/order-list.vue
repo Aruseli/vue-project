@@ -4,18 +4,36 @@
   import { onMounted } from 'vue';
   import { useRouter } from 'vue-router';
   import { useI18n } from 'vue-i18n';
-  import { useOrderStore } from 'src/stores/order'
+  import { useGoodsStore } from 'src/stores/goods';
+  import { useOrdersStore } from 'src/stores/orders';
+  import { useQuasar } from 'quasar';
 
+  const $q = useQuasar();
   const router = useRouter();
-  const { t } = useI18n();
-  const orderStore = useOrderStore();
+  const i18n = useI18n();
+  const { t } = i18n;
+  const goodsStore = useGoodsStore();
+  const ordersStore = useOrdersStore();
 
   const goToOrder = (id) => {
     router.push({ path: '/issuing-order/order/' + id })
   }
 
-  onMounted(() => {
-    console.log('orderStore', orderStore.orders);
+  onMounted(async () => {
+    try {
+      await goodsStore.updateGoods(i18n.locale.value)
+      await ordersStore.updateOrders()
+    } catch (err) {
+      console.error('ordersStore.updateOrders error:', err)
+      $q.notify({
+        color: 'warning',
+        icon: 'warning',
+        position: 'center',
+        message: t('unable_to_load_orders'),
+        timeout: 6000,
+      })
+      router.push('/employee-actions')
+    }
   })
 </script>
 
@@ -23,20 +41,20 @@
   <div class="main_container full-height">
     <div class="relative-position">
       <router-link :to="{ path: '/employee-actions' }" class='router_link_style text-secondary absolute-top-left'>
-        {{ t('back_to_employee_actions') }}
+        {{ $t('back_to_employee_actions') }}
       </router-link>
-      <div class="text-h1 text-uppercase text-center q-mb-md title_padding">{{ t('open_orders') }}</div>
+      <div class="text-h1 text-uppercase text-center q-mb-md title_padding">{{ $t('open_orders') }}</div>
       <DividerThin class="q-mb-xl bg-secondary" />
     </div>
     <div class="orders_container">
       <ExistOrder
-        v-for="order in orderStore.orders"
+        v-for="order in ordersStore.orders"
         :key="order.id"
         :good_title="order.allTitles"
-        :good_price="order.totalCost"
+        :good_price="order.totalPrice"
         :order_number="order.orderNumStr"
         :good_id="order.orderNumStr"
-        @click="goToOrder(order.orderNumStr)"
+        @click="goToOrder(order.id)"
       />
     </div>
   </div>

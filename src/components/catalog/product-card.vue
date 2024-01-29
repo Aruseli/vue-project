@@ -5,15 +5,16 @@
   import { evaRadioButtonOffOutline } from '@quasar/extras/eva-icons';
   import { useI18n } from 'vue-i18n';
   import { computed, ref, onMounted } from 'vue';
-  import { useCartStore } from '../stores/cart';
-  import { useGoodsStore } from '../stores/goods';
-  import { useAppStore } from 'src/stores/app';
+  import { useCartStore } from '../../stores/cart';
+  import { useGoodsStore } from '../../stores/goods';
+  import { useAppStore } from '../../stores/app';
   import { useQuasar } from 'quasar';
-  import IconButton from '../components/buttons/icon-button.vue';
+  import IconButton from '../buttons/icon-button.vue';
 
   const $q = useQuasar();
   const openDialog = ref(false);
   const slide = ref(0);
+  const good = ref(undefined);
 
   const { t } = useI18n();
 
@@ -22,31 +23,9 @@
   const app = useAppStore();
 
   const props = defineProps({
-    images: {
-      required: false,
-    },
-    alt: {
-      type: String,
-      required: false
-    },
-    title: {
-      type: String,
-      required: false
-    },
-    price: {
-      type: Number,
-      required: false
-    },
-    stock: {
-      type: Number,
-      required: false
-    },
-    description: {
-      type: String,
-      required: false
-    },
     itemId: {
       type: String,
+      required: true,
     },
   })
 
@@ -66,12 +45,8 @@
     })
   }
 
-  const selectedGood = computed(() => {
-    return goodsStore.getGoodById(props.itemId);
-  })
-
-  const existGood = computed(() => {
-    return cartStore.cart.find((item) => item.id === selectedGood.value.id);
+  const goodInCart = computed(() => {
+    return cartStore.cart.find((item) => item.id === props.itemId);
   })
 
   const goodDetails = () => {
@@ -79,46 +54,37 @@
   }
   const timer = ref(null);
 
-  const addGoodToCart = (selectedGood) => {
-    cartStore.addToCart(selectedGood);
+  const addGoodToCart = (good) => {
+    cartStore.increaseItemsCount(good);
     showNotify();
-    // Запускаем таймер на 15 минут
-    timer.value = setTimeout(() => {
-      $q.notify({
-        color: 'warning',
-        icon: 'warning',
-        position: 'center',
-        message: "Ваша корзина будет очищена через 1 минуту.",
-        timeout: 6000,
-      })
-    }, 6000);
+    // // Запускаем таймер на 15 минут
+    // timer.value = setTimeout(() => {
+    //   $q.notify({
+    //     color: 'warning',
+    //     icon: 'warning',
+    //     position: 'center',
+    //     message: "Ваша корзина будет очищена через 1 минуту.",
+    //     timeout: 6000,
+    //   })
+    // }, 6000);
 
-    console.log('count', cartStore.cart)
+    // console.log('count', cartStore.cart)
 
   }
 
-  const selectedCount = computed(() => {
-    return cartStore.cart.find((item) => item.id === selectedGood.value.id);
-  })
-
-
-  const decrease = (selectedGood) => {
-    cartStore.decreaseItemsCount(selectedGood);
+  const decrease = (good) => {
+    cartStore.decreaseItemsCount(good);
     // showNotify();
   }
 
-  const increase = (selectedGood) => {
-    cartStore.increaseItemsCount(selectedGood);
+  const increase = (good) => {
+    cartStore.increaseItemsCount(good);
     showNotify();
   }
 
-  // const unavailable = computed(() => {
-  //   return store.products.find((item) => item.stock < 37);
-  // })
-
-  // onMounted(async() => {
-  //   await  console.log('123', store.products.find(item => item.stock < 37));
-  // })
+  onMounted(async () => {
+    good.value = goodsStore.getGoodById(props.itemId);
+  })
 
 </script>
 
@@ -126,13 +92,14 @@
 <template>
   <div class="card_setting">
     <div
-      style="filter: unavailable ? contrast(0.2) : none; cursor: not-allowed"
+      style="cursor: not-allowed"
+      :style="{ filter: good?.stock <= 0 ? 'contrast(0.2)' : 'none' }"
     >
       <div class="content_container">
         <div class="img_container">
           <q-img
-            :src="props.images[0].image"
-            :alt="props.alt"
+            :src="good?.images[0]?.image"
+            :alt="good?.title"
             :ratio="4/3"
           >
             <template #loading>
@@ -145,30 +112,30 @@
         <div>
           <div class="column no-wrap items-left">
             <div class="text-h4 q-mb-sm ellipsis first_letter">
-              {{ props.title }}
+              {{ good?.title }}
             </div>
 
             <div class="text-h3">
-              &#3647&ensp;{{ props.price }}
+              &#3647&ensp;{{ good?.price }}
             </div>
           </div>
         </div>
 
-        <div class="text-body1 ellipsis-2-lines block_description" v-html="props.description"/>
+        <div class="text-body1 ellipsis-2-lines block_description" v-html="good?.description "/>
 
 
         <q-btn @click="goodDetails">{{ $t('read') }}</q-btn>
       </div>
 
       <div>
-        <q-btn v-if="!existGood"
+        <q-btn v-if="!goodInCart"
           class="full-width"
           unelevated
           rounded
           no-caps
           color="primary"
           text-color="white"
-          @click="addGoodToCart(selectedGood)"
+          @click="addGoodToCart(good)"
           >
           <div class="text-center text-h3 q-py-xs">
             {{ $t('buy') }}
@@ -176,14 +143,15 @@
         </q-btn>
         <div class="row justify-between items-center" v-else>
           <IconButton
-            :icon="evaPlusOutline"
-            @click="increase(existGood)"
+            :icon="evaMinusOutline"
+            @click="decrease(good)"
             class="q-pa-xs"
           />
-          <div class="text-h4 q-ma-none">{{ existGood.count }}</div>
+          <div class="text-h4 q-ma-none">{{ goodInCart.quant }}</div>
           <IconButton
-            :icon="evaMinusOutline"
-            @click="decrease(existGood)"
+            :icon="evaPlusOutline"
+            :disabled="goodInCart?.quant >= good?.stock"
+            @click="increase(good)"
             class="q-pa-xs"
           />
         </div>
@@ -202,7 +170,7 @@
     >
       <div class="dialog_container">
         <q-card class="dialog_card">
-          <q-btn flat label="Turn on Wifi" color="primary" class="absolute-top-right" v-close-popup />
+          <q-btn flat label="X" color="primary" class="absolute-top-right" v-close-popup />
           <q-card-section class="q-mb-sm">
             <q-carousel
               transition-prev="slide-right"
@@ -218,7 +186,7 @@
               class="bg-transparent round-borders fit"
             >
               <q-carousel-slide
-                v-for="(image, index) in selectedGood.images"
+                v-for="(image, index) in good.images"
                 :key="index"
                 :name="index"
                 class="column no-wrap flex-center"
@@ -241,12 +209,12 @@
           </q-card-section>
           <q-card-section class="q-mb-sm">
             <div class="text-h3">
-              {{ selectedGood.name }}
+              {{ good.name }}
             </div>
           </q-card-section>
           <q-card-section class="q-mb-md">
             <div class="text-h2">
-              &#3647&ensp;{{ selectedGood.price }}
+              &#3647&ensp;{{ good.price }}
             </div>
           </q-card-section>
           <q-separator color="secondary" class="q-mb-md" />
@@ -264,11 +232,11 @@
             </q-tabs>
             <q-tab-panels v-model="app.tabCharacteristics" animated swipeable class="fit">
               <q-tab-panel name="description" dark>
-                <div class="text-body1" v-html="selectedGood.description"/>
+                <div class="text-body1" v-html="good.description"/>
               </q-tab-panel>
               <q-tab-panel name="characteristics" dark>
                 <div class="text-body1">
-                  {{ selectedGood.description }}
+                  {{ good.description }}
                 </div>
               </q-tab-panel>
             </q-tab-panels>
@@ -276,14 +244,14 @@
           <q-card-section>
             <div class="full-width">
               <q-btn
-                v-if="!existGood"
+                v-if="!goodInCart"
                 class="full-width text_style"
                 unelevated
                 rounded
                 no-caps
                 color="primary"
                 text-color="white"
-                @click="addGoodToCart(selectedGood)"
+                @click="addGoodToCart(good)"
                 >
                 <div class="text-center text-weight-bold text-h3 text-white q-py-xl">
                   {{ $t('buy') }}
@@ -291,14 +259,14 @@
               </q-btn>
               <div class="row justify-between items-center" v-else>
                 <IconButton
-                  :icon="evaPlusOutline"
-                  @click="increase(existGood)"
+                  :icon="evaMinusOutline"
+                  @click="decrease(good)"
                   class="q-pa-xl"
                 />
-                <div class="text-h4 q-ma-none">{{ existGood.count }}</div>
+                <div class="text-h4 q-ma-none">{{ goodInCart.quant }}</div>
                 <IconButton
-                  :icon="evaMinusOutline"
-                  @click="decrease(existGood)"
+                  :icon="evaPlusOutline"
+                  @click="increase(good)"
                   class="q-pa-xl"
                 />
               </div>

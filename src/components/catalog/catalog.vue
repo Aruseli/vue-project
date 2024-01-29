@@ -1,14 +1,15 @@
 <script setup>
   import { onMounted, ref } from 'vue';
-  import ProductCard from '../components/product-card.vue';
-  import { useGoodsStore } from '../stores/goods';
-  import { useAppStore } from 'src/stores/app';
+  import ProductCard from './product-card.vue';
+  import { useAppStore } from '../../stores/app';
+  import { useCartStore } from '../../stores/cart';
+  import { useGoodsStore } from '../../stores/goods';
   import { useRouter } from 'vue-router';
-  import { useCartStore } from 'src/stores/cart';
   import { useQuasar } from 'quasar';
   import { useI18n } from 'vue-i18n';
+import { onUnmounted } from 'vue';
 
-  const i18n = useI18n();
+  const { t } = useI18n();
 
   const $q = useQuasar();
   const goodsStore = useGoodsStore();
@@ -16,7 +17,8 @@
   const cartStore = useCartStore();
   const router = useRouter();
 
-  const timer = ref(null);
+  const timerRedirect = ref(null);
+  const timerWarn = ref(null);
 
   // Функция-обработчик, которая переведет на новую страницу
   function redirect() {
@@ -24,33 +26,43 @@
     cartStore.clearCart();
   }
 
+  const warnRedirect = () => {
+    const n = $q.notify({
+      progress: true,
+      color: 'warning',
+      icon: 'warning',
+      position: 'center',
+      classes: 'full-width',
+      message: t('are_you_still_here'),
+      timeout: 10000,
+      multiLine: true,
+      closeBtn: true,
+    })
+  }
+
+  const resetTimer = () => {
+    clearTimeout(timerRedirect.value);
+    clearTimeout(timerWarn.value);
+    timerRedirect.value = setTimeout(redirect, 20000);
+    timerWarn.value = setTimeout(warnRedirect, 10000);
+  }
+
+  const boundResetTimer = resetTimer.bind(this);
   onMounted(() => {
-    goodsStore.updateGoods('ru');
     // Запускаем таймер
-    // timer.value = setInterval(redirect, 20000);
+    resetTimer();
 
-    // // Обрабатываем события
-    // document.addEventListener("mousemove", () => {
-    //   clearTimeout(timer.value);
-    //   timer.value = setInterval(redirect, 20000);
-    // });
-    // document.addEventListener("keydown", () => {
-    //   clearTimeout(timer.value);
-    //   timer.value = setInterval(redirect, 20000);
-    // });
-    // document.addEventListener("click", () => {
-    //   clearTimeout(timer.value);
-    //   timer.value = setInterval(redirect, 20000);
-    // });
-    // document.addEventListener("scroll", () => {
-    //   clearTimeout(timer.value);
-    //   timer.value = setInterval(redirect, 20000);
-    // });
-
-    console.log('i18n2', i18n.messages.value);
-    console.log('goodsStore', goodsStore.goods);
+    // Обрабатываем события
+    ["mousemove", "keydown", "click", "scroll"].forEach(e =>
+      document.addEventListener(e, boundResetTimer)
+    )
   })
 
+  onUnmounted(() => {
+    ["mousemove", "keydown", "click", "scroll"].forEach(e =>
+      document.removeEventListener(e, boundResetTimer)
+    )
+  })
 </script>
 
 <template>
@@ -66,15 +78,7 @@
           ssr-prerender
           class="intersection_card_settings"
         >
-          <ProductCard
-            :images="good.images"
-            :alt="good.name"
-            :title="good.name"
-            :price="good.price"
-            :stock="good.stock"
-            :description="good.description"
-            :itemId="good.id"
-          />
+          <ProductCard :itemId="good.id" />
         </q-intersection>
       </div>
     </q-tab-panel>

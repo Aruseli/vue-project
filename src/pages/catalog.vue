@@ -1,6 +1,6 @@
 <script setup>
-  import Catalog from '../components/catalog.vue';
-  import Header from '../components/header.vue';
+  import Catalog from '../components/catalog/catalog.vue';
+  import CatalogHeader from '../components/catalog/catalog-header.vue';
   import { reactive, ref } from 'vue';
 
   const scrollInfo = ref(true);
@@ -18,7 +18,7 @@
   <q-page class="flex flex-center relative" style="100%">
     <!-- <CartDrawer /> -->
     <q-scroll-observer @scroll="onScroll" />
-    <Header />
+    <CatalogHeader />
     <!-- <div style="height: 100px" /> -->
     <!-- <pre class="q-ma-none container">{{ scrollInfo }}</pre> -->
     <Catalog />

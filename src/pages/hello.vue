@@ -1,21 +1,11 @@
 <script setup>
   import Logo from 'src/components/logo/logo.vue';
   import { useRouter } from 'vue-router';
-  import { useI18n } from 'vue-i18n';
-  import { ref, onMounted } from 'vue';
+  import { ref } from 'vue';
   import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
 
-
-const i18n = useI18n();
-
-  const { t } = useI18n();
   const router = useRouter();
-
   const show = ref(true);
-
-  onMounted(() => {
-    console.log('i18n2', i18n.messages.value);
-  })
 </script>
 
 <template>
@@ -28,12 +18,12 @@ const i18n = useI18n();
       <!-- <Logo class="logo_row self-start" classes="q-mr-md" /> -->
       <Transition name="slide-fade" mode="out-in">
           <p v-show="show" class="text-h1 text-center text-white text-uppercase">
-            {{ t('find_your_experience') }}
+            {{ $t('find_your_experience') }}
           </p>
         </Transition>
       <div class="column">
         <div class="text-h4 text-center text-grey-2 text-uppercase">
-          {{t('tap_on_screen')}}
+          {{ $t('tap_on_screen') }}
         </div>
         <!-- <button @click="show = !show">
           Переключить отрисовку

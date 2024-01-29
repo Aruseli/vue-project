@@ -1,12 +1,6 @@
 <script setup>
   import DividerThin from '../dividers/divider-thin.vue';
 
-  import { useRouter } from 'vue-router';
-  import { useI18n } from 'vue-i18n';
-
-  const router = useRouter();
-  const { t } = useI18n();
-
   const emit = defineEmits(['click']);
   const click = () => {
     emit('click')
@@ -25,10 +19,6 @@
       type: String,
       required: false
     },
-    good_id: {
-      type: String,
-      required: false
-    },
   })
 </script>
 
@@ -36,7 +26,7 @@
   <div class="cart_product_item column justify-between bg-white" @click="click">
     <div class="row justify-between items-center">
       <div class="text-h3">
-        №{{ props.order_number }}
+        № {{ props.order_number }}
       </div>
       <div class="text-h3">
         &#3647&ensp;{{ props.good_price }}

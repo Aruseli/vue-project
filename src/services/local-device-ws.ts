@@ -4,42 +4,34 @@ import { eventEmitter, isPlainObject, isString } from '../services';
 let serviceLaunched = false;
 export let ws: WebSocket | null = null;
 
-export async function initLocalDeviceWsService(): Promise<void> {
+export async function initLocalDeviceWsService(address: string): Promise<void> {
   if (!serviceLaunched) {
     serviceLaunched = true;
-    await startLocalDeviceWsService();
+    await startLocalDeviceWsService(address);
   }
 }
 
-async function startLocalDeviceWsService() {
+async function startLocalDeviceWsService(address: string) {
   // first connect
-  setTimeout(connect, 1000);
+  setTimeout(connect, 0, address);
 }
 
 export function wsSendMessage(command: string, data?: string) {
   ws?.send(JSON.stringify({ cmd: command, data }))
 }
 
-function connect() {
-  let host = 'localhost:3010';
-
-  if (!host) {
-    // retry later
-    setTimeout(connect, 5000);
-
-    return;
-  }
-
-  let protocol = location.protocol.toLowerCase() === 'https:' ? 'wss' : 'ws';
-
-  ws = new WebSocket(`${protocol}://${host}/ws`);
-  console.log('local-ws:', protocol, host);
+function connect(address: string) {
+  // let protocol = location.protocol.toLowerCase() === 'https:' ? 'wss' : 'ws';
+  // ws = new WebSocket(`${protocol}://${host}/ws`);
+  // console.log('local-ws:', protocol, host);
+  ws = new WebSocket(address);
 
   ws.onopen = () => {
     eventEmitter.emit('local-ws:connect');
     console.log(`local-ws:connect`);
   };
-  ws.onerror = () => {
+  ws.onerror = (event) => {
+    console.log(`local-ws:error`, event);
     ws?.close();
   };
   ws.onclose = function (event) {
@@ -48,7 +40,7 @@ function connect() {
     ws = (null as any);
 
     // reconnect
-    setTimeout(connect, 1000);
+    setTimeout(connect, 1000, address);
   };
 
   ws.onmessage = async (event) => {

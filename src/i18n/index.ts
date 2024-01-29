@@ -1,7 +1,5 @@
-import enUS from "./en-US";
-import deDE from "./de-DE";
+import en from "./en";
 
 export default {
-  "en-US": enUS,
-  "de-DE": deDE,
-};
+  "en": en,
+} as { [key: string]: typeof en };

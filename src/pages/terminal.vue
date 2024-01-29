@@ -1,17 +1,14 @@
 <script setup lang="ts">
-  import { ref, reactive, onMounted } from 'vue';
+  import { ref, reactive } from 'vue';
   import QrcodeVue from 'qrcode.vue';
   import { useI18n } from 'vue-i18n';
   import { useQuasar } from 'quasar';
-  import { wsSendMessage } from '../services';
   import Logo from '../components/logo/logo.vue';
   import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
-  import { useAppStore, KioskStatus } from 'src/stores/app';
-  import { apiReportsGetView } from 'src/services/api';
+  import { useAppStore } from 'src/stores/app';
+  import { computed } from 'vue';
 
   const $q = useQuasar();
-  const i18n = useI18n();
-
   const { t } = useI18n();
   const appStore = useAppStore();
 
@@ -33,7 +30,7 @@
           color: 'warning',
           icon: 'warning',
           position: 'center',
-          message: t('UNSUCCESSFUL_LOGIN'),
+          message: t('unsuccessful_login_attempt'),
           timeout: 2000,
         })
     }
@@ -42,40 +39,31 @@
     }
   }
 
-  function kioskStatusIsUnknown() {
-    return appStore.kioskState.status == KioskStatus.UNKNOWN
-  }
-
-  function kioskStatusIsUnboundTerminal() {
-    return appStore.kioskState.status == KioskStatus.UNBOUND_TERMINAL
-  }
-
-  function kioskStatusIsUnauthenticated() {
-    return appStore.kioskState.status == KioskStatus.UNAUTHENTICATED
-  }
-
-  function kioskStatusIsUnrecoverableError() {
-    return appStore.kioskState.status == KioskStatus.UNRECOVERABLE_ERROR
-  }
-
-  onMounted(() => {
-    console.log('i18n2', i18n.messages.value);
-  })
+  // statuses are here because I wasn't able to force type safety for enum in v-if
+  let statusIsUnknown = computed(() => appStore.kioskState.status == 'Unknown')
+  let statusIsUnboundTerminal = computed(() => appStore.kioskState.status == 'UnboundTerminal')
+  let statusIsUnauthenticated = computed(() => appStore.kioskState.status == 'Unauthenticated')
+  let statusIsUnrecoverableError = computed(() =>
+    appStore.kioskState.status == 'UnrecoverableError'
+      || appStore.kioskState.status == 'Ready'
+      // We don't have anything to show for READY state
+      // TODO: Consider moving employee actions or even router to this page with v-if="statusIsReady"
+  )
 </script>
 
 <template>
   <q-page class="flex flex-center relative bg-secondary" style="100%">
     <div class="q-pa-xl items-center column" style="width: 50vw">
-      <div v-if="kioskStatusIsUnrecoverableError()">
+      <div v-if="statusIsUnrecoverableError">
         <q-card>
           <q-card-section>
-            <h2>{{ $t('UNRECOVERABLE_ERROR') }}</h2>
+            <h2>{{ $t('unrecoverable_error') }}</h2>
             <p>{{ appStore.kioskState.globalError?.message }}</p>
           </q-card-section>
         </q-card>
       </div>
 
-      <div v-if="kioskStatusIsUnknown()">
+      <div v-if="statusIsUnknown">
         <q-card>
           <q-card-section>
             <q-spinner/>
@@ -83,11 +71,11 @@
         </q-card>
       </div>
 
-      <div v-if="kioskStatusIsUnboundTerminal()">
+      <div v-if="statusIsUnboundTerminal">
         <q-card dark class="flex column items-center">
           <q-card-section>
             <div class="text-h6 q-ma-sm text-center">
-              Ожидание подтверждения регистрации в системе...
+              {{ $t('waiting_terminal_registration') }}
             </div>
             <div>
               <div class="text-h6 text-center q-mb-md text-weight-bold">
@@ -111,7 +99,7 @@
         </q-card>
       </div>
 
-      <div v-if="kioskStatusIsUnauthenticated()" class="fit">
+      <div v-if="statusIsUnauthenticated" class="fit">
 
         <Logo class="logo_column">
           <LogoSvgWhite />
@@ -127,7 +115,7 @@
             type="email"
             autofocus
             :rules="[
-              (val: any) => !!val || t('field_is_required')
+              (val: any) => !!val || $t('field_is_required')
             ]"
             no-error-icon
             debounce="500"
@@ -143,8 +131,8 @@
             placeholder="password"
             :type="isPwd ? 'password' : 'text'"
             :rules="[
-              (val: any) => !!val || t('field_is_required'),
-              (val: any) => val.length == 6 || t('password_consists_characters'),
+              (val: any) => !!val || $t('field_is_required'),
+              (val: any) => val.length == 6 || $t('password_consists_characters'),
             ]"
             counter
             no-error-icon
