@@ -1,22 +1,55 @@
 <script setup>
-  import Logo from 'src/components/logo.vue';
+  import Logo from 'src/components/logo/logo.vue';
   import { useRouter } from 'vue-router';
+  import { ref } from 'vue';
+  import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
+
   const router = useRouter();
+  const show = ref(true);
 </script>
 
 <template>
   <q-page class="flex flex-center relative bg-secondary">
     <div class="column justify-between window-height full-width container" @click="router.push('languages')">
-      <Logo class="logo_row self-start" />
-      <div class="text-h1 text-center text-white text-uppercase">
-        find your experience
+      <Logo class="logo_row self-start" classes="q-mr-md">
+        <LogoSvgWhite />
+      </Logo>
+
+      <!-- <Logo class="logo_row self-start" classes="q-mr-md" /> -->
+      <Transition name="slide-fade" mode="out-in">
+          <p v-show="show" class="text-h1 text-center text-white text-uppercase">
+            {{ $t('find_your_experience') }}
+          </p>
+        </Transition>
+      <div class="column">
+        <div class="text-h4 text-center text-grey-2 text-uppercase">
+          {{ $t('tap_on_screen') }}
+        </div>
+        <!-- <button @click="show = !show">
+          Переключить отрисовку
+        </button> -->
       </div>
     </div>
   </q-page>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 .container {
   padding: 5rem;
 }
+
+
+
+.slide-fade-leave-active {
+  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter-active {
+  transition: all 3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active до версии 2.1.8 */ {
+  transform: translateX(30px);
+  opacity: 0;
+}
+
 </style>

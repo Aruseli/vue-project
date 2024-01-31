@@ -1,12 +1,9 @@
 <script setup>
   import { useRouter } from 'vue-router';
-  import { useI18n } from 'vue-i18n';
   import { ref } from 'vue';
   import RectangularButton from '../components/buttons/rectangular-button.vue';
 
   const router = useRouter();
-  const { t } = useI18n();
-
   const route = (path) => {
     router.push(path);
     console.log('path', path);
@@ -27,15 +24,15 @@
     },
     {
       name:'selective_inventory',
-      path: () => route(''),
+      path: () => route('selective-inventory'),
     },
     {
       name: 'complete_inventory',
-      path: () => route(''),
+      path: () => route('complete-inventory'),
     },
     {
       name: 'arrival_goods',
-      path: () => route(''),
+      path: () => route('arrival-goods'),
     },
     {
       name: 'print_leftovers',

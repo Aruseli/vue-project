@@ -1,6 +1,5 @@
 <script setup>
-  import CartDrawer from '../components/cart-catalog/cart-drawer.vue';
-
+  import CartDrawer from '../components/catalog/cart-drawer.vue';
 </script>
 
 

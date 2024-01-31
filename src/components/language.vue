@@ -1,10 +1,21 @@
 <script setup>
-  import { ref } from 'vue';
-  import { useRouter } from 'vue-router';
 
-  const router = useRouter();
-  const src = ref('src/assets/flags/gb.svg');
-  const language = ref('English');
+  const props = defineProps({
+    src: {
+      type: String,
+      default: 'src/assets/flags/gb.webp'
+    },
+    language: {
+      type: String,
+      default: 'English'
+    },
+  })
+
+  const emit = defineEmits(['click']);
+  const click = () => {
+    emit('click')
+  }
+
 /*
 - китайский,
 - английский,
@@ -18,9 +29,9 @@
 </script>
 
 <template>
-  <div @click="router.push('catalog')" class="row justify-start items-center lang_container">
-    <q-img :src="src" :alt="language" max-width="100%" max-height="100%" width="16rem" height="9rem" ratio="16/9" class="q-mr-xl" />
-    <div class="text-h1 text-center text-white text-uppercase">{{ language }}</div>
+  <div @click="click" class="row justify-start items-center lang_container">
+    <q-img :src="src" :alt="language" max-width="100%" max-height="100%" width="13rem" height="7rem" ratio="16/9" class="q-mr-xl" />
+    <div class="text-h3 text-center text-white text-uppercase">{{ language }}</div>
   </div>
 </template>
 

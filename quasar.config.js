@@ -22,7 +22,6 @@ module.exports = configure(function (ctx) {
     boot: [
       'i18n',
       'axios',
-      'ws',
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
@@ -107,19 +106,14 @@ module.exports = configure(function (ctx) {
       open: true, // opens browser window automatically
       proxy: {
         '/api': {
-          target: 'https://stage-kiosk.high-thai.com',
+          target: process.env.VUE_CAT_URL,
           changeOrigin: true,
           cookieDomainRewrite: 'localhost',
         },
         '/auth': {
-          target: 'https://stage-kiosk.high-thai.com',
-          changeOrigin: true,
-          cookieDomainRewrite: 'localhost',
-        },
-        '/cat-api': {
           target: process.env.VUE_CAT_URL,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/cat-api/, '/api'),
+          cookieDomainRewrite: 'localhost',
         },
       },
     },

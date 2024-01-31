@@ -32,5 +32,18 @@ export default route(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.VUE_ROUTER_BASE),
   });
 
+  // Persist some query params during navigation
+  Router.beforeEach((to, from) => {
+    if (!to.query.terminalCode && from.query.terminalCode ||
+        !to.query.terminalName && from.query.terminalName) {
+      return Object.assign({}, to, {
+        query: Object.assign({}, to.query, {
+          terminalCode: from.query.terminalCode,
+          terminalName: from.query.terminalName,
+        })
+      })
+    }
+  })
+
   return Router;
 });

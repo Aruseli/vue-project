@@ -1,14 +1,5 @@
 <script setup>
   import OrderList from '../components/orders/order-list.vue';
-  import { onMounted } from 'vue';
-  import { useRouter } from 'vue-router';
-  import { useI18n } from 'vue-i18n';
-  import { useOrderStore } from 'src/stores/order';
-  
-  const orderStore = useOrderStore();
-  const router = useRouter();
-  const { t } = useI18n();
-
 </script>
 
 <template>
@@ -21,6 +12,6 @@
 
 <style scoped lang="scss">
 .container {
-  padding: 5rem;
+  padding: 1rem 5rem 5rem 5rem;
 }
 </style>

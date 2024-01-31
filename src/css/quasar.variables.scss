@@ -1,0 +1,39 @@
+// https://quasar.dev/style/sass-scss-variables#variables-list
+
+// text
+$h1: (size: 8rem, line-height: 6rem, letter-spacing: -.01562em, weight: 700) !default;
+$h2: (size: 3.5rem, line-height: 3.75rem, letter-spacing: -.00833em, weight: 700) !default;
+$h3: (size: 3rem, line-height: 3.125rem, letter-spacing: normal, weight: 600) !default;
+$h4: (size: 2.5rem, line-height: 2.5rem, letter-spacing: .00735em, weight: 600) !default;
+$subtitle1: (size: 1.2rem, line-height: 1.75rem, letter-spacing: .00937em, weight: 400) !default;
+$subtitle2: (size: .875rem, line-height: 1.375rem, letter-spacing: .00714em, weight: 500) !default;
+$body1: (size: 1.5rem, line-height: 1.75rem, letter-spacing: .03125em, weight: 400) !default;
+
+// sizes for define margins/paddings
+$space-base: 16px !default;
+$space-x-base: $space-base !default;
+$space-y-base: $space-base !default;
+
+$space-none: (x: 0, y: 0) !default;
+$space-xs: (x: ($space-x-base * .75), y: ($space-y-base * .75)) !default;
+$space-sm: (x: ($space-x-base * 1.5), y: ($space-y-base * 1.5)) !default;
+$space-md: (x: ($space-x-base * 1.875), y: ($space-y-base * 1.875)) !default;
+$space-lg: (x: ($space-x-base * 5.625), y: ($space-y-base * 5.625)) !default;
+$space-xl: (x: ($space-x-base * 3), y: ($space-y-base * 3)) !default;
+
+// q-btn
+$button-rounded-border-radius: 30px !default;
+
+// color
+$primary: #234141 !default;
+$secondary: #1e1e1e !default;
+$accent: #3C3C3C !default;
+
+// used by dark mode
+$dark-page: #121212 !default;
+$dark: #1d1d1d !default;
+
+$positive: #0EB60B !default;
+$negative: #C6C9D1 !default;
+$info: #31CCEC !default;
+$warning: #E14444 !default;

@@ -2,6 +2,9 @@
 
 kiosk
 
+## Useful info
+- Terminal code and terminal name are expected to be provided in query params on startup: http://localhost:9000/#/?terminalCode=kiosk-test&terminalName=kiosk-test
+
 ## Install the dependencies
 ```bash
 yarn
