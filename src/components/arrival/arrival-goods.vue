@@ -4,11 +4,10 @@
   import ArrivalItem from './arrival-item.vue';
   import { onMounted, ref, computed } from 'vue';
   import { useRouter } from 'vue-router';
-  import { useI18n } from 'vue-i18n';
+  import { t } from 'i18next';
   import { useOrderStore } from 'src/stores/order'
 
   const router = useRouter();
-  const { t } = useI18n();
   const orderStore = useOrderStore();
 
   const items = ref([
@@ -77,16 +76,17 @@
           <span>{{t('total')}}</span>
           <span>{{items.length}}</span>
           <span>{{ t('product') }}</span>
+          <span>{{ t('units', {count: items.length}) }}</span>
         </div>
 
         <div class="text-h4 text-weight-regular row q-gutter-sm">
           <div>{{t('estimated_quantity')}}</div>
           <div>{{totalEstimatedQuantity}}</div>
-          <div>{{ t('pcs') }}</div>
+          <div>{{ t('pc', {count: totalEstimatedQuantity}) }}</div>
           <q-separator color="secondary" vertical spaced="lg" size="0.2rem" />
           <div>{{t('actual_quantity')}}</div>
           <div>{{ totalActualQuantity }}</div>
-          <div>{{ t('pcs') }}</div>
+          <div>{{ t('pc', {count: totalActualQuantity}) }}</div>
         </div>
       </div>
       <div class="full-width">

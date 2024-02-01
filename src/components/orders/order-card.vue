@@ -1,7 +1,6 @@
 <script setup>
-  import { useI18n } from 'vue-i18n';
+  import { t } from 'i18next';
 
-  const { t } = useI18n();
   const props = defineProps({
     good_id: {
       type: Number,
@@ -69,7 +68,7 @@
         <div class="text-h2">
           &#3647&ensp;{{ props.good_price }}
         </div>
-        <div class="text-h3">{{ props.good_issued > 0 ? props.good_issued + ' / ' : '' }}{{ props.good_quant }}{{ t('pcs') }}</div>
+        <div class="text-h3">{{ props.good_issued > 0 ? props.good_issued + ' / ' : '' }}{{ props.good_quant }}{{ t('pc', {count: props.good_quant}) }}</div>
       </div>
     </div>
   </div>

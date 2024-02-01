@@ -1,15 +1,17 @@
 import { defineStore } from 'pinia';
-import { reactive, ref } from 'vue';
-import { apiAddAnyTerminal, apiAuth, apiAuthBearer, apiUsersWhoami } from 'src/services/api';
-import { Router, useRoute, useRouter } from 'vue-router';
-import { TERMINAL_REGISTRATION_ATTEMPT_INTERVAL, TERMINAL_STATUS_UPDATE_INTERVAL, USER_INFO_UPDATE_INTERVAL } from 'src/services/consts';
-import { useI18n } from 'vue-i18n';
 import { Notify } from 'quasar';
-import { delay } from 'src/services/utils';
+import { i18n } from 'src/boot/i18_n';
+import { t } from 'i18next';
+import i18next from 'i18next';
 import { eventEmitter, initLocalDeviceWsService } from 'src/services';
-import { KioskState } from 'src/types/kiosk-state';
+import { apiAddAnyTerminal, apiAuth, apiAuthBearer, apiUsersWhoami } from 'src/services/api';
+import { TERMINAL_REGISTRATION_ATTEMPT_INTERVAL, TERMINAL_STATUS_UPDATE_INTERVAL, USER_INFO_UPDATE_INTERVAL } from 'src/services/consts';
 import { updateCatalogLocales } from 'src/services/locales';
-import { i18n } from 'src/boot/i18n'
+import { delay } from 'src/services/utils';
+import { KioskState } from 'src/types/kiosk-state';
+import { reactive, ref } from 'vue';
+import { Router, useRouter } from 'vue-router';
+import router from '../router/routes'
 
 /*
  This is 'app' or 'main' store.
@@ -24,8 +26,7 @@ import { i18n } from 'src/boot/i18n'
  с комментарием "//TODO fetch"
  */
 export const useAppStore = defineStore('app', () => {
-  const { t, locale } = i18n.global;
-  const route = useRoute();
+  let locale = i18next.language;
   const router = useRouter();
   const drawerCartState = ref(false);
   const orderDialog = ref(false);
@@ -56,8 +57,10 @@ export const useAppStore = defineStore('app', () => {
   setTimeout(loopUpdateTerminalParams, 0, kioskState);
   setTimeout(loopUpdateCurrentUser, 0, kioskState)
 
-  const setLocale = async (langcode: string) => {
-    locale.value = langcode
+  const setLocale = async (lang_code: string) => {
+    console.log('setLocale', lang_code)
+    locale = lang_code
+    console.log('locale', locale)
   }
 
   const resetLocale = async () => {
@@ -87,7 +90,7 @@ export const useAppStore = defineStore('app', () => {
     }
 
     // Init locales
-    await updateCatalogLocales(kioskState, i18n.global)
+    await updateCatalogLocales(kioskState, locale)
   })
 
   //===================================
@@ -149,7 +152,7 @@ async function tryFetchTerminalParams(terminalName: string, terminalCode: string
     return await apiAddAnyTerminal(terminalName, terminalCode);
   }
   catch {
-    const { t } = i18n.global;
+    // const { t } = i18n.global;
     Notify.create({
       color: 'warning',
       position: 'center',
@@ -168,21 +171,27 @@ async function loopUpdateCurrentUser(kioskState: KioskState) {
 
 async function updateCurrentUser(kioskState: KioskState) {
   try {
-    const result = await apiUsersWhoami()
-    kioskState.user = result
-    console.log('whoami', result)
-    updateKioskStatus(kioskState)
+    const result = await apiUsersWhoami();
+    kioskState.user = result;
+    console.log("whoami", result);
+    updateKioskStatus(kioskState);
   } catch (e: any) {
     if (e?.message?.includes("ERR_AUTH")) {
-      kioskState.user = undefined
-      console.log('whoami', undefined)
-    } else {
-      const { t } = i18n.global;
-      Notify.create({
-        color: 'warning',
-        position: 'center',
-        message: t('ERROR_FETCH_USER_INFO'),
+      kioskState.user = undefined;
+      router.push({
+        path: "",
+        component: () => import("pages/terminal.vue"),
+        redirect: undefined,
       });
+      console.log("whoami", undefined);
+    } else {
+      // const { t } = i18n.global;
+      Notify.create({
+        color: "warning",
+        position: "center",
+        message: t("ERROR_FETCH_USER_INFO"),
+      });
+      // router.push("/");
     }
   }
 }
@@ -198,7 +207,7 @@ function updateKioskStatus(kioskState: KioskState) {
         'UnboundTerminal',
       ].findIndex(s => s == newStatus) >= 0
     ) {
-      const { t } = i18n.global
+      // const { t } = i18n.global
       kioskState.globalError = new Error(t('TERMINAL_WAS_UNREGISTERED'))
       newStatus = 'UnrecoverableError'
   }

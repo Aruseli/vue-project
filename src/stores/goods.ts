@@ -1,10 +1,9 @@
+import Dexie, { Table } from 'dexie';
 import { defineStore } from 'pinia';
-import { ApiGoodCategory, Deferred, apiGetDocuments, apiGetGoods, apiGetGoodsImages, apiGetStockRemains, apiSaveDocument, delay, throwErr } from 'src/services';
+import { ApiGoodCategory, Deferred, apiGetGoods, apiGetGoodsImages, apiGetStockRemains, delay, throwErr } from 'src/services';
+import { IMAGES_CACHE_CLEANUP_INTERVAL } from 'src/services/consts';
 import { ref } from 'vue';
 import { useAppStore } from './app';
-import Dexie, { Table } from 'dexie';
-import { IMAGES_CACHE_CLEANUP_INTERVAL } from 'src/services/consts';
-import { useI18n } from 'vue-i18n';
 
 export type Good = {
   id: string,
@@ -16,6 +15,7 @@ export type Good = {
     id: string,
     image: string, // base64
   }[],
+  code: string
 }
 
 export type GoodCategory = {
@@ -99,6 +99,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     }
     goodsLoading.value = true
     goodsLoadingWaiter.value = new Deferred()
+    let i = 0;
     while (true) {
       try {
         if (appStore.kioskState.status != 'Ready') {
@@ -114,6 +115,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
         ]);
         fetchedGoods.forEach(gc => gc.goods.filter(g => !!g).forEach(g => {
           g.stock = stockRemains.find(v => v.good_id == g.id)?.remain_quant ?? 0
+          g.code = (i++).toString().padStart(9, "0")
         }))
         // if (!stockRemains.length) {
         //   const goodsArrivalDoc = {
@@ -169,6 +171,14 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     }
     return goods.value.flatMap(gc => gc.goods).find(g => g.id == id)
   }
+  const getGoodByDataCode = ref(0)
+  const getGoodByCode = (code: string) => {
+    getGoodByDataCode.value += 1
+    if (getGoodByDataCode.value % 100 == 0) {
+      console.log('getGoodByDataCode code', getGoodByDataCode.value)
+    }
+    return goods.value.flatMap(gc => gc.goods).find(g => g.code == code)
+  }
 
   const waitGoodsReady = async () => {
     await goodsLoadingWaiter.value.promise
@@ -178,6 +188,8 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     goods: goods,
     getGoodById,
     getGoodByIdHits, // debug
+
+    getGoodByCode,
 
     updateGoods,
     goodsLoading,

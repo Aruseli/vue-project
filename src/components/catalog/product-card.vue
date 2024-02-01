@@ -3,7 +3,7 @@
   import { evaMinusOutline } from '@quasar/extras/eva-icons';
   import { ionEllipse } from '@quasar/extras/ionicons-v6';
   import { evaRadioButtonOffOutline } from '@quasar/extras/eva-icons';
-  import { useI18n } from 'vue-i18n';
+  import { t } from 'i18next';
   import { computed, ref, onMounted } from 'vue';
   import { useCartStore } from '../../stores/cart';
   import { useGoodsStore } from '../../stores/goods';
@@ -15,8 +15,6 @@
   const openDialog = ref(false);
   const slide = ref(0);
   const good = ref(undefined);
-
-  const { t } = useI18n();
 
   const cartStore = useCartStore();
   const goodsStore = useGoodsStore();
@@ -124,7 +122,7 @@
         <div class="text-body1 ellipsis-2-lines block_description" v-html="good?.description "/>
 
 
-        <q-btn @click="goodDetails">{{ $t('read') }}</q-btn>
+        <q-btn @click="goodDetails">{{ t('read') }}</q-btn>
       </div>
 
       <div>
@@ -138,7 +136,7 @@
           @click="addGoodToCart(good)"
           >
           <div class="text-center text-h3 q-py-xs">
-            {{ $t('buy') }}
+            {{ t('buy') }}
           </div>
         </q-btn>
         <div class="row justify-between items-center" v-else>
@@ -254,7 +252,7 @@
                 @click="addGoodToCart(good)"
                 >
                 <div class="text-center text-weight-bold text-h3 text-white q-py-xl">
-                  {{ $t('buy') }}
+                  {{ t('buy') }}
                 </div>
               </q-btn>
               <div class="row justify-between items-center" v-else>

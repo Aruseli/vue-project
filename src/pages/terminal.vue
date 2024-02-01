@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { ref, reactive } from 'vue';
   import QrcodeVue from 'qrcode.vue';
-  import { useI18n } from 'vue-i18n';
+  import { t } from 'i18next';
   import { useQuasar } from 'quasar';
   import Logo from '../components/logo/logo.vue';
   import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
@@ -9,7 +9,6 @@
   import { computed } from 'vue';
 
   const $q = useQuasar();
-  const { t } = useI18n();
   const appStore = useAppStore();
 
   let isPwd = ref(true);
@@ -55,9 +54,9 @@
   <q-page class="flex flex-center relative bg-secondary" style="100%">
     <div class="q-pa-xl items-center column" style="width: 50vw">
       <div v-if="statusIsUnrecoverableError">
-        <q-card>
+        <q-card class='bg-secondary no-box-shadow'>
           <q-card-section>
-            <h2>{{ $t('unrecoverable_error') }}</h2>
+            <h2 class="text-white text-center">{{ t('unrecoverable_error') }}</h2>
             <p>{{ appStore.kioskState.globalError?.message }}</p>
           </q-card-section>
         </q-card>
@@ -75,7 +74,7 @@
         <q-card dark class="flex column items-center">
           <q-card-section>
             <div class="text-h6 q-ma-sm text-center">
-              {{ $t('waiting_terminal_registration') }}
+              {{ t('waiting_terminal_registration') }}
             </div>
             <div>
               <div class="text-h6 text-center q-mb-md text-weight-bold">
@@ -115,7 +114,7 @@
             type="email"
             autofocus
             :rules="[
-              (val: any) => !!val || $t('field_is_required')
+              (val: any) => !!val || t('field_is_required')
             ]"
             no-error-icon
             debounce="500"
@@ -131,8 +130,8 @@
             placeholder="password"
             :type="isPwd ? 'password' : 'text'"
             :rules="[
-              (val: any) => !!val || $t('field_is_required'),
-              (val: any) => val.length == 6 || $t('password_consists_characters'),
+              (val: any) => !!val || t('field_is_required'),
+              (val: any) => val.length == 6 || t('password_consists_characters'),
             ]"
             counter
             no-error-icon

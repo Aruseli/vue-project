@@ -5,12 +5,9 @@
   import { useAppStore } from '../../stores/app';
   import { useCartStore } from '../../stores/cart';
   import { useGoodsStore } from '../../stores/goods';
-  import { useI18n } from 'vue-i18n';
   import LogoSimple from '../logo/logo-simple.vue';
   import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
 
-  const { locale } = useI18n({ useScope: 'global' });
-  const { t } = useI18n();
 
   const cart = useCartStore();
   const goodsStore = useGoodsStore();

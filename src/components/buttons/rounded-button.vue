@@ -1,4 +1,5 @@
 <script setup>
+  import { t } from 'i18next';
   const props = defineProps({
     name: {
       type: String,
@@ -27,7 +28,7 @@
 </script>
 
 <template>
-   <q-btn :size="size" unelevated rounded :color="color" :text-color="textColor" class="text-uppercase q-px-xl" v-bind="$attrs" @click="click">{{ $t(props.name) }}</q-btn>
+   <q-btn :size="size" unelevated rounded :color="color" :text-color="textColor" class="text-uppercase q-px-xl" v-bind="$attrs" @click="click">{{ t(props.name) }}</q-btn>
 </template>
 
 <style scoped>

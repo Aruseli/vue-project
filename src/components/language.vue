@@ -30,7 +30,9 @@
 
 <template>
   <div @click="click" class="row justify-start items-center lang_container">
-    <q-img :src="src" :alt="language" max-width="100%" max-height="100%" width="13rem" height="7rem" ratio="16/9" class="q-mr-xl" />
+    <q-img
+      :src="`src/assets/flags/${src}`"
+      :alt="language" max-width="100%" max-height="100%" width="13rem" height="7rem" ratio="16/9" class="q-mr-xl" />
     <div class="text-h3 text-center text-white text-uppercase">{{ language }}</div>
   </div>
 </template>

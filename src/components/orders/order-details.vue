@@ -5,14 +5,13 @@
   import { ref, watch } from 'vue';
   import { useOrdersStore } from 'src/stores/orders';
   import { useRouter, useRoute } from 'vue-router';
-  import { useI18n } from 'vue-i18n';
+  import { t } from 'i18next';
   import { onMounted } from 'vue';
   import { computed } from 'vue';
 
   const ordersStore = useOrdersStore();
   const route = useRoute();
   const router = useRouter();
-  const { t } = useI18n();
 
   const confirmOrder = async () => {
     await ordersStore.confirmCurrentOrderIssue()
@@ -40,6 +39,7 @@
       router.push('/employee-actions')
     }
   })
+  console.log('ordersStore.currentOrder?.items', ordersStore.currentOrder?.items)
 </script>
 
 <template>
@@ -48,7 +48,7 @@
       <router-link :to="{ path: '/issuing-order' }" class='router_link_style text-secondary absolute-top-left'>
         {{ t('back_to_order_list') }}
       </router-link>
-      <div class="text-h1 text-uppercase text-center q-mb-md title_padding">{{ $t('order') }}&ensp;№{{ ordersStore.currentOrder?.orderNumStr }}</div>
+      <div class="text-h1 text-uppercase text-center q-mb-md title_padding">{{ t('order') }}&ensp;№{{ ordersStore.currentOrder?.orderNumStr }}</div>
     <DividerThin class="q-mb-xl bg-secondary" />
     </div>
     <div class="scroll_area">
@@ -59,7 +59,7 @@
           :good_title="order.title"
           :good_price="order.price"
           :good_quant="order.quant"
-          :good_src="order.src"
+          :good_src="order.image.image"
           :good_issued="order.issued"
           :id="order.id"
           @click="() => {
@@ -73,15 +73,16 @@
     <div>
       <DividerBold class="q-mb-lg" />
       <div class="row justify-between items-center q-mb-md">
-        <div class="text-h4">{{ $t('total') }}</div>
+        <div class="text-h4">{{ t('total') }}</div>
         <div class="text-h3 q-mb-md">
           {{ ordersStore.currentOrder?.totalPrice }} &ensp;&#3647
         </div>
         <DividerThin class="bg-negative q-mb-lg" />
         <div class="text-h4 order_container text-weight-regular">
-          <span>{{ $t('order') }}</span>&ensp;
+          <span>{{ t('order') }}</span>&ensp;
           <span>{{ ordersStore.currentOrder?.totalCount }}</span>&ensp;
-          <span>{{ $t('product_units') }}</span>
+          <span>{{ t('product') }}</span>
+          <span>{{ t('units', { count: ordersStore.currentOrder?.totalCount }) }}</span>
         </div>
       </div>
       <div class="full-width">
@@ -95,7 +96,7 @@
           :disable="!allowConfirm"
         >
           <div class="text-h3 text-white text-center text-weight-bold text-header_bg text-uppercase">
-            {{ $t('confirm') }}
+            {{ t('confirm') }}
           </div>
         </q-btn>
       </div>

@@ -3,15 +3,14 @@
   import ExistOrder from './exist-order.vue';
   import { onMounted } from 'vue';
   import { useRouter } from 'vue-router';
-  import { useI18n } from 'vue-i18n';
+  import { t } from 'i18next';
+  import i18next  from 'i18next';
   import { useGoodsStore } from 'src/stores/goods';
   import { useOrdersStore } from 'src/stores/orders';
   import { useQuasar } from 'quasar';
 
   const $q = useQuasar();
   const router = useRouter();
-  const i18n = useI18n();
-  const { t } = i18n;
   const goodsStore = useGoodsStore();
   const ordersStore = useOrdersStore();
 
@@ -21,7 +20,7 @@
 
   onMounted(async () => {
     try {
-      await goodsStore.updateGoods(i18n.locale.value)
+      await goodsStore.updateGoods(i18next.lng)
       await ordersStore.updateOrders()
     } catch (err) {
       console.error('ordersStore.updateOrders error:', err)
@@ -41,9 +40,9 @@
   <div class="main_container full-height">
     <div class="relative-position">
       <router-link :to="{ path: '/employee-actions' }" class='router_link_style text-secondary absolute-top-left'>
-        {{ $t('back_to_employee_actions') }}
+        {{ t('back_to_employee_actions') }}
       </router-link>
-      <div class="text-h1 text-uppercase text-center q-mb-md title_padding">{{ $t('open_orders') }}</div>
+      <div class="text-h1 text-uppercase text-center q-mb-md title_padding">{{ t('open_orders') }}</div>
       <DividerThin class="q-mb-xl bg-secondary" />
     </div>
     <div class="orders_container">

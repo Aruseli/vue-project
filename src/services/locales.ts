@@ -1,20 +1,20 @@
 import { KioskState, LocaleInfo } from "src/types/kiosk-state";
 import { apiGetLocale, apiGetLocalesList } from "./api";
 import { delay } from "./utils";
-import { useI18n } from "vue-i18n";
+import i18next from 'i18next';
 
-export async function updateCatalogLocales(kioskState: KioskState, i18n: ReturnType<typeof useI18n>) {
+export async function updateCatalogLocales(kioskState: KioskState, i18n: any) {
   // Update locales
   while (true) {
     try {
-      const langcodes = await apiGetLocalesList(kioskState.params!.object_id!, kioskState.params!.location_id!)
-        .then(r => r?.map(l => l?.langcode))
-      console.log('catalog_locales', langcodes);
-      kioskState.catalogLocales = await prepareLocales(langcodes)
-      await Promise.all(langcodes.map(async (lc) => {
+      const lang_codes = await apiGetLocalesList(kioskState.params!.object_id!, kioskState.params!.location_id!)
+        .then(r => r?.map(l => l?.lang_code))
+      console.log('catalog_locales', lang_codes);
+      kioskState.catalogLocales = await prepareLocales(lang_codes)
+      await Promise.all(lang_codes.map(async (lc) => {
         const locale = await apiGetLocale(lc)
-        console.log(lc, locale)
-        i18n.setLocaleMessage(lc, locale)
+        console.log('lc, locale', lc, locale)
+        i18next.addResourceBundle(lc, "translation", locale, true, true);
       }))
       break
     } catch {
@@ -56,7 +56,7 @@ export const KNOWN_LOCALES: LocaleInfo[] = [
   },
 ];
 
-export async function prepareLocales(langcodes: string[]) {
-  const langcodesSet = new Set(langcodes)
+export async function prepareLocales(lang_codes: string[]) {
+  const langcodesSet = new Set(lang_codes)
   return KNOWN_LOCALES.filter(l => langcodesSet.has(l.locale))
 }

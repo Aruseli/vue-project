@@ -5,19 +5,24 @@
   import { useRouter } from 'vue-router';
   import { useAppStore } from 'src/stores/app';
   import { useGoodsStore } from 'src/stores/goods';
+  import i18next from 'i18next';
 
 
   const app = useAppStore();
   const goodsStore = useGoodsStore();
+  let locale = i18next.language;
 
   const router = useRouter();
   const changeLanguage = async (newLocale) => {
+    console.log('locale', locale);
     console.log('changingLanguage', newLocale);
     await goodsStore.updateGoods(newLocale);
+    console.log('changingLanguage2', newLocale);
     app.setLocale(newLocale);
-    console.log('changedLanguage', newLocale);
+    console.log('changedLanguage3', newLocale);
     router.push('catalog');
   }
+console.log('app.kioskState.catalogLocales', app.kioskState.catalogLocales);
 
 </script>
 

@@ -4,7 +4,7 @@ import { useAppStore } from "./app";
 import { KioskDocument, apiGetDocuments, apiSaveDocument } from "src/services";
 import { useGoodsStore } from "./goods";
 import { ORDERS_CACHE_TTL } from "src/services/consts";
-import { i18n } from "src/boot/i18n";
+import { i18n } from "src/boot/i18_n";
 
 export const useOrdersStore = defineStore('orders', () => {
   const appStore = useAppStore()

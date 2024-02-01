@@ -6,10 +6,9 @@
   import { useGoodsStore } from '../../stores/goods';
   import { useRouter } from 'vue-router';
   import { useQuasar } from 'quasar';
-  import { useI18n } from 'vue-i18n';
+  import { t } from 'i18next';
 import { onUnmounted } from 'vue';
 
-  const { t } = useI18n();
 
   const $q = useQuasar();
   const goodsStore = useGoodsStore();

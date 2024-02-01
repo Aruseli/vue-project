@@ -1,6 +1,6 @@
 <script setup>
   import { useRouter } from 'vue-router';
-  import { useI18n } from 'vue-i18n';
+  import { t } from 'i18next';
   import { useOrdersStore } from 'src/stores/orders';
   import DividerBold from 'src/components/dividers/divider-bold.vue';
   import DividerThin from 'src/components/dividers/divider-thin.vue';
@@ -8,7 +8,6 @@
 
   const ordersStore = useOrdersStore();
   const router = useRouter();
-  const { t } = useI18n();
 
   const goToOrderedList = () => {
     router.push('/issuing-order');
@@ -23,7 +22,7 @@
   <q-page class="flex flex-center relative transparent">
     <div class="column justify-center items-center window-height full-width container">
       <div as="h1" class="text-h1 text-uppercase text-center title_style">{{ t('order_was_issued_successfully') }}</div>
-      <q-img src="src/assets/checked.svg" class="image_style" max-width="100%" max-height="100%" width="25rem" height="25rem" />
+      <q-img src="public/checked.svg" class="image_style" max-width="100%" max-height="100%" width="25rem" height="25rem" />
       <DividerBold class="divider_bold_style" />
       <div class="column items-center full-width q-mb-xl">
         <div class="q-mb-md row justify-between items-center full-width">

@@ -2,7 +2,7 @@
   import { ref, computed, onMounted } from 'vue';
   import { evaArrowBack, evaPlusOutline } from '@quasar/extras/eva-icons';
   import { evaMinusOutline } from '@quasar/extras/eva-icons';
-  import { useI18n } from 'vue-i18n';
+  import { t } from 'i18next';
   import { useCartStore } from 'src/stores/cart';
   import { useAppStore } from 'src/stores/app';
   import { useRouter } from 'vue-router';
@@ -14,8 +14,6 @@
 
 
   const router = useRouter();
-
-  const { t } = useI18n();
 
   const app = useAppStore();
   const cartStore = useCartStore();
@@ -104,14 +102,14 @@
           class="q-pa-xs"
         />
         <div class="text-h1 text-center text-text text-uppercase col-11">
-          {{ $t('order') }}
+          {{ t('order') }}
         </div>
       </div>
       <div class="bg-negative full-width" style="height: 0.1rem" />
     </div>
 
     <div v-if="!cartStore.cart.length" class="q-pa-lg text-center">
-      <h2>{{ $t('empty_cart') }}</h2>
+      <h2>{{ t('empty_cart') }}</h2>
     </div>
 
     <q-scroll-area class="fit">
@@ -138,7 +136,7 @@
                 {{ item.title }}
               </div>
               <q-btn unelevated round @click="cartStore.removeFromCart(item.id)">
-                <q-icon name="img:src/assets/bin.svg" size="2.5rem" />
+                <q-icon name="img:/bin.svg" size="2.5rem" />
               </q-btn>
             </div>
 
@@ -173,15 +171,15 @@
     <div class="q-pa-md bg-white">
       <DividerBold class="q-mb-md" />
       <div class="row justify-between items-center q-mb-md">
-        <div class="text-h2">{{ $t('total') }}</div>
+        <div class="text-h2">{{ t('total') }}</div>
         <div class="text-h2 q-mb-md">
           {{ cartStore.totalPrice }} &ensp;&#3647
         </div>
         <DividerThin class="bg-negative q-mb-md" />
         <div class="text-h4 order_container text-weight-regular">
-          <span>{{ $t('order') }}</span>
+          <span>{{ t('order') }}</span>
           <span>{{ cartStore.totalQuantity }}</span>
-          <span>{{ $t('pieces') }}</span>
+          <span>{{ t('pieces', { count: cartStore.totalQuantity }) }}</span>
         </div>
       </div>
       <div class="full-width" v-show="cartStore.cart.length">
@@ -212,7 +210,7 @@
             </div>
           </q-card-section>
           <q-card-section class="q-pt-none text-center">
-            <q-img src="src/assets/girl.svg" max-width="100%" max-height="100%" width="25rem" height="25rem" />
+            <q-img src="public/girl.svg" max-width="100%" max-height="100%" width="25rem" height="25rem" />
           </q-card-section>
           <q-card-section class="q-pt-none">
             <div class="text-subtitle2 text-center text-weight-bold">

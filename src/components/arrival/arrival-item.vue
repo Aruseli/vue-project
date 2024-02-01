@@ -1,9 +1,7 @@
 <script setup>
-  import { useI18n } from 'vue-i18n';
+  import { t } from 'i18next';
   import RoundedButton from '../buttons/rounded-button.vue';
   import { reactive, computed } from 'vue';
-
-  const { t } = useI18n();
 
   const props = defineProps({
     good_name: {
@@ -57,7 +55,7 @@
       </template>
     </q-input>
     <RoundedButton size="1.5rem" @click="" />
-    <q-img src="src/assets/state.svg" width="3rem" v-show="not_equal" />
+    <q-img src="/state.svg" width="3rem" v-show="not_equal" />
   </div>
 </template>
 
