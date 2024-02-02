@@ -121,8 +121,7 @@
 
         <div class="text-body1 ellipsis-2-lines block_description" v-html="good?.description "/>
 
-
-        <q-btn @click="goodDetails">{{ $t('read') }}</q-btn>
+        <q-btn flat @click="goodDetails" :label="$t('read')" />
       </div>
 
       <div>
@@ -217,27 +216,8 @@
           </q-card-section>
           <q-separator color="secondary" class="q-mb-md" />
           <q-card-section class="q-pt-none q-mb-lg">
-            <q-tabs
-              v-model="app.tabCharacteristics"
-              narrow-indicator
-              dense
-              no-caps
-              align="left"
-              class="q-mb-xs"
-            >
-              <q-tab :ripple="false" name="description" :label="$t('description')" content-class="product_tab_label_style" />
-              <q-tab :ripple="false" name="characteristics" :label="$t('characteristics')" content-class="product_tab_label_style" />
-            </q-tabs>
-            <q-tab-panels v-model="app.tabCharacteristics" animated swipeable class="fit">
-              <q-tab-panel name="description" dark>
-                <div class="text-body1" v-html="good.description"/>
-              </q-tab-panel>
-              <q-tab-panel name="characteristics" dark>
-                <div class="text-body1">
-                  {{ good.description }}
-                </div>
-              </q-tab-panel>
-            </q-tab-panels>
+            <div class="text-h4 text-capitalize q-mb-sm">{{ $t('description') }}</div>
+            <div class="text-body1" v-html="good.description"/>
           </q-card-section>
           <q-card-section>
             <div class="full-width">
@@ -334,4 +314,5 @@
 .block_description {
   min-height: 3.2rem;
 }
+
 </style>

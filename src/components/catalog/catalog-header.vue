@@ -53,6 +53,7 @@
         dense
         narrow-indicator
         no-caps
+        outside-arrows
         align="left"
       >
         <q-tab v-for="goodCategory in goodsStore.goods" :name="goodCategory.id" :label="goodCategory.title" content-class="category_tab_label_style" />
@@ -80,5 +81,12 @@
 
 .q-tabs__content > *:not(:last-of-type) {
   margin-right: 1.5rem;
+
 }
+/* .q-tabs__content > * {
+  background-color: var(--q-primary);
+  border-radius: 4rem;
+  padding: 0.3rem 3rem;
+  color: white;
+} */
 </style>
