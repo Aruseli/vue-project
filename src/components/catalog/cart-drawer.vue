@@ -1,16 +1,14 @@
 <script setup>
-  import { ref, computed, onMounted } from 'vue';
-  import { evaArrowBack, evaPlusOutline } from '@quasar/extras/eva-icons';
-  import { evaMinusOutline } from '@quasar/extras/eva-icons';
-  import { t } from 'i18next';
-  import { useCartStore } from 'src/stores/cart';
-  import { useAppStore } from 'src/stores/app';
-  import { useRouter } from 'vue-router';
-  import DividerBold from '../dividers/divider-bold.vue';
-  import DividerThin from '../dividers/divider-thin.vue';
-  import IconButton from '../buttons/icon-button.vue';
-  import RectangularButton from '../buttons/rectangular-button.vue';
-  import { apiSaveDocument } from 'src/services';
+  import { evaArrowBack, evaMinusOutline, evaPlusOutline } from '@quasar/extras/eva-icons';
+import { t } from 'i18next';
+import { useAppStore } from 'src/stores/app';
+import { useCartStore } from 'src/stores/cart';
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import IconButton from '../buttons/icon-button.vue';
+import RectangularButton from '../buttons/rectangular-button.vue';
+import DividerBold from '../dividers/divider-bold.vue';
+import DividerThin from '../dividers/divider-thin.vue';
 
 
   const router = useRouter();
@@ -102,14 +100,14 @@
           class="q-pa-xs"
         />
         <div class="text-h1 text-center text-text text-uppercase col-11">
-          {{ t('order') }}
+          {{ $t('order') }}
         </div>
       </div>
       <div class="bg-negative full-width" style="height: 0.1rem" />
     </div>
 
     <div v-if="!cartStore.cart.length" class="q-pa-lg text-center">
-      <h2>{{ t('empty_cart') }}</h2>
+      <h2>{{ $t('empty_cart') }}</h2>
     </div>
 
     <q-scroll-area class="fit">
@@ -171,15 +169,15 @@
     <div class="q-pa-md bg-white">
       <DividerBold class="q-mb-md" />
       <div class="row justify-between items-center q-mb-md">
-        <div class="text-h2">{{ t('total') }}</div>
+        <div class="text-h2">{{ $t('total') }}</div>
         <div class="text-h2 q-mb-md">
           {{ cartStore.totalPrice }} &ensp;&#3647
         </div>
         <DividerThin class="bg-negative q-mb-md" />
-        <div class="text-h4 order_container text-weight-regular">
-          <span>{{ t('order') }}</span>
+        <div class="text-h4 row q-gutter-sm text-weight-regular">
+          <span>{{ $t('order') }}</span>
           <span>{{ cartStore.totalQuantity }}</span>
-          <span>{{ t('pieces', { count: cartStore.totalQuantity }) }}</span>
+          <span>{{ $t('pieces', { count: cartStore.totalQuantity }) }}</span>
         </div>
       </div>
       <div class="full-width" v-show="cartStore.cart.length">
@@ -206,7 +204,7 @@
         <q-card class="dialog_card dialog_cart">
           <q-card-section>
             <div class="text-h2 text-uppercase text-center text-weight-bold">
-              {{t('order_was_successfully_completed')}}
+              {{$t('order_was_successfully_completed')}}
             </div>
           </q-card-section>
           <q-card-section class="q-pt-none text-center">
@@ -214,13 +212,13 @@
           </q-card-section>
           <q-card-section class="q-pt-none">
             <div class="text-subtitle2 text-center text-weight-bold">
-              {{t('contact_seller_for_further_information')}}
+              {{$t('contact_seller_for_further_information')}}
             </div>
             <DividerBold class="q-mb-lg" />
           </q-card-section>
           <q-card-section class="q-pt-none">
             <div class="text-h1 text-center text-uppercase text-weight-bold">
-              {{t('thank_you')}}
+              {{$t('thank_you')}}
             </div>
           </q-card-section>
         </q-card>
@@ -252,10 +250,6 @@
   }
   .cart_product_item > *:first-of-type {
     /* margin-right: 2rem; */
-  }
-
-  .order_container > span:not(:last-of-type) {
-    margin-right: 1rem;
   }
 
   .dialog_cart {

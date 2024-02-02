@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import { Notify } from 'quasar';
-import { i18n } from 'src/boot/i18_n';
 import { t } from 'i18next';
 import i18next from 'i18next';
 import { eventEmitter, initLocalDeviceWsService } from 'src/services';
@@ -59,7 +58,9 @@ export const useAppStore = defineStore('app', () => {
 
   const setLocale = async (lang_code: string) => {
     console.log('setLocale', lang_code)
-    locale = lang_code
+    i18next.changeLanguage(lang_code, (err, t) => {
+      if(err) { console.log('i18next err', err)}
+    })
     console.log('locale', locale)
   }
 
@@ -81,6 +82,7 @@ export const useAppStore = defineStore('app', () => {
   let inited = false;
   eventEmitter.on('kioskState.status', async ({ newStatus }) => {
     if (newStatus != 'Ready') {
+      router.push('/');
       return
     }
     if (!inited) {
@@ -90,7 +92,7 @@ export const useAppStore = defineStore('app', () => {
     }
 
     // Init locales
-    await updateCatalogLocales(kioskState, locale)
+    await updateCatalogLocales(kioskState)
   })
 
   //===================================
@@ -178,12 +180,8 @@ async function updateCurrentUser(kioskState: KioskState) {
   } catch (e: any) {
     if (e?.message?.includes("ERR_AUTH")) {
       kioskState.user = undefined;
-      router.push({
-        path: "",
-        component: () => import("pages/terminal.vue"),
-        redirect: undefined,
-      });
       console.log("whoami", undefined);
+      updateKioskStatus(kioskState);
     } else {
       // const { t } = i18n.global;
       Notify.create({
@@ -191,7 +189,6 @@ async function updateCurrentUser(kioskState: KioskState) {
         position: "center",
         message: t("ERROR_FETCH_USER_INFO"),
       });
-      // router.push("/");
     }
   }
 }

@@ -56,7 +56,7 @@
       <div v-if="statusIsUnrecoverableError">
         <q-card class='bg-secondary no-box-shadow'>
           <q-card-section>
-            <h2 class="text-white text-center">{{ t('unrecoverable_error') }}</h2>
+            <h2 class="text-white text-center">{{ $t('unrecoverable_error') }}</h2>
             <p>{{ appStore.kioskState.globalError?.message }}</p>
           </q-card-section>
         </q-card>
@@ -74,7 +74,7 @@
         <q-card dark class="flex column items-center">
           <q-card-section>
             <div class="text-h6 q-ma-sm text-center">
-              {{ t('waiting_terminal_registration') }}
+              {{ $t('waiting_terminal_registration') }}
             </div>
             <div>
               <div class="text-h6 text-center q-mb-md text-weight-bold">
@@ -114,7 +114,7 @@
             type="email"
             autofocus
             :rules="[
-              (val: any) => !!val || t('field_is_required')
+              (val: any) => !!val || $t('field_is_required')
             ]"
             no-error-icon
             debounce="500"
@@ -130,8 +130,8 @@
             placeholder="password"
             :type="isPwd ? 'password' : 'text'"
             :rules="[
-              (val: any) => !!val || t('field_is_required'),
-              (val: any) => val.length == 6 || t('password_consists_characters'),
+              (val: any) => !!val || $t('field_is_required'),
+              (val: any) => val.length == 6 || $t('password_consists_characters'),
             ]"
             counter
             no-error-icon

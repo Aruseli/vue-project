@@ -1,11 +1,10 @@
 <script setup>
-  import DividerBold from '../dividers/divider-bold.vue';
-  import RectangularButton from '../buttons/rectangular-button.vue';
-  import ArrivalItem from './arrival-item.vue';
-  import { onMounted, ref, computed } from 'vue';
+  import { useOrderStore } from 'src/stores/order';
+  import { computed, ref } from 'vue';
   import { useRouter } from 'vue-router';
-  import { t } from 'i18next';
-  import { useOrderStore } from 'src/stores/order'
+  import RectangularButton from '../buttons/rectangular-button.vue';
+  import DividerBold from '../dividers/divider-bold.vue';
+  import ArrivalItem from './arrival-item.vue';
 
   const router = useRouter();
   const orderStore = useOrderStore();
@@ -39,25 +38,18 @@
     return items.value.reduce((acc, curr) => acc + curr.actual_quantity, 0)
   });
 
-  onMounted(() => {
-    console.log('orderStore', orderStore.orders);
-    console.log('totalEstimatedQuantity', totalEstimatedQuantity.value);
-    console.log('totalActualQuantity', totalActualQuantity.value);
-  })
 </script>
 
 <template>
   <div class="main_container full-height full-width">
     <div class="relative-position q-mb-xl">
-      <router-link :to="{ path: '/employee-actions' }" class='router_link_style text-secondary absolute-top-left'>
-        {{ t('back_to_employee_actions') }}
-      </router-link>
+      <RectangularButton :name="$t('back_to_employee_actions')" :color="'secondary'" size="xl" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/employee-actions')" />
 
-      <div class="text-h2 text-uppercase text-center q-mb-xl title_padding">{{ t('arrival_goods') }}</div>
+      <div class="text-h2 text-uppercase text-center q-mb-xl title_padding">{{ $t('arrival_goods') }}</div>
 
       <div class="row justify-between q-mb-md">
         <div class="text-h3 text-capitalize">
-          {{ t('remaining_goods') }}
+          {{ $t('remaining_goods') }}
         </div>
         <div class="text-h3">
           {{ '10.12.23 12:00' }}&ensp;{{ '№0000087' }}
@@ -73,20 +65,20 @@
       <DividerBold class="q-mb-lg" />
       <div class="row justify-between items-center q-mb-xl">
         <div class="text-h4 row q-gutter-sm">
-          <span>{{t('total')}}</span>
+          <span>{{$t('total')}}</span>
           <span>{{items.length}}</span>
-          <span>{{ t('product') }}</span>
-          <span>{{ t('units', {count: items.length}) }}</span>
+          <span>{{ $t('product') }}</span>
+          <span>{{ $t('units', {count: items.length}) }}</span>
         </div>
 
         <div class="text-h4 text-weight-regular row q-gutter-sm">
-          <div>{{t('estimated_quantity')}}</div>
+          <div>{{$t('estimated_quantity')}}</div>
           <div>{{totalEstimatedQuantity}}</div>
-          <div>{{ t('pc', {count: totalEstimatedQuantity}) }}</div>
+          <div>{{ $t('pc', {count: totalEstimatedQuantity}) }}</div>
           <q-separator color="secondary" vertical spaced="lg" size="0.2rem" />
-          <div>{{t('actual_quantity')}}</div>
+          <div>{{$t('actual_quantity')}}</div>
           <div>{{ totalActualQuantity }}</div>
-          <div>{{ t('pc', {count: totalActualQuantity}) }}</div>
+          <div>{{ $t('pc', {count: totalActualQuantity}) }}</div>
         </div>
       </div>
       <div class="full-width">
@@ -104,10 +96,6 @@
 .main_container {
   display: grid;
   grid-template-rows: max-content 1fr 0.1fr;
-}
-.scroll_area {
-  overflow-y: scroll;
-  padding: 0.5rem;
 }
 
 .router_link_style {

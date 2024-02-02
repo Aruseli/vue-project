@@ -12,6 +12,6 @@
 
 <style scoped lang="scss">
 .container {
-  padding: 1rem 5rem 5rem 5rem;
+  padding: 5rem;
 }
 </style>

@@ -226,7 +226,7 @@ body.body--dark {
 }
 
 .title_padding {
-  padding-top: var(--px90);
+  padding-top: var(--px64);
 }
 
 .q-field--error .q-field__bottom {
@@ -246,3 +246,7 @@ body.body--dark {
 padding: 0;
 }
 
+.scroll_area {
+  overflow-y: scroll;
+  padding: 0.8rem;
+}

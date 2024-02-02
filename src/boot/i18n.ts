@@ -1,10 +1,8 @@
 import { boot } from 'quasar/wrappers';
 import i18next from 'i18next';
 import I18NextVue from 'i18next-vue';
-import Vue, { createApp } from 'vue';
-import App from '../App.vue';
+import messages from '../i18n/index';
 
-import en from '../i18n/index';
 
 const i18n = i18next.init({
   debug: true,
@@ -14,13 +12,14 @@ const i18n = i18next.init({
     escapeValue: false,
   },
   fallbackLng: 'en',
-  resources: en
+  resources: {
+    'en': {
+      global: messages["en"],
+    },
+  },
+  ns: ['global'],
 });
 
-const app = createApp(App);
-// app.use(i18n)
-app.use(I18NextVue, { i18next });
-app.mount('#app');
-export { i18n };
-
-console.log(i18next.languages);
+export default boot(({ app }) => {
+  app.use(I18NextVue, { i18next });
+});

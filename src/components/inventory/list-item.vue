@@ -41,8 +41,8 @@
     <div class="row justify-between items-center">
       <div class="text-h4 col-3">{{ props.good_name }}</div>
       <div class="text-txt col-3">
-        <span class="text-txt">{{t('estimated_quantity')}}</span>&ensp;
-        {{ props.estimated_quantity }}&ensp;{{ t('pcs') }}
+        <span class="text-txt">{{$t('estimated_quantity')}}</span>&ensp;
+        {{ props.estimated_quantity }}&ensp;{{ $t('pcs') }}
       </div>
       <q-input
         outlined rounded
@@ -52,11 +52,11 @@
         input-class="input_style"
       >
         <template v-slot:before>
-          <span class="text-txt text-secondary">{{t('actual_quantity')}}</span>
+          <span class="text-txt text-secondary">{{$t('actual_quantity')}}</span>
         </template>
 
         <template v-slot:after>
-          <span class="text-txt">{{ t('pcs') }}</span>
+          <span class="text-txt">{{ $t('pcs') }}</span>
         </template>
       </q-input>
       <RoundedButton size="1.5rem" @click="sendData" />

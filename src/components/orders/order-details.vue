@@ -8,6 +8,7 @@
   import { t } from 'i18next';
   import { onMounted } from 'vue';
   import { computed } from 'vue';
+  import RectangularButton from '../buttons/rectangular-button.vue';
 
   const ordersStore = useOrdersStore();
   const route = useRoute();
@@ -45,10 +46,9 @@
 <template>
   <div class="main_container full-height">
     <div class="relative-position">
-      <router-link :to="{ path: '/issuing-order' }" class='router_link_style text-secondary absolute-top-left'>
-        {{ t('back_to_order_list') }}
-      </router-link>
-      <div class="text-h1 text-uppercase text-center q-mb-md title_padding">{{ t('order') }}&ensp;№{{ ordersStore.currentOrder?.orderNumStr }}</div>
+      <RectangularButton :name="$t('back_to_order_list')" :color="'secondary'" size="xl" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/issuing-order')" />
+
+      <div class="text-h1 text-uppercase text-center q-mb-md title_padding">{{ $t('order') }}&ensp;№{{ ordersStore.currentOrder?.orderNumStr }}</div>
     <DividerThin class="q-mb-xl bg-secondary" />
     </div>
     <div class="scroll_area">
@@ -73,21 +73,21 @@
     <div>
       <DividerBold class="q-mb-lg" />
       <div class="row justify-between items-center q-mb-md">
-        <div class="text-h4">{{ t('total') }}</div>
+        <div class="text-h4">{{ $t('total') }}</div>
         <div class="text-h3 q-mb-md">
           {{ ordersStore.currentOrder?.totalPrice }} &ensp;&#3647
         </div>
         <DividerThin class="bg-negative q-mb-lg" />
-        <div class="text-h4 order_container text-weight-regular">
-          <span>{{ t('order') }}</span>&ensp;
+        <div class="text-h4 row q-gutter-s text-weight-regular row q-gutter-sm">
+          <span>{{ $t('order') }}</span>&ensp;
           <span>{{ ordersStore.currentOrder?.totalCount }}</span>&ensp;
-          <span>{{ t('product') }}</span>
-          <span>{{ t('units', { count: ordersStore.currentOrder?.totalCount }) }}</span>
+          <span>{{ $t('product') }}</span>
+          <span>{{ $t('units', { count: ordersStore.currentOrder?.totalCount }) }}</span>
         </div>
       </div>
       <div class="full-width">
         <q-btn
-          class="full-width text-style q-py-lg"
+          class="full-width text-style q-py-md"
           unelevated
           rounded
           no-caps
@@ -96,7 +96,7 @@
           :disable="!allowConfirm"
         >
           <div class="text-h3 text-white text-center text-weight-bold text-header_bg text-uppercase">
-            {{ t('confirm') }}
+            {{ $t('confirm') }}
           </div>
         </q-btn>
       </div>
@@ -108,10 +108,6 @@
 .main_container {
   display: grid;
   grid-template-rows: max-content 1fr 0.1fr;
-}
-.scroll_area {
-  overflow-y: scroll;
-  padding: 0.5rem;
 }
 .orders_container > *:not(:last-of-type) {
   margin-bottom: var(--px30);

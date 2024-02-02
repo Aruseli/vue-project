@@ -15,14 +15,12 @@
   const router = useRouter();
   const changeLanguage = async (newLocale) => {
     console.log('locale', locale);
-    console.log('changingLanguage', newLocale);
     await goodsStore.updateGoods(newLocale);
-    console.log('changingLanguage2', newLocale);
     app.setLocale(newLocale);
-    console.log('changedLanguage3', newLocale);
     router.push('catalog');
   }
 console.log('app.kioskState.catalogLocales', app.kioskState.catalogLocales);
+console.log('locale18', locale);
 
 </script>
 
@@ -33,11 +31,11 @@ console.log('app.kioskState.catalogLocales', app.kioskState.catalogLocales);
     </Logo>
     <div class="column bg-primary container">
       <language v-for="lang in app.kioskState.catalogLocales"
-        :key="lang.locale"
-        :src="lang.flag"
-        :alt="lang.language"
-        :language="lang.language"
-        @click="changeLanguage(lang.locale)"
+        :key="lang.lang_code"
+        :src="lang.src"
+        :alt="lang.name"
+        :language="lang.name"
+        @click="changeLanguage(lang.lang_code)"
       />
     </div>
   </q-page>

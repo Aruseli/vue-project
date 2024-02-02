@@ -1,5 +1,4 @@
 <script setup>
-  import { t } from 'i18next';
   import RoundedButton from '../buttons/rounded-button.vue';
   import { reactive, computed } from 'vue';
 
@@ -47,11 +46,11 @@
       input-class="input_style"
     >
       <template v-slot:before>
-        <span class="text-txt text-secondary">{{t('actual_quantity')}}</span>
+        <span class="text-txt text-secondary">{{$t('actual_quantity')}}</span>
       </template>
 
       <template v-slot:after>
-        <span class="text-txt">{{ t('pcs') }}</span>
+        <span class="text-txt">{{ $t('pcs') }}</span>
       </template>
     </q-input>
     <RoundedButton size="1.5rem" @click="" />

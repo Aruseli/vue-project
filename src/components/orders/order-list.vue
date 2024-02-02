@@ -8,6 +8,7 @@
   import { useGoodsStore } from 'src/stores/goods';
   import { useOrdersStore } from 'src/stores/orders';
   import { useQuasar } from 'quasar';
+  import RectangularButton from '../buttons/rectangular-button.vue';
 
   const $q = useQuasar();
   const router = useRouter();
@@ -20,7 +21,7 @@
 
   onMounted(async () => {
     try {
-      await goodsStore.updateGoods(i18next.lng)
+      await goodsStore.updateGoods(i18next.language)
       await ordersStore.updateOrders()
     } catch (err) {
       console.error('ordersStore.updateOrders error:', err)
@@ -39,10 +40,9 @@
 <template>
   <div class="main_container full-height">
     <div class="relative-position">
-      <router-link :to="{ path: '/employee-actions' }" class='router_link_style text-secondary absolute-top-left'>
-        {{ t('back_to_employee_actions') }}
-      </router-link>
-      <div class="text-h1 text-uppercase text-center q-mb-md title_padding">{{ t('open_orders') }}</div>
+      <RectangularButton :name="$t('back_to_employee_actions')" :color="'secondary'" size="xl" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/employee-actions')" />
+
+      <div class="text-h1 text-uppercase text-center q-mb-md title_padding">{{ $t('open_orders') }}</div>
       <DividerThin class="q-mb-xl bg-secondary" />
     </div>
     <div class="orders_container">

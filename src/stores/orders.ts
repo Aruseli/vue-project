@@ -4,7 +4,8 @@ import { useAppStore } from "./app";
 import { KioskDocument, apiGetDocuments, apiSaveDocument } from "src/services";
 import { useGoodsStore } from "./goods";
 import { ORDERS_CACHE_TTL } from "src/services/consts";
-import { i18n } from "src/boot/i18_n";
+import { t } from "i18next";
+import i18next from 'i18next';
 
 export const useOrdersStore = defineStore('orders', () => {
   const appStore = useAppStore()
@@ -24,7 +25,7 @@ export const useOrdersStore = defineStore('orders', () => {
     try {
       const terminal_settings = appStore.kioskState.params?.terminal_settings
       ordersDocuments.value = await apiGetDocuments([terminal_settings!.invoice_doc_type_id!], [2])
-      orders.value = ordersDocuments.value.map(od => documentToOrder(od, i18n.global, goodsStore))
+      orders.value = ordersDocuments.value.map(od => documentToOrder(od, i18next.language, goodsStore))
       ordersLastUpdate.value = Date.now()
     } finally {
       ordersLoading.value = false
@@ -39,7 +40,7 @@ export const useOrdersStore = defineStore('orders', () => {
         await updateOrders()
       }
       const orderDoc = ordersDocuments.value.find(d => d.id == id) || null
-      currentOrder.value = orderDoc ? documentToOrder(orderDoc, i18n.global, goodsStore) : null
+      currentOrder.value = orderDoc ? documentToOrder(orderDoc, i18next.language, goodsStore) : null
       currentOrderDocument.value = orderDoc
     } catch {
       currentOrder.value = null
@@ -80,9 +81,8 @@ export const useOrdersStore = defineStore('orders', () => {
   }
 })
 
-type I18nType = typeof i18n["global"]
+type I18nType = typeof i18next.language
 function documentToOrder(od: KioskDocument, i18n: I18nType, goodsStore: ReturnType<typeof useGoodsStore>) {
-  const { t } = i18n
   let hasAllGoods = true;
   const order = {
     id: od.id,

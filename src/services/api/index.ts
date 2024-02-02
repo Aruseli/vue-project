@@ -90,6 +90,7 @@ export async function apiGetLocale(lang: string) {
   const response = await fetchApi('/api/v2/kiosk/getLocale', {
     lang,
   });
+  console.log('apiGetLocale', response);
   return response.data.locale[0]?.data;
 }
 

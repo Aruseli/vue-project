@@ -3,7 +3,6 @@
   import { useRouter } from 'vue-router';
   import { ref } from 'vue';
   import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
-  import { t } from 'i18next';
 
   const router = useRouter();
   const show = ref(true);
@@ -19,12 +18,12 @@
       <!-- <Logo class="logo_row self-start" classes="q-mr-md" /> -->
       <Transition name="slide-fade" mode="out-in">
           <p v-show="show" class="text-h1 text-center text-white text-uppercase">
-            {{ t('find_your_experience') }}
+            {{ $t('find_your_experience') }}
           </p>
         </Transition>
       <div class="column">
         <div class="text-h4 text-center text-grey-2 text-uppercase">
-          {{ t('tap_on_screen') }}
+          {{ $t('tap_on_screen') }}
         </div>
         <!-- <button @click="show = !show">
           Переключить отрисовку

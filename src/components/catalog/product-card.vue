@@ -122,7 +122,7 @@
         <div class="text-body1 ellipsis-2-lines block_description" v-html="good?.description "/>
 
 
-        <q-btn @click="goodDetails">{{ t('read') }}</q-btn>
+        <q-btn @click="goodDetails">{{ $t('read') }}</q-btn>
       </div>
 
       <div>
@@ -136,7 +136,7 @@
           @click="addGoodToCart(good)"
           >
           <div class="text-center text-h3 q-py-xs">
-            {{ t('buy') }}
+            {{ $t('buy') }}
           </div>
         </q-btn>
         <div class="row justify-between items-center" v-else>
@@ -225,8 +225,8 @@
               align="left"
               class="q-mb-xs"
             >
-              <q-tab :ripple="false" name="description" :label="t('description')" content-class="product_tab_label_style" />
-              <q-tab :ripple="false" name="characteristics" :label="t('characteristics')" content-class="product_tab_label_style" />
+              <q-tab :ripple="false" name="description" :label="$t('description')" content-class="product_tab_label_style" />
+              <q-tab :ripple="false" name="characteristics" :label="$t('characteristics')" content-class="product_tab_label_style" />
             </q-tabs>
             <q-tab-panels v-model="app.tabCharacteristics" animated swipeable class="fit">
               <q-tab-panel name="description" dark>
@@ -252,7 +252,7 @@
                 @click="addGoodToCart(good)"
                 >
                 <div class="text-center text-weight-bold text-h3 text-white q-py-xl">
-                  {{ t('buy') }}
+                  {{ $t('buy') }}
                 </div>
               </q-btn>
               <div class="row justify-between items-center" v-else>
