@@ -25,19 +25,19 @@ import { onUnmounted } from 'vue';
     cartStore.clearCart();
   }
 
-  const warnRedirect = () => {
-    $q.notify({
-      progress: true,
-      color: 'warning',
-      icon: 'warning',
-      position: 'center',
-      classes: 'full-width',
-      message: t('are_you_still_here'),
-      timeout: 10000,
-      multiLine: true,
-      closeBtn: true,
-    })
-  }
+  // const warnRedirect = () => {
+  //   $q.notify({
+  //     progress: true,
+  //     color: 'warning',
+  //     icon: 'warning',
+  //     position: 'center',
+  //     classes: 'full-width',
+  //     message: t('are_you_still_here'),
+  //     timeout: 10000,
+  //     multiLine: true,
+  //     closeBtn: true,
+  //   })
+  // }
 
   const resetTimer = () => {
     clearTimeout(timerRedirect.value);

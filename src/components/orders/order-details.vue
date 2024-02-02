@@ -1,14 +1,13 @@
 <script setup>
-  import DividerThin from '../dividers/divider-thin.vue';
-  import DividerBold from '../dividers/divider-bold.vue';
-  import OrderCard from './order-card.vue';
-  import { ref, watch } from 'vue';
-  import { useOrdersStore } from 'src/stores/orders';
-  import { useRouter, useRoute } from 'vue-router';
   import { t } from 'i18next';
-  import { onMounted } from 'vue';
-  import { computed } from 'vue';
+  import { useGoodsStore } from 'src/stores/goods';
+  import { useOrdersStore } from 'src/stores/orders';
+  import { computed, onMounted, ref } from 'vue';
+  import { useRoute, useRouter } from 'vue-router';
   import RectangularButton from '../buttons/rectangular-button.vue';
+  import DividerBold from '../dividers/divider-bold.vue';
+  import DividerThin from '../dividers/divider-thin.vue';
+  import OrderCard from './order-card.vue';
 
   const ordersStore = useOrdersStore();
   const route = useRoute();
@@ -25,6 +24,8 @@
     return ordersStore.currentOrder?.items?.every(i => i.issued == i.quant)
   });
 
+  const  goodsStore = useGoodsStore();
+
   onMounted(async () => {
     try {
       await ordersStore.selectOrder(route.params.id)
@@ -40,7 +41,7 @@
       router.push('/employee-actions')
     }
   })
-  console.log('ordersStore.currentOrder?.items', ordersStore.currentOrder?.items)
+
 </script>
 
 <template>
@@ -78,7 +79,7 @@
           {{ ordersStore.currentOrder?.totalPrice }} &ensp;&#3647
         </div>
         <DividerThin class="bg-negative q-mb-lg" />
-        <div class="text-h4 row q-gutter-s text-weight-regular row q-gutter-sm">
+        <div class="text-h4 row q-gutter-sm text-weight-regular">
           <span>{{ $t('order') }}</span>&ensp;
           <span>{{ ordersStore.currentOrder?.totalCount }}</span>&ensp;
           <span>{{ $t('product') }}</span>

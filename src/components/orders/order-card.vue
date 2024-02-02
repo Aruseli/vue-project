@@ -68,7 +68,11 @@
         <div class="text-h2">
           &#3647&ensp;{{ props.good_price }}
         </div>
-        <div class="text-h3">{{ props.good_issued > 0 ? props.good_issued + ' / ' : '' }}{{ props.good_quant }}{{ $t('pc', {count: props.good_quant}) }}</div>
+        <div class="text-h3 row q-gutter-sm">
+          <span>{{ props.good_issued > 0 ? props.good_issued + ' / ' : '' }}</span>
+          <span>{{ props.good_quant }}</span>
+          <span>{{ $t('pc', {count: props.good_quant}) }}</span>
+        </div>
       </div>
     </div>
   </div>

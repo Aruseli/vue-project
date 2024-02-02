@@ -4,12 +4,12 @@
   import { useAppStore } from "src/stores/app";
   import { useOrdersStore } from "src/stores/orders";
   import { useRoute, useRouter } from "vue-router";
-import { useGoodsStore } from "./stores/goods";
+  import { useGoodsStore } from "./stores/goods";
 
   const route = useRoute()
   const router = useRouter()
 
-eventEmitter.on('local-ws', async evt => {
+  eventEmitter.on('local-ws', async evt => {
     const appStore = useAppStore() // Don't move up: it will break init (query params are unaccessible)
     const ordersStore = useOrdersStore()
     const goodsStore = useGoodsStore();
@@ -18,9 +18,15 @@ eventEmitter.on('local-ws', async evt => {
       switch (barcode.prefix) {
         case '210':
           // GoodBarcode
-          console.log('evt.data', evt.data)
-          goodsStore.getGoodByCode(barcode);
-          ordersStore.currentOrder?.items?.[id = good_id].issued;
+
+          const order_id = ordersStore.currentOrder?.items.flatMap(or => or.id)[0];
+          const order_item = ordersStore.currentOrder?.items.find(i => i.id);
+
+          const good_id = goodsStore.getGoodByCode(order_id)
+          const code = good_id.id == order_id ? 210 + `${good_id.code}` + 9 : null
+          if (barcode.barcode === code) {
+            order_item.issued += 1;
+          }
           break;
         case '220': // Employee
           // TODO populate disallowed paths

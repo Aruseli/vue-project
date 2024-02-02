@@ -171,13 +171,14 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     }
     return goods.value.flatMap(gc => gc.goods).find(g => g.id == id)
   }
-  const getGoodByDataCode = ref(0)
-  const getGoodByCode = (code: string) => {
-    getGoodByDataCode.value += 1
-    if (getGoodByDataCode.value % 100 == 0) {
-      console.log('getGoodByDataCode code', getGoodByDataCode.value)
+
+  const getGoodByDataCodeHits = ref(0);
+  const getGoodByCode = (id: string) => {
+    getGoodByDataCodeHits.value += 1
+    if (getGoodByDataCodeHits.value % 100 == 0) {
+      console.log('getGoodById hits', getGoodByDataCodeHits.value)
     }
-    return goods.value.flatMap(gc => gc.goods).find(g => g.code == code)
+    return goods.value.flatMap(gc => gc.goods).find(g => g.id == id)
   }
 
   const waitGoodsReady = async () => {

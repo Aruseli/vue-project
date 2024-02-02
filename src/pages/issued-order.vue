@@ -32,7 +32,7 @@
           </div>
         </div>
         <DividerThin class="bg-negative q-mb-md" />
-        <div class="text-h2 row q-gutter-s text-weight-regular self-start">
+        <div class="text-h2 row q-gutter-sm text-weight-regular self-start">
           <span>{{$t('order')}}</span>&ensp;
           <span>{{ ordersStore.currentOrder.totalCount }}</span>&ensp;
           <span>{{ $t('product_units') }}</span>
