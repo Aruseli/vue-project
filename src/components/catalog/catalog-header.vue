@@ -34,7 +34,9 @@
 
       <div class="">
         <q-btn unelevated round class="relative-position" @click="openDrawer">
-          <BinIconNew />
+          <BinIconNew>
+            <path v-show="cart.totalQuantity > 0" d="M23.2899 99.4944C49.461 103 73.5796 103 97.2395 99.4944C102.698 74.689 108.441 46.9768 108.441 46.9768C105.441 53.2274 94.0429 62.2554 64.2143 50.7154C34.3857 39.1754 19.7312 46.7492 14.5884 53C14.5884 53 19.6068 79.6892 23.2899 99.4944Z" fill="#0eb60b" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="path"/>
+          </BinIconNew>
           <div v-if="cart.totalQuantity > 0" class="badge_style bg-positive flex items-center">
             <div class="text-h4 text-white q-px-sm">{{ cart.totalQuantity }}</div>
           </div>

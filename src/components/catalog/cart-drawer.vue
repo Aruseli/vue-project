@@ -183,7 +183,7 @@ import DividerThin from '../dividers/divider-thin.vue';
       <div class="full-width" v-show="cartStore.cart.length">
         <RectangularButton
           class="fit"
-          name="checkout"
+          :name="$t('checkout')"
           :disable="isDisabled"
           @click="submitOrder"
         />

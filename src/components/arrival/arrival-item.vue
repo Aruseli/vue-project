@@ -18,17 +18,22 @@
       required: false,
       default: 0,
     },
+    not_equal: {
+      type: Boolean,
+      required: false,
+      default: false,
+    }
   })
 
-  let state = reactive({
-    good_name: props.good_name,
-    estimated_quantity: props.estimated_quantity,
-    actual_quantity: 12,
-  });
+  // let state = reactive({
+  //   good_name: props.good_name,
+  //   estimated_quantity: props.estimated_quantity,
+  //   actual_quantity: 12,
+  // });
 
-  const not_equal = computed(() => {
-    return state.estimated_quantity!== state.actual_quantity;
-  })
+  // const not_equal = computed(() => {
+  //   return state.estimated_quantity!== state.actual_quantity;
+  // })
 
   const sendData = () => {
     console.log(state.actual_quantity);
@@ -40,7 +45,7 @@
     <div class="text-h4 col-3">{{ props.good_name }}</div>
     <q-input
       outlined rounded
-      :v-model.number="state.actual_quantity"
+      :v-model.number="props.actual_quantity"
       type="number"
       :dark="false" class="text-txt"
       input-class="input_style"
@@ -50,7 +55,7 @@
       </template>
 
       <template v-slot:after>
-        <span class="text-txt">{{ $t('pcs') }}</span>
+        <span class="text-txt">{{ $t('pcs', {count: props.actual_quantity}) }}</span>
       </template>
     </q-input>
     <RoundedButton size="1.5rem" @click="" />

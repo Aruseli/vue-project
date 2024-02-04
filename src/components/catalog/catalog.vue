@@ -42,8 +42,8 @@ import { onUnmounted } from 'vue';
   const resetTimer = () => {
     clearTimeout(timerRedirect.value);
     clearTimeout(timerWarn.value);
-    timerRedirect.value = setTimeout(redirect, 20000);
-    timerWarn.value = setTimeout(warnRedirect, 10000);
+    // timerRedirect.value = setTimeout(redirect, 20000);
+    // timerWarn.value = setTimeout(warnRedirect, 10000);
   }
 
   const boundResetTimer = resetTimer.bind(this);

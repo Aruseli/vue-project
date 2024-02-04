@@ -99,13 +99,13 @@
       </div>
       <div class="row justify-center q-gutter-xl">
         <RectangularButton
-          name="confirm"
+          ;name="$t('confirm')"
           class="col-5"
           @click="() => console.log('confirm')"
           />
           <RectangularButton
           color="warning"
-          name="declare_discrepancy"
+          ;name="$t('declare_discrepancy')"
           class="col-5"
           @click="() => console.log('declare_discrepancy')"
         />

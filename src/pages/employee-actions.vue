@@ -2,8 +2,6 @@
   import { useRouter } from 'vue-router';
   import { ref } from 'vue';
   import RectangularButton from '../components/buttons/rectangular-button.vue';
-  import i18next from 'i18next';
-  import { t } from 'i18next';
 
   const router = useRouter();
   const route = (path) => {
@@ -55,7 +53,7 @@
       <RectangularButton
         v-for="(route, index) in routes"
         :key="index"
-        :name='t(route.name)'
+        :name='$t(route.name)'
         @click="route.path"
       />
     </div>

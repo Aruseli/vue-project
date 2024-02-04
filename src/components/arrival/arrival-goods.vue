@@ -1,13 +1,15 @@
 <script setup>
-  import { useOrderStore } from 'src/stores/order';
   import { computed, ref } from 'vue';
   import { useRouter } from 'vue-router';
   import RectangularButton from '../buttons/rectangular-button.vue';
   import DividerBold from '../dividers/divider-bold.vue';
   import ArrivalItem from './arrival-item.vue';
+  import moment from 'moment';
+  import axios from 'axios';
+  import { useGoodsStore } from 'src/stores/goods';
 
   const router = useRouter();
-  const orderStore = useOrderStore();
+  const goodsStore = useGoodsStore();
 
   const items = ref([
     {
@@ -38,6 +40,38 @@
     return items.value.reduce((acc, curr) => acc + curr.actual_quantity, 0)
   });
 
+  const formattedTime = ref(null);
+
+  // const watchID = navigator.geolocation.watchPosition((position) => {
+  //   console.log('get', position.coords.latitude, position.coords.longitude);
+  // });
+  navigator.geolocation.getCurrentPosition((position) => {
+    console.log('watch', position.coords.latitude, position.coords.longitude);
+    const timeZoneURL = `http://api.timezonedb.com/v2.1/get-time-zone?key=KJCIM2OH09TJ&format=xml&by=position&lat=${position.coords.latitude}&lng=${position.coords.longitude}`
+
+    axios
+      .get(timeZoneURL)
+      .then(response => {
+        const data = response.data;
+        const timeZone = data.zoneName;
+        formattedTime.value = moment(timeZone).format('LT').slice(0, -3);
+
+        console.log(`Текущее время по вашей геолокации (${timeZone}): ${formattedTime.value}`);
+      })
+      .catch(error => {
+        console.error('Произошла ошибка:', error);
+      });
+  });
+
+
+
+  // Get the current date
+  const date = new Date();
+  // Format the date using Moment.js
+  const formattedDate = moment(date).format('DD.MM.YY');
+  // Output the formatted date
+  console.log(formattedDate); // Output: 04.02.24
+
 </script>
 
 <template>
@@ -51,8 +85,10 @@
         <div class="text-h3 text-capitalize">
           {{ $t('remaining_goods') }}
         </div>
-        <div class="text-h3">
-          {{ '10.12.23 12:00' }}&ensp;{{ '№0000087' }}
+        <div class="text-h3 row q-gutter-md">
+          <span>{{ formattedDate }}</span>
+          <span>{{ formattedTime }}</span>
+          <span>{{ '№0000087' }}</span>
         </div>
       </div>
       <DividerBold />
@@ -83,7 +119,7 @@
       </div>
       <div class="full-width">
         <RectangularButton
-          name="confirm"
+          :name="$t('confirm')"
           class="fit"
           @click="() => console.log('confirm')"
         />

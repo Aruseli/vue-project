@@ -15,7 +15,6 @@
         <LogoSvgWhite />
       </Logo>
 
-      <!-- <Logo class="logo_row self-start" classes="q-mr-md" /> -->
       <Transition name="slide-fade" mode="out-in">
           <p v-show="show" class="text-h1 text-center text-white text-uppercase">
             {{ $t('find_your_experience') }}
@@ -25,9 +24,6 @@
         <div class="text-h4 text-center text-grey-2 text-uppercase">
           {{ $t('tap_on_screen') }}
         </div>
-        <!-- <button @click="show = !show">
-          Переключить отрисовку
-        </button> -->
       </div>
     </div>
   </q-page>

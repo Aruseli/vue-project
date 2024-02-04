@@ -4,7 +4,7 @@
   import { ionEllipse } from '@quasar/extras/ionicons-v6';
   import { evaRadioButtonOffOutline } from '@quasar/extras/eva-icons';
   import { t } from 'i18next';
-  import { computed, ref, onMounted } from 'vue';
+  import { computed, ref, onMounted, nextTick } from 'vue';
   import { useCartStore } from '../../stores/cart';
   import { useGoodsStore } from '../../stores/goods';
   import { useAppStore } from '../../stores/app';
@@ -80,9 +80,24 @@
     showNotify();
   }
 
+  const ellipsisContainer = ref(null);
+  const ellipsisText = ref('');
+  const slice = ref(null);
+
   onMounted(async () => {
     good.value = goodsStore.getGoodById(props.itemId);
+    console.log('good.value', good.value.description)
+    // await nextTick();
+    // const containerHeight = ellipsisContainer.value.offsetHeight;
+    // const textHeight = ellipsisText.value.offsetHeight;
+    // const textLength = ellipsisText.value.textContent;
+
+    // await nextTick();
+    // if (textHeight > containerHeight) slice.value = textLength.substring(0, 50) + 'more...';
   })
+
+  console.log('slice', slice.value)
+
 
 </script>
 
@@ -119,7 +134,9 @@
           </div>
         </div>
 
-        <div class="text-body1 ellipsis-2-lines block_description" v-html="good?.description "/>
+        <div ref="ellipsisContainer" class="block_description">
+          <div class="text-body1 ellipsis-2-lines" ref="ellipsisText" v-html="good?.description" />
+        </div>
 
         <q-btn flat @click="goodDetails" :label="$t('read')" />
       </div>
@@ -312,7 +329,8 @@
   }
 
 .block_description {
-  min-height: 3.2rem;
+  height: 3.2rem;
+  // overflow: auto;
 }
 
 </style>
