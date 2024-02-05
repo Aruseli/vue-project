@@ -1,13 +1,13 @@
 // https://quasar.dev/style/sass-scss-variables#variables-list
 
 // text
-$h1: (size: 8rem, line-height: 1.2, letter-spacing: -.01562em, weight: 700) !default;
-$h2: (size: 3.5rem, line-height: 1.2, letter-spacing: -.00833em, weight: 700) !default;
-$h3: (size: 3rem, line-height: 1.1, letter-spacing: normal, weight: 600) !default;
-$h4: (size: 2.5rem, line-height: 1.1, letter-spacing: .00735em, weight: 600) !default;
-$subtitle1: (size: 1.2rem, line-height: 1, letter-spacing: .00937em, weight: 400) !default;
-$subtitle2: (size: .875rem, line-height: 1, letter-spacing: .00714em, weight: 500) !default;
-$body1: (size: 1.5rem, line-height: 1, letter-spacing: .03125em, weight: 400) !default;
+$h1: (size: 8rem, line-height: 1.3, letter-spacing: -.01562em, weight: 700) !default;
+$h2: (size: 3.5rem, line-height: 1.3, letter-spacing: -.00833em, weight: 700) !default;
+$h3: (size: 3rem, line-height: 1.3, letter-spacing: normal, weight: 600) !default;
+$h4: (size: 2.5rem, line-height: 1.3, letter-spacing: .00735em, weight: 600) !default;
+$subtitle1: (size: 1.2rem, line-height: 1.2, letter-spacing: .00937em, weight: 400) !default;
+$subtitle2: (size: .875rem, line-height: 1.2, letter-spacing: .00714em, weight: 500) !default;
+$body1: (size: 1.5rem, line-height: 1.2, letter-spacing: .03125em, weight: 400) !default;
 
 // sizes for define margins/paddings
 $space-base: 16px !default;

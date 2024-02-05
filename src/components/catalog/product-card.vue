@@ -124,7 +124,7 @@
         </div>
         <div>
           <div class="column no-wrap items-left">
-            <div class="text-h4 q-mb-sm ellipsis first_letter">
+            <div class="text-h4 q-mb-xs ellipsis first_letter">
               {{ good?.title }}
             </div>
 
@@ -280,10 +280,8 @@
   .card_setting {
     border-radius: var(--border-sm);
     box-shadow: var(--box-shadow--product_cart);
-    // width: max-content;
     width: calc(var(--width_coefficient) + var(--coefficient));
     height: 100%;
-    // height: 55rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -291,8 +289,6 @@
     background-color: var(--q-header_bg);
   }
   .img_container {
-    // width: $calc_width;
-    // height: $calc_width;
     max-width: $calc_width;
     max-height: $calc_width;
     border-radius : var(--px30);
@@ -309,7 +305,7 @@
   }
 
   .content_container > *:nth-child(n+2){
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   .text_style {
@@ -324,7 +320,6 @@
 
   .dialog_img {
     width: 100%;
-    // height: calc(70vw - 8rem);
     border: thin solid var(--q-accent);
   }
 
