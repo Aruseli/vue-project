@@ -1,15 +1,13 @@
 <script setup>
-  import { evaPlusOutline } from '@quasar/extras/eva-icons';
-  import { evaMinusOutline } from '@quasar/extras/eva-icons';
-  import { ionEllipse } from '@quasar/extras/ionicons-v6';
-  import { evaRadioButtonOffOutline } from '@quasar/extras/eva-icons';
-  import { t } from 'i18next';
-  import { computed, ref, onMounted, nextTick } from 'vue';
-  import { useCartStore } from '../../stores/cart';
-  import { useGoodsStore } from '../../stores/goods';
-  import { useAppStore } from '../../stores/app';
-  import { useQuasar } from 'quasar';
-  import IconButton from '../buttons/icon-button.vue';
+  import { evaMinusOutline, evaPlusOutline } from '@quasar/extras/eva-icons';
+import { ionEllipse } from '@quasar/extras/ionicons-v6';
+import { t } from 'i18next';
+import { useQuasar } from 'quasar';
+import { computed, nextTick, onMounted, ref } from 'vue';
+import { useAppStore } from '../../stores/app';
+import { useCartStore } from '../../stores/cart';
+import { useGoodsStore } from '../../stores/goods';
+import IconButton from '../buttons/icon-button.vue';
 
   const $q = useQuasar();
   const openDialog = ref(false);
@@ -26,6 +24,8 @@
       required: true,
     },
   })
+
+  console.log('abc');
 
   const showNotify = () => {
     $q.notify({
@@ -80,24 +80,17 @@
     showNotify();
   }
 
-  const ellipsisContainer = ref(null);
-  const ellipsisText = ref('');
-  const slice = ref(null);
+  const sliceDescription = ref(null);
 
   onMounted(async () => {
     good.value = goodsStore.getGoodById(props.itemId);
-    console.log('good.value', good.value.description)
-    // await nextTick();
-    // const containerHeight = ellipsisContainer.value.offsetHeight;
-    // const textHeight = ellipsisText.value.offsetHeight;
-    // const textLength = ellipsisText.value.textContent;
-
-    // await nextTick();
-    // if (textHeight > containerHeight) slice.value = textLength.substring(0, 50) + 'more...';
+    await nextTick();
+    if (good.value.description.length > 50) {
+      sliceDescription.value = good.value.description.slice(0, 50) + ' <span style="color: blue">more...</span>';
+    } else {
+      sliceDescription.value = good.value.description;
+    }
   })
-
-  console.log('slice', slice.value)
-
 
 </script>
 
@@ -134,11 +127,10 @@
           </div>
         </div>
 
-        <div ref="ellipsisContainer" class="block_description">
-          <div class="text-body1 ellipsis-2-lines" ref="ellipsisText" v-html="good?.description" />
+        <div class="block_description" @click="goodDetails">
+          <div class="text-body1" v-html="sliceDescription"/>
         </div>
 
-        <q-btn flat @click="goodDetails" :label="$t('read')" />
       </div>
 
       <div>
@@ -151,8 +143,8 @@
           text-color="white"
           @click="addGoodToCart(good)"
           >
-          <div class="text-center text-h3 q-py-xs">
-            {{ $t('buy') }}
+          <div class="text-center text-h4 q-py-xs text-uppercase">
+            {{ $t('add') }}
           </div>
         </q-btn>
         <div class="row justify-between items-center" v-else>
@@ -248,8 +240,8 @@
                 text-color="white"
                 @click="addGoodToCart(good)"
                 >
-                <div class="text-center text-weight-bold text-h3 text-white q-py-xl">
-                  {{ $t('buy') }}
+                <div class="text-center text-weight-bold text-h3 text-white q-py-xl text-uppercase">
+                  {{ $t('add') }}
                 </div>
               </q-btn>
               <div class="row justify-between items-center" v-else>
@@ -324,8 +316,8 @@
   }
 
 .block_description {
-  height: 3.2rem;
-  // overflow: auto;
+  height: 3.5rem;
+  overflow: auto;
 }
 
 </style>
