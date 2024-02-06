@@ -21,12 +21,17 @@
 
           const order_id = ordersStore.currentOrder?.items.flatMap(or => or.id)[0];
           const order_item = ordersStore.currentOrder?.items.find(i => i.id);
+          const order_item_quant = ordersStore.currentOrder?.items.find(i => i.id).quant;
 
           const good_id = goodsStore.getGoodByCode(order_id)
           const code = good_id.id == order_id ? 210 + `${good_id.code}` + 9 : null
           if (barcode.barcode === code) {
+            if (order_item_quant > order_item.issued) {
             order_item.issued += 1;
-          }
+          } else {
+            order_item.issued
+            console.error('Stop scanning')
+          }}
           break;
         case '220': // Employee
           // TODO populate disallowed paths
