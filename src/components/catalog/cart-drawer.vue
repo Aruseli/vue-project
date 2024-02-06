@@ -67,10 +67,6 @@ import DividerThin from '../dividers/divider-thin.vue';
     }
   }
 
-  onMounted(() => {
-    console.log('cartStore.cart', cartStore.cart)
-  })
-
 </script>
 
 
@@ -86,13 +82,7 @@ import DividerThin from '../dividers/divider-thin.vue';
   >
     <div class="q-pa-md">
       <div class="row items-center q-mb-md">
-        <!-- <q-btn
-          unelevated round
-          @click="closeDrawerCart"
-          class="q-pa-md col-1"
-        >
-          <q-icon name="arrow_back" class="round-button-light_green" />
-        </q-btn> -->
+
         <IconButton
           round
           :icon="evaArrowBack"
@@ -113,7 +103,7 @@ import DividerThin from '../dividers/divider-thin.vue';
     <q-scroll-area class="fit">
       <div class="row container_settings">
         <div class="cart_product_item row" v-for="(item, index) in cartStore.cartExtended" :key="index">
-          <div class="col-4 q-pr-md">
+          <div class="col-3 q-pr-md">
             <q-img
               :src="item.image"
               ration="16/9"
@@ -128,7 +118,7 @@ import DividerThin from '../dividers/divider-thin.vue';
             </q-img>
           </div>
 
-          <div class="column justify-between col-8">
+          <div class="column justify-between col-9">
             <div class="row justify-between items-center">
               <div class="text-h3 text-weight-regular">
                 {{ item.title }}

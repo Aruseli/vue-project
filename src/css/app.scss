@@ -151,13 +151,6 @@ body.body--dark {
   font-weight: 700;
   line-height: 1.15em;
 }
-// .q-tab__label {
-//   font-size: 2.5rem;
-//   text-transform: capitalize;
-//   font-weight: 600;
-//   line-height: 1.15em;
-// }
-
 
 .q-tab-panel {
   background-color: transparent;
@@ -171,26 +164,40 @@ body.body--dark {
   padding-left: 0;
 }
 
-.q-notification {
-  background-color: primary;
+.notification_styles .q-notification {
   max-width: 85vw;
 }
-
-.q-notification--multi-line{
-  min-height: 7.5rem;
+.notification_styles .q-notification--multi-line {
+  min-height: 9rem;
+}
+.notification_styles .q-notification__actions {
+  justify-content: center;
+}
+.notification_styles .q-notification__actions > button > span:nth-child(2) {
+  font-size: 2rem;
+  font-weight: bold;
+  padding: 2rem;
+}
+.notification_styles .q-notifications__list {
+  margin-bottom: 6rem;
+}
+.warning_customization .q-notification {
+  max-width: 65vw;
 }
 
-.q-notification__actions {
+.warning_customization .q-notification__wrapper {
+  flex-direction: row-reverse;
+}
+.warning_customization .q-notification__actions {
   justify-content: center;
 }
 
-.q-notification__actions > button > span:nth-child(2) {
-  font-size: calc(1.5rem + 0.8vmax);
+.warning_customization .q-notification__actions > button > span:nth-child(2) {
+  font-size: 1.5rem;
   font-weight: bold;
-}
-
-.q-notifications__list {
-  margin-bottom: 5.5rem;
+  padding: 2rem;
+  justify-content: center;
+  width: 55vw;
 }
 
 .q-carousel__slide {

@@ -5,9 +5,9 @@
   import { useCartStore } from '../../stores/cart';
   import { useGoodsStore } from '../../stores/goods';
   import { useRouter } from 'vue-router';
-  import { useQuasar } from 'quasar';
+  import { QSpinnerHourglass, useQuasar } from 'quasar';
+  import { onUnmounted } from 'vue';
   import { t } from 'i18next';
-import { onUnmounted } from 'vue';
 
 
   const $q = useQuasar();
@@ -25,25 +25,32 @@ import { onUnmounted } from 'vue';
     cartStore.clearCart();
   }
 
-  // const warnRedirect = () => {
-  //   $q.notify({
-  //     progress: true,
-  //     color: 'warning',
-  //     icon: 'warning',
-  //     position: 'center',
-  //     classes: 'full-width',
-  //     message: t('are_you_still_here'),
-  //     timeout: 10000,
-  //     multiLine: true,
-  //     closeBtn: true,
-  //   })
-  // }
+const warnRedirect = () => {
+  $q.notify({
+    position: "center",
+    color: "positive",
+    classes: "full-width warning_customization",
+    timeout: 4000,
+    spinner: QSpinnerHourglass,
+    spinnerSize: '3rem',
+    // multiLine: true,
+    actions: [
+      {
+        icon: "cancel",
+        'aria-label': 'Dismiss',
+        label: t("are_you_still_here"),
+        color: "white",
+        round: true,
+      },
+    ],
+  });
+};
 
   const resetTimer = () => {
     clearTimeout(timerRedirect.value);
     clearTimeout(timerWarn.value);
-    // timerRedirect.value = setTimeout(redirect, 20000);
-    // timerWarn.value = setTimeout(warnRedirect, 10000);
+    timerRedirect.value = setTimeout(redirect, 37000);
+    timerWarn.value = setTimeout(warnRedirect, 30000);
   }
 
   const boundResetTimer = resetTimer.bind(this);

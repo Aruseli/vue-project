@@ -25,13 +25,12 @@ import IconButton from '../buttons/icon-button.vue';
     },
   })
 
-  console.log('abc');
-
   const showNotify = () => {
     $q.notify({
       timeout: 3000,
       multiLine: true,
-      classes: 'full-width',
+      color: 'primary',
+      classes: 'full-width notification_styles',
       actions: [
         {
           label: t('placing_an_order'),
@@ -66,7 +65,6 @@ import IconButton from '../buttons/icon-button.vue';
     //   })
     // }, 6000);
 
-    // console.log('count', cartStore.cart)
 
   }
 
@@ -97,10 +95,7 @@ import IconButton from '../buttons/icon-button.vue';
 
 <template>
   <div class="card_setting">
-    <div
-      style="cursor: not-allowed"
-      :style="{ filter: good?.stock <= 0 ? 'contrast(0.2)' : 'none' }"
-    >
+    <div :class="{'outStock': good && good.stock <= 0, 'available': good && good.stock > 0}">
       <div class="content_container">
         <div class="img_container">
           <q-img
@@ -317,7 +312,16 @@ import IconButton from '../buttons/icon-button.vue';
 
 .block_description {
   height: 3.5rem;
-  overflow: auto;
+  overflow: hidden;
+}
+
+.outStock {
+  cursor: not-allowed;
+  filter: contrast(0.2);
+}
+.available {
+  cursor: default;
+  filter: none;
 }
 
 </style>
