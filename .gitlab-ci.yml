@@ -44,7 +44,7 @@ quasar-build:
 
 docker-build:
   dependencies:
-  - build_node
+  - quasar-build
   stage: dockerize
   tags: *runner_tags
   before_script:
