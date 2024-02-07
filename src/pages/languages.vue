@@ -10,29 +10,25 @@
 
   const app = useAppStore();
   const goodsStore = useGoodsStore();
-  let locale = i18next.language;
 
   const router = useRouter();
   const changeLanguage = async (newLocale) => {
-    console.log('locale', locale);
     await goodsStore.updateGoods(newLocale);
     app.setLocale(newLocale);
     router.push('catalog');
   }
-console.log('app.kioskState.catalogLocales', app.kioskState.catalogLocales);
-console.log('locale18', locale);
 
 </script>
 
 <template>
-  <q-page class="column justify-center items-center relative bg-secondary window-height">
+  <q-page class="column justify-center items-center relative hello_bg window-height">
     <Logo class="logo_row logo" classes="q-mr-md">
       <LogoSvgWhite />
     </Logo>
     <div class="column bg-primary container">
       <language v-for="lang in app.kioskState.catalogLocales"
         :key="lang.lang_code"
-        :src="lang.src"
+        :src="lang.flag_src"
         :alt="lang.name"
         :language="lang.name"
         @click="changeLanguage(lang.lang_code)"
@@ -55,5 +51,9 @@ console.log('locale18', locale);
 }
 .container > *:not(:last-child) {
   margin-bottom: 4rem;
+}
+
+.hello_bg {
+  background-image: url('start.jpg');
 }
 </style>

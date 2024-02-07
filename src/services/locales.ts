@@ -18,13 +18,14 @@ export async function updateCatalogLocales(kioskState: KioskState) {
   while (true) {
     try {
       const lang_codes = await apiGetLocalesList(kioskState.params!.object_id!, kioskState.params!.location_id!)
-        .then(r => r?.map(l => ({ lang_code: l?.lang_code, name: l?.name })))
-      console.log('catalog_locales', lang_codes);
+        .then(r => r?.map(l => ({
+          lang_code: l?.lang_code,
+          name: l?.name,
+          flag_src: `/flags/${l.lang_code}.webp` })))
       console.log('kioskState.params!.object_id!', kioskState.params);
-      kioskState.catalogLocales = await prepareLocales(lang_codes)
+      kioskState.catalogLocales = lang_codes;
       await Promise.all(lang_codes.map(async (lc) => {
         const locale = await apiGetLocale(lc.lang_code)
-        console.log('lc, locale', lc, locale)
         i18next.addResourceBundle(lc.lang_code, "global", locale, true, false);
       }))
       break

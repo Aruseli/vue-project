@@ -39,7 +39,7 @@ export type TerminalParams = {
 
 export type LocaleInfo = {
   lang_code: string,
-  // src: string,
+  flag_src?: string;
   name: string, // title??
 }
 

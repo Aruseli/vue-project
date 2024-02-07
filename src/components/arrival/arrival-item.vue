@@ -55,7 +55,7 @@
       </template>
 
       <template v-slot:after>
-        <span class="text-txt">{{ $t('pcs', {count: props.actual_quantity}) }}</span>
+        <span class="text-txt">{{ $t('pc', {count: props.actual_quantity}) }}</span>
       </template>
     </q-input>
     <RoundedButton size="1.5rem" @click="" />

@@ -44,7 +44,6 @@
     },
   ])
 
-  // console.log('i18n', i18next.getDataByLanguage(i18n.locale));
 </script>
 
 <template>

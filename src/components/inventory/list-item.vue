@@ -42,7 +42,7 @@
       <div class="text-h4 col-3">{{ props.good_name }}</div>
       <div class="text-txt col-3">
         <span class="text-txt">{{$t('estimated_quantity')}}</span>&ensp;
-        {{ props.estimated_quantity }}&ensp;{{ $t('pcs') }}
+        {{ props.estimated_quantity }}&ensp;{{ $t('pc') }}
       </div>
       <q-input
         outlined rounded
@@ -56,7 +56,7 @@
         </template>
 
         <template v-slot:after>
-          <span class="text-txt">{{ $t('pcs') }}</span>
+          <span class="text-txt">{{ $t('pc') }}</span>
         </template>
       </q-input>
       <RoundedButton size="1.5rem" @click="sendData" />

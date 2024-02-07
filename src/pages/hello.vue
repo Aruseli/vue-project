@@ -9,7 +9,8 @@
 </script>
 
 <template>
-  <q-page class="flex flex-center relative bg-secondary">
+  <q-page class="flex flex-center relative relative-position">
+    <div class="bg_filtered" />
     <div class="column justify-between window-height full-width container" @click="router.push('languages')">
       <Logo class="logo_row self-start" classes="q-mr-md">
         <LogoSvgWhite />
@@ -30,11 +31,19 @@
 </template>
 
 <style scoped>
+.bg_filtered {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('start.jpg');
+  filter: brightness(0.6);
+}
 .container {
   padding: 5rem;
+  z-index: 2;
 }
-
-
 
 .slide-fade-leave-active {
   transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
