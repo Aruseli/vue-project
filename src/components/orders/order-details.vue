@@ -1,13 +1,12 @@
 <script setup>
   import { t } from 'i18next';
-  import { useGoodsStore } from 'src/stores/goods';
-  import { useOrdersStore } from 'src/stores/orders';
-  import { computed, onMounted, ref } from 'vue';
-  import { useRoute, useRouter } from 'vue-router';
-  import RectangularButton from '../buttons/rectangular-button.vue';
-  import DividerBold from '../dividers/divider-bold.vue';
-  import DividerThin from '../dividers/divider-thin.vue';
-  import OrderCard from './order-card.vue';
+import { useOrdersStore } from 'src/stores/orders';
+import { computed, onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import RectangularButton from '../buttons/rectangular-button.vue';
+import DividerBold from '../dividers/divider-bold.vue';
+import DividerThin from '../dividers/divider-thin.vue';
+import OrderCard from './order-card.vue';
 
   const ordersStore = useOrdersStore();
   const route = useRoute();
@@ -24,12 +23,9 @@
     return ordersStore.currentOrder?.items?.every(i => i.issued == i.quant)
   });
 
-  const  goodsStore = useGoodsStore();
-
   onMounted(async () => {
     try {
       await ordersStore.selectOrder(route.params.id)
-      console.log('ordersStore.selectOrder', ordersStore.currentOrder)
     } catch (err) {
       console.error('ordersStore.selectOrder error:', err)
       $q.notify({
