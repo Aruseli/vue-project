@@ -1,5 +1,5 @@
 import en from "./en";
 
 export default {
-  "en": en,
+  "global": en,
 } as { [key: string]: typeof en };

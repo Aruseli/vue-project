@@ -55,4 +55,5 @@ export default {
   unable_to_load_orders: 'Unable to load orders',
   unable_to_submit_order: 'Unable to submit order',
   Unknown: 'Unknown',
+  product_has_already_been_scanned: 'the product has already been scanned',
 };

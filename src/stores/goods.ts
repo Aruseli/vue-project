@@ -115,7 +115,6 @@ export const useGoodsStore = defineStore('goodsStore', () => {
         ]);
         fetchedGoods.forEach(gc => gc.goods.filter(g => !!g).forEach(g => {
           g.stock = stockRemains.find(v => v.good_id == g.id)?.remain_quant ?? 0
-          g.code = (i++).toString().padStart(9, "0")
         }))
         // if (!stockRemains.length) {
         //   const goodsArrivalDoc = {
@@ -173,12 +172,12 @@ export const useGoodsStore = defineStore('goodsStore', () => {
   }
 
   const getGoodByDataCodeHits = ref(0);
-  const getGoodByCode = (id: string) => {
+  const getGoodByCode = (barcode: string) => {
     getGoodByDataCodeHits.value += 1
     if (getGoodByDataCodeHits.value % 100 == 0) {
       console.log('getGoodById hits', getGoodByDataCodeHits.value)
     }
-    return goods.value.flatMap(gc => gc.goods).find(g => g.id == id)
+    return goods.value.flatMap(gc => gc.goods).find(g => g.code === barcode)
   }
 
   const waitGoodsReady = async () => {

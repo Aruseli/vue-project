@@ -7,15 +7,13 @@ import messages from '../i18n/index';
 const i18n = i18next.init({
   debug: true,
   partialBundledLanguages: true,
-  lng: 'default',
+  lng: 'en',
   interpolation: {
     escapeValue: false,
   },
   fallbackLng: 'en',
   resources: {
-    'en': {
-      global: messages["en"],
-    },
+    'en': messages,
   },
   ns: ['global'],
 });

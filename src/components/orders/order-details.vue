@@ -29,6 +29,7 @@
   onMounted(async () => {
     try {
       await ordersStore.selectOrder(route.params.id)
+      console.log('ordersStore.selectOrder', ordersStore.currentOrder)
     } catch (err) {
       console.error('ordersStore.selectOrder error:', err)
       $q.notify({

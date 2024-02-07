@@ -9,6 +9,11 @@
   const route = useRoute()
   const router = useRouter()
 
+  // const routeName = (path) => {
+  //   route.fullPath === path;
+  //   console.log('RN', route.fullPath === '/arrival-goods')
+  // }
+
   eventEmitter.on('local-ws', async evt => {
     const appStore = useAppStore() // Don't move up: it will break init (query params are unaccessible)
     const ordersStore = useOrdersStore()
@@ -18,20 +23,8 @@
       switch (barcode.prefix) {
         case '210':
           // GoodBarcode
-
-          const order_id = ordersStore.currentOrder?.items.flatMap(or => or.id)[0];
-          const order_item = ordersStore.currentOrder?.items.find(i => i.id);
-          const order_item_quant = ordersStore.currentOrder?.items.find(i => i.id).quant;
-
-          const good_id = goodsStore.getGoodByCode(order_id)
-          const code = good_id.id == order_id ? 210 + `${good_id.code}` + 9 : null
-          if (barcode.barcode === code) {
-            if (order_item_quant > order_item.issued) {
-            order_item.issued += 1;
-          } else {
-            order_item.issued
-            console.error('Stop scanning')
-          }}
+          const good = goodsStore.getGoodByCode(barcode.code);
+          await ordersStore.scanGood(good);
           break;
         case '220': // Employee
           // TODO populate disallowed paths

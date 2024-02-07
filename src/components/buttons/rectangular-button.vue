@@ -1,5 +1,4 @@
 <script setup>
-  import { t } from 'i18next';
   const props = defineProps({
     name: {
       type: String,

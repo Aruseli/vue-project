@@ -1,71 +1,102 @@
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { useAppStore } from "./app";
 import { KioskDocument, apiGetDocuments, apiSaveDocument } from "src/services";
-import { useGoodsStore } from "./goods";
+import { useGoodsStore, type Good } from "./goods";
 import { ORDERS_CACHE_TTL } from "src/services/consts";
 import { t } from "i18next";
-import i18next from 'i18next';
+import { Notify } from 'quasar';
 
-export const useOrdersStore = defineStore('orders', () => {
-  const appStore = useAppStore()
-  const goodsStore = useGoodsStore()
+export const useOrdersStore = defineStore("orders", () => {
+  const appStore = useAppStore();
+  const goodsStore = useGoodsStore();
 
-  const orders = ref<ReturnType<typeof documentToOrder>[]>([])
-  const ordersDocuments = ref([] as KioskDocument[])
-  const ordersLoading = ref(true)
-  const ordersLastUpdate = ref(0)
+  const orders = ref<ReturnType<typeof documentToOrder>[]>([]);
+  const ordersDocuments = ref([] as KioskDocument[]);
+  const ordersLoading = ref(true);
+  const ordersLastUpdate = ref(0);
 
-  const currentOrder = ref<ReturnType<typeof documentToOrder> | null>(null)
-  const currentOrderDocument = ref<KioskDocument | null>(null)
-  const currentOrderLoading = ref(true)
+  const currentOrder = ref<ReturnType<typeof documentToOrder> | null>(null);
+  const currentOrderDocument = ref<KioskDocument | null>(null);
+  const currentOrderLoading = ref(true);
 
   const updateOrders = async () => {
-    ordersLoading.value = true
+    ordersLoading.value = true;
     try {
-      const terminal_settings = appStore.kioskState.params?.terminal_settings
-      ordersDocuments.value = await apiGetDocuments([terminal_settings!.invoice_doc_type_id!], [2])
-      orders.value = ordersDocuments.value.map(od => documentToOrder(od, i18next.language, goodsStore))
-      ordersLastUpdate.value = Date.now()
+      const terminal_settings = appStore.kioskState.params?.terminal_settings;
+      ordersDocuments.value = await apiGetDocuments(
+        [terminal_settings!.invoice_doc_type_id!],
+        [2]
+      );
+      orders.value = ordersDocuments.value.map((od) =>
+        documentToOrder(od, goodsStore)
+      );
+      ordersLastUpdate.value = Date.now();
     } finally {
-      ordersLoading.value = false
+      ordersLoading.value = false;
     }
-  }
+  };
 
   const selectOrder = async (id: string) => {
-    currentOrderLoading.value = true
+    currentOrderLoading.value = true;
     try {
       // Bug: await apiGetDocument(id) returns none, and we forced to use updateOrders
       if (Date.now() - ordersLastUpdate.value > ORDERS_CACHE_TTL) {
-        await updateOrders()
+        await updateOrders();
       }
-      const orderDoc = ordersDocuments.value.find(d => d.id == id) || null
-      currentOrder.value = orderDoc ? documentToOrder(orderDoc, i18next.language, goodsStore) : null
-      currentOrderDocument.value = orderDoc
+      const orderDoc = ordersDocuments.value.find((d) => d.id == id) || null;
+      currentOrder.value = orderDoc
+        ? documentToOrder(orderDoc, goodsStore)
+        : null;
+      currentOrderDocument.value = orderDoc;
     } catch {
-      currentOrder.value = null
-      currentOrderDocument.value = null
+      currentOrder.value = null;
+      currentOrderDocument.value = null;
     } finally {
-      currentOrderLoading.value = false
+      currentOrderLoading.value = false;
     }
-  }
+  };
 
   const confirmCurrentOrderIssue = async () => {
-    const doc = currentOrderDocument.value
+    const doc = currentOrderDocument.value;
     if (!doc) {
-      return
+      return;
     }
-    doc.state = 0
-    doc.details.forEach(d => {
-      const item = currentOrder.value?.items.find(i => i.id == d.good_id)
+    doc.state = 0;
+    doc.details.forEach((d) => {
+      const item = currentOrder.value?.items.find((i) => i.id == d.good_id);
       if (!item || d.quant != item.quant || item.issued != item.quant) {
-        console.log('Order line mismatch while issuing', d, item)
-        throw new Error(`Wrong state of order to issue.`)
+        console.log("Order line mismatch while issuing", d, item);
+        throw new Error(`Wrong state of order to issue.`);
       }
-      d.total = (goodsStore.getGoodById(d.id)?.stock ?? 0) - d.quant
-    })
-    await apiSaveDocument(doc)
-  }
+      d.total = (goodsStore.getGoodById(d.id)?.stock ?? 0) - d.quant;
+    });
+    await apiSaveDocument(doc);
+  };
+
+  const scanGood = async (good: Good) => {
+    const currentOrderItem = currentOrder.value?.items.find(
+      (i) => i.id == good.id
+    );
+    if (currentOrderItem) {
+      const code = good.id === currentOrderItem.id ? 210 + `${good.code}` + 9 : null;
+      if (code) {
+        if (currentOrderItem.issued > currentOrderItem.quant) {
+          console.error("Stop scan");
+          Notify.create({
+            color: 'warning',
+            position: 'center',
+            classes: "text-h3 text-center text-uppercase",
+            timeout: 30000,
+            textColor: "white",
+            message: t('product_has_already_been_scanned'),
+          });
+          return;
+        }
+        currentOrderItem.issued += 1;
+      }
+    }
+  };
 
   return {
     currentOrder,
@@ -78,11 +109,11 @@ export const useOrdersStore = defineStore('orders', () => {
     ordersDocuments,
     ordersLoading,
     updateOrders,
-  }
-})
+    scanGood,
+  };
+});
 
-type I18nType = typeof i18next.language
-function documentToOrder(od: KioskDocument, i18n: I18nType, goodsStore: ReturnType<typeof useGoodsStore>) {
+function documentToOrder(od: KioskDocument, goodsStore: ReturnType<typeof useGoodsStore>) {
   let hasAllGoods = true;
   const order = {
     id: od.id,

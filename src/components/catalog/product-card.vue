@@ -94,7 +94,7 @@ import IconButton from '../buttons/icon-button.vue';
 
 
 <template>
-  <div class="card_setting">
+  <div class="card_setting" v-bind="$attrs">
     <div :class="{'outStock': good && good.stock <= 0, 'available': good && good.stock > 0}">
       <div class="content_container">
         <div class="img_container">
@@ -139,7 +139,7 @@ import IconButton from '../buttons/icon-button.vue';
           @click="addGoodToCart(good)"
           >
           <div class="text-center text-h4 q-py-xs text-uppercase">
-            {{ $t('add') }}
+            {{ $t('buy') }}
           </div>
         </q-btn>
         <div class="row justify-between items-center" v-else>
@@ -236,7 +236,7 @@ import IconButton from '../buttons/icon-button.vue';
                 @click="addGoodToCart(good)"
                 >
                 <div class="text-center text-weight-bold text-h3 text-white q-py-xl text-uppercase">
-                  {{ $t('add') }}
+                  {{ $t('buy') }}
                 </div>
               </q-btn>
               <div class="row justify-between items-center" v-else>

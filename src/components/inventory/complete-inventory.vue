@@ -3,11 +3,17 @@
   import RectangularButton from '../buttons/rectangular-button.vue';
   import ListItem from './list-item.vue';
   import { onMounted, ref, computed } from 'vue';
-  import { useRouter } from 'vue-router';
+  import { useRouter, useRoute } from 'vue-router';
   import { useOrderStore } from 'src/stores/order'
 
   const router = useRouter();
+  const route = useRoute();
   const orderStore = useOrderStore();
+  console.log('route', route.params.id);
+  const routePath = (path) => {
+    route.fullPath === path;
+    console.log('route.fullPath', route.fullPath)
+  }
 
   const items = ref([
     {
@@ -29,7 +35,6 @@
       actual_quantity: 0,
     },
   ]);
-
   const totalEstimatedQuantity = computed(() => {
     return items.value.reduce((acc, curr) => acc + curr.estimated_quantity, 0)
   });
@@ -99,13 +104,13 @@
       </div>
       <div class="row justify-center q-gutter-xl">
         <RectangularButton
-          ;name="$t('confirm')"
+          :name="$t('confirm')"
           class="col-5"
           @click="() => console.log('confirm')"
           />
           <RectangularButton
           color="warning"
-          ;name="$t('declare_discrepancy')"
+          :name="$t('declare_discrepancy')"
           class="col-5"
           @click="() => console.log('declare_discrepancy')"
         />

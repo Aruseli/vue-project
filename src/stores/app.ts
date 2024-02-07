@@ -1,7 +1,6 @@
+import i18next, { t } from 'i18next';
 import { defineStore } from 'pinia';
 import { Notify } from 'quasar';
-import { t } from 'i18next';
-import i18next from 'i18next';
 import { eventEmitter, initLocalDeviceWsService } from 'src/services';
 import { apiAddAnyTerminal, apiAuth, apiAuthBearer, apiUsersWhoami } from 'src/services/api';
 import { TERMINAL_REGISTRATION_ATTEMPT_INTERVAL, TERMINAL_STATUS_UPDATE_INTERVAL, USER_INFO_UPDATE_INTERVAL } from 'src/services/consts';
@@ -10,7 +9,6 @@ import { delay } from 'src/services/utils';
 import { KioskState } from 'src/types/kiosk-state';
 import { reactive, ref } from 'vue';
 import { Router, useRouter } from 'vue-router';
-import router from '../router/routes'
 
 /*
  This is 'app' or 'main' store.
@@ -25,7 +23,6 @@ import router from '../router/routes'
  с комментарием "//TODO fetch"
  */
 export const useAppStore = defineStore('app', () => {
-  let locale = i18next.language;
   const router = useRouter();
   const drawerCartState = ref(false);
   const orderDialog = ref(false);
@@ -61,7 +58,6 @@ export const useAppStore = defineStore('app', () => {
     i18next.changeLanguage(lang_code, (err, t) => {
       if(err) { console.log('i18next err', err)}
     })
-    console.log('locale', locale)
   }
 
   const resetLocale = async () => {
