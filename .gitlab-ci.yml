@@ -79,7 +79,7 @@ docker-build:
      when: always
    - if: $CI_COMMIT_BRANCH == "master"
      exists:
-        - Dockerfile
+        - Dockerfile.prod
    - if: $CI_COMMIT_TAG
      exists:
-        - Dockerfile
+        - Dockerfile.prod
