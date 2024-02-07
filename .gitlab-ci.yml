@@ -48,7 +48,6 @@ docker-build:
   stage: dockerize
   tags: *runner_tags
   before_script:
-  - 'apk --no-cache add curl'
   - curl -s -d "chat_id=$TG_CHAT_ID&text=${CI_PROJECT_NAME}/${CI_COMMIT_REF_NAME} → ${GITLAB_USER_NAME} запустил задание ${CI_JOB_NAME}" https://api.telegram.org/bot$TG_BOT_TOKEN/sendMessage
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
