@@ -1,21 +1,17 @@
 <script setup>
-  import { ref, computed, onMounted } from 'vue';
-  import { evaArrowBack, evaPlusOutline } from '@quasar/extras/eva-icons';
-  import { evaMinusOutline } from '@quasar/extras/eva-icons';
-  import { useI18n } from 'vue-i18n';
-  import { useCartStore } from 'src/stores/cart';
-  import { useAppStore } from 'src/stores/app';
-  import { useRouter } from 'vue-router';
-  import DividerBold from '../dividers/divider-bold.vue';
-  import DividerThin from '../dividers/divider-thin.vue';
-  import IconButton from '../buttons/icon-button.vue';
-  import RectangularButton from '../buttons/rectangular-button.vue';
-  import { apiSaveDocument } from 'src/services';
+  import { evaArrowBack, evaMinusOutline, evaPlusOutline } from '@quasar/extras/eva-icons';
+import { t } from 'i18next';
+import { useAppStore } from 'src/stores/app';
+import { useCartStore } from 'src/stores/cart';
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import IconButton from '../buttons/icon-button.vue';
+import RectangularButton from '../buttons/rectangular-button.vue';
+import DividerBold from '../dividers/divider-bold.vue';
+import DividerThin from '../dividers/divider-thin.vue';
 
 
   const router = useRouter();
-
-  const { t } = useI18n();
 
   const app = useAppStore();
   const cartStore = useCartStore();
@@ -71,10 +67,6 @@
     }
   }
 
-  onMounted(() => {
-    console.log('cartStore.cart', cartStore.cart)
-  })
-
 </script>
 
 
@@ -90,13 +82,7 @@
   >
     <div class="q-pa-md">
       <div class="row items-center q-mb-md">
-        <!-- <q-btn
-          unelevated round
-          @click="closeDrawerCart"
-          class="q-pa-md col-1"
-        >
-          <q-icon name="arrow_back" class="round-button-light_green" />
-        </q-btn> -->
+
         <IconButton
           round
           :icon="evaArrowBack"
@@ -117,7 +103,7 @@
     <q-scroll-area class="fit">
       <div class="row container_settings">
         <div class="cart_product_item row" v-for="(item, index) in cartStore.cartExtended" :key="index">
-          <div class="col-4 q-pr-md">
+          <div class="col-3 q-pr-md">
             <q-img
               :src="item.image"
               ration="16/9"
@@ -132,13 +118,13 @@
             </q-img>
           </div>
 
-          <div class="column justify-between col-8">
+          <div class="column justify-between col-9">
             <div class="row justify-between items-center">
               <div class="text-h3 text-weight-regular">
                 {{ item.title }}
               </div>
               <q-btn unelevated round @click="cartStore.removeFromCart(item.id)">
-                <q-icon name="img:src/assets/bin.svg" size="2.5rem" />
+                <q-icon name="img:/bin.svg" size="2.5rem" />
               </q-btn>
             </div>
 
@@ -178,16 +164,16 @@
           {{ cartStore.totalPrice }} &ensp;&#3647
         </div>
         <DividerThin class="bg-negative q-mb-md" />
-        <div class="text-h4 order_container text-weight-regular">
+        <div class="text-h4 row q-gutter-sm text-weight-regular">
           <span>{{ $t('order') }}</span>
           <span>{{ cartStore.totalQuantity }}</span>
-          <span>{{ $t('pieces') }}</span>
+          <span>{{ $t('pieces', { count: cartStore.totalQuantity }) }}</span>
         </div>
       </div>
       <div class="full-width" v-show="cartStore.cart.length">
         <RectangularButton
           class="fit"
-          name="checkout"
+          :name="$t('checkout')"
           :disable="isDisabled"
           @click="submitOrder"
         />
@@ -208,21 +194,21 @@
         <q-card class="dialog_card dialog_cart">
           <q-card-section>
             <div class="text-h2 text-uppercase text-center text-weight-bold">
-              {{t('order_was_successfully_completed')}}
+              {{$t('order_was_successfully_completed')}}
             </div>
           </q-card-section>
           <q-card-section class="q-pt-none text-center">
-            <q-img src="src/assets/girl.svg" max-width="100%" max-height="100%" width="25rem" height="25rem" />
+            <q-img src="public/girl.svg" max-width="100%" max-height="100%" width="25rem" height="25rem" />
           </q-card-section>
           <q-card-section class="q-pt-none">
             <div class="text-subtitle2 text-center text-weight-bold">
-              {{t('contact_seller_for_further_information')}}
+              {{$t('contact_seller_for_further_information')}}
             </div>
             <DividerBold class="q-mb-lg" />
           </q-card-section>
           <q-card-section class="q-pt-none">
             <div class="text-h1 text-center text-uppercase text-weight-bold">
-              {{t('thank_you')}}
+              {{$t('thank_you')}}
             </div>
           </q-card-section>
         </q-card>
@@ -254,10 +240,6 @@
   }
   .cart_product_item > *:first-of-type {
     /* margin-right: 2rem; */
-  }
-
-  .order_container > span:not(:last-of-type) {
-    margin-right: 1rem;
   }
 
   .dialog_cart {

@@ -13,6 +13,6 @@
 
 <style scoped lang="scss">
 .container {
-  padding: 1rem 3.75rem 3.75rem 3.75rem;
+  padding: 3.75rem;
 }
 </style>

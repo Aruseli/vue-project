@@ -38,9 +38,9 @@ export type TerminalParams = {
 }
 
 export type LocaleInfo = {
-  locale: string,
-  flag: string,
-  language: string, // title??
+  lang_code: string,
+  flag_src?: string;
+  name: string, // title??
 }
 
 export type KioskState = {

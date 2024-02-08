@@ -82,13 +82,15 @@ export async function apiGetLocalesList(objectId: string, locationId: string) {
     objectId,
     locationId,
   });
-  return response.data.locales as {id: string, langcode: string}[];
+  console.log('apiGetLocalesList', response)
+  return response.data.locales as {id: string, lang_code: string, name: string}[];
 }
 
 export async function apiGetLocale(lang: string) {
   const response = await fetchApi('/api/v2/kiosk/getLocale', {
     lang,
   });
+  console.log('apiGetLocale', response);
   return response.data.locale[0]?.data;
 }
 
@@ -124,6 +126,7 @@ export type ApiGood = {
   price: number,
   stock: number,
   images_ids: string[],
+  code: string,
 }
 
 export async function apiGetGoods(location_id: string, locale: string) {

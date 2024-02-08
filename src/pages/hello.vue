@@ -9,13 +9,13 @@
 </script>
 
 <template>
-  <q-page class="flex flex-center relative bg-secondary">
+  <q-page class="flex flex-center relative relative-position">
+    <div class="bg_filtered" />
     <div class="column justify-between window-height full-width container" @click="router.push('languages')">
       <Logo class="logo_row self-start" classes="q-mr-md">
         <LogoSvgWhite />
       </Logo>
 
-      <!-- <Logo class="logo_row self-start" classes="q-mr-md" /> -->
       <Transition name="slide-fade" mode="out-in">
           <p v-show="show" class="text-h1 text-center text-white text-uppercase">
             {{ $t('find_your_experience') }}
@@ -25,20 +25,25 @@
         <div class="text-h4 text-center text-grey-2 text-uppercase">
           {{ $t('tap_on_screen') }}
         </div>
-        <!-- <button @click="show = !show">
-          Переключить отрисовку
-        </button> -->
       </div>
     </div>
   </q-page>
 </template>
 
 <style scoped>
+.bg_filtered {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('start.jpg');
+  filter: brightness(0.6);
+}
 .container {
   padding: 5rem;
+  z-index: 2;
 }
-
-
 
 .slide-fade-leave-active {
   transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);

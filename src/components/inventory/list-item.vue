@@ -1,10 +1,7 @@
 <script setup>
-  import { useI18n } from 'vue-i18n';
+  import { t } from 'i18next';
   import RoundedButton from '../buttons/rounded-button.vue';
-  import DividerThin from '../dividers/divider-thin.vue';
   import { reactive, computed } from 'vue';
-
-  const { t } = useI18n();
 
   const props = defineProps({
     good_name: {
@@ -44,8 +41,8 @@
     <div class="row justify-between items-center">
       <div class="text-h4 col-3">{{ props.good_name }}</div>
       <div class="text-txt col-3">
-        <span class="text-txt">{{t('estimated_quantity')}}</span>&ensp;
-        {{ props.estimated_quantity }}&ensp;{{ t('pcs') }}
+        <span class="text-txt">{{$t('estimated_quantity')}}</span>&ensp;
+        {{ props.estimated_quantity }}&ensp;{{ $t('pc') }}
       </div>
       <q-input
         outlined rounded
@@ -55,15 +52,15 @@
         input-class="input_style"
       >
         <template v-slot:before>
-          <span class="text-txt text-secondary">{{t('actual_quantity')}}</span>
+          <span class="text-txt text-secondary">{{$t('actual_quantity')}}</span>
         </template>
 
         <template v-slot:after>
-          <span class="text-txt">{{ t('pcs') }}</span>
+          <span class="text-txt">{{ $t('pc') }}</span>
         </template>
       </q-input>
       <RoundedButton size="1.5rem" @click="sendData" />
-      <q-img src="src/assets/state.svg" width="3rem" v-show="not_equal" />
+      <q-img src="/state.svg" width="3rem" v-show="not_equal" />
     </div>
     <q-separator color="secondary" class="absolute-bottom-left full-width separator_style"  />
   </li>

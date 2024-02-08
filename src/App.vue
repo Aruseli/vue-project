@@ -4,18 +4,27 @@
   import { useAppStore } from "src/stores/app";
   import { useOrdersStore } from "src/stores/orders";
   import { useRoute, useRouter } from "vue-router";
+  import { useGoodsStore } from "./stores/goods";
 
   const route = useRoute()
   const router = useRouter()
 
+  // const routeName = (path) => {
+  //   route.fullPath === path;
+  //   console.log('RN', route.fullPath === '/arrival-goods')
+  // }
+
   eventEmitter.on('local-ws', async evt => {
     const appStore = useAppStore() // Don't move up: it will break init (query params are unaccessible)
     const ordersStore = useOrdersStore()
+    const goodsStore = useGoodsStore();
     if (evt.cmd == 'barcode' && evt.data.length == 13) {
       const barcode = parseBarcode(evt.data)
       switch (barcode.prefix) {
         case '210':
           // GoodBarcode
+          const good = goodsStore.getGoodByCode(barcode.code);
+          await ordersStore.scanGood(good);
           break;
         case '220': // Employee
           // TODO populate disallowed paths
@@ -43,6 +52,7 @@
       }
     }
   })
+
 </script>
 
 <template>

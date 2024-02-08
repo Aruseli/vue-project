@@ -43,6 +43,7 @@
       path: () => route(''),
     },
   ])
+
 </script>
 
 <template>
@@ -51,7 +52,7 @@
       <RectangularButton
         v-for="(route, index) in routes"
         :key="index"
-        :name="route.name"
+        :name='$t(route.name)'
         @click="route.path"
       />
     </div>

@@ -1,20 +1,21 @@
 import { KioskState, LocaleInfo } from "src/types/kiosk-state";
 import { apiGetLocale, apiGetLocalesList } from "./api";
 import { delay } from "./utils";
-import { useI18n } from "vue-i18n";
+import i18next from 'i18next';
 
-export async function updateCatalogLocales(kioskState: KioskState, i18n: ReturnType<typeof useI18n>) {
+export async function updateCatalogLocales(kioskState: KioskState) {
   // Update locales
   while (true) {
     try {
-      const langcodes = await apiGetLocalesList(kioskState.params!.object_id!, kioskState.params!.location_id!)
-        .then(r => r?.map(l => l?.langcode))
-      console.log('catalog_locales', langcodes);
-      kioskState.catalogLocales = await prepareLocales(langcodes)
-      await Promise.all(langcodes.map(async (lc) => {
-        const locale = await apiGetLocale(lc)
-        console.log(lc, locale)
-        i18n.setLocaleMessage(lc, locale)
+      const locales = await apiGetLocalesList(kioskState.params!.object_id!, kioskState.params!.location_id!)
+        .then(r => r?.map(l => ({
+          lang_code: l?.lang_code,
+          name: l?.name,
+          flag_src: `/flags/${l.lang_code}.webp` })))
+      kioskState.catalogLocales = locales;
+      await Promise.all(locales.map(async (lc) => {
+        const locale = await apiGetLocale(lc.lang_code)
+        i18next.addResourceBundle(lc.lang_code, "global", locale, true, false);
       }))
       break
     } catch {
@@ -23,40 +24,40 @@ export async function updateCatalogLocales(kioskState: KioskState, i18n: ReturnT
   }
 }
 
-export const KNOWN_LOCALES: LocaleInfo[] = [
-  {
-    locale: 'en',
-    flag: 'src/assets/flags/gb.webp',
-    language: 'English',
-  },
-  {
-    locale: 'th',
-    flag: 'src/assets/flags/th.webp',
-    language: 'Thai',
-  },
-  {
-    locale: 'ru',
-    flag: 'src/assets/flags/ru.webp',
-    language: 'Russian',
-  },
-  {
-    locale: 'de',
-    flag: 'src/assets/flags/de.webp',
-    language: 'German',
-  },
-  {
-    locale: 'es',
-    flag: 'src/assets/flags/es.webp',
-    language: 'Spanish',
-  },
-  {
-    locale: 'uk',
-    flag: 'src/assets/flags/ua.webp',
-    language: 'Ukrainian',
-  },
-];
+// export const KNOWN_LOCALES: LocaleInfo[] = [
+//   {
+//     lang_code: 'en',
+//     flag_src: 'src/assets/flags/gb.webp',
+//     name: 'English',
+//   },
+//   {
+//     lang_code: 'th',
+//     flag_src: 'src/assets/flags/th.webp',
+//     name: 'Thai',
+//   },
+//   {
+//     lang_code: 'ru',
+//     flag_src: 'src/assets/flags/ru.webp',
+//     name: 'Russian',
+//   },
+//   {
+//     lang_code: 'km',
+//     flag_src: 'src/assets/flags/de.webp',
+//     name: "Cambodia",
+//   },
+//   {
+//     lang_code: 'es',
+//     flag_src: 'src/assets/flags/es.webp',
+//     name: 'Spanish',
+//   },
+//   {
+//     lang_code: 'uk',
+//     flag_src: 'src/assets/flags/ua.webp',
+//     name: 'Ukrainian',
+//   },
+// ];
 
-export async function prepareLocales(langcodes: string[]) {
-  const langcodesSet = new Set(langcodes)
-  return KNOWN_LOCALES.filter(l => langcodesSet.has(l.locale))
-}
+// export async function prepareLocales(lang_codes: string[]) {
+//   const langcodesSet = new Set(lang_codes)
+//   return KNOWN_LOCALES.filter(l => langcodesSet.has(l.locale))
+// }

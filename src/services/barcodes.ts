@@ -11,6 +11,7 @@ export function uuidToBarcodeDocId(uuid: string) {
 export type GoodBarcode = {
   prefix: "210",
   barcode: string,
+  code: string
 }
 
 // 2201000000099
@@ -47,6 +48,7 @@ export function parseBarcode(barcode: string): Barcode {
       return {
         prefix: "210",
         barcode,
+        code: barcode.slice(3, 12),
       }
     case "220":
       return {

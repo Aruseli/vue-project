@@ -5,6 +5,7 @@
   import { useRouter } from 'vue-router';
   import { useAppStore } from 'src/stores/app';
   import { useGoodsStore } from 'src/stores/goods';
+  import i18next from 'i18next';
 
 
   const app = useAppStore();
@@ -12,27 +13,25 @@
 
   const router = useRouter();
   const changeLanguage = async (newLocale) => {
-    console.log('changingLanguage', newLocale);
     await goodsStore.updateGoods(newLocale);
     app.setLocale(newLocale);
-    console.log('changedLanguage', newLocale);
     router.push('catalog');
   }
 
 </script>
 
 <template>
-  <q-page class="column justify-center items-center relative bg-secondary window-height">
+  <q-page class="column justify-center items-center relative hello_bg window-height">
     <Logo class="logo_row logo" classes="q-mr-md">
       <LogoSvgWhite />
     </Logo>
     <div class="column bg-primary container">
       <language v-for="lang in app.kioskState.catalogLocales"
-        :key="lang.locale"
-        :src="lang.flag"
-        :alt="lang.language"
-        :language="lang.language"
-        @click="changeLanguage(lang.locale)"
+        :key="lang.lang_code"
+        :src="lang.flag_src"
+        :alt="lang.name"
+        :language="lang.name"
+        @click="changeLanguage(lang.lang_code)"
       />
     </div>
   </q-page>
@@ -52,5 +51,9 @@
 }
 .container > *:not(:last-child) {
   margin-bottom: 4rem;
+}
+
+.hello_bg {
+  background-image: url('start.jpg');
 }
 </style>

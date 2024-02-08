@@ -1,6 +1,5 @@
 <script setup>
   import { useRouter } from 'vue-router';
-  import { useI18n } from 'vue-i18n';
   import { useOrdersStore } from 'src/stores/orders';
   import DividerBold from 'src/components/dividers/divider-bold.vue';
   import DividerThin from 'src/components/dividers/divider-thin.vue';
@@ -8,7 +7,6 @@
 
   const ordersStore = useOrdersStore();
   const router = useRouter();
-  const { t } = useI18n();
 
   const goToOrderedList = () => {
     router.push('/issuing-order');
@@ -22,31 +20,32 @@
 <template>
   <q-page class="flex flex-center relative transparent">
     <div class="column justify-center items-center window-height full-width container">
-      <div as="h1" class="text-h1 text-uppercase text-center title_style">{{ t('order_was_issued_successfully') }}</div>
-      <q-img src="src/assets/checked.svg" class="image_style" max-width="100%" max-height="100%" width="25rem" height="25rem" />
+      <div as="h1" class="text-h1 text-uppercase text-center title_style">{{ $t('order_was_issued_successfully') }}</div>
+      <q-img src="public/checked.svg" class="image_style" max-width="100%" max-height="100%" width="25rem" height="25rem" />
       <DividerBold class="divider_bold_style" />
-      <div class="column items-center full-width q-mb-xl">
+      <div class="column items-center full-width q-mb-lg">
         <div class="q-mb-md row justify-between items-center full-width">
-          <div class="text-h2">{{t('total')}}</div>
+          <div class="text-h2">{{$t('total')}}</div>
           <div class="text-h2">
             {{ ordersStore.currentOrder.totalPrice }} &ensp;&#3647
           </div>
         </div>
         <DividerThin class="bg-negative q-mb-md" />
-        <div class="text-h2 order_container text-weight-regular self-start">
-          <span>{{t('order')}}</span>&ensp;
+        <div class="text-h2 row q-gutter-sm text-weight-regular self-start">
+          <span>{{$t('order')}}</span>&ensp;
           <span>{{ ordersStore.currentOrder.totalCount }}</span>&ensp;
-          <span>{{ t('product_units') }}</span>
+          <span>{{ $t('product') }}</span>
+          <span>{{ $t('units', {count: ordersStore.currentOrder.totalCount}) }}</span>
         </div>
       </div>
       <div class="column justify-center full-width ">
         <RectangularButton
-          name="back_to_order_list"
+          :name="$t('back_to_order_list')"
           @click="goToOrderedList"
           class="q-mb-xl"
         />
         <RectangularButton
-          name="back_to_employee_actions"
+          :name="$t('back_to_employee_actions')"
           @click="goToEmployeeActions"
         />
       </div>

@@ -1,22 +1,18 @@
 <script setup>
-  import { evaPlusOutline } from '@quasar/extras/eva-icons';
-  import { evaMinusOutline } from '@quasar/extras/eva-icons';
-  import { ionEllipse } from '@quasar/extras/ionicons-v6';
-  import { evaRadioButtonOffOutline } from '@quasar/extras/eva-icons';
-  import { useI18n } from 'vue-i18n';
-  import { computed, ref, onMounted } from 'vue';
-  import { useCartStore } from '../../stores/cart';
-  import { useGoodsStore } from '../../stores/goods';
-  import { useAppStore } from '../../stores/app';
-  import { useQuasar } from 'quasar';
-  import IconButton from '../buttons/icon-button.vue';
+  import { evaMinusOutline, evaPlusOutline } from '@quasar/extras/eva-icons';
+import { ionEllipse } from '@quasar/extras/ionicons-v6';
+import { t } from 'i18next';
+import { useQuasar } from 'quasar';
+import { computed, nextTick, onMounted, ref } from 'vue';
+import { useAppStore } from '../../stores/app';
+import { useCartStore } from '../../stores/cart';
+import { useGoodsStore } from '../../stores/goods';
+import IconButton from '../buttons/icon-button.vue';
 
   const $q = useQuasar();
   const openDialog = ref(false);
   const slide = ref(0);
   const good = ref(undefined);
-
-  const { t } = useI18n();
 
   const cartStore = useCartStore();
   const goodsStore = useGoodsStore();
@@ -33,7 +29,8 @@
     $q.notify({
       timeout: 3000,
       multiLine: true,
-      classes: 'full-width',
+      color: 'primary',
+      classes: 'full-width notification_styles',
       actions: [
         {
           label: t('placing_an_order'),
@@ -68,7 +65,6 @@
     //   })
     // }, 6000);
 
-    // console.log('count', cartStore.cart)
 
   }
 
@@ -82,19 +78,24 @@
     showNotify();
   }
 
+  const sliceDescription = ref(null);
+
   onMounted(async () => {
     good.value = goodsStore.getGoodById(props.itemId);
+    await nextTick();
+    if (good.value.description.length > 50) {
+      sliceDescription.value = good.value.description.slice(0, 50) + ' <span style="color: blue">more...</span>';
+    } else {
+      sliceDescription.value = good.value.description;
+    }
   })
 
 </script>
 
 
 <template>
-  <div class="card_setting">
-    <div
-      style="cursor: not-allowed"
-      :style="{ filter: good?.stock <= 0 ? 'contrast(0.2)' : 'none' }"
-    >
+  <div class="card_setting" v-bind="$attrs">
+    <div :class="{'outStock': good && good.stock <= 0, 'available': good && good.stock > 0}">
       <div class="content_container">
         <div class="img_container">
           <q-img
@@ -111,7 +112,7 @@
         </div>
         <div>
           <div class="column no-wrap items-left">
-            <div class="text-h4 q-mb-sm ellipsis first_letter">
+            <div class="text-h4 q-mb-xs ellipsis first_letter">
               {{ good?.title }}
             </div>
 
@@ -121,10 +122,10 @@
           </div>
         </div>
 
-        <div class="text-body1 ellipsis-2-lines block_description" v-html="good?.description "/>
+        <div class="block_description" @click="goodDetails">
+          <div class="text-body1" v-html="sliceDescription"/>
+        </div>
 
-
-        <q-btn @click="goodDetails">{{ $t('read') }}</q-btn>
       </div>
 
       <div>
@@ -137,7 +138,7 @@
           text-color="white"
           @click="addGoodToCart(good)"
           >
-          <div class="text-center text-h3 q-py-xs">
+          <div class="text-center text-h4 q-py-xs text-uppercase">
             {{ $t('buy') }}
           </div>
         </q-btn>
@@ -219,27 +220,8 @@
           </q-card-section>
           <q-separator color="secondary" class="q-mb-md" />
           <q-card-section class="q-pt-none q-mb-lg">
-            <q-tabs
-              v-model="app.tabCharacteristics"
-              narrow-indicator
-              dense
-              no-caps
-              align="left"
-              class="q-mb-xs"
-            >
-              <q-tab :ripple="false" name="description" :label="t('description')" content-class="product_tab_label_style" />
-              <q-tab :ripple="false" name="characteristics" :label="t('characteristics')" content-class="product_tab_label_style" />
-            </q-tabs>
-            <q-tab-panels v-model="app.tabCharacteristics" animated swipeable class="fit">
-              <q-tab-panel name="description" dark>
-                <div class="text-body1" v-html="good.description"/>
-              </q-tab-panel>
-              <q-tab-panel name="characteristics" dark>
-                <div class="text-body1">
-                  {{ good.description }}
-                </div>
-              </q-tab-panel>
-            </q-tab-panels>
+            <div class="text-h4 text-capitalize q-mb-sm">{{ $t('description') }}</div>
+            <div class="text-body1" v-html="good.description"/>
           </q-card-section>
           <q-card-section>
             <div class="full-width">
@@ -253,7 +235,7 @@
                 text-color="white"
                 @click="addGoodToCart(good)"
                 >
-                <div class="text-center text-weight-bold text-h3 text-white q-py-xl">
+                <div class="text-center text-weight-bold text-h3 text-white q-py-xl text-uppercase">
                   {{ $t('buy') }}
                 </div>
               </q-btn>
@@ -285,10 +267,8 @@
   .card_setting {
     border-radius: var(--border-sm);
     box-shadow: var(--box-shadow--product_cart);
-    // width: max-content;
     width: calc(var(--width_coefficient) + var(--coefficient));
     height: 100%;
-    // height: 55rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -296,8 +276,6 @@
     background-color: var(--q-header_bg);
   }
   .img_container {
-    // width: $calc_width;
-    // height: $calc_width;
     max-width: $calc_width;
     max-height: $calc_width;
     border-radius : var(--px30);
@@ -314,7 +292,7 @@
   }
 
   .content_container > *:nth-child(n+2){
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   .text_style {
@@ -329,11 +307,21 @@
 
   .dialog_img {
     width: 100%;
-    // height: calc(70vw - 8rem);
     border: thin solid var(--q-accent);
   }
 
 .block_description {
-  min-height: 3.2rem;
+  height: 3.5rem;
+  overflow: hidden;
 }
+
+.outStock {
+  cursor: not-allowed;
+  filter: contrast(0.2);
+}
+.available {
+  cursor: default;
+  filter: none;
+}
+
 </style>
