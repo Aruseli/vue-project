@@ -78,24 +78,22 @@ export const useOrdersStore = defineStore("orders", () => {
     const currentOrderItem = currentOrder.value?.items.find(
       (i) => i.id == good.id
     );
-    if (currentOrderItem) {
-      const code = good.id === currentOrderItem.id ? 210 + `${good.code}` + 9 : null;
-      if (code) {
-        if (currentOrderItem.issued > currentOrderItem.quant) {
-          console.error("Stop scan");
-          Notify.create({
-            color: 'warning',
-            position: 'center',
-            classes: "text-h3 text-center text-uppercase",
-            timeout: 30000,
-            textColor: "white",
-            message: t('product_has_already_been_scanned'),
-          });
-          return;
-        }
-        currentOrderItem.issued += 1;
-      }
+    if (!currentOrderItem) {
+      return;
     }
+    if (currentOrderItem.issued >= currentOrderItem.quant) {
+      console.error("Stop scan");
+      Notify.create({
+        color: 'warning',
+        position: 'center',
+        classes: "text-h3 text-center text-uppercase",
+        timeout: 30000,
+        textColor: "white",
+        message: t('product_has_already_been_scanned'),
+      });
+      return;
+    }
+    currentOrderItem.issued += 1;
   };
 
   return {

@@ -1,42 +1,37 @@
 <script setup>
   import moment from 'moment';
-import { computed, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed, ref, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import RectangularButton from '../buttons/rectangular-button.vue';
 import DividerBold from '../dividers/divider-bold.vue';
 import ArrivalItem from './arrival-item.vue';
+import { useArrivalsStore } from'src/stores/arrivals';
+import { useAppStore } from 'src/stores/app';
+import { useGoodsStore } from 'src/stores/goods';
+const goodsStore = useGoodsStore();
 
-
+  const arrivalsStore = useArrivalsStore();
+  const appStore = useAppStore();
   const router = useRouter();
+  const route = useRoute();
 
-  const items = ref([
-    {
-      id: 1,
-      good_name: 'Product name 1',
-      estimated_quantity: 25,
-      actual_quantity: 0,
-    },
-    {
-      id: 2,
-      good_name: 'Product name 2',
-      estimated_quantity: 10,
-      actual_quantity: 0,
-    },
-    {
-      id: 3,
-      good_name: 'Product name 3',
-      estimated_quantity: 20,
-      actual_quantity: 0,
-    },
-  ]);
-
-  const totalEstimatedQuantity = computed(() => {
-    return items.value.reduce((acc, curr) => acc + curr.estimated_quantity, 0)
+  const allowConfirm = computed(() => {
+    return arrivalsStore.arrivalGoods?.items?.every(i => i.issued == i.quant)
   });
 
-  const totalActualQuantity = computed(() => {
-    return items.value.reduce((acc, curr) => acc + curr.actual_quantity, 0)
-  });
+  const confirmArrival = async () => {
+    await arrivalsStore.confirmArrivalGoodsIssue()
+    router.push('/employee-actions');
+    // TODO возможно стоит добавить диалоговое окно, перед редиректом, с информацией что товар добавлен
+  }
+
+  // const totalEstimatedQuantity = computed(() => {
+  //   return items.value.reduce((acc, curr) => acc + curr.estimated_quantity, 0)
+  // });
+
+  // const totalActualQuantity = computed(() => {
+  //   return items.value.reduce((acc, curr) => acc + curr.actual_quantity, 0)
+  // });
 
   // Get the current date
   const date = new Date();
@@ -45,6 +40,34 @@ import ArrivalItem from './arrival-item.vue';
   const time = date.getTime();
   const formattedTime = moment(time).format('LT').slice(0, -3);
 
+  onMounted(async () => {
+    try {
+      await arrivalsStore.selectArrival(route.params.id);
+      console.log('arrivalsStore.arrivalGoods', arrivalsStore.arrivalGoods)
+      console.log('РАВЕНСТВО', goodsStore.goods)
+      console.log('arrivalsStore.arrivals', arrivalsStore.arrivals)
+
+      console.log('arrivalsStore.arrivalsDocument', arrivalsStore.arrivalsDocument)
+      console.log('arrivalsStore.arrivalsDocuments', arrivalsStore.arrivalsDocuments)
+      console.log('arrivalsStore.selectArrival', arrivalsStore.selectArrival(route.params.id))
+      console.log('appStore.kiosk', appStore.kioskState.params)
+
+    } catch (err) {
+      console.error('arrivalsStore.selectArrival error:', err)
+      $q.notify({
+        color: 'warning',
+        icon: 'warning',
+        position: 'center',
+        message: t('unable_to_load_order'),
+        timeout: 6000,
+      })
+      router.push('/employee-actions')
+    }
+  })
+
+  const not_equal = computed(() => {
+    return arrivalsStore.arrivalGoods?.items.filter(i => i.quant === i.issued);
+  })
 </script>
 
 <template>
@@ -56,45 +79,53 @@ import ArrivalItem from './arrival-item.vue';
 
       <div class="row justify-between q-mb-md">
         <div class="text-h3 text-capitalize">
-          {{ $t('remaining_goods') }}
+          {{ $t('received_goods') }}
         </div>
         <div class="text-h3 row q-gutter-md">
           <span>{{ formattedDate }}</span>
           <span>{{ formattedTime }}</span>
-          <span>{{ '№0000087' }}</span>
+          <span>№{{ arrivalsStore.arrivalGoods?.arrivalNumStr }}</span>
         </div>
       </div>
       <DividerBold />
     </div>
 
     <div class="scroll_area">
-      <ArrivalItem />
+      <div class="arrivals_container">
+        <ArrivalItem v-for="arrival in arrivalsStore.arrivalGoods?.items"
+          :key="arrival.id"
+          :good_name="arrival.title"
+          :actual_quantity="arrival.issued == 0 ? 0 : arrival.issued"
+          :not_equal="not_equal"
+        />
+      </div>
     </div>
     <div>
       <DividerBold class="q-mb-lg" />
       <div class="row justify-between items-center q-mb-xl">
         <div class="text-h4 row q-gutter-sm">
           <span>{{$t('total')}}</span>
-          <span>{{items.length}}</span>
+          <span>{{arrivalsStore.arrivalGoods?.items.length}}</span>
           <span>{{ $t('product') }}</span>
-          <span>{{ $t('units', {count: items.length}) }}</span>
+          <span>{{ $t('units', {count: arrivalsStore.arrivalGoods?.items.length}) }}</span>
         </div>
 
         <div class="text-h4 text-weight-regular row q-gutter-sm">
           <div>{{$t('estimated_quantity')}}</div>
-          <div>{{totalEstimatedQuantity}}</div>
-          <div>{{ $t('pc', {count: totalEstimatedQuantity}) }}</div>
+          <div>{{arrivalsStore.arrivalGoods?.totalCount}}</div>
+          <div>{{ $t('pc', {count: arrivalsStore.arrivalGoods?.totalCount}) }}</div>
           <q-separator color="secondary" vertical spaced="lg" size="0.2rem" />
           <div>{{$t('actual_quantity')}}</div>
-          <div>{{ totalActualQuantity }}</div>
-          <div>{{ $t('pc', {count: totalActualQuantity}) }}</div>
+          <div>{{ arrivalsStore.arrivalGoods?.items.issued }}</div>
+          <div>{{ $t('pc', {count: arrivalsStore.arrivalGoods?.items.issued}) }}</div>
         </div>
       </div>
       <div class="full-width">
         <RectangularButton
           :name="$t('confirm')"
           class="fit"
-          @click="() => console.log('confirm')"
+          @click="confirmArrival"
+          :disable="!allowConfirm"
         />
       </div>
     </div>
@@ -107,12 +138,11 @@ import ArrivalItem from './arrival-item.vue';
   grid-template-rows: max-content 1fr 0.1fr;
 }
 
-.router_link_style {
-  font-size: 3rem;
-  text-decoration: none;
-}
 ol li {
   margin-bottom: 2.5rem;
+}
+.arrivals_container > *:not(:last-child) {
+  margin-bottom: 2rem;
 }
 
 </style>

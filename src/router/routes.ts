@@ -22,7 +22,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import("pages/selective-inventory.vue"),
       },
       {
-        path: "arrival-goods",
+        path: "arrival-goods/:id",
         component: () => import("pages/arrival-goods.vue"),
       },
       {

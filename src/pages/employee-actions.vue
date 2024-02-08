@@ -2,11 +2,12 @@
   import { useRouter } from 'vue-router';
   import { ref } from 'vue';
   import RectangularButton from '../components/buttons/rectangular-button.vue';
+import { QSpinnerHourglass, useQuasar } from 'quasar';
 
+  const $q = useQuasar();
   const router = useRouter();
   const route = (path) => {
     router.push(path);
-    console.log('path', path);
   }
 
   const routes = ref([
@@ -44,6 +45,26 @@
     },
   ])
 
+  const showNotify = () => {
+    $q.notify({
+      position: "center",
+      color: "positive",
+      classes: "full-width warning_customization",
+      timeout: 4000,
+      spinner: QSpinnerHourglass,
+      spinnerSize: '3rem',
+      actions: [
+        {
+          icon: "cancel",
+          'aria-label': 'cancel',
+          label: t("are_you_still_here"),
+          color: "white",
+          round: true,
+        },
+      ],
+    });
+  }
+
 </script>
 
 <template>
@@ -54,6 +75,7 @@
         :key="index"
         :name='$t(route.name)'
         @click="route.path"
+
       />
     </div>
   </q-page>
@@ -67,3 +89,9 @@
   margin-bottom: 2rem;
 }
 </style>
+   <!-- @click="() => {
+           if (route.name === 'arrival_goods') {
+            showNotify();
+          } else {route.path}
+          console.log(route.name)
+        }" -->

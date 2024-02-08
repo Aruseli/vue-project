@@ -49,6 +49,7 @@ export default {
   units_other: 'units',
   read: 'read',
   remaining_goods: 'remaining goods',
+  received_goods: 'received goods',
   thank_you: "thank you",
   total: 'total',
   unable_to_load_order: 'Unable to load order',

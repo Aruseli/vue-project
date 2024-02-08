@@ -54,6 +54,6 @@
 }
 
 .hello_bg {
-  background-image: url('start.jpg');
+  background-image: url('/start.jpg');
 }
 </style>

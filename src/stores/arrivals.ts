@@ -3,38 +3,62 @@ import { ref } from "vue";
 import { useAppStore } from "./app";
 import { KioskDocument, apiGetDocuments, apiSaveDocument } from "src/services";
 import { useGoodsStore, type Good } from "./goods";
-import { ORDERS_CACHE_TTL } from "src/services/consts";
+import { ARRIVALS_CACHE_TTL } from "src/services/consts";
 import { t } from "i18next";
 import { Notify } from 'quasar';
 
-export const useArrivalsStore = defineStore("arrivals", () => {
+export const useArrivalsStore = defineStore("arrivalsStore", () => {
   const appStore = useAppStore();
   const goodsStore = useGoodsStore();
 
+  const arrivals = ref<ReturnType<typeof documentGoodsArrival>[]>([]);
+  const arrivalsDocuments = ref([] as KioskDocument[]);
+  const arrivalsLoading = ref(true);
+  const arrivalsLastUpdate = ref(0);
+
   const arrivalGoods = ref<ReturnType<typeof documentGoodsArrival> | null>(null);
-  const arrivalGoodsDocument = ref<KioskDocument | null>(null);
+  const arrivalsDocument = ref<KioskDocument | null>(null);
   const arrivalGoodsLoading = ref(true);
-  const arrivalLastUpdate = ref(0);
 
   const updateArrivals = async () => {
-    arrivalGoodsLoading.value = true;
+    arrivalsLoading.value = true;
     try {
       const terminal_settings = appStore.kioskState.params?.terminal_settings;
-      const documents = await apiGetDocuments(
+      arrivalsDocuments.value = await apiGetDocuments(
         [terminal_settings!.goods_arrival_doc_type_id!],
         [2]
       );
-      arrivalGoods.value = documents.map((ag) =>
+      arrivals.value = arrivalsDocuments.value.map((ag) =>
       documentGoodsArrival(ag, goodsStore)
       );
-      arrivalLastUpdate.value = Date.now();
+      arrivalsLastUpdate.value = Date.now();
+    } finally {
+      arrivalsLoading.value = false;
+    }
+  };
+
+  const selectArrival = async (id: string) => {
+    arrivalGoodsLoading.value = true;
+    try {
+      // Bug: await apiGetDocument(id) returns none, and we forced to use updateArrivals
+      if (Date.now() - arrivalsLastUpdate.value > ARRIVALS_CACHE_TTL) {
+        await updateArrivals();
+      }
+      const arrivalDoc = arrivalsDocuments.value.find((d) => d.id == id) || null;
+      arrivalGoods.value = arrivalDoc
+        ? documentGoodsArrival(arrivalDoc, goodsStore)
+        : null;
+      arrivalsDocument.value = arrivalDoc;
+    } catch {
+      arrivalGoods.value = null;
+      arrivalsDocument.value = null;
     } finally {
       arrivalGoodsLoading.value = false;
     }
   };
 
   const confirmArrivalGoodsIssue = async () => {
-    const doc = arrivalGoodsDocument.value;
+    const doc = arrivalsDocument.value;
     if (!doc) {
       return;
     }
@@ -50,33 +74,50 @@ export const useArrivalsStore = defineStore("arrivals", () => {
     await apiSaveDocument(doc);
   };
 
-  const scanGood = async (good: Good) => {
+  const scanArrivalGood = async (good: Good) => {
     const arrivalItem = arrivalGoods.value?.items.find(
       (i) => i.id == good.id
     );
-    if (arrivalItem) {
-      const code = good.id === arrivalItem.id ? 210 + `${good.code}` + 9 : null;
-      arrivalItem.issued += 1;
+    if (!arrivalItem) {
+      return;
     }
+    if (arrivalItem.issued >= arrivalItem.quant) {
+      console.error("Stop scan");
+      Notify.create({
+        color: 'warning',
+        position: 'center',
+        classes: "text-h3 text-center text-uppercase",
+        timeout: 30000,
+        textColor: "white",
+        message: t('product_has_already_been_scanned'),
+      });
+      return;
+    }
+    arrivalItem.issued += 1;
   };
 
   return {
+    arrivals,
+    arrivalsDocuments,
+    arrivalsLoading,
+
     arrivalGoods,
-    arrivalGoodsDocument,
-    arrivalLastUpdate,
+    arrivalsDocument,
     arrivalGoodsLoading,
+
     updateArrivals,
+    selectArrival,
     confirmArrivalGoodsIssue,
-    scanGood,
+    scanArrivalGood,
   };
 });
 
-function documentGoodsArrival(ga: KioskDocument, goodsStore: ReturnType<typeof useGoodsStore>) {
+function documentGoodsArrival(ad: KioskDocument, goodsStore: ReturnType<typeof useGoodsStore>) {
   let hasAllGoods = true;
   const arrival = {
-    id: ga.id,
-    arrivalNumStr: (ga.abbr_num?.toString().padStart(4, "0") ?? t('Unknown')),
-    items: ga.details.map(d => {
+    id: ad.id,
+    arrivalNumStr: (ad.abbr_num?.toString().padStart(4, "0") ?? t('Unknown')),
+    items: ad.details.map(d => {
       const good = goodsStore.getGoodById(d.good_id);
       if (!good) {
         hasAllGoods = false;
