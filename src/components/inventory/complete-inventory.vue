@@ -1,20 +1,12 @@
 <script setup>
-  import DividerBold from '../dividers/divider-bold.vue';
-  import RectangularButton from '../buttons/rectangular-button.vue';
-  import ListItem from './list-item.vue';
-  import { onMounted, ref, computed } from 'vue';
-  import { useRouter, useRoute } from 'vue-router';
-  import { useOrderStore } from 'src/stores/order'
+  import { computed, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import RectangularButton from '../buttons/rectangular-button.vue';
+import DividerBold from '../dividers/divider-bold.vue';
+import ListItem from './list-item.vue';
 
   const router = useRouter();
   const route = useRoute();
-  const orderStore = useOrderStore();
-  console.log('route', route.params.id);
-  const routePath = (path) => {
-    route.fullPath === path;
-    console.log('route.fullPath', route.fullPath)
-  }
-
   const items = ref([
     {
       id: 1,
@@ -43,11 +35,6 @@
     return items.value.reduce((acc, curr) => acc + curr.actual_quantity, 0)
   });
 
-  onMounted(() => {
-    console.log('orderStore', orderStore.orders);
-    console.log('totalEstimatedQuantity', totalEstimatedQuantity.value);
-    console.log('totalActualQuantity', totalActualQuantity.value);
-  })
 </script>
 
 <template>

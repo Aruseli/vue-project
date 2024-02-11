@@ -121,6 +121,7 @@
             :dark="false"
             color="black"
             outlined
+            autocomplete="username"
             bg-color="white"
             input-class="input_settings"
             class="q-mb-md"
@@ -138,6 +139,7 @@
             :dark="false"
             color="black"
             outlined
+            autocomplete="current-password"
             class="q-mb-lg"
             bg-color="white"
             input-class="input_settings"

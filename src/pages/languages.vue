@@ -5,7 +5,6 @@
   import { useRouter } from 'vue-router';
   import { useAppStore } from 'src/stores/app';
   import { useGoodsStore } from 'src/stores/goods';
-  import i18next from 'i18next';
 
 
   const app = useAppStore();
@@ -43,14 +42,25 @@
   position: absolute;
   top: 0;
   left: 0;
+
+  @media (max-width: 2050px) and (orientation: landscape) {
+    padding: 2rem;
+  }
 }
 .container {
   width: max-content;
   padding: 4rem;
   border-radius: 1rem;
+
+  @media (max-width: 2050px) and (orientation: landscape) {
+    padding: 2rem;
+  }
 }
 .container > *:not(:last-child) {
   margin-bottom: 4rem;
+  @media (max-width: 2050px) and (orientation: landscape) {
+    margin-bottom: 1.5rem;
+  }
 }
 
 .hello_bg {
