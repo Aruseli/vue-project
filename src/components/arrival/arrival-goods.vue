@@ -8,6 +8,8 @@ import ArrivalItem from './arrival-item.vue';
 import { useArrivalsStore } from'src/stores/arrivals';
 import { useAppStore } from 'src/stores/app';
 import { useGoodsStore } from 'src/stores/goods';
+import i18next  from 'i18next';
+
 const goodsStore = useGoodsStore();
 
   const arrivalsStore = useArrivalsStore();
@@ -25,14 +27,6 @@ const goodsStore = useGoodsStore();
     // TODO возможно стоит добавить диалоговое окно, перед редиректом, с информацией что товар добавлен
   }
 
-  // const totalEstimatedQuantity = computed(() => {
-  //   return items.value.reduce((acc, curr) => acc + curr.estimated_quantity, 0)
-  // });
-
-  // const totalActualQuantity = computed(() => {
-  //   return items.value.reduce((acc, curr) => acc + curr.actual_quantity, 0)
-  // });
-
   // Get the current date
   const date = new Date();
   // Format the date using Moment.js
@@ -42,16 +36,9 @@ const goodsStore = useGoodsStore();
 
   onMounted(async () => {
     try {
+      await goodsStore.updateGoods(i18next.language);
+      await arrivalsStore.updateArrivals();
       await arrivalsStore.selectArrival(route.params.id);
-      console.log('arrivalsStore.arrivalGoods', arrivalsStore.arrivalGoods)
-      console.log('РАВЕНСТВО', goodsStore.goods)
-      console.log('arrivalsStore.arrivals', arrivalsStore.arrivals)
-
-      console.log('arrivalsStore.arrivalsDocument', arrivalsStore.arrivalsDocument)
-      console.log('arrivalsStore.arrivalsDocuments', arrivalsStore.arrivalsDocuments)
-      console.log('arrivalsStore.selectArrival', arrivalsStore.selectArrival(route.params.id))
-      console.log('appStore.kiosk', appStore.kioskState.params)
-
     } catch (err) {
       console.error('arrivalsStore.selectArrival error:', err)
       $q.notify({
@@ -65,9 +52,7 @@ const goodsStore = useGoodsStore();
     }
   })
 
-  const not_equal = computed(() => {
-    return arrivalsStore.arrivalGoods?.items.filter(i => i.quant === i.issued);
-  })
+  const not_equal = arrivalsStore.arrivalGoods?.items.find(i => i.quant !== i.issued)
 </script>
 
 <template>
@@ -96,7 +81,7 @@ const goodsStore = useGoodsStore();
           :key="arrival.id"
           :good_name="arrival.title"
           :actual_quantity="arrival.issued == 0 ? 0 : arrival.issued"
-          :not_equal="not_equal"
+          :not_equal="arrival.issued !== arrival.quant"
         />
       </div>
     </div>
@@ -116,8 +101,8 @@ const goodsStore = useGoodsStore();
           <div>{{ $t('pc', {count: arrivalsStore.arrivalGoods?.totalCount}) }}</div>
           <q-separator color="secondary" vertical spaced="lg" size="0.2rem" />
           <div>{{$t('actual_quantity')}}</div>
-          <div>{{ arrivalsStore.arrivalGoods?.items.issued }}</div>
-          <div>{{ $t('pc', {count: arrivalsStore.arrivalGoods?.items.issued}) }}</div>
+          <div>{{ arrivalsStore.totalQuant }}</div>
+          <div>{{ $t('pc', {count: arrivalsStore.totalQuant}) }}</div>
         </div>
       </div>
       <div class="full-width">

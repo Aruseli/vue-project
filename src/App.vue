@@ -10,11 +10,6 @@
   const route = useRoute()
   const router = useRouter()
 
-  // const routeName = (path) => {
-  //   route.fullPath === path;
-  //   console.log('RN', route.fullPath === '/arrival-goods')
-  // }
-
   eventEmitter.on('local-ws', async evt => {
     const appStore = useAppStore() // Don't move up: it will break init (query params are unaccessible)
     const ordersStore = useOrdersStore()
@@ -31,7 +26,6 @@
           }
           if (route.path == `/arrival-goods/${route.params.id}`) {
             const good = goodsStore.getGoodByCode(barcode.code);
-            console.log('good', good)
             await arrivalsStore.scanArrivalGood(good);
           }
           break;

@@ -3,6 +3,7 @@
   import { ref } from 'vue';
   import RectangularButton from '../components/buttons/rectangular-button.vue';
 import { QSpinnerHourglass, useQuasar } from 'quasar';
+import { t } from 'i18next';
 
   const $q = useQuasar();
   const router = useRouter();
@@ -33,7 +34,7 @@ import { QSpinnerHourglass, useQuasar } from 'quasar';
     },
     {
       name: 'arrival_goods',
-      path: () => route('arrival-goods'),
+      path: () => route('employee-actions'),
     },
     {
       name: 'print_leftovers',
@@ -50,8 +51,9 @@ import { QSpinnerHourglass, useQuasar } from 'quasar';
       position: "center",
       color: "positive",
       classes: "full-width warning_customization",
-      timeout: 4000,
-      spinner: QSpinnerHourglass,
+      timeout: 1000,
+      icon: 'img:/barcode_scanner.svg',
+      iconSize: '5rem',
       spinnerSize: '3rem',
       actions: [
         {
@@ -74,8 +76,13 @@ import { QSpinnerHourglass, useQuasar } from 'quasar';
         v-for="(route, index) in routes"
         :key="index"
         :name='$t(route.name)'
-        @click="route.path"
-
+        @click="() => {
+          route.name == 'arrival_goods'
+            ? showNotify()
+            : route.name !== 'arrival_goods'
+            ? route.path()
+            : null
+        }"
       />
     </div>
   </q-page>

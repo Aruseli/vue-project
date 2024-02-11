@@ -20,9 +20,6 @@
     }
   })
 
-  const sendData = () => {
-    console.log(state.actual_quantity);
-  }
 </script>
 
 <template>

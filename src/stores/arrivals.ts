@@ -66,35 +66,45 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
     doc.details.forEach((d) => {
       const item = arrivalGoods.value?.items.find((i) => i.id == d.good_id);
       if (!item || d.quant != item.quant || item.issued != item.quant) {
-        console.log("Order line mismatch while issuing", d, item);
-        throw new Error(`Wrong state of order to issue.`);
+        throw new Error(`Wrong state of arrival to issue.`);
       }
       d.total = (goodsStore.getGoodById(d.id)?.stock ?? 0) - d.quant;
     });
     await apiSaveDocument(doc);
   };
 
+  const totalQuant = ref(0);
   const scanArrivalGood = async (good: Good) => {
-    const arrivalItem = arrivalGoods.value?.items.find(
-      (i) => i.id == good.id
-    );
-    if (!arrivalItem) {
-      return;
+    const arrivalItem = arrivalGoods.value?.items.find((i) => i.id == good.id);
+    if (arrivalItem) {
+      // if (arrivalItem.issued >= arrivalItem.quant) {
+      //   console.error("Stop scan");
+      //   Notify.create({
+      //     color: "warning",
+      //     position: "center",
+      //     classes: "text-h3 text-center text-uppercase",
+      //     timeout: 30000,
+      //     textColor: "white",
+      //     message: t("product_has_already_been_scanned"),
+      //   });
+      //   return;
+      // }
+      arrivalItem.issued += 1;
+      totalQuant.value += 1;
     }
-    if (arrivalItem.issued >= arrivalItem.quant) {
-      console.error("Stop scan");
-      Notify.create({
-        color: 'warning',
-        position: 'center',
-        classes: "text-h3 text-center text-uppercase",
-        timeout: 30000,
-        textColor: "white",
-        message: t('product_has_already_been_scanned'),
-      });
-      return;
-    }
-    arrivalItem.issued += 1;
+    // for (let i = 0; i < array.length; i++) {
+
+    // }
   };
+
+
+
+  // function increaseQuant() {
+  //   for (let i = 0; i < array.length; i++) {
+  //     array[i].quant.value += 1;
+  //     totalQuant.value += 1;
+  //   }
+  // }
 
   return {
     arrivals,
@@ -104,6 +114,8 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
     arrivalGoods,
     arrivalsDocument,
     arrivalGoodsLoading,
+
+    totalQuant,
 
     updateArrivals,
     selectArrival,
@@ -116,7 +128,7 @@ function documentGoodsArrival(ad: KioskDocument, goodsStore: ReturnType<typeof u
   let hasAllGoods = true;
   const arrival = {
     id: ad.id,
-    arrivalNumStr: (ad.abbr_num?.toString().padStart(4, "0") ?? t('Unknown')),
+    arrivalNumStr: (ad.abbr_num?.toString().padStart(4, "0") || t('Unknown')),
     items: ad.details.map(d => {
       const good = goodsStore.getGoodById(d.good_id);
       if (!good) {
