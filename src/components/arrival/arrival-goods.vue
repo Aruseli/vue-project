@@ -18,7 +18,7 @@ const goodsStore = useGoodsStore();
   const route = useRoute();
 
   const allowConfirm = computed(() => {
-    return arrivalsStore.arrivalGoods?.items?.every(i => i.issued == i.quant)
+    return arrivalsStore.arrival?.items?.every(i => i.issued == i.quant)
   });
 
   const confirmArrival = async () => {
@@ -52,7 +52,7 @@ const goodsStore = useGoodsStore();
     }
   })
 
-  const not_equal = arrivalsStore.arrivalGoods?.items.find(i => i.quant !== i.issued)
+  const not_equal = arrivalsStore.arrival?.items.find(i => i.quant !== i.issued)
 </script>
 
 <template>
@@ -69,7 +69,7 @@ const goodsStore = useGoodsStore();
         <div class="text-h3 row q-gutter-md">
           <span>{{ formattedDate }}</span>
           <span>{{ formattedTime }}</span>
-          <span>№{{ arrivalsStore.arrivalGoods?.arrivalNumStr }}</span>
+          <span>№{{ arrivalsStore.arrival?.arrivalNumStr }}</span>
         </div>
       </div>
       <DividerBold />
@@ -77,7 +77,7 @@ const goodsStore = useGoodsStore();
 
     <div class="scroll_area">
       <div class="arrivals_container">
-        <ArrivalItem v-for="arrival in arrivalsStore.arrivalGoods?.items"
+        <ArrivalItem v-for="arrival in arrivalsStore.arrival?.items"
           :key="arrival.id"
           :good_name="arrival.title"
           :actual_quantity="arrival.issued == 0 ? 0 : arrival.issued"
@@ -90,15 +90,15 @@ const goodsStore = useGoodsStore();
       <div class="row justify-between items-center q-mb-xl">
         <div class="text-h4 row q-gutter-sm">
           <span>{{$t('total')}}</span>
-          <span>{{arrivalsStore.arrivalGoods?.items.length}}</span>
+          <span>{{arrivalsStore.arrival?.items.length}}</span>
           <span>{{ $t('product') }}</span>
-          <span>{{ $t('units', {count: arrivalsStore.arrivalGoods?.items.length}) }}</span>
+          <span>{{ $t('units', {count: arrivalsStore.arrival?.items.length}) }}</span>
         </div>
 
         <div class="text-h4 text-weight-regular row q-gutter-sm">
           <div>{{$t('estimated_quantity')}}</div>
-          <div>{{arrivalsStore.arrivalGoods?.totalCount}}</div>
-          <div>{{ $t('pc', {count: arrivalsStore.arrivalGoods?.totalCount}) }}</div>
+          <div>{{arrivalsStore.arrival?.totalCount}}</div>
+          <div>{{ $t('pc', {count: arrivalsStore.arrival?.totalCount}) }}</div>
           <q-separator color="secondary" vertical spaced="lg" size="0.2rem" />
           <div>{{$t('actual_quantity')}}</div>
           <div>{{ arrivalsStore.totalQuant }}</div>

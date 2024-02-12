@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useAppStore } from "./app";
 import { KioskDocument, apiGetDocuments, apiSaveDocument } from "src/services";
 import { useGoodsStore, type Good } from "./goods";
@@ -16,8 +16,8 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
   const arrivalsLoading = ref(true);
   const arrivalsLastUpdate = ref(0);
 
-  const arrivalGoods = ref<ReturnType<typeof documentGoodsArrival> | null>(null);
-  const arrivalsDocument = ref<KioskDocument | null>(null);
+  const arrival = ref<ReturnType<typeof documentGoodsArrival> | null>(null);
+  const arrivalDocument = ref<KioskDocument | null>(null);
   const arrivalGoodsLoading = ref(true);
 
   const updateArrivals = async () => {
@@ -45,26 +45,26 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
         await updateArrivals();
       }
       const arrivalDoc = arrivalsDocuments.value.find((d) => d.id == id) || null;
-      arrivalGoods.value = arrivalDoc
+      arrival.value = arrivalDoc
         ? documentGoodsArrival(arrivalDoc, goodsStore)
         : null;
-      arrivalsDocument.value = arrivalDoc;
+      arrivalDocument.value = arrivalDoc;
     } catch {
-      arrivalGoods.value = null;
-      arrivalsDocument.value = null;
+      arrival.value = null;
+      arrivalDocument.value = null;
     } finally {
       arrivalGoodsLoading.value = false;
     }
   };
 
   const confirmArrivalGoodsIssue = async () => {
-    const doc = arrivalsDocument.value;
+    const doc = arrivalDocument.value;
     if (!doc) {
       return;
     }
     doc.state = 0;
     doc.details.forEach((d) => {
-      const item = arrivalGoods.value?.items.find((i) => i.id == d.good_id);
+      const item = arrival.value?.items.find((i) => i.id == d.good_id);
       if (!item || d.quant != item.quant || item.issued != item.quant) {
         throw new Error(`Wrong state of arrival to issue.`);
       }
@@ -73,9 +73,19 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
     await apiSaveDocument(doc);
   };
 
-  const totalQuant = ref(0);
+  const totalQuant = computed(() => {
+    if (arrival.value?.items) {
+      return arrival.value.items.reduce(
+        (acc: number, item: any) => acc + item.issued,
+        0
+      );
+    }
+    return 0;
+  });
+
   const scanArrivalGood = async (good: Good) => {
-    const arrivalItem = arrivalGoods.value?.items.find((i) => i.id == good.id);
+    const arrivalItem = arrival.value?.items.find((i) => i.id == good.id);
+
     if (arrivalItem) {
       // if (arrivalItem.issued >= arrivalItem.quant) {
       //   console.error("Stop scan");
@@ -90,29 +100,19 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
       //   return;
       // }
       arrivalItem.issued += 1;
-      totalQuant.value += 1;
+      totalQuant;
     }
-    // for (let i = 0; i < array.length; i++) {
-
-    // }
   };
 
 
-
-  // function increaseQuant() {
-  //   for (let i = 0; i < array.length; i++) {
-  //     array[i].quant.value += 1;
-  //     totalQuant.value += 1;
-  //   }
-  // }
 
   return {
     arrivals,
     arrivalsDocuments,
     arrivalsLoading,
 
-    arrivalGoods,
-    arrivalsDocument,
+    arrival,
+    arrivalDocument,
     arrivalGoodsLoading,
 
     totalQuant,
