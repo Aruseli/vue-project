@@ -29,7 +29,7 @@ after_script:
 quasar-build:
   stage: build
   tags: &runner_tags
-  - linux
+  - builder
   artifacts:
     when: on_success
     paths:
