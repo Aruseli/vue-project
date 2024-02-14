@@ -1,19 +1,20 @@
 <script setup>
-  import moment from 'moment';
-import { computed, ref, onMounted } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+  import i18next from 'i18next';
+import moment from 'moment';
+import { useQuasar } from 'quasar';
+import { useArrivalsStore } from 'src/stores/arrivals';
+import { useGoodsStore } from 'src/stores/goods';
+import { computed, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import RectangularButton from '../buttons/rectangular-button.vue';
 import DividerBold from '../dividers/divider-bold.vue';
 import ArrivalItem from './arrival-item.vue';
-import { useArrivalsStore } from'src/stores/arrivals';
-import { useAppStore } from 'src/stores/app';
-import { useGoodsStore } from 'src/stores/goods';
-import i18next  from 'i18next';
 
 const goodsStore = useGoodsStore();
 
+  const $q = useQuasar();
+
   const arrivalsStore = useArrivalsStore();
-  const appStore = useAppStore();
   const router = useRouter();
   const route = useRoute();
 

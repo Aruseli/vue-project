@@ -32,6 +32,9 @@ export type TerminalParams = {
     invoice_docdetail_type_id?: string,
     goods_arrival_doc_type_id?: string,
     goods_arrival_docdetail_type_id?: string,
+    inventory_doc_type_id?: string;
+    inventory_docdetail_type_id?: string;
+
     currency_id?: string,
     munit_id?: string,
   },

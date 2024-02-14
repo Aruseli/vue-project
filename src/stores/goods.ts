@@ -1,9 +1,10 @@
 import Dexie, { Table } from 'dexie';
 import { defineStore } from 'pinia';
-import { ApiGoodCategory, Deferred, apiGetGoods, apiGetGoodsImages, apiGetStockRemains, delay, throwErr } from 'src/services';
+import { ApiGoodCategory, Deferred, apiGetGoods, apiGetGoodsImages, apiGetStockRemains, apiSaveDocument, delay, throwErr } from 'src/services';
 import { IMAGES_CACHE_CLEANUP_INTERVAL } from 'src/services/consts';
 import { ref } from 'vue';
 import { useAppStore } from './app';
+import { uuidToBarcodeDocId } from 'src/services/barcodes';
 
 export type Good = {
   id: string,
@@ -145,6 +146,34 @@ export const useGoodsStore = defineStore('goodsStore', () => {
         //   }
         //   console.log('Debug arrival goods', await apiSaveDocument(goodsArrivalDoc))
         // }
+        // const goodsInventoryDoc = {
+        //   id: undefined,
+        //   state: 2,
+        //   doc_type: terminal_settings?.inventory_doc_type_id ?? '',
+        //   abbr_text: undefined,
+        //   abbr_num: undefined,
+        //   doc_date: new Date().toISOString(),
+        //   doc_order: 0,
+        //   corr_from_ref: "9f358a54-742e-49f7-bbe6-2cf906d534c3",
+        //   corr_to_ref: terminal_settings?.kiosk_corr_id ?? '',
+        //   respperson_ref: appStore.kioskState.user?.id ?? '',
+        //   currency_ref: terminal_settings?.currency_id ?? '',
+        //   curr_rate: 1,
+        //   comment: undefined,
+        //   details: fetchedGoods.flatMap(gc => gc.goods.filter(g => !!g)).map(g => ({
+        //     id: undefined,
+        //     state: 0,
+        //     rec_order: 0,
+        //     good_id: g.id,
+        //     munit_id: terminal_settings?.munit_id ?? '', // default
+        //     quant: 3,
+        //     total: 3*g.price,
+        //     doc_detail_link: undefined,
+        //     doc_detail_type: terminal_settings?.inventory_docdetail_type_id ?? '',
+        //   })),
+        // }
+        // const docId = await apiSaveDocument(goodsInventoryDoc)
+        // console.log('Debug arrival goods', docId, uuidToBarcodeDocId(docId))
         goods.value = await populateImages(fetchedGoods)
         appStore.tab = fetchedGoods[0].id
         goodsLoading.value = false
