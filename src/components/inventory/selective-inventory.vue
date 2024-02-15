@@ -1,40 +1,43 @@
 <script setup>
-  import { computed, ref } from 'vue';
-import { useRouter } from 'vue-router';
+  import { computed, onMounted, ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import RectangularButton from '../buttons/rectangular-button.vue';
 import DividerBold from '../dividers/divider-bold.vue';
 import ListItem from './list-item.vue';
+import { useSelectInventoryStore } from 'src/stores/selective-inventory';
+import { useGoodsStore } from 'src/stores/goods';
+import { useQuasar } from 'quasar';
+import i18next from 'i18next';
+
+  const $q = useQuasar();
 
   const router = useRouter();
+  const route = useRoute();
+  const selectInventoryStore = useSelectInventoryStore();
+  const goodsStore = useGoodsStore();
 
-  const items = ref([
-    {
-      id: 1,
-      good_name: 'Product name 1',
-      estimated_quantity: 25,
-      actual_quantity: 0,
-    },
-    {
-      id: 2,
-      good_name: 'Product name 2',
-      estimated_quantity: 10,
-      actual_quantity: 0,
-    },
-    {
-      id: 3,
-      good_name: 'Product name 3',
-      estimated_quantity: 20,
-      actual_quantity: 0,
-    },
-  ]);
-
-  const totalEstimatedQuantity = computed(() => {
-    return items.value.reduce((acc, curr) => acc + curr.estimated_quantity, 0)
-  });
-
-  const totalActualQuantity = computed(() => {
-    return items.value.reduce((acc, curr) => acc + curr.actual_quantity, 0)
-  });
+  onMounted(async () => {
+    try {
+      await goodsStore.updateGoods(i18next.language)
+      await selectInventoryStore.updateInventories();
+      // await selectInventoryStore.selectedInventory(route.params.id);
+    } catch (err) {
+      console.error('selectInventoryStore.updateInventories error:', err)
+      $q.notify({
+        color: 'warning',
+        icon: 'warning',
+        position: 'center',
+        message: t('unable_to_load_inventory'),
+        timeout: 6000,
+      })
+      router.push('/employee-actions')
+    }
+  })
+  const confirmInventory = async () => {
+    await selectInventoryStore.confirmSelectedInventory()
+    router.push('/employee-actions');
+    // TODO возможно стоит добавить диалоговое окно, перед редиректом, с информацией что товар добавлен
+  }
 
 </script>
 
@@ -50,7 +53,7 @@ import ListItem from './list-item.vue';
           {{ $t('remaining_goods') }}
         </div>
         <div class="text-h3">
-          {{ '10.12.23 12:00' }}&ensp;{{ '№0000087' }}
+          {{ '10.12.23 12:00' }}&ensp;{{  }}
         </div>
       </div>
       <DividerBold />
@@ -61,11 +64,11 @@ import ListItem from './list-item.vue';
 
         <ol class="bg-white text-black relative-position">
           <ListItem
-            v-for="item in items"
-            :key="item.id"
-            :actual_quantity="item.actual_quantity"
-            :good_name="item.good_name"
-            :estimated_quantity="item.estimated_quantity"
+            v-for="inv in selectInventoryStore.selectInventory?.items"
+            :key="inv.id"
+            :actual_quantity="inv.quant"
+            :good_name="inv.title"
+            :estimated_quantity="inv.stock"
           />
         </ol>
       </div>
@@ -75,26 +78,26 @@ import ListItem from './list-item.vue';
       <div class="row justify-between items-center q-mb-xl">
         <div class="text-h4 row q-gutter-sm">
           <span>{{$t('total')}}</span>
-          <span>{{items.length}}</span>
+          <span>{{selectInventoryStore.selectInventory?.items.length}}</span>
           <span>{{ $t('product') }}</span>
-          <span>{{ $t('units', {count: items.length}) }}</span>
+          <span>{{ $t('units', {count: selectInventoryStore.selectInventory?.items.length}) }}</span>
         </div>
 
         <div class="text-h4 text-weight-regular row q-gutter-sm">
           <div>{{$t('estimated_quantity')}}</div>
-          <div>{{totalEstimatedQuantity}}</div>
-          <div>{{ $t('pc', {count: totalEstimatedQuantity}) }}</div>
+          <div>{{selectInventoryStore.selectInventory?.totalStock}}</div>
+          <div>{{ $t('pc', {count: selectInventoryStore.selectInventory?.totalStock}) }}</div>
           <q-separator color="secondary" vertical spaced="lg" size="0.2rem" />
           <div>{{$t('actual_quantity')}}</div>
-          <div>{{ totalActualQuantity }}</div>
-          <div>{{ $t('pc', {count: totalActualQuantity}) }}</div>
+          <div>{{ selectInventoryStore.selectInventory?.totalCount }}</div>
+          <div>{{ $t('pc', {count: selectInventoryStore.selectInventory?.totalCount}) }}</div>
         </div>
       </div>
       <div class="row justify-center q-gutter-xl">
         <RectangularButton
           name="confirm"
           class="col-5"
-          @click="() => console.log('confirm')"
+          @click="confirmInventory"
         />
         <RectangularButton
           color="warning"
