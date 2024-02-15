@@ -37,25 +37,32 @@ export const useSelectInventoryStore = defineStore("selectInventoryStore", () =>
     }
   };
 
-  const selectedInventory = async (id: string) => {
-    selectInventoryLoading.value = true;
-    try {
-      // Bug: await apiGetDocument(id) returns none, and we forced to use updateArrivals
-      if (Date.now() - inventoriesLastUpdate.value > ARRIVALS_CACHE_TTL) {
-        await updateInventories();
+   const selectedInventory = async () => {
+      selectInventoryLoading.value = true;
+      try {
+        // Bug: await apiGetDocument(id) returns none, and we forced to use updateArrivals
+        if (Date.now() - inventoriesLastUpdate.value > ARRIVALS_CACHE_TTL) {
+          await updateInventories();
+        }
+
+        // Fix type error by casting inventoriesDocuments to KioskDocument[]
+        const inventoryDoc =
+          (inventoriesDocuments.value as KioskDocument[]).sort(
+            (a, b) => a.doc_date - b.doc_date
+          )[0] || null;
+
+        selectInventory.value = inventoryDoc
+          ? documentToInventory(inventoryDoc, goodsStore)
+          : null;
+        selectInventoryDocument.value = inventoryDoc;
+      } catch {
+        selectInventory.value = null;
+        selectInventoryDocument.value = null;
+      } finally {
+        selectInventoryLoading.value = false;
       }
-      const inventoryDoc = inventoriesDocuments.value.find((d) => d.doc_date == id) || null;
-      selectInventory.value = inventoryDoc
-        ? documentToInventory(inventoryDoc, goodsStore)
-        : null;
-      selectInventoryDocument.value = inventoryDoc;
-    } catch {
-      selectInventory.value = null;
-      selectInventoryDocument.value = null;
-    } finally {
-      selectInventoryLoading.value = false;
-    }
-  };
+    };
+
 
     const confirmSelectedInventory = async () => {
       const doc = selectInventoryDocument.value;

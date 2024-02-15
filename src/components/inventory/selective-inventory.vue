@@ -20,7 +20,7 @@ import i18next from 'i18next';
     try {
       await goodsStore.updateGoods(i18next.language)
       await selectInventoryStore.updateInventories();
-      // await selectInventoryStore.selectedInventory(route.params.id);
+      await selectInventoryStore.selectedInventory();
     } catch (err) {
       console.error('selectInventoryStore.updateInventories error:', err)
       $q.notify({
