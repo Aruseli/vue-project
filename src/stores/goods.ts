@@ -172,12 +172,12 @@ export const useGoodsStore = defineStore('goodsStore', () => {
   }
 
   const getGoodByDataCodeHits = ref(0);
-  const getGoodByCode = (barcode: string) => {
+  const getGoodByCode = (code: string) => {
     getGoodByDataCodeHits.value += 1
     if (getGoodByDataCodeHits.value % 100 == 0) {
       console.log('getGoodByDataCode hits', getGoodByDataCodeHits.value)
     }
-    return goods.value.flatMap(gc => gc.goods).find(g => g.code === barcode)
+    return goods.value.flatMap(gc => gc.goods).find(g => g.code === code)
   }
 
   const waitGoodsReady = async () => {

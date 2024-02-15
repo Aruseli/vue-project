@@ -12,9 +12,7 @@ const i18n = i18next.init({
     escapeValue: false,
   },
   fallbackLng: 'en',
-  resources: {
-    'en': messages,
-  },
+  resources: messages,
   ns: ['global'],
 });
 

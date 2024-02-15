@@ -150,7 +150,6 @@ async function tryFetchTerminalParams(terminalName: string, terminalCode: string
     return await apiAddAnyTerminal(terminalName, terminalCode);
   }
   catch {
-    // const { t } = i18n.global;
     Notify.create({
       color: 'warning',
       position: 'center',
@@ -179,7 +178,6 @@ async function updateCurrentUser(kioskState: KioskState) {
       console.log("whoami", undefined);
       updateKioskStatus(kioskState);
     } else {
-      // const { t } = i18n.global;
       Notify.create({
         color: "warning",
         position: "center",
@@ -200,7 +198,6 @@ function updateKioskStatus(kioskState: KioskState) {
         'UnboundTerminal',
       ].findIndex(s => s == newStatus) >= 0
     ) {
-      // const { t } = i18n.global
       kioskState.globalError = new Error(t('TERMINAL_WAS_UNREGISTERED'))
       newStatus = 'UnrecoverableError'
   }
