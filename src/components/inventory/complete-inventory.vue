@@ -17,55 +17,25 @@ const inventoryStore = useInventoryStore();
   const router = useRouter();
 
   const $q = useQuasar();
-  const items = ref([
-    {
-      id: 1,
-      good_name: 'Product name 1',
-      estimated_quantity: 25,
-      actual_quantity: 0,
-    },
-    {
-      id: 2,
-      good_name: 'Product name 2',
-      estimated_quantity: 10,
-      actual_quantity: 0,
-    },
-    {
-      id: 3,
-      good_name: 'Product name 3',
-      estimated_quantity: 20,
-      actual_quantity: 0,
-    },
-  ]);
-  const totalEstimatedQuantity = computed(() => {
-    return items.value.reduce((acc, curr) => acc + curr.estimated_quantity, 0)
+
+  const allowConfirm = computed(() => {
+    return inventoryStore.inventory?.every(i => i.stock == i.quant)
   });
 
-  const totalActualQuantity = computed(() => {
-    return items.value.reduce((acc, curr) => acc + curr.actual_quantity, 0)
-  });
-
-  // const inventory = ref([]);
-
-  // for (let i = 0; i < goodsStore.goods.length; i++){
-  //   for (let j = 0; j < goodsStore.goods[i].goods.length; j++){
-  //     inventory.value.push(goodsStore.goods[i].goods[j])
-  //   }
-  // }
-
-
-  // const inventory = ref([]);
-  // function fillInventory() {
-  //   for (let i = 0; i < goodsStore.goods.length; i++) {
-  //     for (let j = 0; j < goodsStore.goods[i].goods.length; j++) {
-  //       let item = {
-  //         ...goodsStore.state.goods[i].goods[j],
-  //         quant: 0,
-  //       };
-  //       inventory.value.push(item);
-  //     }
-  //   }
-  // }
+  async function submitInventory() {
+    try {
+      await inventoryStore.submitInventory()
+    } catch (err) {
+      console.error('inventoryStore.submitInventory error:', err)
+      $q.notify({
+        color: 'warning',
+        icon: 'warning',
+        position: 'center',
+        message: t('unable_to_submit_inventory'),
+        timeout: 6000,
+      })
+    }
+  }
 
   const date = new Date();
   // Format the date using Moment.js
@@ -138,21 +108,22 @@ const inventoryStore = useInventoryStore();
 
         <div class="text-h4 text-weight-regular row q-gutter-sm">
           <div>{{$t('estimated_quantity')}}</div>
-          <div>{{totalEstimatedQuantity}}</div>
-          <div>{{ $t('pc', {count: totalEstimatedQuantity}) }}</div>
+          <div>{{inventoryStore.totalQuantity}}</div>
+          <div>{{ $t('pc', {count: inventoryStore.totalQuantity}) }}</div>
           <q-separator color="secondary" vertical spaced="lg" size="0.2rem" />
           <div>{{$t('actual_quantity')}}</div>
-          <div>{{ totalActualQuantity }}</div>
-          <div>{{ $t('pc', {count: totalActualQuantity}) }}</div>
+          <div>{{ inventoryStore.totalActualQuant }}</div>
+          <div>{{ $t('pc', {count: inventoryStore.totalActualQuant}) }}</div>
         </div>
       </div>
       <div class="row justify-center q-gutter-xl">
         <RectangularButton
           :name="$t('confirm')"
           class="col-5"
-          @click="() => console.log('confirm')"
-          />
-          <RectangularButton
+          @click="submitInventory"
+          :disable="!allowConfirm"
+        />
+        <RectangularButton
           color="warning"
           :name="$t('declare_discrepancy')"
           class="col-5"

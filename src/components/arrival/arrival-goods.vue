@@ -53,7 +53,6 @@ const goodsStore = useGoodsStore();
     }
   })
 
-  const not_equal = arrivalsStore.arrival?.items.find(i => i.quant !== i.issued)
 </script>
 
 <template>
