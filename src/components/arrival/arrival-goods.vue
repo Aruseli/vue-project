@@ -52,7 +52,6 @@ const goodsStore = useGoodsStore();
     }
   })
 
-  const not_equal = arrivalsStore.arrival?.items.find(i => i.quant !== i.issued)
 </script>
 
 <template>
@@ -80,8 +79,10 @@ const goodsStore = useGoodsStore();
         <ArrivalItem v-for="arrival in arrivalsStore.arrival?.items"
           :key="arrival.id"
           :good_name="arrival.title"
-          :actual_quantity="arrival.issued == 0 ? 0 : arrival.issued"
+          :actual_quantity="arrival.issued"
+          :confirm="arrivalsStore.blockScan  === arrival.id"
           :not_equal="arrival.issued !== arrival.quant"
+          @click="arrivalsStore.blockScanning(arrival.id)"
         />
       </div>
     </div>
