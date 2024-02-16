@@ -3,28 +3,17 @@ import { apiGetLocale, apiGetLocalesList } from "./api";
 import { delay } from "./utils";
 import i18next from 'i18next';
 
-
-export async function prepareLocales(lang_codes: LocaleInfo[]) {
-  const locales = lang_codes.map(language => {
-    return {
-      ...language,
-      src: `/flags/${language.lang_code}.webp`,
-    };
-  });
-  return locales
-}
 export async function updateCatalogLocales(kioskState: KioskState) {
   // Update locales
   while (true) {
     try {
-      const lang_codes = await apiGetLocalesList(kioskState.params!.object_id!, kioskState.params!.location_id!)
+      const locales = await apiGetLocalesList(kioskState.params!.object_id!, kioskState.params!.location_id!)
         .then(r => r?.map(l => ({
           lang_code: l?.lang_code,
           name: l?.name,
           flag_src: `/flags/${l.lang_code}.webp` })))
-      console.log('kioskState.params!.object_id!', kioskState.params);
-      kioskState.catalogLocales = lang_codes;
-      await Promise.all(lang_codes.map(async (lc) => {
+      kioskState.catalogLocales = locales;
+      await Promise.all(locales.map(async (lc) => {
         const locale = await apiGetLocale(lc.lang_code)
         i18next.addResourceBundle(lc.lang_code, "global", locale, true, false);
       }))
@@ -37,34 +26,34 @@ export async function updateCatalogLocales(kioskState: KioskState) {
 
 // export const KNOWN_LOCALES: LocaleInfo[] = [
 //   {
-//     locale: 'en',
-//     flag: 'src/assets/flags/gb.webp',
-//     language: 'English',
+//     lang_code: 'en',
+//     flag_src: 'src/assets/flags/gb.webp',
+//     name: 'English',
 //   },
 //   {
-//     locale: 'th',
-//     flag: 'src/assets/flags/th.webp',
-//     language: 'Thai',
+//     lang_code: 'th',
+//     flag_src: 'src/assets/flags/th.webp',
+//     name: 'Thai',
 //   },
 //   {
-//     locale: 'ru',
-//     flag: 'src/assets/flags/ru.webp',
-//     language: 'Russian',
+//     lang_code: 'ru',
+//     flag_src: 'src/assets/flags/ru.webp',
+//     name: 'Russian',
 //   },
 //   {
-//     locale: 'km',
-//     flag: 'src/assets/flags/de.webp',
-//     language: "Cambodia",
+//     lang_code: 'km',
+//     flag_src: 'src/assets/flags/de.webp',
+//     name: "Cambodia",
 //   },
 //   {
-//     locale: 'es',
-//     flag: 'src/assets/flags/es.webp',
-//     language: 'Spanish',
+//     lang_code: 'es',
+//     flag_src: 'src/assets/flags/es.webp',
+//     name: 'Spanish',
 //   },
 //   {
-//     locale: 'uk',
-//     flag: 'src/assets/flags/ua.webp',
-//     language: 'Ukrainian',
+//     lang_code: 'uk',
+//     flag_src: 'src/assets/flags/ua.webp',
+//     name: 'Ukrainian',
 //   },
 // ];
 
