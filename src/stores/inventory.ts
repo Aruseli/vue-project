@@ -145,6 +145,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     totalActualQuant,
     blockScanning,
     blockScan,
+    docNum: getNextInventoryNumber().toString().padStart(4, "0"),
   };
 });
 

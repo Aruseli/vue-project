@@ -76,7 +76,7 @@ const inventoryStore = useInventoryStore();
         <div class="text-h3 row q-gutter-md">
           <span>{{ formattedDate }}</span>
           <span>{{ formattedTime }}</span>
-          <span>№</span>
+          <span>№ {{ inventoryStore.docNum }}</span>
         </div>
       </div>
       <DividerBold />
