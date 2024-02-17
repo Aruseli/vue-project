@@ -105,7 +105,6 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
   };
 
 
-
   return {
     arrivals,
     arrivalsDocuments,

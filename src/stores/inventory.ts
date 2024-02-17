@@ -22,6 +22,8 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
   const inventoryDocument = ref<KioskDocument | null>(null);
   const inventoryLoading = ref(true);
 
+  const blockScan = ref('');
+
   const initFullInventoryDoc = async () => {
     const terminal_settings = appStore.kioskState.params?.terminal_settings;
     const doc = {
@@ -125,6 +127,11 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     totalActualQuant;
   };
 
+
+  const blockScanning = (id: string) => {
+    blockScan.value = id;
+  };
+
   return {
     inventory,
     inventoryDocument,
@@ -136,6 +143,8 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
       inventory.value.reduce((acc, item) => acc + (item.stock ?? 0), 0)
     ),
     totalActualQuant,
+    blockScanning,
+    blockScan,
   };
 });
 

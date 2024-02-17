@@ -83,15 +83,17 @@ const inventoryStore = useInventoryStore();
     </div>
 
     <div class="scroll_area">
-      <div class="list_container text-h3">
-
-        <ol class="bg-white text-black relative-position">
+      <div>
+        <ol class="bg-white text-black relative-position q-pl-none">
           <ListItem
             v-for="good in inventoryStore.inventory"
             :key="good.id"
             :actual_quantity="good.quant"
             :good_name="good.title"
             :estimated_quantity="good.stock"
+            :not_equal="good.issued !== good.quant"
+            :confirm="inventoryStore.blockScan  === good.id"
+            @click="inventoryStore.blockScanning(good.id)"
           />
         </ol>
       </div>
