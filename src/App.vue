@@ -7,6 +7,7 @@
   import { useGoodsStore } from "./stores/goods";
   import { useArrivalsStore } from'src/stores/arrivals';
 import { useInventoryStore } from "./stores/inventory";
+import { useSelectInventoryStore } from "./stores/selective-inventory";
 
   const route = useRoute()
   const router = useRouter()
@@ -17,6 +18,7 @@ import { useInventoryStore } from "./stores/inventory";
     const goodsStore = useGoodsStore();
     const arrivalsStore = useArrivalsStore();
     const inventoryStore = useInventoryStore();
+    const selectInventoryStore = useSelectInventoryStore();
     if (evt.cmd == 'barcode' && evt.data.length == 13) {
       const barcode = parseBarcode(evt.data)
       switch (barcode.prefix) {
@@ -30,13 +32,13 @@ import { useInventoryStore } from "./stores/inventory";
             const good = goodsStore.getGoodByCode(barcode.code);
             await arrivalsStore.scanArrivalGood(good);
           }
-          if (route.path == `/arrival-goods/${route.params.id}`) {
-            const good = goodsStore.getGoodByCode(barcode.code);
-            await arrivalsStore.scanArrivalGood(good);
-          }
           if (route.path == '/complete-inventory') {
             const good = goodsStore.getGoodByCode(barcode.code);
             await inventoryStore.scanInventoryGood(good);
+          }
+          if (route.path == '/selective-inventory') {
+            const good = goodsStore.getGoodByCode(barcode.code);
+            await selectInventoryStore.scanInventoryGood(good);
           }
           break;
         case '220': // Employee

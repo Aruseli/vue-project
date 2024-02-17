@@ -1,11 +1,10 @@
-import { defineStore } from "pinia";
-import { ref, computed } from "vue";
-import { useAppStore } from "./app";
-import { KioskDocument, apiGetDocuments, apiSaveDocument } from "src/services";
-import { useGoodsStore, type Good } from "./goods";
-import { ARRIVALS_CACHE_TTL } from "src/services/consts";
 import { t } from "i18next";
-import { Notify } from 'quasar';
+import { defineStore } from "pinia";
+import { KioskDocument, apiGetDocuments, apiSaveDocument } from "src/services";
+import { ARRIVALS_CACHE_TTL } from "src/services/consts";
+import { computed, ref } from "vue";
+import { useAppStore } from "./app";
+import { useGoodsStore, type Good } from "./goods";
 
 export const useSelectInventoryStore = defineStore("selectInventoryStore", () => {
   const appStore = useAppStore();
@@ -15,8 +14,9 @@ export const useSelectInventoryStore = defineStore("selectInventoryStore", () =>
   const inventoriesDocuments = ref([] as KioskDocument[]);
   const inventoriesLoading = ref(true);
   const inventoriesLastUpdate = ref(0);
+  const blockScan = ref('');
 
-  const selectInventory = ref<ReturnType<typeof documentToInventory> | null>(null);
+  const selectedInventory = ref<ReturnType<typeof documentToInventory> | null>(null);
   const selectInventoryDocument = ref<KioskDocument | null>(null);
   const selectInventoryLoading = ref(true);
 
@@ -25,8 +25,11 @@ export const useSelectInventoryStore = defineStore("selectInventoryStore", () =>
     try {
       const terminal_settings = appStore.kioskState.params?.terminal_settings;
       inventoriesDocuments.value = await apiGetDocuments(
-        [terminal_settings!.inventory_doc_type_id!],
-        [2]
+        [terminal_settings!.inventory_doc_type_id!],[2]
+      )
+
+      inventoriesDocuments.value.sort(
+        (a, b) => (a.doc_date != b.doc_date) ? a.doc_date - b.doc_date : a.doc_order - b.doc_order
       );
       inventories.value = inventoriesDocuments.value.map((inv) =>
       documentToInventory(inv, goodsStore)
@@ -37,26 +40,20 @@ export const useSelectInventoryStore = defineStore("selectInventoryStore", () =>
     }
   };
 
-   const selectedInventory = async () => {
+   const selectInventory = async () => {
       selectInventoryLoading.value = true;
       try {
-        // Bug: await apiGetDocument(id) returns none, and we forced to use updateArrivals
         if (Date.now() - inventoriesLastUpdate.value > ARRIVALS_CACHE_TTL) {
           await updateInventories();
         }
+        const inventoryDoc = inventoriesDocuments.value[0] || null;
 
-        // Fix type error by casting inventoriesDocuments to KioskDocument[]
-        const inventoryDoc =
-          (inventoriesDocuments.value as KioskDocument[]).sort(
-            (a, b) => a.doc_date - b.doc_date
-          )[0] || null;
-
-        selectInventory.value = inventoryDoc
+        selectedInventory.value = inventoryDoc
           ? documentToInventory(inventoryDoc, goodsStore)
           : null;
         selectInventoryDocument.value = inventoryDoc;
       } catch {
-        selectInventory.value = null;
+        selectedInventory.value = null;
         selectInventoryDocument.value = null;
       } finally {
         selectInventoryLoading.value = false;
@@ -73,7 +70,7 @@ export const useSelectInventoryStore = defineStore("selectInventoryStore", () =>
       doc.state = 0;
 
       doc.details.forEach((d) => {
-        const item = selectInventory.value?.items.find(
+        const item = selectedInventory.value?.items.find(
           (i) => i.id == d.good_id
         );
 
@@ -89,9 +86,9 @@ export const useSelectInventoryStore = defineStore("selectInventoryStore", () =>
     };
 
   const totalQuant = computed(() => {
-    if (selectInventory.value?.items) {
-      return selectInventory.value.items.reduce(
-        (acc: number, item: any) => acc + item.issued,
+    if (selectedInventory.value?.items) {
+      return selectedInventory.value.items.reduce(
+        (acc: number, item: any) => acc + item.quant,
         0
       );
     }
@@ -99,10 +96,10 @@ export const useSelectInventoryStore = defineStore("selectInventoryStore", () =>
   });
 
   const scanInventoryGood = async (good: Good) => {
-    const selectInventoryItem = selectInventory.value?.items.find((i) => i.id == good.id);
+    const selectInventoryItem = selectedInventory.value?.items.find((i) => i.id == good.id);
 
     if (selectInventoryItem) {
-      // if (arrivalItem.issued >= arrivalItem.quant) {
+      // if (selectInventoryItem.quant >= selectInventoryItem.stock) {
       //   console.error("Stop scan");
       //   Notify.create({
       //     color: "warning",
@@ -119,19 +116,27 @@ export const useSelectInventoryStore = defineStore("selectInventoryStore", () =>
     }
   };
 
+
+  const blockScanning = (id: string) => {
+    blockScan.value = id;
+  };
+
   return {
     inventories,
     inventoriesDocuments,
     inventoriesLoading,
 
-    selectInventory,
+    selectedInventory,
     selectInventoryDocument,
     totalQuant,
 
     updateInventories,
-    selectedInventory,
+    selectInventory,
     confirmSelectedInventory,
     scanInventoryGood,
+
+    blockScanning,
+    blockScan,
   };
 });
 
@@ -158,7 +163,6 @@ function documentToInventory(
   };
   return {
     ...inventory,
-    totalCount: inventory.items.reduce((acc, item) => acc + item.quant, 0),
     totalStock: inventory.items.reduce(
       (acc, item) => acc + (item.stock ?? 0),
       0

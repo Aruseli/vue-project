@@ -19,26 +19,30 @@
       required: false,
       default: 0,
     },
+    not_equal: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    confirm: {
+      type: Boolean,
+      required: false,
+      default: false,
+    }
   })
 
-  let state = reactive({
-    good_name: props.good_name,
-    estimated_quantity: props.estimated_quantity,
-    actual_quantity: 12,
-  });
-
-  const not_equal = computed(() => {
-    return state.estimated_quantity!== state.actual_quantity;
-  })
-
-  const sendData = () => {
-    console.log(state.actual_quantity);
+  const emit = defineEmits(['click']);
+  const click = () => {
+    emit('click')
   }
+
 </script>
 
 <template>
-  <li class="list_item relative-position">
-    <div class="row justify-between items-center">
+  <li
+    :class="'list_style relative-position row justify-between items-center ' + (!props.confirm ? 'bg-white' : 'bg-negative')"
+  >
+    <div class="row justify-between items-center fit q-px-sm q-py-xs">
       <div class="text-h4 col-3">{{ props.good_name }}</div>
       <div class="text-txt col-3">
         <span class="text-txt">{{$t('estimated_quantity')}}</span>&ensp;
@@ -53,8 +57,11 @@
         </div>
         <div class="text-txt">{{ $t('pc', {count: props.actual_quantity}) }}</div>
       </div>
-      <RoundedButton size="1.5rem" @click="sendData" />
-      <q-img src="/state.svg" width="3rem" v-show="not_equal" />
+      <div class="flex row justify-end items-center q-gutter-lg">
+        <q-img src="/state.svg" width="3rem" v-show="not_equal" />
+        <RoundedButton size="1.5rem" @click="click" />
+      </div>
+
     </div>
     <q-separator color="secondary" class="absolute-bottom-left full-width separator_style"  />
   </li>
@@ -62,6 +69,9 @@
 </template>
 
 <style scoped>
+.list_style {
+  border-radius: 3rem;
+}
 .separator_style {
   bottom: -0.9rem;
 }
