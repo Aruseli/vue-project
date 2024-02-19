@@ -19,6 +19,7 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
   const arrival = ref<ReturnType<typeof documentGoodsArrival> | null>(null);
   const arrivalDocument = ref<KioskDocument | null>(null);
   const arrivalGoodsLoading = ref(true);
+  const blockScan = ref('');
 
   const updateArrivals = async () => {
     arrivalsLoading.value = true;
@@ -83,22 +84,27 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
     return 0;
   });
 
+  const blockScanning = (id: string) => {
+    // const arrivalItem = arrival.value?.items.find((i) => i.id == id);
+    blockScan.value = id;
+  };
+
   const scanArrivalGood = async (good: Good) => {
     const arrivalItem = arrival.value?.items.find((i) => i.id == good.id);
 
     if (arrivalItem) {
-      // if (arrivalItem.issued >= arrivalItem.quant) {
-      //   console.error("Stop scan");
-      //   Notify.create({
-      //     color: "warning",
-      //     position: "center",
-      //     classes: "text-h3 text-center text-uppercase",
-      //     timeout: 30000,
-      //     textColor: "white",
-      //     message: t("product_has_already_been_scanned"),
-      //   });
-      //   return;
-      // }
+      if (arrivalItem.issued >= arrivalItem.quant) {
+        console.error("Stop scan");
+        Notify.create({
+          color: "warning",
+          position: "center",
+          classes: "text-h3 text-center text-uppercase",
+          timeout: 30000,
+          textColor: "white",
+          message: t("product_has_already_been_scanned"),
+        });
+        return;
+      }
       arrivalItem.issued += 1;
       totalQuant;
     }
@@ -115,11 +121,13 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
     arrivalGoodsLoading,
 
     totalQuant,
+    blockScan,
 
     updateArrivals,
     selectArrival,
     confirmArrivalGoodsIssue,
     scanArrivalGood,
+    blockScanning,
   };
 });
 

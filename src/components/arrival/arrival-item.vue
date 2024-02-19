@@ -1,6 +1,5 @@
 <script setup>
   import RoundedButton from '../buttons/rounded-button.vue';
-  import { reactive, computed } from 'vue';
 
   const props = defineProps({
     good_name: {
@@ -17,13 +16,25 @@
       type: Boolean,
       required: false,
       default: false,
+    },
+    confirm: {
+      type: Boolean,
+      required: false,
+      default: false,
     }
   })
+
+  const emit = defineEmits(['click']);
+  const click = () => {
+    emit('click')
+  }
 
 </script>
 
 <template>
-  <div class="row justify-between items-center container_style">
+  <div
+    :class="'container_style row justify-between items-center ' + (!props.confirm ? 'bg-white' : 'bg-negative')"
+  >
     <div class="text-h4 col-3">{{ props.good_name }}</div>
       <div class="quat_container flex row items-center q-gutter-lg">
         <div class="text-txt text-secondary">{{$t('actual_quantity')}}</div>
@@ -34,9 +45,10 @@
         </div>
         <div class="text-txt">{{ $t('pc', {count: props.actual_quantity}) }}</div>
       </div>
-
-    <RoundedButton size="1.5rem" @click="" />
-    <q-img src="/state.svg" width="3rem" v-show="not_equal" />
+      <div class="flex row justify-end items-center q-gutter-lg">
+        <q-img src="/state.svg" width="3rem" v-show="not_equal" />
+        <RoundedButton size="1.5rem" @click="click" />
+      </div>
   </div>
 </template>
 
