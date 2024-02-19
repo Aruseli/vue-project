@@ -59,7 +59,7 @@ import { t } from 'i18next';
         {
           icon: "cancel",
           'aria-label': 'cancel',
-          label: t("are_you_still_here"),
+          label: t("scan_the_barcode_of_the_document"),
           color: "white",
           round: true,
         },
