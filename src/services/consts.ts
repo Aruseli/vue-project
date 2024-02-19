@@ -6,3 +6,4 @@ export const TERMINAL_STATUS_UPDATE_INTERVAL = (process.env.DEV) ? 60_000 : 600_
 export const USER_INFO_UPDATE_INTERVAL = (process.env.DEV) ? 60_000 : 600_000
 export const IMAGES_CACHE_CLEANUP_INTERVAL = 6*3600*1000
 export const ORDERS_CACHE_TTL = 120*1000
+export const ARRIVALS_CACHE_TTL = 120*1000

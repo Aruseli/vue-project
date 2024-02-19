@@ -81,7 +81,7 @@ export const useOrdersStore = defineStore("orders", () => {
     if (!currentOrderItem) {
       return;
     }
-    if (currentOrderItem.issued > currentOrderItem.quant) {
+    if (currentOrderItem.issued >= currentOrderItem.quant) {
       console.error("Stop scan");
       Notify.create({
         color: 'warning',

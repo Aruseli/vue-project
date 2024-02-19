@@ -44,21 +44,15 @@
         <span class="text-txt">{{$t('estimated_quantity')}}</span>&ensp;
         {{ props.estimated_quantity }}&ensp;{{ $t('pc') }}
       </div>
-      <q-input
-        outlined rounded
-        :v-model.number="state.actual_quantity"
-        type="number"
-        :dark="false" class="text-txt"
-        input-class="input_style"
-      >
-        <template v-slot:before>
-          <span class="text-txt text-secondary">{{$t('actual_quantity')}}</span>
-        </template>
-
-        <template v-slot:after>
-          <span class="text-txt">{{ $t('pc') }}</span>
-        </template>
-      </q-input>
+      <div class="quat_container flex row items-center q-gutter-lg">
+        <div class="text-txt text-secondary">{{$t('actual_quantity')}}</div>
+        <div class="quant_style">
+          <div class="text-h4 q-px-md">
+            {{props.actual_quantity}}
+          </div>
+        </div>
+        <div class="text-txt">{{ $t('pc', {count: props.actual_quantity}) }}</div>
+      </div>
       <RoundedButton size="1.5rem" @click="sendData" />
       <q-img src="/state.svg" width="3rem" v-show="not_equal" />
     </div>
@@ -70,5 +64,12 @@
 <style scoped>
 .separator_style {
   bottom: -0.9rem;
+}
+.quant_style {
+  width: max-content;
+  box-shadow: inset 0 0 2px 3px rgba(0,0,0,0.25);
+  height: max-content;
+  font-size: 2.5rem;
+  border-radius: 1.5rem
 }
 </style>

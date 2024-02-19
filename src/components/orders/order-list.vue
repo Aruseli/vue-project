@@ -34,6 +34,7 @@
       })
       router.push('/employee-actions')
     }
+    console.log('goodsStore', goodsStore.goods)
   })
 </script>
 

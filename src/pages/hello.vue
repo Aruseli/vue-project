@@ -37,7 +37,8 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-image: url('start.jpg');
+  background-image: url('/start.jpg');
+  background-position: center;
   filter: brightness(0.6);
 }
 .container {

@@ -2,11 +2,13 @@
   import { useRouter } from 'vue-router';
   import { ref } from 'vue';
   import RectangularButton from '../components/buttons/rectangular-button.vue';
+import { QSpinnerHourglass, useQuasar } from 'quasar';
+import { t } from 'i18next';
 
+  const $q = useQuasar();
   const router = useRouter();
   const route = (path) => {
     router.push(path);
-    console.log('path', path);
   }
 
   const routes = ref([
@@ -32,7 +34,7 @@
     },
     {
       name: 'arrival_goods',
-      path: () => route('arrival-goods'),
+      path: () => route('employee-actions'),
     },
     {
       name: 'print_leftovers',
@@ -44,6 +46,27 @@
     },
   ])
 
+  const showNotify = () => {
+    $q.notify({
+      position: "center",
+      color: "positive",
+      classes: "full-width warning_customization",
+      timeout: 1000,
+      icon: 'img:/barcode_scanner.svg',
+      iconSize: '5rem',
+      spinnerSize: '3rem',
+      actions: [
+        {
+          icon: "cancel",
+          'aria-label': 'cancel',
+          label: t("scan_the_barcode_of_the_document"),
+          color: "white",
+          round: true,
+        },
+      ],
+    });
+  }
+
 </script>
 
 <template>
@@ -53,7 +76,13 @@
         v-for="(route, index) in routes"
         :key="index"
         :name='$t(route.name)'
-        @click="route.path"
+        @click="() => {
+          route.name == 'arrival_goods'
+            ? showNotify()
+            : route.name !== 'arrival_goods'
+            ? route.path()
+            : null
+        }"
       />
     </div>
   </q-page>
@@ -67,3 +96,9 @@
   margin-bottom: 2rem;
 }
 </style>
+   <!-- @click="() => {
+           if (route.name === 'arrival_goods') {
+            showNotify();
+          } else {route.path}
+          console.log(route.name)
+        }" -->

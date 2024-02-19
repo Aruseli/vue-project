@@ -175,7 +175,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
   const getGoodByCode = (code: string) => {
     getGoodByDataCodeHits.value += 1
     if (getGoodByDataCodeHits.value % 100 == 0) {
-      console.log('getGoodById hits', getGoodByDataCodeHits.value)
+      console.log('getGoodByDataCode hits', getGoodByDataCodeHits.value)
     }
     return goods.value.flatMap(gc => gc.goods).find(g => g.code === code)
   }
