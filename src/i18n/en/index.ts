@@ -59,4 +59,7 @@ export default {
   unable_to_submit_inventory: 'unable to submit inventory',
   Unknown: 'Unknown',
   product_has_already_been_scanned: 'the product has already been scanned',
+  are_you_here: 'Are you still here?',
+  buying_session_will_end_in: 'The buying session will end in:',
+  minutes: 'minutes',
 };

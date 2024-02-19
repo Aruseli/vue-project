@@ -28,7 +28,7 @@
     transition-show="fade"
     transition-duration="1.8"
   >
-    <div class="dialog-container">
+    <div class="dialog_container">
       <q-card class="dialog_card">
         <q-card-section>
           <q-carousel
@@ -88,7 +88,7 @@ $calc_width: calc(var(--width_coefficient) + var(--coefficient));
   overflow: hidden;
 }
 
-  // .dialog-container {
+  // .dialog_container {
   //   /* position: relative; */
   //   width: 60vw;
   //   height: max-content;

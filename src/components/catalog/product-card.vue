@@ -9,6 +9,7 @@ import { useCartStore } from '../../stores/cart';
 import { useGoodsStore } from '../../stores/goods';
 import IconButton from '../buttons/icon-button.vue';
 
+
   const $q = useQuasar();
   const openDialog = ref(false);
   const slide = ref(0);
@@ -89,6 +90,7 @@ import IconButton from '../buttons/icon-button.vue';
       sliceDescription.value = good.value.description;
     }
   })
+
 
 </script>
 
