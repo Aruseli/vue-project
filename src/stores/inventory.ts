@@ -12,6 +12,7 @@ export type InventoryItem = {
   price: number,
   title: string,
   stock: number | null,
+  confirm?: boolean,
 }
 
 export const useInventoryStore = defineStore("inventoryStore", () => {
@@ -21,8 +22,6 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
   const inventory = ref<InventoryItem[]>([]);
   const inventoryDocument = ref<KioskDocument | null>(null);
   const inventoryLoading = ref(true);
-
-  const blockScan = ref('');
 
   const initFullInventoryDoc = async () => {
     const terminal_settings = appStore.kioskState.params?.terminal_settings;
@@ -97,6 +96,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
           g.goods.map((good) => ({
             id: good.id,
             quant: 0,
+            confirm: false,
             price: good.price,
             title: good.title,
             stock: good.stock,
@@ -120,16 +120,16 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
 
   const scanInventoryGood = async (good: Good) => {
     const inventoryItem = inventory.value?.find((i) => i.id == good.id);
-    if (!inventoryItem) {
+    if (inventoryItem?.confirm){
       return;
-    }
+    } else {
+      if (!inventoryItem) {
+        return;
+      }
     inventoryItem.quant += 1;
     totalActualQuant;
-  };
-
-
-  const blockScanning = (id: string) => {
-    blockScan.value = id;
+    console.log('blockId', inventoryItem?.confirm)
+    }
   };
 
   return {
@@ -143,8 +143,6 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
       inventory.value.reduce((acc, item) => acc + (item.stock ?? 0), 0)
     ),
     totalActualQuant,
-    blockScanning,
-    blockScan,
     docNum: getNextInventoryNumber().toString().padStart(4, "0"),
   };
 });

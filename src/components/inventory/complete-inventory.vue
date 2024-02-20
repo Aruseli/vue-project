@@ -59,7 +59,6 @@ const inventoryStore = useInventoryStore();
       router.push('/employee-actions')
     }
   })
-
 </script>
 
 <template>
@@ -92,8 +91,8 @@ const inventoryStore = useInventoryStore();
             :good_name="good.title"
             :estimated_quantity="good.stock"
             :not_equal="good.issued !== good.quant"
-            :confirm="inventoryStore.blockScan  === good.id"
-            @click="inventoryStore.blockScanning(good.id)"
+            :class="{ 'highlighted': good.confirm }"
+            @click="good.confirm = !good.confirm"
           />
         </ol>
       </div>
@@ -149,5 +148,4 @@ const inventoryStore = useInventoryStore();
 ol li {
   margin-bottom: 2.5rem;
 }
-
 </style>

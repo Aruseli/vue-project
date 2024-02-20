@@ -24,11 +24,6 @@
       required: false,
       default: false,
     },
-    confirm: {
-      type: Boolean,
-      required: false,
-      default: false,
-    }
   })
 
   const emit = defineEmits(['click']);
@@ -40,7 +35,7 @@
 
 <template>
   <li
-    :class="'list_style relative-position row justify-between items-center ' + (!props.confirm ? 'bg-white' : 'bg-negative')"
+    class="list_style relative-position row justify-between items-center"
   >
     <div class="row justify-between items-center fit q-px-sm q-py-xs">
       <div class="text-h4 col-3">{{ props.good_name }}</div>
@@ -71,6 +66,7 @@
 <style scoped>
 .list_style {
   border-radius: 3rem;
+  transition: all 0.5s ease-in-out;
 }
 .separator_style {
   bottom: -0.9rem;
