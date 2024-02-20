@@ -14,7 +14,6 @@ export const useSelectInventoryStore = defineStore("selectInventoryStore", () =>
   const inventoriesDocuments = ref([] as KioskDocument[]);
   const inventoriesLoading = ref(true);
   const inventoriesLastUpdate = ref(0);
-  const blockScan = ref('');
 
   const selectedInventory = ref<ReturnType<typeof documentToInventory> | null>(null);
   const selectInventoryDocument = ref<KioskDocument | null>(null);
@@ -98,7 +97,12 @@ export const useSelectInventoryStore = defineStore("selectInventoryStore", () =>
   const scanInventoryGood = async (good: Good) => {
     const selectInventoryItem = selectedInventory.value?.items.find((i) => i.id == good.id);
 
-    if (selectInventoryItem) {
+    if (selectInventoryItem?.confirm) {
+      return;
+    } else {
+      if (!selectInventoryItem) {
+        return;
+      }
       // if (selectInventoryItem.quant >= selectInventoryItem.stock) {
       //   console.error("Stop scan");
       //   Notify.create({
@@ -116,11 +120,6 @@ export const useSelectInventoryStore = defineStore("selectInventoryStore", () =>
     }
   };
 
-
-  const blockScanning = (id: string) => {
-    blockScan.value = id;
-  };
-
   return {
     inventories,
     inventoriesDocuments,
@@ -134,9 +133,6 @@ export const useSelectInventoryStore = defineStore("selectInventoryStore", () =>
     selectInventory,
     confirmSelectedInventory,
     scanInventoryGood,
-
-    blockScanning,
-    blockScan,
   };
 });
 
@@ -158,6 +154,7 @@ function documentToInventory(
         title: good?.title,
         price: good?.price,
         quant: 0,
+        confirm: false,
       };
     }),
   };

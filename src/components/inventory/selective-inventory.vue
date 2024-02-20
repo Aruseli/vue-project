@@ -75,8 +75,8 @@ import ListItem from './list-item.vue';
             :good_name="inv.title"
             :estimated_quantity="inv.stock"
             :not_equal="inv.issued !== inv.quant"
-            :confirm="selectInventoryStore.blockScan  === inv.id"
-            @click="selectInventoryStore.blockScanning(inv.id)"
+            :class="{ 'highlighted': inv.confirm }"
+            @click="inv.confirm = !inv.confirm"
           />
         </ol>
       </div>
