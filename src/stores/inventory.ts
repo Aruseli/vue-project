@@ -141,7 +141,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
       inventory.value.reduce((acc, item) => acc + (item.stock ?? 0), 0)
     ),
     totalActualQuant,
-    docNum: getNextInventoryNumber().toString().padStart(4, "0"),
+    docNum: getNextInventoryNumber()
   };
 });
 
