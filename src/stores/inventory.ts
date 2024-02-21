@@ -85,7 +85,6 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
       })),
     };
     await apiSaveDocument(doc);
-    console.log("Inventory saved");
   };
 
   const updateInventory = async () => {
@@ -128,7 +127,6 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
       }
     inventoryItem.quant += 1;
     totalActualQuant;
-    console.log('blockId', inventoryItem?.confirm)
     }
   };
 

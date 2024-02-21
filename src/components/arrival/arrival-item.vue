@@ -17,11 +17,6 @@
       required: false,
       default: false,
     },
-    confirm: {
-      type: Boolean,
-      required: false,
-      default: false,
-    }
   })
 
   const emit = defineEmits(['click']);
@@ -32,9 +27,7 @@
 </script>
 
 <template>
-  <div
-    :class="'container_style row justify-between items-center ' + (!props.confirm ? 'bg-white' : 'bg-negative')"
-  >
+  <div class="container_style row justify-between items-center">
     <div class="text-h4 col-3">{{ props.good_name }}</div>
       <div class="quat_container flex row items-center q-gutter-lg">
         <div class="text-txt text-secondary">{{$t('actual_quantity')}}</div>
@@ -57,6 +50,7 @@
   box-shadow: var(--box-shadow--product_cart);
   border-radius: var(--border-sm);
   padding: var(--px30);
+  transition: all 0.5s ease-in-out;
 }
 .quant_style {
   width: max-content;

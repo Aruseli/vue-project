@@ -76,9 +76,7 @@ export const useSelectInventoryStore = defineStore("selectInventoryStore", () =>
         if (!item || d.quant != item.quant || item.quant != item.stock) {
           throw new Error(`Wrong state of selectInventory to issue.`);
         }
-
-        const price = item.price ?? 0;
-        d.total = (goodsStore.getGoodById(d.id)?.stock ?? 0) * price;
+        d.total = item?.price ?? 0 * d.quant;
       });
 
       await apiSaveDocument(doc);

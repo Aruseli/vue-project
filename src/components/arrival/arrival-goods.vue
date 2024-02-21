@@ -83,7 +83,8 @@ const goodsStore = useGoodsStore();
           :actual_quantity="arrival.issued"
           :confirm="arrivalsStore.blockScan  === arrival.id"
           :not_equal="arrival.issued !== arrival.quant"
-          @click="arrivalsStore.blockScanning(arrival.id)"
+          :class="{ 'highlighted': arrival.confirm }"
+          @click="arrival.confirm = !arrival.confirm"
         />
       </div>
     </div>

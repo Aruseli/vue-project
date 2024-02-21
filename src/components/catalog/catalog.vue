@@ -54,7 +54,7 @@ import ProductCard from './product-card.vue';
     // Очистка предыдущего таймера, если он есть
     clearTimeout(timerWarn.value);
     // Новый интервал
-    timerWarn.value = setInterval(() => {
+    timerWarn.value = setTimeout(() => {
       countdown.value--;
 
       if (countdown.value === 0) {
