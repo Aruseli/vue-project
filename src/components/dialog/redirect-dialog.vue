@@ -22,7 +22,6 @@ const props = defineProps({
 <template>
   <q-dialog
     v-model="props.modelValue"
-    persistent
   >
     <div class="card_container">
       <q-card class="q-pa-sm">

@@ -1,12 +1,10 @@
 <script setup>
-  import BinIconNew from '../buttons/bin-icon-new.vue';
-  import Switcher from '../switcher.vue';
-  import { ref, computed, onMounted } from 'vue';
   import { useAppStore } from '../../stores/app';
-  import { useCartStore } from '../../stores/cart';
-  import { useGoodsStore } from '../../stores/goods';
-  import LogoSimple from '../logo/logo-simple.vue';
-  import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
+import { useCartStore } from '../../stores/cart';
+import { useGoodsStore } from '../../stores/goods';
+import BinIconNew from '../buttons/bin-icon-new.vue';
+import LogoSimple from '../logo/logo-simple.vue';
+import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
 
 
   const cart = useCartStore();

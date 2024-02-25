@@ -1,8 +1,8 @@
 <script setup>
   import { useRouter } from 'vue-router';
-  import { ref } from 'vue';
+  import { reactive, ref } from 'vue';
   import RectangularButton from '../components/buttons/rectangular-button.vue';
-import { QSpinnerHourglass, useQuasar } from 'quasar';
+import { useQuasar } from 'quasar';
 import { t } from 'i18next';
 
   const $q = useQuasar();
@@ -11,7 +11,7 @@ import { t } from 'i18next';
     router.push(path);
   }
 
-  const routes = ref([
+  const routes = reactive([
     {
       name: 'open_shift',
       path: () => route('hello'),
@@ -76,6 +76,8 @@ import { t } from 'i18next';
         v-for="(route, index) in routes"
         :key="index"
         :name='$t(route.name)'
+        :disable='false'
+        :class="{ 'blocked': false }"
         @click="() => {
           route.name == 'arrival_goods'
             ? showNotify()
@@ -95,10 +97,8 @@ import { t } from 'i18next';
 .container > *:not(:last-child) {
   margin-bottom: 2rem;
 }
+.blocked {
+  filter: brightness(0.3);
+}
 </style>
-   <!-- @click="() => {
-           if (route.name === 'arrival_goods') {
-            showNotify();
-          } else {route.path}
-          console.log(route.name)
-        }" -->
+

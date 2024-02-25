@@ -167,6 +167,7 @@ async function loopUpdateCurrentUser(kioskState: KioskState) {
 }
 
 async function updateCurrentUser(kioskState: KioskState) {
+
   try {
     const result = await apiUsersWhoami();
     kioskState.user = result;
@@ -176,7 +177,9 @@ async function updateCurrentUser(kioskState: KioskState) {
     if (e?.message?.includes("ERR_AUTH")) {
       kioskState.user = undefined;
       console.log("whoami", undefined);
+      console.log("kioskState", kioskState);
       updateKioskStatus(kioskState);
+
     } else {
       Notify.create({
         color: "warning",

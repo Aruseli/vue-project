@@ -1,7 +1,5 @@
 <script setup>
-  import { t } from 'i18next';
   import RoundedButton from '../buttons/rounded-button.vue';
-  import { reactive, computed } from 'vue';
 
   const props = defineProps({
     good_name: {

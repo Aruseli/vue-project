@@ -17,7 +17,7 @@ import ProductCard from './product-card.vue';
 
   const timerRedirect = ref(null);
   const timerWarn = ref(null);
-  const countdown = ref(null);
+  const countdown = ref(0);
   const dialogState = ref(false);
   const animation = ref(null);
 
@@ -30,7 +30,8 @@ import ProductCard from './product-card.vue';
   function closeDialog() {
     dialogState.value = false;
     clearTimeout(timerRedirect.value);
-    clearInterval(timerWarn.value); // Очистка таймера при закрытии окна
+    clearTimeout(animation.value);
+    clearTimeout(timerWarn.value); // Очистка таймера при закрытии окна
   }
 
   const enter = () => {
@@ -48,26 +49,39 @@ import ProductCard from './product-card.vue';
     })
   }
 
+  // const notifyDelay = app.kioskState.params.terminal_settings.customer_inactive_notify_duration_ms
   const warnRedirect = () => {
     dialogState.value = true;
-    countdown.value = 7; // Например, 5 секунд для обратного отсчета
-    // Очистка предыдущего таймера, если он есть
     clearTimeout(timerWarn.value);
-    // Новый интервал
-    timerWarn.value = setTimeout(() => {
-      countdown.value--;
-
+    clearTimeout(timerRedirect.value);
+    countdown.value = 7
+    let intervalId = setInterval(() => {
+      if (countdown.value > 0) {
+        countdown.value--;
+      }
+      if (dialogState.value == false) {
+        clearInterval(intervalId);
+      }
       if (countdown.value === 0) {
-        clearInterval(timerWarn.value);
-        dialogState.value = false;
-        timerWarn.value = null;
+        clearInterval(intervalId);
+        clearTimeout(timerRedirect.value);
+        clearTimeout(timerWarn.value);
+        // dialogState.value = false;
         redirect();
       }
     }, 1000);
+
+    timerWarn.value = setTimeout(() => {
+      clearInterval(intervalId);
+    }, 7000);
   };
 
 
+  // const redirectDelay = app.kioskState.params.terminal_settings.customer_inactive_after_ms;
   const resetTimer = () => {
+    if (dialogState.value) {
+      return;
+    }
     clearTimeout(timerRedirect.value);
     clearTimeout(timerWarn.value);
     clearTimeout(animation.value);
@@ -84,12 +98,13 @@ import ProductCard from './product-card.vue';
     ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
       document.addEventListener(e, boundResetTimer)
     )
+    // console.log('KIOSK', redirectDelay)
+    // console.log('notifyDelay', notifyDelay)
   })
 
   onUnmounted(() => {
     clearTimeout(timerRedirect.value);
     clearTimeout(timerWarn.value);
-    clearInterval(timerWarn.value);
     ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
       document.removeEventListener(e, boundResetTimer)
     )

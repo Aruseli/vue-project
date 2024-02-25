@@ -2,7 +2,7 @@ import Dexie, { Table } from 'dexie';
 import { defineStore } from 'pinia';
 import { ApiGoodCategory, Deferred, apiGetGoods, apiGetGoodsImages, apiGetStockRemains, apiSaveDocument, delay, throwErr } from 'src/services';
 import { IMAGES_CACHE_CLEANUP_INTERVAL } from 'src/services/consts';
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
 import { useAppStore } from './app';
 import { uuidToBarcodeDocId } from 'src/services/barcodes';
 
@@ -41,7 +41,7 @@ const goodsDb = new GoodsDexie();
 export const useGoodsStore = defineStore('goodsStore', () => {
   const appStore = useAppStore()
   const goods = ref<GoodCategory[]>([]);
-  const imagesCache = ref(new Map<string, string>()) // id -> base64 image
+  const imagesCache = reactive(new Map<string, string>()) // id -> base64 image
   const goodsLoading = ref(false)
   const goodsLoadingWaiter = ref(new Deferred())
   goodsLoadingWaiter.value.resolve(false)
@@ -55,31 +55,33 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     await goodsDb.images.bulkDelete(allCachedImagesIds.filter(id => !allImagesIds.has(id)))
   }
 
-  const fetchImages = async (imageIds: string[]) => {
-    const batchSize = 10
-    while (imageIds.length > 0) {
-      const portion = imageIds.slice(0, batchSize)
-      imageIds = imageIds.slice(batchSize)
 
-      const result = await apiGetGoodsImages(portion)
-      goodsDb.images.bulkPut(result)
-      result.forEach(i => {
-        imagesCache.value.set(i.id, i.image)
-      })
+
+  const fetchImages = async (imageIds: string[]) => {
+    const batchSize = 10;
+    while (imageIds.length > 0) {
+      const portion = imageIds.slice(0, batchSize);
+      imageIds = imageIds.slice(batchSize);
+
+      const result = await apiGetGoodsImages(portion);
+      goodsDb.images.bulkPut(result);
+      result.forEach((i) => {
+        imagesCache.set(i.id, i.image);
+      });
     }
-  }
+  };
 
   const populateImages = async (goods: ApiGoodCategory[]) => {
-    if (imagesCache.value.size == 0) {
+    if (imagesCache.size == 0) {
       await goodsDb.images.each(i => {
-        imagesCache.value.set(i.id, i.image)
+        imagesCache.set(i.id, i.image)
       })
     }
     const allImagesIds = goods.flatMap(gc =>
         gc.goods.filter(g => !!g)
                 .flatMap(g => g.images_ids)
       );
-    const toFetch = allImagesIds.filter(id => !imagesCache.value.has(id))
+    const toFetch = allImagesIds.filter(id => !imagesCache.has(id))
     await fetchImages(toFetch)
     return <GoodCategory[]>goods.map(gc => ({
       ...gc,
@@ -87,7 +89,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
         ...g,
         images: g.images_ids.map(id => ({
           id,
-          image: imagesCache.value.get(id) ?? throwErr(new Error(`Image is missing: ${id}`)),
+          image: imagesCache.get(id) ?? throwErr(new Error(`Image is missing: ${id}`)),
         })),
       })),
     }))

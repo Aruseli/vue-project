@@ -43,9 +43,7 @@ import IconButton from '../buttons/icon-button.vue';
     })
   }
 
-  const goodInCart = computed(() => {
-    return cartStore.cart.find((item) => item.id === props.itemId);
-  })
+  const goodInCart = computed(() => cartStore.cart.find((item) => item.id === props.itemId))
 
   const goodDetails = () => {
     openDialog.value = true;
