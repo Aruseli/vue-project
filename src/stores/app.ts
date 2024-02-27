@@ -2,7 +2,7 @@ import i18next, { t } from 'i18next';
 import { defineStore } from 'pinia';
 import { Notify } from 'quasar';
 import { eventEmitter, initLocalDeviceWsService } from 'src/services';
-import { apiAddAnyTerminal, apiAuth, apiAuthBearer, apiUsersWhoami } from 'src/services/api';
+import { apiAddAnyTerminal, apiAuth, apiAuthBearer, apiGetShift, apiUsersWhoami } from 'src/services/api';
 import { TERMINAL_REGISTRATION_ATTEMPT_INTERVAL, TERMINAL_STATUS_UPDATE_INTERVAL, USER_INFO_UPDATE_INTERVAL } from 'src/services/consts';
 import { updateCatalogLocales } from 'src/services/locales';
 import { delay } from 'src/services/utils';
@@ -28,6 +28,8 @@ export const useAppStore = defineStore('app', () => {
   const orderDialog = ref(false);
   const tab = ref('');
   const tabCharacteristics = ref('description');
+  const shiftLoading = ref(true);
+  const currentShift = ref(null);
 
   const openDrawerCart = (state: boolean) => {
     drawerCartState.value = state;
@@ -48,6 +50,18 @@ export const useAppStore = defineStore('app', () => {
   if (!kioskState.code) {
     kioskState.globalError = new Error(t('no_terminal_code_provided_on_startup'))
     kioskState.status = 'UnrecoverableError'
+  }
+
+  const updateShift = async() => {
+    shiftLoading.value = true;
+    try {
+      const terminal_id = kioskState.params?.terminal_id;
+      currentShift.value = await apiGetShift(terminal_id!);
+    } catch (error) {
+      console.log('updateShift', error)
+    } finally {
+      shiftLoading.value = false;
+    }
   }
 
   setTimeout(loopUpdateTerminalParams, 0, kioskState);
@@ -107,6 +121,9 @@ export const useAppStore = defineStore('app', () => {
     loginByToken,
     setLocale,
     resetLocale,
+
+    updateShift,
+    currentShift,
   }
 });
 

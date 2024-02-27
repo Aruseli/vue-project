@@ -1,12 +1,14 @@
 <script setup>
   import { useRouter } from 'vue-router';
-  import { reactive, ref } from 'vue';
+  import { onMounted, reactive, ref } from 'vue';
   import RectangularButton from '../components/buttons/rectangular-button.vue';
 import { useQuasar } from 'quasar';
 import { t } from 'i18next';
+import { useAppStore } from 'src/stores/app';
 
   const $q = useQuasar();
   const router = useRouter();
+  const app = useAppStore();
   const route = (path) => {
     router.push(path);
   }
@@ -66,7 +68,10 @@ import { t } from 'i18next';
       ],
     });
   }
-
+  onMounted(async() => {
+    await app.updateShift();
+    console.log('STATUS', app.currentShift);
+  })
 </script>
 
 <template>

@@ -93,6 +93,38 @@ export async function apiGetLocale(lang: string) {
   console.log('apiGetLocale', response);
   return response.data.locale[0]?.data;
 }
+export async function apiGetCurrentShift(locationId: string) {
+  const response = await fetchApi('/api/v2/sales/currentShift', {
+    locationId,
+  });
+  console.log('apiGetCurrentShift', response)
+  return response.data.id
+}
+export async function apiGetShift(terminalId: string) {
+  const response = await fetchApi('/api/v2/sales/getShift', {
+    terminalId,
+  });
+  console.log('apiGetShift', response)
+  return response.data.shift?.terminal_id
+}
+export async function apiAddShift(terminalId: string, locationShiftId: string, user_id: string) {
+  const response = await fetchApi('/api/v2/sales/addShift', {
+    terminalId,
+    locationShiftId,
+    user_id,
+  });
+  console.log('apiAddShift', response)
+  return response.data
+}
+export async function apiCloseShift(terminalShiftId: string, state: number, user_id: string) {
+  const response = await fetchApi('/api/v2/sales/closeShift', {
+    terminalShiftId,
+    state,
+    user_id,
+  });
+  console.log('apiCloseShift', response)
+  return response.data
+}
 
 
 export type User = {
