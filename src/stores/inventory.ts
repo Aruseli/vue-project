@@ -12,7 +12,7 @@ export type InventoryItem = {
   price: number,
   title: string,
   stock: number | null,
-  confirm?: boolean,
+  confirmed?: boolean,
 }
 
 export const useInventoryStore = defineStore("inventoryStore", () => {
@@ -95,7 +95,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
           g.goods.map((good) => ({
             id: good.id,
             quant: 0,
-            confirm: false,
+            confirmed: false,
             price: good.price,
             title: good.title,
             stock: good.stock,
@@ -119,7 +119,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
 
   const scanInventoryGood = async (good: Good) => {
     const inventoryItem = inventory.value?.find((i) => i.id == good.id);
-    if (inventoryItem?.confirm){
+    if (inventoryItem?.confirmed){
       return;
     } else {
       if (!inventoryItem) {

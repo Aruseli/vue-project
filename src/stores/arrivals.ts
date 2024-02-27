@@ -85,7 +85,7 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
 
   const scanArrivalGood = async (good: Good) => {
     const arrivalItem = arrival.value?.items.find((i) => i.id == good.id);
-    if (arrivalItem?.confirm) {
+    if (arrivalItem?.confirmed) {
       return;
     } else {
       if (arrivalItem) {
@@ -143,7 +143,7 @@ function documentGoodsArrival(ad: KioskDocument, goodsStore: ReturnType<typeof u
         title: good?.title,
         image: good?.images[0],
         issued: 0,
-        confirm: false,
+        confirmed: false,
       };
     })
   };

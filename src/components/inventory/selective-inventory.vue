@@ -75,8 +75,8 @@ import ListItem from './list-item.vue';
             :good_name="inv.title"
             :estimated_quantity="inv.stock"
             :not_equal="inv.issued !== inv.quant"
-            :class="{ 'highlighted': inv.confirm }"
-            @click="inv.confirm = !inv.confirm"
+            :class="{ 'highlighted': inv.confirmed }"
+            @click="inv.confirmed = !inv.confirmed"
           />
         </ol>
       </div>

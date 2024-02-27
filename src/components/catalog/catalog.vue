@@ -15,26 +15,7 @@ import ProductCard from './product-card.vue';
   const cartStore = useCartStore();
   const router = useRouter();
 
-  const timerRedirect = ref(null);
-  const timerWarn = ref(null);
-  const countdown = ref(0);
-  const dialogState = ref(false);
-  const animation = ref(null);
-
-  // Функция-обработчик, которая переведет на новую страницу
-  const redirect = () => {
-    router.push('hello');
-    cartStore.clearCart();
-  }
-
-  function closeDialog() {
-    dialogState.value = false;
-    clearTimeout(timerRedirect.value);
-    clearTimeout(animation.value);
-    clearTimeout(timerWarn.value); // Очистка таймера при закрытии окна
-  }
-
-  const enter = () => {
+  const enterCardShake = () => {
     gsap.to('.card_setting', {
       duration: 0.5,
       // delay: 28,
@@ -49,62 +30,90 @@ import ProductCard from './product-card.vue';
     })
   }
 
-  // const notifyDelay = app.kioskState.params.terminal_settings.customer_inactive_notify_duration_ms
-  const warnRedirect = () => {
-    dialogState.value = true;
-    clearTimeout(timerWarn.value);
-    clearTimeout(timerRedirect.value);
-    countdown.value = 7
-    let intervalId = setInterval(() => {
-      if (countdown.value > 0) {
-        countdown.value--;
-      }
-      if (dialogState.value == false) {
-        clearInterval(intervalId);
-      }
-      if (countdown.value === 0) {
-        clearInterval(intervalId);
-        clearTimeout(timerRedirect.value);
-        clearTimeout(timerWarn.value);
-        // dialogState.value = false;
-        redirect();
-      }
-    }, 1000);
 
-    timerWarn.value = setTimeout(() => {
-      clearInterval(intervalId);
-    }, 7000);
+  // const timerRedirect = ref(null);
+  // const timerWarn = ref(null);
+  // const animation = ref(null);
+
+
+  const redirectAt = ref(0);
+  const countdown = ref(0);
+  const lastAnimationStartedAt = ref(0);
+  const dialogState = ref(false);
+
+  const userInactivityTimings = {
+    inactivityBeforeRedirect: 37000,
+    animationStartBeforeRedirect: 9000,
+    countdownDuration: 7000,
   };
 
+  // Функция-обработчик, которая переведет на новую страницу
+  const redirect = () => {
+    router.push('hello');
+    cartStore.clearCart();
+    redirectAt.value = 0;
+  }
 
-  // const redirectDelay = app.kioskState.params.terminal_settings.customer_inactive_after_ms;
-  const resetTimer = () => {
+  const tick = () => {
+    if (Date.now() - redirectAt.value > 60*1000) {
+      redirectAt.value = Date.now() + userInactivityTimings.inactivityBeforeRedirect;
+    }
+
+    const timeBeforeRedirect = redirectAt.value - Date.now();
+    if (timeBeforeRedirect < 0) {
+      // redirect phase
+      redirect();
+      return;
+    }
+
+    if (timeBeforeRedirect < userInactivityTimings.countdownDuration) {
+      // countdown phase
+      countdown.value = Math.floor(timeBeforeRedirect / 1000);
+      dialogState.value = true;
+      return;
+    }
+    dialogState.value = false;
+
+    if (timeBeforeRedirect < userInactivityTimings.animationStartBeforeRedirect) {
+      // animation phase
+      const timeSinceLastAnimationStart = Date.now() - lastAnimationStartedAt.value;
+      if (timeSinceLastAnimationStart < userInactivityTimings.animationStartBeforeRedirect) {
+        return;
+      }
+      console.log("Entering animation", timeBeforeRedirect);
+      lastAnimationStartedAt.value = Date.now();
+      enterCardShake();
+      return;
+    }
+    // boring phase
+    return;
+  }
+
+  function closeDialog() {
+    redirectAt.value = Date.now() + userInactivityTimings.inactivityBeforeRedirect;
+  }
+
+  function resetRedirectTimer() {
     if (dialogState.value) {
       return;
     }
-    clearTimeout(timerRedirect.value);
-    clearTimeout(timerWarn.value);
-    clearTimeout(animation.value);
-    timerRedirect.value = setTimeout(redirect, 37000);
-    timerWarn.value = setTimeout(warnRedirect, 30000);
-    animation.value = setTimeout(enter, 28000);
+    redirectAt.value = Date.now() + userInactivityTimings.inactivityBeforeRedirect;
   }
 
-  const boundResetTimer = resetTimer.bind(this);
+  const redirectTimer = ref(null);
+  const boundResetTimer = resetRedirectTimer.bind(this);
   onMounted(() => {
     // Запускаем таймер
-    resetTimer();
+    redirectAt.value = Date.now() + userInactivityTimings.inactivityBeforeRedirect;
+    redirectTimer.value = setInterval(() => tick(), 100);
     // Обрабатываем события
     ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
       document.addEventListener(e, boundResetTimer)
     )
-    // console.log('KIOSK', redirectDelay)
-    // console.log('notifyDelay', notifyDelay)
   })
 
   onUnmounted(() => {
-    clearTimeout(timerRedirect.value);
-    clearTimeout(timerWarn.value);
+    clearTimeout(redirectTimer.value);
     ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
       document.removeEventListener(e, boundResetTimer)
     )
@@ -115,7 +124,7 @@ import ProductCard from './product-card.vue';
 <template>
   <q-tab-panels v-model="app.tab" animated swipeable class="window-height window-width">
     <q-tab-panel v-for="goodCategory in goodsStore.goods" :name="goodCategory.id">
-      <transition appear @enter="enter">
+      <transition appear @enter="enterCardShake">
         <div class="image_grid">
           <ProductCard :itemId="good.id" v-for="(good, index) in goodCategory.goods" :key="index" />
         </div>

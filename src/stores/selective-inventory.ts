@@ -95,7 +95,7 @@ export const useSelectInventoryStore = defineStore("selectInventoryStore", () =>
   const scanInventoryGood = async (good: Good) => {
     const selectInventoryItem = selectedInventory.value?.items.find((i) => i.id == good.id);
 
-    if (selectInventoryItem?.confirm) {
+    if (selectInventoryItem?.confirmed) {
       return;
     } else {
       if (!selectInventoryItem) {
@@ -152,7 +152,7 @@ function documentToInventory(
         title: good?.title,
         price: good?.price,
         quant: 0,
-        confirm: false,
+        confirmed: false,
       };
     }),
   };

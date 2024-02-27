@@ -91,8 +91,8 @@ const inventoryStore = useInventoryStore();
             :good_name="good.title"
             :estimated_quantity="good.stock"
             :not_equal="good.issued !== good.quant"
-            :class="{ 'highlighted': good.confirm }"
-            @click="good.confirm = !good.confirm"
+            :class="{ 'highlighted': good.confirmed }"
+            @click="good.confirmed = !good.confirmed"
           />
         </ol>
       </div>

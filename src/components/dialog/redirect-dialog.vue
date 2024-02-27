@@ -30,7 +30,7 @@ const props = defineProps({
         </q-card-section>
         <q-card-section class="column items-center q-mb-md">
           <div class="text-h3 q-mb-sm">{{ $t('are_you_here') }}</div>
-          <div class="text-h5">{{$t('buying_session_will_end_in')}} <span>{{ props.timer }}</span>&ensp;{{ $t('minutes') }}</div>
+          <div class="text-h5">{{$t('buying_session_will_end_in')}} <span>{{ props.timer }}</span>&ensp;{{ $t('seconds', {count: props.timer}) }}</div>
         </q-card-section>
 
         <q-card-section class="row items-center justify-center q-gutter-md">
