@@ -7,7 +7,7 @@
   import { useGoodsStore } from "./stores/goods";
   import { useArrivalsStore } from'src/stores/arrivals';
 import { useInventoryStore } from "./stores/inventory";
-import { useSelectInventoryStore } from "./stores/selective-inventory";
+import { useSelectiveInventoryStore } from "./stores/selective-inventory";
 
   const route = useRoute()
   const router = useRouter()
@@ -18,7 +18,7 @@ import { useSelectInventoryStore } from "./stores/selective-inventory";
     const goodsStore = useGoodsStore();
     const arrivalsStore = useArrivalsStore();
     const inventoryStore = useInventoryStore();
-    const selectInventoryStore = useSelectInventoryStore();
+    const selectiveInventoryStore = useSelectiveInventoryStore();
     if (evt.cmd == 'barcode' && evt.data.length == 13) {
       const barcode = parseBarcode(evt.data)
       switch (barcode.prefix) {
@@ -38,7 +38,7 @@ import { useSelectInventoryStore } from "./stores/selective-inventory";
           }
           if (route.path == '/selective-inventory') {
             const good = goodsStore.getGoodByCode(barcode.code);
-            await selectInventoryStore.scanInventoryGood(good);
+            await selectiveInventoryStore.scanInventoryGood(good);
           }
           break;
         case '220': // Employee

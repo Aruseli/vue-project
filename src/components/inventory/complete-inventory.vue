@@ -1,18 +1,18 @@
 <script setup>
   import i18next, { t } from 'i18next';
   import moment from 'moment';
-import { useQuasar } from 'quasar';
-import { useGoodsStore } from 'src/stores/goods';
-import { useInventoryStore } from 'src/stores/inventory';
-import { computed, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import RectangularButton from '../buttons/rectangular-button.vue';
-import DividerBold from '../dividers/divider-bold.vue';
-import ListItem from './list-item.vue';
+  import { useQuasar } from 'quasar';
+  import { useGoodsStore } from 'src/stores/goods';
+  import { useInventoryStore } from 'src/stores/inventory';
+  import { computed, onMounted, ref } from 'vue';
+  import { useRouter } from 'vue-router';
+  import RectangularButton from '../buttons/rectangular-button.vue';
+  import DividerBold from '../dividers/divider-bold.vue';
+  import ListItem from './list-item.vue';
 
 
-const goodsStore = useGoodsStore();
-const inventoryStore = useInventoryStore();
+  const goodsStore = useGoodsStore();
+  const inventoryStore = useInventoryStore();
 
   const router = useRouter();
 
@@ -75,7 +75,7 @@ const inventoryStore = useInventoryStore();
         <div class="text-h3 row q-gutter-md">
           <span>{{ formattedDate }}</span>
           <span>{{ formattedTime }}</span>
-          <span>№ {{ inventoryStore.docNum }}</span>
+          <span>№ {{ inventoryStore.docNumStr }}</span>
         </div>
       </div>
       <DividerBold />
@@ -128,7 +128,7 @@ const inventoryStore = useInventoryStore();
           color="warning"
           :name="$t('declare_discrepancy')"
           class="col-5"
-          @click="() => console.log('declare_discrepancy')"
+          @click="submitInventory"
         />
       </div>
     </div>

@@ -22,7 +22,9 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
   const inventory = ref<InventoryItem[]>([]);
   const inventoryDocument = ref<KioskDocument | null>(null);
   const inventoryLoading = ref(true);
+  const docNum = ref(0);
 
+  // This will be useful when we apply DRI to code and merge document stores
   const initFullInventoryDoc = async () => {
     const terminal_settings = appStore.kioskState.params?.terminal_settings;
     const doc = {
@@ -39,7 +41,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
       currency_ref: terminal_settings?.currency_id ?? "",
       curr_rate: 1,
       comment: undefined,
-      details: goodsStore.goods.map(gs =>
+      details: goodsStore.goods.flatMap(gs =>
         gs.goods.map((good, index) => ({
           id: undefined,
           state: 0,
@@ -102,32 +104,28 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
           }))
         )
         .flat();
+      docNum.value = getNextInventoryNumber();
     } finally {
       inventoryLoading.value = false;
     }
   };
 
   const totalActualQuant = computed(() => {
-    if (inventory.value?.length) {
-      return inventory.value.reduce(
-        (acc: number, item: any) => acc + item.quant,
-        0
-      );
-    }
-    return 0;
+    return inventory.value?.reduce(
+      (acc: number, item: any) => acc + item.quant,
+      0
+    ) ?? 0;
   });
 
   const scanInventoryGood = async (good: Good) => {
     const inventoryItem = inventory.value?.find((i) => i.id == good.id);
+    if (!inventoryItem) {
+      return;
+    }
     if (inventoryItem?.confirmed){
       return;
-    } else {
-      if (!inventoryItem) {
-        return;
-      }
-    inventoryItem.quant += 1;
-    totalActualQuant;
     }
+    inventoryItem.quant += 1;
   };
 
   return {
@@ -141,9 +139,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
       inventory.value.reduce((acc, item) => acc + (item.stock ?? 0), 0)
     ),
     totalActualQuant,
-    docNum: getNextInventoryNumber()
+    docNum,
+    docNumStr: computed(() => docNum.value?.toString().padStart(4, "0") ?? t("Unknown")),
   };
 });
-
-
-

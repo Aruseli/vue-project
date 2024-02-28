@@ -30,12 +30,6 @@ import ProductCard from './product-card.vue';
     })
   }
 
-
-  // const timerRedirect = ref(null);
-  // const timerWarn = ref(null);
-  // const animation = ref(null);
-
-
   const redirectAt = ref(0);
   const countdown = ref(0);
   const lastAnimationStartedAt = ref(0);
