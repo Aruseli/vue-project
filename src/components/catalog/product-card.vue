@@ -9,6 +9,7 @@ import { useCartStore } from '../../stores/cart';
 import { useGoodsStore } from '../../stores/goods';
 import IconButton from '../buttons/icon-button.vue';
 
+
   const $q = useQuasar();
   const openDialog = ref(false);
   const slide = ref(0);
@@ -42,9 +43,7 @@ import IconButton from '../buttons/icon-button.vue';
     })
   }
 
-  const goodInCart = computed(() => {
-    return cartStore.cart.find((item) => item.id === props.itemId);
-  })
+  const goodInCart = computed(() => cartStore.cart.find((item) => item.id === props.itemId))
 
   const goodDetails = () => {
     openDialog.value = true;
@@ -89,6 +88,7 @@ import IconButton from '../buttons/icon-button.vue';
       sliceDescription.value = good.value.description;
     }
   })
+
 
 </script>
 

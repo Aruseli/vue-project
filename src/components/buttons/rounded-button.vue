@@ -34,5 +34,6 @@
 button {
   box-shadow: var(--box-shadow--product_cart);
   border-radius: var(--border-md);
+  transition: all 0.5s ease-in-out;
 }
 </style>

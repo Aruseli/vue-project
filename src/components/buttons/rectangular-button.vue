@@ -19,6 +19,11 @@
       type: String,
       required: false,
       default: 'white'
+    },
+    disable: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   })
 
@@ -29,7 +34,7 @@
 </script>
 
 <template>
-   <q-btn :size="size" unelevated rounded :color="color" :text-color="textColor" @click="click" v-bind="$attrs">{{ props.name }}</q-btn>
+   <q-btn :size="size" unelevated rounded :color="color" :text-color="textColor" @click="click" v-bind="$attrs" :disable="disable">{{ props.name }}</q-btn>
 </template>
 
 <style scoped>

@@ -144,8 +144,8 @@ module.exports = configure(function (ctx) {
       ]
     },
 
-    // animations: 'all', // --- includes all animations
-    // https://v2.quasar.dev/options/animations
+    animations: 'all',
+    // --- includes all animations https://v2.quasar.dev/options/animations
     animations: [],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#sourcefiles

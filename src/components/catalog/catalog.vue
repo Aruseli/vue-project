@@ -1,14 +1,13 @@
 <script setup>
-  import { onMounted, ref } from 'vue';
-  import ProductCard from './product-card.vue';
-  import { useAppStore } from '../../stores/app';
-  import { useCartStore } from '../../stores/cart';
-  import { useGoodsStore } from '../../stores/goods';
-  import { useRouter } from 'vue-router';
-  import { QSpinnerHourglass, useQuasar } from 'quasar';
-  import { onUnmounted } from 'vue';
-  import { t } from 'i18next';
-
+  import gsap from 'gsap';
+import { useQuasar } from 'quasar';
+import { onMounted, onUnmounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAppStore } from '../../stores/app';
+import { useCartStore } from '../../stores/cart';
+import { useGoodsStore } from '../../stores/goods';
+import RedirectDialog from '../dialog/redirect-dialog.vue';
+import ProductCard from './product-card.vue';
 
   const $q = useQuasar();
   const goodsStore = useGoodsStore();
@@ -16,74 +15,122 @@
   const cartStore = useCartStore();
   const router = useRouter();
 
-  const timerRedirect = ref(null);
-  const timerWarn = ref(null);
-  const shaking = ref(false);
+  const enterCardShake = () => {
+    gsap.to('.card_setting', {
+      duration: 0.5,
+      // delay: 28,
+      scale: 1.02,
+      boxShadow: "0 -12px 20px -12px rgba(35, 65, 65, 1), 0 12px 20px -12px rgba(35, 65, 65, 1)",
+      ease: "none",
+      stagger: {
+        repeat: 1,
+        yoyo: true,
+        each: 0.25,
+      }
+    })
+  }
+
+  const redirectAt = ref(0);
+  const countdown = ref(0);
+  const lastAnimationStartedAt = ref(0);
+  const dialogState = ref(false);
+
+  const userInactivityTimings = {
+    inactivityBeforeRedirect: 37000,
+    animationStartBeforeRedirect: 9000,
+    countdownDuration: 7000,
+  };
 
   // Функция-обработчик, которая переведет на новую страницу
-  function redirect() {
+  const redirect = () => {
     router.push('hello');
     cartStore.clearCart();
+    redirectAt.value = 0;
   }
 
-const warnRedirect = () => {
-  shaking.value = true;
-  $q.notify({
-    position: "center",
-    color: "positive",
-    classes: "full-width warning_customization",
-    timeout: 4000,
-    spinner: QSpinnerHourglass,
-    spinnerSize: '3rem',
-    // multiLine: true,
-    actions: [
-      {
-        icon: "cancel",
-        'aria-label': 'cancel',
-        label: t("are_you_still_here"),
-        color: "white",
-        round: true,
-      },
-    ],
-  });
-};
+  const tick = () => {
+    if (Date.now() - redirectAt.value > 60*1000) {
+      redirectAt.value = Date.now() + userInactivityTimings.inactivityBeforeRedirect;
+    }
 
-  const resetTimer = () => {
-    clearTimeout(timerRedirect.value);
-    clearTimeout(timerWarn.value);
-    timerRedirect.value = setTimeout(redirect, 37000);
-    timerWarn.value = setTimeout(warnRedirect, 30000);
+    const timeBeforeRedirect = redirectAt.value - Date.now();
+    if (timeBeforeRedirect < 0) {
+      // redirect phase
+      redirect();
+      return;
+    }
+
+    if (timeBeforeRedirect < userInactivityTimings.countdownDuration) {
+      // countdown phase
+      countdown.value = Math.floor(timeBeforeRedirect / 1000);
+      dialogState.value = true;
+      return;
+    }
+    dialogState.value = false;
+
+    if (timeBeforeRedirect < userInactivityTimings.animationStartBeforeRedirect) {
+      // animation phase
+      const timeSinceLastAnimationStart = Date.now() - lastAnimationStartedAt.value;
+      if (timeSinceLastAnimationStart < userInactivityTimings.animationStartBeforeRedirect) {
+        return;
+      }
+      console.log("Entering animation", timeBeforeRedirect);
+      lastAnimationStartedAt.value = Date.now();
+      enterCardShake();
+      return;
+    }
+    // boring phase
+    return;
   }
 
-  const boundResetTimer = resetTimer.bind(this);
+  function closeDialog() {
+    redirectAt.value = Date.now() + userInactivityTimings.inactivityBeforeRedirect;
+  }
+
+  function resetRedirectTimer() {
+    if (dialogState.value) {
+      return;
+    }
+    redirectAt.value = Date.now() + userInactivityTimings.inactivityBeforeRedirect;
+  }
+
+  const redirectTimer = ref(null);
+  const boundResetTimer = resetRedirectTimer.bind(this);
   onMounted(() => {
     // Запускаем таймер
-    resetTimer();
-
+    redirectAt.value = Date.now() + userInactivityTimings.inactivityBeforeRedirect;
+    redirectTimer.value = setInterval(() => tick(), 100);
     // Обрабатываем события
-    ["mousemove", "keydown", "click", "scroll"].forEach(e =>
+    ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
       document.addEventListener(e, boundResetTimer)
     )
   })
 
   onUnmounted(() => {
-    clearTimeout(timerRedirect.value);
-    clearTimeout(timerWarn.value);
-    ["mousemove", "keydown", "click", "scroll"].forEach(e =>
+    clearTimeout(redirectTimer.value);
+    ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
       document.removeEventListener(e, boundResetTimer)
     )
   })
+
 </script>
 
 <template>
   <q-tab-panels v-model="app.tab" animated swipeable class="window-height window-width">
     <q-tab-panel v-for="goodCategory in goodsStore.goods" :name="goodCategory.id">
-      <div class="image_grid">
-        <ProductCard :itemId="good.id" v-for="(good, index) in goodCategory.goods"
-        :key="index" class="shakingItem" />
-      </div>
+      <transition appear @enter="enterCardShake">
+        <div class="image_grid">
+          <ProductCard :itemId="good.id" v-for="(good, index) in goodCategory.goods" :key="index" />
+        </div>
+      </transition>
     </q-tab-panel>
   </q-tab-panels>
+  <RedirectDialog
+    @complete="redirect"
+    @continue="closeDialog"
+    :modelValue="dialogState"
+    :timer="countdown"
+  />
 </template>
 
 <style lang="scss" scoped>
@@ -99,36 +146,5 @@ const warnRedirect = () => {
   padding: 0 3.75rem;
   justify-content: center;
   margin-top: 2rem;
-}
-.intersection_card_settings {
-  // min-height: 50rem;
-  // height: 55rem;
-  // width: $calc_width;
-}
-
-.shakingItem {
-
-  animation: shaking_anime 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s infinite both;
-}
-
-@keyframes shaking_anime {
-  0% {
-    -webkit-transform: translateZ(0);
-            transform: translateZ(0);
-    -webkit-box-shadow: 0 0 0 0 rgba(0, 0, 0, 0), 0 0 0 0 rgba(0, 0, 0, 0);
-            box-shadow: 0 0 0 0 rgba(0, 0, 0, 0), 0 0 0 0 rgba(0, 0, 0, 0);
-  }
-  50% {
-    -webkit-transform: translateZ(50px);
-            transform: translateZ(50px);
-    -webkit-box-shadow: 0 -12px 20px -12px rgba(0, 0, 0, 0.35), 0 12px 20px -12px rgba(0, 0, 0, 0.35);
-            box-shadow: 0 -12px 20px -12px rgba(0, 0, 0, 0.35), 0 12px 20px -12px rgba(0, 0, 0, 0.35);
-  }
-  100% {
-    -webkit-transform: translateZ(0);
-            transform: translateZ(0);
-    -webkit-box-shadow: 0 0 0 0 rgba(0, 0, 0, 0), 0 0 0 0 rgba(0, 0, 0, 0);
-            box-shadow: 0 0 0 0 rgba(0, 0, 0, 0), 0 0 0 0 rgba(0, 0, 0, 0);
-  }
 }
 </style>

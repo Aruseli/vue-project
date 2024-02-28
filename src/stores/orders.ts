@@ -69,7 +69,7 @@ export const useOrdersStore = defineStore("orders", () => {
         console.log("Order line mismatch while issuing", d, item);
         throw new Error(`Wrong state of order to issue.`);
       }
-      d.total = (goodsStore.getGoodById(d.id)?.stock ?? 0) - d.quant;
+      d.total = item?.price * d.quant;
     });
     await apiSaveDocument(doc);
   };

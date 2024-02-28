@@ -6,6 +6,8 @@
   import { useRoute, useRouter } from "vue-router";
   import { useGoodsStore } from "./stores/goods";
   import { useArrivalsStore } from'src/stores/arrivals';
+import { useInventoryStore } from "./stores/inventory";
+import { useSelectiveInventoryStore } from "./stores/selective-inventory";
 
   const route = useRoute()
   const router = useRouter()
@@ -15,6 +17,8 @@
     const ordersStore = useOrdersStore()
     const goodsStore = useGoodsStore();
     const arrivalsStore = useArrivalsStore();
+    const inventoryStore = useInventoryStore();
+    const selectiveInventoryStore = useSelectiveInventoryStore();
     if (evt.cmd == 'barcode' && evt.data.length == 13) {
       const barcode = parseBarcode(evt.data)
       switch (barcode.prefix) {
@@ -27,6 +31,14 @@
           if (route.path == `/arrival-goods/${route.params.id}`) {
             const good = goodsStore.getGoodByCode(barcode.code);
             await arrivalsStore.scanArrivalGood(good);
+          }
+          if (route.path == '/complete-inventory') {
+            const good = goodsStore.getGoodByCode(barcode.code);
+            await inventoryStore.scanInventoryGood(good);
+          }
+          if (route.path == '/selective-inventory') {
+            const good = goodsStore.getGoodByCode(barcode.code);
+            await selectiveInventoryStore.scanInventoryGood(good);
           }
           break;
         case '220': // Employee

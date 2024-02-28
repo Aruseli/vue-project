@@ -55,7 +55,13 @@ export default {
   unable_to_load_order: 'Unable to load order',
   unable_to_load_orders: 'Unable to load orders',
   unable_to_submit_order: 'Unable to submit order',
+  unable_to_load_inventory: 'Unable to load inventory',
+  unable_to_submit_inventory: 'unable to submit inventory',
   scan_the_barcode_of_the_document: 'Scan the barcode of the document',
   Unknown: 'Unknown',
   product_has_already_been_scanned: 'the product has already been scanned',
+  are_you_here: 'Are you still here?',
+  buying_session_will_end_in: 'The buying session will end in:',
+  seconds_one: 'second',
+  seconds_other: 'seconds',
 };

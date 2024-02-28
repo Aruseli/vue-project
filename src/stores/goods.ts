@@ -1,9 +1,10 @@
 import Dexie, { Table } from 'dexie';
 import { defineStore } from 'pinia';
-import { ApiGoodCategory, Deferred, apiGetGoods, apiGetGoodsImages, apiGetStockRemains, delay, throwErr } from 'src/services';
+import { ApiGoodCategory, Deferred, apiGetGoods, apiGetGoodsImages, apiGetStockRemains, apiSaveDocument, delay, throwErr } from 'src/services';
 import { IMAGES_CACHE_CLEANUP_INTERVAL } from 'src/services/consts';
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
 import { useAppStore } from './app';
+import { uuidToBarcodeDocId } from 'src/services/barcodes';
 
 export type Good = {
   id: string,
@@ -40,7 +41,7 @@ const goodsDb = new GoodsDexie();
 export const useGoodsStore = defineStore('goodsStore', () => {
   const appStore = useAppStore()
   const goods = ref<GoodCategory[]>([]);
-  const imagesCache = ref(new Map<string, string>()) // id -> base64 image
+  const imagesCache = reactive(new Map<string, string>()) // id -> base64 image
   const goodsLoading = ref(false)
   const goodsLoadingWaiter = ref(new Deferred())
   goodsLoadingWaiter.value.resolve(false)
@@ -54,31 +55,33 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     await goodsDb.images.bulkDelete(allCachedImagesIds.filter(id => !allImagesIds.has(id)))
   }
 
-  const fetchImages = async (imageIds: string[]) => {
-    const batchSize = 10
-    while (imageIds.length > 0) {
-      const portion = imageIds.slice(0, batchSize)
-      imageIds = imageIds.slice(batchSize)
 
-      const result = await apiGetGoodsImages(portion)
-      goodsDb.images.bulkPut(result)
-      result.forEach(i => {
-        imagesCache.value.set(i.id, i.image)
-      })
+
+  const fetchImages = async (imageIds: string[]) => {
+    const batchSize = 10;
+    while (imageIds.length > 0) {
+      const portion = imageIds.slice(0, batchSize);
+      imageIds = imageIds.slice(batchSize);
+
+      const result = await apiGetGoodsImages(portion);
+      goodsDb.images.bulkPut(result);
+      result.forEach((i) => {
+        imagesCache.set(i.id, i.image);
+      });
     }
-  }
+  };
 
   const populateImages = async (goods: ApiGoodCategory[]) => {
-    if (imagesCache.value.size == 0) {
+    if (imagesCache.size == 0) {
       await goodsDb.images.each(i => {
-        imagesCache.value.set(i.id, i.image)
+        imagesCache.set(i.id, i.image)
       })
     }
     const allImagesIds = goods.flatMap(gc =>
         gc.goods.filter(g => !!g)
                 .flatMap(g => g.images_ids)
       );
-    const toFetch = allImagesIds.filter(id => !imagesCache.value.has(id))
+    const toFetch = allImagesIds.filter(id => !imagesCache.has(id))
     await fetchImages(toFetch)
     return <GoodCategory[]>goods.map(gc => ({
       ...gc,
@@ -86,7 +89,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
         ...g,
         images: g.images_ids.map(id => ({
           id,
-          image: imagesCache.value.get(id) ?? throwErr(new Error(`Image is missing: ${id}`)),
+          image: imagesCache.get(id) ?? throwErr(new Error(`Image is missing: ${id}`)),
         })),
       })),
     }))
@@ -145,6 +148,34 @@ export const useGoodsStore = defineStore('goodsStore', () => {
         //   }
         //   console.log('Debug arrival goods', await apiSaveDocument(goodsArrivalDoc))
         // }
+        // const goodsInventoryDoc = {
+        //   id: undefined,
+        //   state: 2,
+        //   doc_type: terminal_settings?.inventory_doc_type_id ?? '',
+        //   abbr_text: undefined,
+        //   abbr_num: undefined,
+        //   doc_date: new Date().toISOString(),
+        //   doc_order: 0,
+        //   corr_from_ref: terminal_settings?.kiosk_corr_id ?? '',
+        //   corr_to_ref: terminal_settings?.kiosk_corr_id ?? '',
+        //   respperson_ref: appStore.kioskState.user?.id ?? '',
+        //   currency_ref: terminal_settings?.currency_id ?? '',
+        //   curr_rate: 1,
+        //   comment: undefined,
+        //   details: fetchedGoods.flatMap(gc => gc.goods.filter(g => !!g)).map(g => ({
+        //     id: undefined,
+        //     state: 0,
+        //     rec_order: 0,
+        //     good_id: g.id,
+        //     munit_id: terminal_settings?.munit_id ?? '', // default
+        //     quant: 3,
+        //     total: 3*g.price,
+        //     doc_detail_link: undefined,
+        //     doc_detail_type: terminal_settings?.inventory_docdetail_type_id ?? '',
+        //   })),
+        // }
+        // const docId = await apiSaveDocument(goodsInventoryDoc)
+        // console.log('Debug inventory goods', docId, uuidToBarcodeDocId(docId))
         goods.value = await populateImages(fetchedGoods)
         appStore.tab = fetchedGoods[0].id
         goodsLoading.value = false
