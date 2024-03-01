@@ -78,6 +78,7 @@ export const useAppStore = defineStore('app', () => {
       console.log("addedShift", error);
     } finally {
       console.log('addedShift', addedShift.value)
+
     }
   };
 
