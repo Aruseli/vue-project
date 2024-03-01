@@ -5,10 +5,12 @@
 import { useQuasar } from 'quasar';
 import { t } from 'i18next';
 import { useAppStore } from 'src/stores/app';
+import { useSelectInventoryStore } from 'src/stores/selective-inventory';
 
   const $q = useQuasar();
   const router = useRouter();
   const app = useAppStore();
+  const selectInventoryStore = useSelectInventoryStore();
   const route = (path) => {
     router.push(path);
   }
@@ -30,6 +32,8 @@ import { useAppStore } from 'src/stores/app';
     {
       name:'selective_inventory',
       path: () => route('selective-inventory'),
+      disable: selectInventoryStore.inventoriesDocuments.length ? false : true,
+      badge: selectInventoryStore.inventoriesDocuments.length ? true : false,
     },
     {
       name: 'complete_inventory',
@@ -72,8 +76,19 @@ import { useAppStore } from 'src/stores/app';
   onMounted(async() => {
     await app.updateGetShift();
     await app.updateCurrentShift();
+    await selectInventoryStore.updateInventories();
+    if (selectInventoryStore.inventoriesDocuments.length) {
+      $q.notify({
+        color: 'warning',
+        icon: 'warning',
+        position: 'center',
+        message: t('unable_to_load_inventory'),
+        timeout: 6000,
+      })
+    }
     console.log('STATUS', app.getShift);
     console.log('CURRENT', app.currentShift);
+    console.log('InvDocs', selectInventoryStore.inventoriesDocuments.length);
   })
 </script>
 
@@ -86,6 +101,7 @@ import { useAppStore } from 'src/stores/app';
         :name='$t(route.name)'
         :disable='route.disable'
         :class="{ 'blocked': route.disable }"
+        :badge="route.badge"
         @click="() => {
           route.name == 'arrival_goods'
             ? showNotify()
@@ -93,7 +109,12 @@ import { useAppStore } from 'src/stores/app';
             ? route.path()
             : null
         }"
-      />
+      >
+        <div v-if="route.badge" class="badge_style bg-positive flex items-center">
+          <div class="text-h4 text-white q-px-sm">123</div>
+        </div>
+      </RectangularButton>
+
     </div>
   </q-page>
 </template>
@@ -107,6 +128,16 @@ import { useAppStore } from 'src/stores/app';
 }
 .blocked .disabled {
   filter: brightness(0.3);
+}
+
+.badge_style {
+  position: absolute;
+  top: -1rem;
+  right: -1rem;
+  border-radius: 2.5rem;
+  min-width: 3rem;
+  width: max-content;
+  height: 4.5rem;
 }
 </style>
 
