@@ -14,7 +14,22 @@ const props = defineProps({
     type: Number,
     required: false,
     default: 10,
-  }
+  },
+  nameLeftButton: {
+    type: String,
+    required: false,
+    default: 'complete',
+  },
+  nameRightButton: {
+    type: String,
+    required: false,
+    default: 'continue',
+  },
+  title: {
+    type: String,
+    required: false,
+    default: 'are_you_here',
+  },
 })
 
 </script>
@@ -29,13 +44,13 @@ const props = defineProps({
 
         </q-card-section>
         <q-card-section class="column items-center q-mb-md">
-          <div class="text-h3 q-mb-sm">{{ $t('are_you_here') }}</div>
-          <div class="text-h5">{{$t('buying_session_will_end_in')}} <span>{{ props.timer }}</span>&ensp;{{ $t('minutes') }}</div>
+          <div class="text-h3 q-mb-sm text-center">{{ $t(props.title) }}</div>
+          <slot></slot>
         </q-card-section>
 
         <q-card-section class="row items-center justify-center q-gutter-md">
-          <RectangularButton :name="$t('complete')" color="'transparent'" size="lg" class="q-px-xl" @click="emit('complete')" textColor="primary" />
-          <RectangularButton :name="$t('continue')" size="lg" class="q-px-xl" @click="emit('continue')" />
+          <RectangularButton :name="$t(props.nameLeftButton)" color="'transparent'" size="lg" class="q-px-xl" @click="emit('complete')" textColor="primary" />
+          <RectangularButton :name="$t(props.nameRightButton)" size="lg" class="q-px-xl" @click="emit('continue')" />
         </q-card-section>
 
       </q-card>

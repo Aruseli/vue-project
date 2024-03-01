@@ -127,7 +127,9 @@ import ProductCard from './product-card.vue';
     @continue="closeDialog"
     :modelValue="dialogState"
     :timer="countdown"
-  />
+  >
+    <div class="text-h5">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('minutes') }}</div>
+  </RedirectDialog>
 </template>
 
 <style lang="scss" scoped>

@@ -6,11 +6,13 @@ import { useQuasar } from 'quasar';
 import { t } from 'i18next';
 import { useAppStore } from 'src/stores/app';
 import { useSelectInventoryStore } from 'src/stores/selective-inventory';
+import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
 
   const $q = useQuasar();
   const router = useRouter();
   const app = useAppStore();
   const selectInventoryStore = useSelectInventoryStore();
+  const dialogState = ref(false);
   const route = (path) => {
     router.push(path);
   }
@@ -74,22 +76,20 @@ import { useSelectInventoryStore } from 'src/stores/selective-inventory';
     });
   }
   onMounted(async() => {
+    if( selectInventoryStore.inventoriesDocuments.length ) {
+      dialogState.value = true
+    }
     await app.updateGetShift();
     await app.updateCurrentShift();
     await selectInventoryStore.updateInventories();
-    if (selectInventoryStore.inventoriesDocuments.length) {
-      $q.notify({
-        color: 'warning',
-        icon: 'warning',
-        position: 'center',
-        message: t('there_are_documents_for_inventory'),
-        timeout: 6000,
-      })
-    }
     console.log('STATUS', app.getShift);
     console.log('CURRENT', app.currentShift);
     console.log('InvDocs', selectInventoryStore.inventoriesDocuments.length);
   })
+
+  const defer = () => {
+    dialogState.value = false;
+  }
 </script>
 
 <template>
@@ -116,6 +116,14 @@ import { useSelectInventoryStore } from 'src/stores/selective-inventory';
       </RectangularButton>
 
     </div>
+    <RedirectDialog
+      @complete="defer"
+      @continue="route('selective-inventory')"
+      :modelValue="dialogState"
+      nameLeftButton="defer"
+      nameRightButton="execute"
+      title="there_are_documents_for_inventory"
+    />
   </q-page>
 </template>
 

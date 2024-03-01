@@ -64,5 +64,6 @@ export default {
   buying_session_will_end_in: 'The buying session will end in:',
   minutes: 'minutes',
   shift_is_open_switch_to_user_mode: 'The shift is open. Switch to user mode',
-  there_are_documents_for_inventory: 'there are documents for inventory',
+  there_are_documents_for_inventory: 'There are documents for inventory',
+  defer: 'defer',
 };
