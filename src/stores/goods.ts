@@ -55,8 +55,6 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     await goodsDb.images.bulkDelete(allCachedImagesIds.filter(id => !allImagesIds.has(id)))
   }
 
-
-
   const fetchImages = async (imageIds: string[]) => {
     const batchSize = 10;
     while (imageIds.length > 0) {

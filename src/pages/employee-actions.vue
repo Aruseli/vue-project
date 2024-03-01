@@ -16,11 +16,12 @@ import { useAppStore } from 'src/stores/app';
   const routes = reactive([
     {
       name: 'open_shift',
-      path: () => route('hello'),
+      path: !!app.getShift ? () => route('hello') : () => route('complete-inventory'),
     },
     {
       name: 'close_shift',
       path: () => route(''),
+      disable: !app.getShift,
     },
     {
       name: 'issue_order',
@@ -69,8 +70,10 @@ import { useAppStore } from 'src/stores/app';
     });
   }
   onMounted(async() => {
-    await app.updateShift();
-    console.log('STATUS', app.currentShift);
+    await app.updateGetShift();
+    await app.updateCurrentShift();
+    console.log('STATUS', app.getShift);
+    console.log('CURRENT', app.currentShift);
   })
 </script>
 
@@ -81,8 +84,8 @@ import { useAppStore } from 'src/stores/app';
         v-for="(route, index) in routes"
         :key="index"
         :name='$t(route.name)'
-        :disable='false'
-        :class="{ 'blocked': false }"
+        :disable='route.disable'
+        :class="{ 'blocked': route.disable }"
         @click="() => {
           route.name == 'arrival_goods'
             ? showNotify()
@@ -102,7 +105,7 @@ import { useAppStore } from 'src/stores/app';
 .container > *:not(:last-child) {
   margin-bottom: 2rem;
 }
-.blocked {
+.blocked .disabled {
   filter: brightness(0.3);
 }
 </style>

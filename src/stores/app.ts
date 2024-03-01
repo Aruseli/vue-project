@@ -2,7 +2,7 @@ import i18next, { t } from 'i18next';
 import { defineStore } from 'pinia';
 import { Notify } from 'quasar';
 import { eventEmitter, initLocalDeviceWsService } from 'src/services';
-import { apiAddAnyTerminal, apiAuth, apiAuthBearer, apiGetShift, apiUsersWhoami } from 'src/services/api';
+import { apiAddAnyTerminal, apiAuth, apiAuthBearer, apiGetCurrentShift, apiGetShift, apiUsersWhoami, apiAddShift } from 'src/services/api';
 import { TERMINAL_REGISTRATION_ATTEMPT_INTERVAL, TERMINAL_STATUS_UPDATE_INTERVAL, USER_INFO_UPDATE_INTERVAL } from 'src/services/consts';
 import { updateCatalogLocales } from 'src/services/locales';
 import { delay } from 'src/services/utils';
@@ -29,7 +29,9 @@ export const useAppStore = defineStore('app', () => {
   const tab = ref('');
   const tabCharacteristics = ref('description');
   const shiftLoading = ref(true);
-  const currentShift = ref(null);
+  const getShift = ref(null);
+  const currentShift = ref('');
+  const addedShift = ref(null);
 
   const openDrawerCart = (state: boolean) => {
     drawerCartState.value = state;
@@ -51,16 +53,44 @@ export const useAppStore = defineStore('app', () => {
     kioskState.globalError = new Error(t('no_terminal_code_provided_on_startup'))
     kioskState.status = 'UnrecoverableError'
   }
-
-  const updateShift = async() => {
+  const updateCurrentShift = async() => {
     shiftLoading.value = true;
     try {
-      const terminal_id = kioskState.params?.terminal_id;
-      currentShift.value = await apiGetShift(terminal_id!);
+      const locationId = kioskState.params?.location_id;
+      currentShift.value = await apiGetCurrentShift(locationId!);
     } catch (error) {
       console.log('updateShift', error)
     } finally {
       shiftLoading.value = false;
+    }
+  }
+  const addingShift = async () => {
+    try {
+      const terminalId = kioskState.params?.terminal_id;
+      const result = await apiUsersWhoami();
+      const userId = result.id;
+      addedShift.value = await apiAddShift(
+        terminalId!,
+        currentShift.value,
+        userId
+      );
+    } catch (error) {
+      console.log("addedShift", error);
+    } finally {
+      console.log('addedShift', addedShift.value)
+    }
+  };
+
+  const updateGetShift = async() => {
+    shiftLoading.value = true;
+    try {
+      const terminalId = kioskState.params?.terminal_id;
+      getShift.value = await apiGetShift(terminalId!);
+    } catch (error) {
+      console.log('updateShift', error)
+    } finally {
+      shiftLoading.value = false;
+      console.log('getShift.value', getShift.value)
     }
   }
 
@@ -122,8 +152,12 @@ export const useAppStore = defineStore('app', () => {
     setLocale,
     resetLocale,
 
-    updateShift,
+    updateGetShift,
+    updateCurrentShift,
+    addingShift,
+    getShift,
     currentShift,
+    addedShift,
   }
 });
 

@@ -9,10 +9,12 @@ import { useRouter } from 'vue-router';
 import RectangularButton from '../buttons/rectangular-button.vue';
 import DividerBold from '../dividers/divider-bold.vue';
 import ListItem from './list-item.vue';
+import { useAppStore } from 'src/stores/app';
 
 
 const goodsStore = useGoodsStore();
 const inventoryStore = useInventoryStore();
+const app = useAppStore();
 
   const router = useRouter();
 
@@ -24,7 +26,10 @@ const inventoryStore = useInventoryStore();
 
   async function submitInventory() {
     try {
-      await inventoryStore.submitInventory()
+      await app.addingShift();
+      console.log('ADDED_STATUS', app.addedShift);
+      await inventoryStore.submitInventory();
+      router.push('/hello');
     } catch (err) {
       console.error('inventoryStore.submitInventory error:', err)
       $q.notify({
@@ -122,7 +127,6 @@ const inventoryStore = useInventoryStore();
           :name="$t('confirm')"
           class="col-5"
           @click="submitInventory"
-          :disable="!allowConfirm"
         />
         <RectangularButton
           color="warning"
