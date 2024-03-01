@@ -82,7 +82,7 @@ import { useSelectInventoryStore } from 'src/stores/selective-inventory';
         color: 'warning',
         icon: 'warning',
         position: 'center',
-        message: t('unable_to_load_inventory'),
+        message: t('there_are_documents_for_inventory'),
         timeout: 6000,
       })
     }
