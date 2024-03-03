@@ -2,26 +2,14 @@ import i18next, { t } from 'i18next';
 import { defineStore } from 'pinia';
 import { Notify } from 'quasar';
 import { eventEmitter, initLocalDeviceWsService } from 'src/services';
-import { apiAddAnyTerminal, apiAuth, apiAuthBearer, apiUsersWhoami } from 'src/services/api';
-import { TERMINAL_REGISTRATION_ATTEMPT_INTERVAL, TERMINAL_STATUS_UPDATE_INTERVAL, USER_INFO_UPDATE_INTERVAL } from 'src/services/consts';
+import { apiAddAnyTerminal, apiAuth, apiAuthBearer, apiGetCorrespondentByEntity, apiUsersWhoami } from 'src/services/api';
 import { updateCatalogLocales } from 'src/services/locales';
 import { delay } from 'src/services/utils';
 import { KioskState } from 'src/types/kiosk-state';
 import { reactive, ref } from 'vue';
 import { Router, useRouter } from 'vue-router';
+import config from 'src/services/config';
 
-/*
- This is 'app' or 'main' store.
- Предназнечение - хранить глобальные данные для приложения:
- - визуальные состояния при необходимости (например, cartDrawerState)
- - локализации интерфейса
- - может быть, в будущем сессии пользователей (если будут вложенные сессии авторизации)
-
- Здесь же подключается локализация по умолчанию.
-
- На этапе разработки вместо fetch использовать Promise.resolve(SOME_CONSTANT)
- с комментарием "//TODO fetch"
- */
 export const useAppStore = defineStore('app', () => {
   const router = useRouter();
   const drawerCartState = ref(false);
@@ -61,7 +49,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const resetLocale = async () => {
-    await setLocale(kioskState.params?.terminal_settings?.loc ?? 'en' )
+    await setLocale(kioskState.settings?.loc ?? 'en' )
   }
 
   const login = async (userName: string, userPassword: string) => {
@@ -118,14 +106,19 @@ async function loopUpdateTerminalParams(kioskState: KioskState) {
     let terminalParams = await tryFetchTerminalParams(kioskState.name, kioskState.code);
     if (terminalParams) {
       kioskState.params = terminalParams
+      kioskState.settings = {
+        ...config.settings,
+        ...terminalParams.terminal_settings,
+      };
       console.log('terminalParams', terminalParams)
-      initLocalDeviceWsService(terminalParams.terminal_settings?.tdp ?? "localhost:3010")
+      console.log('settings', kioskState.settings)
+      initLocalDeviceWsService(kioskState.settings?.tdp ?? "localhost:3010")
       updateKioskStatus(kioskState)
     }
     await delay(
       kioskState.params ?
-      TERMINAL_STATUS_UPDATE_INTERVAL :
-      TERMINAL_REGISTRATION_ATTEMPT_INTERVAL
+      config.terminal_status_update_interval :
+      config.terminal_registration_attempt_interval
     )
   }
 }
@@ -162,16 +155,19 @@ async function tryFetchTerminalParams(terminalName: string, terminalCode: string
 async function loopUpdateCurrentUser(kioskState: KioskState) {
   while(true) {
     await updateCurrentUser(kioskState)
-    await delay(USER_INFO_UPDATE_INTERVAL)
+    await delay(kioskState.settings?.user_info_update_interval ?? config.settings.user_info_update_interval)
   }
 }
 
 async function updateCurrentUser(kioskState: KioskState) {
 
   try {
-    const result = await apiUsersWhoami();
-    kioskState.user = result;
-    console.log("whoami", result);
+    kioskState.user = await apiUsersWhoami();
+    console.log("user", kioskState.user);
+    kioskState.userCorr = await apiGetCorrespondentByEntity(kioskState.user?.id, kioskState.settings!.user_corr_type!);
+    console.log("userCorr", kioskState.userCorr);
+    kioskState.kioskCorr = await apiGetCorrespondentByEntity(kioskState.params!.terminal_id!, kioskState.settings!.kiosk_corr_type!);
+    console.log("kioskCorr", kioskState.kioskCorr);
     updateKioskStatus(kioskState);
   } catch (e: any) {
     if (e?.message?.includes("ERR_AUTH")) {
@@ -221,7 +217,7 @@ function deduceStatus(kioskState: KioskState) {
   if (!kioskState.params?.location_id || !kioskState.params?.object_id) {
     return 'UnboundTerminal'
   }
-  if (!kioskState.user) {
+  if (!kioskState.user || !kioskState.userCorr || !kioskState.kioskCorr) {
     return 'Unauthenticated'
   }
   return 'Ready'

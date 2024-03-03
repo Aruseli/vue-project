@@ -90,7 +90,7 @@
             :actual_quantity="good.quant"
             :good_name="good.title"
             :estimated_quantity="good.stock"
-            :not_equal="good.issued !== good.quant"
+            :not_equal="good.stock !== good.quant"
             :class="{ 'highlighted': good.confirmed }"
             @click="good.confirmed = !good.confirmed"
           />

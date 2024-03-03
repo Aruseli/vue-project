@@ -74,7 +74,7 @@
             :actual_quantity="inv.quant"
             :good_name="inv.title"
             :estimated_quantity="inv.stock"
-            :not_equal="inv.issued !== inv.quant"
+            :not_equal="inv.stock !== inv.quant"
             :class="{ 'highlighted': inv.confirmed }"
             @click="inv.confirmed = !inv.confirmed"
           />

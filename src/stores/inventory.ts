@@ -26,19 +26,20 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
 
   // This will be useful when we apply DRI to code and merge document stores
   const initFullInventoryDoc = async () => {
-    const terminal_settings = appStore.kioskState.params?.terminal_settings;
+    const settings = appStore.kioskState.settings;
+    const kioskCorrId = appStore.kioskState.kioskCorr?.id ?? '';
     const doc = {
       id: undefined,
       state: 0,
-      doc_type: terminal_settings?.inventory_doc_type_id ?? "",
+      doc_type: settings?.inventory_doc_type_id ?? "",
       abbr_text: undefined,
       abbr_num: getNextInventoryNumber(),
       doc_date: new Date().toISOString(),
       doc_order: 0,
-      corr_from_ref: terminal_settings?.kiosk_corr_id ?? "",
-      corr_to_ref: terminal_settings?.kiosk_corr_id ?? "",
-      respperson_ref: appStore.kioskState.user?.id ?? "",
-      currency_ref: terminal_settings?.currency_id ?? "",
+      corr_from_ref: kioskCorrId,
+      corr_to_ref: kioskCorrId,
+      respperson_ref: appStore.kioskState.userCorr?.id ?? "",
+      currency_ref: settings?.currency_id ?? "",
       curr_rate: 1,
       comment: undefined,
       details: goodsStore.goods.flatMap(gs =>
@@ -47,11 +48,11 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
           state: 0,
           rec_order: index + 1,
           good_id: good.id,
-          munit_id: terminal_settings?.munit_id ?? "", // default
+          munit_id: settings?.munit_id ?? "", // default
           quant: 0,
           total: good.stock * good.price,
           doc_detail_link: undefined,
-          doc_detail_type: terminal_settings?.inventory_docdetail_type_id ?? "",
+          doc_detail_type: settings?.inventory_docdetail_type_id ?? "",
         }),
       ))
     }
@@ -59,19 +60,20 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
   }
 
   const submitInventory = async () => {
-    const terminal_settings = appStore.kioskState.params?.terminal_settings;
+    const settings = appStore.kioskState.settings;
+    const kioskCorrId = appStore.kioskState.kioskCorr?.id ?? '';
     const doc = {
       id: undefined,
       state: 0,
-      doc_type: terminal_settings?.inventory_doc_type_id ?? "",
+      doc_type: settings?.inventory_doc_type_id ?? "",
       abbr_text: undefined,
       abbr_num: getNextInventoryNumber(),
       doc_date: new Date().toISOString(),
       doc_order: 0,
-      corr_from_ref: terminal_settings?.kiosk_corr_id ?? "",
-      corr_to_ref: terminal_settings?.kiosk_corr_id ?? "",
-      respperson_ref: appStore.kioskState.user?.id ?? "",
-      currency_ref: terminal_settings?.currency_id ?? "",
+      corr_from_ref: kioskCorrId,
+      corr_to_ref: kioskCorrId,
+      respperson_ref: appStore.kioskState.userCorr?.id ?? "",
+      currency_ref: settings?.currency_id ?? "",
       curr_rate: 1,
       comment: undefined,
       details: inventory.value.map((item, index) => ({
@@ -79,11 +81,11 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
         state: 0,
         rec_order: index + 1,
         good_id: item.id,
-        munit_id: terminal_settings?.munit_id ?? "", // default
+        munit_id: settings?.munit_id ?? "", // default
         quant: item.quant,
         total: item.quant * item.price,
         doc_detail_link: undefined,
-        doc_detail_type: terminal_settings?.inventory_docdetail_type_id ?? "",
+        doc_detail_type: settings?.inventory_docdetail_type_id ?? "",
       })),
     };
     await apiSaveDocument(doc);

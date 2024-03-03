@@ -1,7 +1,6 @@
 import { t } from "i18next";
 import { defineStore } from "pinia";
 import { KioskDocument, apiGetDocuments, apiSaveDocument } from "src/services";
-import { INVENTORIES_CACHE_TTL } from "src/services/consts";
 import { computed, ref } from "vue";
 import { useAppStore } from "./app";
 import { useGoodsStore, type Good } from "./goods";
@@ -22,11 +21,13 @@ export const useSelectiveInventoryStore = defineStore("selectiveInventoryStore",
   const updateInventories = async () => {
     inventoriesLoading.value = true;
     try {
-      const terminal_settings = appStore.kioskState.params?.terminal_settings;
+      const settings = appStore.kioskState.settings;
       inventoriesDocuments.value = await apiGetDocuments(
-        [terminal_settings!.inventory_doc_type_id!],[2]
+        [settings!.inventory_doc_type_id!],[2]
       )
 
+      inventoriesDocuments.value = inventoriesDocuments.value.filter(d =>
+        d.corr_from_ref == appStore.kioskState.kioskCorr?.id)
       inventoriesDocuments.value.sort(
         (a, b) => (a.doc_date != b.doc_date) ? a.doc_date - b.doc_date : a.doc_order - b.doc_order
       );
@@ -42,7 +43,7 @@ export const useSelectiveInventoryStore = defineStore("selectiveInventoryStore",
   const selectInventory = async () => {
     selectedInventoryLoading.value = true;
     try {
-      if (Date.now() - inventoriesLastUpdate.value > INVENTORIES_CACHE_TTL) {
+      if (Date.now() - inventoriesLastUpdate.value > appStore.kioskState.settings!.inventories_cache_ttl!) {
         await updateInventories();
       }
       const inventoryDoc = inventoriesDocuments.value[0] || null;
@@ -67,6 +68,7 @@ export const useSelectiveInventoryStore = defineStore("selectiveInventoryStore",
     }
 
     doc.state = 0;
+    doc.respperson_ref = appStore.kioskState.userCorr?.id;
 
     doc.details.forEach((d) => {
       const item = selectedInventory.value?.items.find(

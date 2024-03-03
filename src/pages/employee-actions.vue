@@ -1,12 +1,14 @@
 <script setup>
   import { useRouter } from 'vue-router';
-  import { reactive, ref } from 'vue';
+  import { computed, reactive, ref } from 'vue';
   import RectangularButton from '../components/buttons/rectangular-button.vue';
-import { useQuasar } from 'quasar';
-import { t } from 'i18next';
+  import { useQuasar } from 'quasar';
+  import { t } from 'i18next';
+  import { useAppStore } from 'src/stores/app';
 
   const $q = useQuasar();
   const router = useRouter();
+  const appStore = useAppStore();
   const route = (path) => {
     router.push(path);
   }
@@ -15,34 +17,46 @@ import { t } from 'i18next';
     {
       name: 'open_shift',
       path: () => route('hello'),
+      disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_open_shift_right_id)),
     },
     {
       name: 'close_shift',
       path: () => route(''),
+      // TODO: Analize shift
+      disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_close_own_shift_right_id) &&
+                              !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_close_shift_right_id)),
     },
     {
       name: 'issue_order',
       path: () => route('issuing-order'),
+      disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_issue_order_right_id)),
     },
     {
       name:'selective_inventory',
       path: () => route('selective-inventory'),
+      // TODO: Merge with appStore
+      disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_selective_inventory_right_id) &&
+                              !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_selective_inventory_extended_right_id)),
     },
     {
       name: 'complete_inventory',
       path: () => route('complete-inventory'),
+      disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_full_inventory_right_id)),
     },
     {
       name: 'arrival_goods',
       path: () => route('employee-actions'),
+      disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_arrival_of_goods_right_id)),
     },
     {
       name: 'print_leftovers',
       path: () => route(''),
+      disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_print_stock_right_id)),
     },
     {
       name: 'list_active_orders',
       path: () => route(''),
+      disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_list_orders_right_id)),
     },
   ])
 
@@ -76,8 +90,8 @@ import { t } from 'i18next';
         v-for="(route, index) in routes"
         :key="index"
         :name='$t(route.name)'
-        :disable='false'
-        :class="{ 'blocked': false }"
+        :disable='route.disable'
+        :class="{ 'blocked': route.disable }"
         @click="() => {
           route.name == 'arrival_goods'
             ? showNotify()

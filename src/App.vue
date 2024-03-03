@@ -60,6 +60,10 @@ import { useSelectiveInventoryStore } from "./stores/selective-inventory";
                 router.push(`/issuing-order/order/${d.id}`)
               }
             });
+            if (process.env.DEV) {
+              console.log('Order barcodes', ordersStore.ordersDocuments.map(d =>
+                `2300${uuidToBarcodeDocId(d.id).toString().padStart(8, "0")}0`))
+            }
           }
           if (route.path == '/employee-actions') {
             await arrivalsStore.updateArrivals();
@@ -69,6 +73,10 @@ import { useSelectiveInventoryStore } from "./stores/selective-inventory";
                 router.push(`/arrival-goods/${d.id}`)
               }
             });
+            if (process.env.DEV) {
+              console.log('Arrival barcodes', arrivalsStore.arrivalsDocuments.map(d =>
+                `2300${uuidToBarcodeDocId(d.id).toString().padStart(8, "0")}0`))
+            }
           }
           break;
         default:
