@@ -2,7 +2,7 @@ import i18next, { t } from 'i18next';
 import { defineStore } from 'pinia';
 import { Notify } from 'quasar';
 import { eventEmitter, initLocalDeviceWsService } from 'src/services';
-import { apiAddAnyTerminal, apiAuth, apiAuthBearer, apiGetCurrentShift, apiGetShift, apiUsersWhoami, apiAddShift } from 'src/services/api';
+import { apiAddAnyTerminal, apiAuth, apiAuthBearer, apiGetCurrentShift, apiGetShift, apiUsersWhoami, apiAddShift, apiCloseShift } from 'src/services/api';
 import { TERMINAL_REGISTRATION_ATTEMPT_INTERVAL, TERMINAL_STATUS_UPDATE_INTERVAL, USER_INFO_UPDATE_INTERVAL } from 'src/services/consts';
 import { updateCatalogLocales } from 'src/services/locales';
 import { delay } from 'src/services/utils';
@@ -32,6 +32,7 @@ export const useAppStore = defineStore('app', () => {
   const getShift = ref(null);
   const currentShift = ref('');
   const addedShift = ref(null);
+  const closeShift = ref(null);
 
   const openDrawerCart = (state: boolean) => {
     drawerCartState.value = state;
@@ -65,6 +66,7 @@ export const useAppStore = defineStore('app', () => {
     }
   }
   const addingShift = async () => {
+    shiftLoading.value = true;
     try {
       const terminalId = kioskState.params?.terminal_id;
       const result = await apiUsersWhoami();
@@ -77,10 +79,73 @@ export const useAppStore = defineStore('app', () => {
     } catch (error) {
       console.log("addedShift", error);
     } finally {
+      shiftLoading.value = false;
       console.log('addedShift', addedShift.value)
-
     }
   };
+
+  const closedShift = async() => {
+    shiftLoading.value = true;
+    try {
+      const result = await apiUsersWhoami();
+      const userId = result.id;
+      const terminalId = kioskState.params?.terminal_id;
+      const terminalShiftId = await apiGetShift(terminalId!);
+      const state = 0;
+      closeShift.value = await apiCloseShift(
+        terminalShiftId,
+        state,
+        userId
+      );
+      console.log('terminalShiftId', terminalShiftId);
+    } catch (error) {
+      console.log("closeShift", error);
+    } finally {
+      shiftLoading.value = false;
+      console.log('closeShift', closeShift.value);
+
+    }
+  }
+  const closingShift = async() => {
+    shiftLoading.value = true;
+    try {
+      const result = await apiUsersWhoami();
+      const userId = result.id;
+      const terminalId = kioskState.params?.terminal_id;
+      const terminalShiftId = await apiGetShift(terminalId!);
+      const state = 5;
+      closeShift.value = await apiCloseShift(
+        terminalShiftId,
+        state,
+        userId
+      );
+    } catch (error) {
+      console.log("closeShift", error);
+    } finally {
+      shiftLoading.value = false;
+      console.log('closeShift', closeShift.value)
+    }
+  }
+
+  const updateStateShift = async () => {
+    shiftLoading.value = true;
+    try {
+      const terminalId = kioskState.params?.terminal_id;
+      const locationId = kioskState.params?.location_id;
+      getShift.value = await apiGetShift(terminalId!);
+      currentShift.value = await apiGetCurrentShift(locationId!);
+      if(getShift.value !== currentShift.value) {
+        closedShift();
+      }
+    } catch (error) {
+      console.log("closeShift", error);
+    } finally {
+      shiftLoading.value = false;
+      console.log('closeShift', closeShift.value)
+      console.log('getShift', getShift.value)
+    }
+
+  }
 
   const updateGetShift = async() => {
     shiftLoading.value = true;
@@ -156,9 +221,13 @@ export const useAppStore = defineStore('app', () => {
     updateGetShift,
     updateCurrentShift,
     addingShift,
+    closedShift,
+    closingShift,
+    updateStateShift,
     getShift,
     currentShift,
     addedShift,
+    closeShift,
   }
 });
 

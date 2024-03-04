@@ -79,12 +79,16 @@ import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
     if( selectInventoryStore.inventoriesDocuments.length ) {
       dialogState.value = true
     }
+    if( selectInventoryStore.inventoriesDocuments.length ) {
+      dialogState.value = true
+    }
     await app.updateGetShift();
     await app.updateCurrentShift();
     await selectInventoryStore.updateInventories();
-    console.log('STATUS', app.getShift);
-    console.log('CURRENT', app.currentShift);
-    console.log('InvDocs', selectInventoryStore.inventoriesDocuments.length);
+    await app.updateStateShift();
+    // console.log('GET STATUS', app.getShift);
+    // console.log('CURRENT STATUS', app.currentShift);
+    // console.log('InvDocs', selectInventoryStore.inventoriesDocuments.length);
   })
 
   const defer = () => {

@@ -100,6 +100,7 @@ import ProductCard from './product-card.vue';
     )
     // console.log('KIOSK', redirectDelay)
     // console.log('notifyDelay', notifyDelay)
+    console.log('SHIFTS IN CATALOG', app.getShift, app.currentShift)
   })
 
   onUnmounted(() => {

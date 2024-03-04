@@ -119,11 +119,11 @@ export async function apiAddShift(terminalId: string, locationShiftId: string, u
 export async function apiCloseShift(terminalShiftId: string, state: number, user_id: string) {
   const response = await fetchApi('/api/v2/sales/closeShift', {
     id: terminalShiftId,
-    state: 0,
+    state: state,
     user_id: user_id,
   });
   console.log('apiCloseShift', response)
-  return response.data
+  return response.data.success
 }
 
 

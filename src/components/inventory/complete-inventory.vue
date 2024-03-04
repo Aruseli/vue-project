@@ -27,6 +27,7 @@ const app = useAppStore();
   async function submitInventory() {
     try {
       await app.addingShift();
+      await app.updateGetShift();
       console.log('ADDED_STATUS', app.addedShift);
       await inventoryStore.submitInventory();
       router.push('/hello');
@@ -63,6 +64,7 @@ const app = useAppStore();
       })
       router.push('/employee-actions')
     }
+    console.log('SHIFTS', app.getShift, app.currentShift)
   })
 </script>
 
