@@ -33,6 +33,7 @@ export const useAppStore = defineStore('app', () => {
   const currentShift = ref('');
   const addedShift = ref(null);
   const closeShift = ref(null);
+  const closingShiftState = ref(null);
 
   const openDrawerCart = (state: boolean) => {
     drawerCartState.value = state;
@@ -71,11 +72,14 @@ export const useAppStore = defineStore('app', () => {
       const terminalId = kioskState.params?.terminal_id;
       const result = await apiUsersWhoami();
       const userId = result.id;
+      const locationId = kioskState.params?.location_id;
+      currentShift.value = await apiGetCurrentShift(locationId!);
       addedShift.value = await apiAddShift(
         terminalId!,
         currentShift.value,
         userId
       );
+      // await updateGetShift();
     } catch (error) {
       console.log("addedShift", error);
     } finally {
@@ -93,16 +97,16 @@ export const useAppStore = defineStore('app', () => {
       const terminalShiftId = await apiGetShift(terminalId!);
       const state = 0;
       closeShift.value = await apiCloseShift(
-        terminalShiftId,
+        terminalShiftId.id,
         state,
         userId
       );
       console.log('terminalShiftId', terminalShiftId);
     } catch (error) {
-      console.log("closeShift", error);
+      console.log("CLOSEShift", error);
     } finally {
       shiftLoading.value = false;
-      console.log('closeShift', closeShift.value);
+      console.log('CLOSEShift', closeShift.value);
 
     }
   }
@@ -114,37 +118,17 @@ export const useAppStore = defineStore('app', () => {
       const terminalId = kioskState.params?.terminal_id;
       const terminalShiftId = await apiGetShift(terminalId!);
       const state = 5;
-      closeShift.value = await apiCloseShift(
-        terminalShiftId,
+      closingShiftState.value = await apiCloseShift(
+        terminalShiftId.terminal_id,
         state,
         userId
       );
     } catch (error) {
-      console.log("closeShift", error);
+      console.log("closingShift", error);
     } finally {
       shiftLoading.value = false;
-      console.log('closeShift', closeShift.value)
+      console.log('closingShift', closingShiftState.value)
     }
-  }
-
-  const updateStateShift = async () => {
-    shiftLoading.value = true;
-    try {
-      const terminalId = kioskState.params?.terminal_id;
-      const locationId = kioskState.params?.location_id;
-      getShift.value = await apiGetShift(terminalId!);
-      currentShift.value = await apiGetCurrentShift(locationId!);
-      if(getShift.value !== currentShift.value) {
-        closedShift();
-      }
-    } catch (error) {
-      console.log("closeShift", error);
-    } finally {
-      shiftLoading.value = false;
-      console.log('closeShift', closeShift.value)
-      console.log('getShift', getShift.value)
-    }
-
   }
 
   const updateGetShift = async() => {
@@ -223,7 +207,6 @@ export const useAppStore = defineStore('app', () => {
     addingShift,
     closedShift,
     closingShift,
-    updateStateShift,
     getShift,
     currentShift,
     addedShift,

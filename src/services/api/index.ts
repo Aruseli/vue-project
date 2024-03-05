@@ -105,7 +105,7 @@ export async function apiGetShift(terminalId: string) {
     id: terminalId,
   });
   console.log('apiGetShift', response)
-  return response.data.shift?.id
+  return response.data.shift
 }
 export async function apiAddShift(terminalId: string, locationShiftId: string, user_id: string) {
   const response = await fetchApi('/api/v2/sales/addShift', {
@@ -123,7 +123,7 @@ export async function apiCloseShift(terminalShiftId: string, state: number, user
     user_id: user_id,
   });
   console.log('apiCloseShift', response)
-  return response.data.success
+  return response.data
 }
 
 

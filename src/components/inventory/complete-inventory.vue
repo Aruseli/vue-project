@@ -5,7 +5,7 @@ import { useQuasar } from 'quasar';
 import { useGoodsStore } from 'src/stores/goods';
 import { useInventoryStore } from 'src/stores/inventory';
 import { computed, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import RectangularButton from '../buttons/rectangular-button.vue';
 import DividerBold from '../dividers/divider-bold.vue';
 import ListItem from './list-item.vue';
@@ -17,6 +17,7 @@ const inventoryStore = useInventoryStore();
 const app = useAppStore();
 
   const router = useRouter();
+  const route = useRoute();
 
   const $q = useQuasar();
 
@@ -26,11 +27,20 @@ const app = useAppStore();
 
   async function submitInventory() {
     try {
-      await app.addingShift();
-      await app.updateGetShift();
       console.log('ADDED_STATUS', app.addedShift);
-      await inventoryStore.submitInventory();
-      router.push('/hello');
+      if (route === 'open-shift/complete-inventory') {
+        await app.addingShift();
+        await app.updateGetShift();
+        router.push('/hello');
+
+      } else if (route == '/close-shift/complete-inventory') {
+        await inventoryStore.submitInventory();
+        app.closedShift();
+        router.push('/employee-actions');
+      } else {
+        await inventoryStore.submitInventory();
+        router.push('/employee-actions');
+      }
     } catch (err) {
       console.error('inventoryStore.submitInventory error:', err)
       $q.notify({
@@ -64,7 +74,7 @@ const app = useAppStore();
       })
       router.push('/employee-actions')
     }
-    console.log('SHIFTS', app.getShift, app.currentShift)
+    console.log('SHIFTS', app.getShift)
   })
 </script>
 
@@ -134,7 +144,7 @@ const app = useAppStore();
           color="warning"
           :name="$t('declare_discrepancy')"
           class="col-5"
-          @click="() => console.log('declare_discrepancy')"
+          @click="submitInventory"
         />
       </div>
     </div>
