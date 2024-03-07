@@ -28,9 +28,9 @@ const app = useAppStore();
   async function submitInventory() {
     try {
       console.log('ADDED_STATUS', app.addedShift);
-      if (route === 'open-shift/complete-inventory') {
-        await app.addingShift();
-        await app.updateGetShift();
+      if (route.path === '/open-shift/complete-inventory') {
+        await app.addTerminalShift();
+        await app.updateTerminalShift();
         router.push('/hello');
 
       } else if (route == '/close-shift/complete-inventory') {
@@ -39,7 +39,6 @@ const app = useAppStore();
         router.push('/employee-actions');
       } else {
         await inventoryStore.submitInventory();
-        router.push('/employee-actions');
       }
     } catch (err) {
       console.error('inventoryStore.submitInventory error:', err)
@@ -74,7 +73,6 @@ const app = useAppStore();
       })
       router.push('/employee-actions')
     }
-    console.log('SHIFTS', app.getShift)
   })
 </script>
 

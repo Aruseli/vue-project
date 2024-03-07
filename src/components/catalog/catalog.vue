@@ -98,9 +98,6 @@ import ProductCard from './product-card.vue';
     ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
       document.addEventListener(e, boundResetTimer)
     )
-    // console.log('KIOSK', redirectDelay)
-    // console.log('notifyDelay', notifyDelay)
-    console.log('SHIFTS IN CATALOG', app.getShift, app.currentShift)
   })
 
   onUnmounted(() => {

@@ -22,20 +22,19 @@ import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
     router.push(path);
   }
   const switcher = async () => {
-    console.log('123')
-    await app.closingShift();
+    await app.switchTerminalShiftToClosingState();
     router.push('close-shift/complete-inventory');
   }
 
-  const routes = reactive([
+  const routes = computed(() => ([
     {
       name: !openCatalog.value ? 'open_shift' : 'shift_is_open_switch_to_user_mode',
-      path: openCatalog.value ? () => route('open-shift/complete-inventory'): () => route('hello'),
+      path: !openCatalog.value ? () => route('open-shift/complete-inventory'): () => route('hello'),
     },
     {
       name: 'close_shift',
       path: () => switcher(),
-      disable: app.getShift?.shift?.global_shift_id == app.currentShift ? false : true,
+      disable: app.getShift?.shift?.global_shift_id == app.locationShiftId ? false : true,
     },
     {
       name: 'issue_order',
@@ -44,8 +43,8 @@ import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
     {
       name:'selective_inventory',
       path: () => route('selective-inventory'),
-      disable: sum > 0 ? true : false,
-      badge: sum > 0 ? false : true,
+      disable: invNum.value > 0 ? true : false,
+      badge: invNum.value > 0 ? false : true,
     },
     {
       name: 'complete_inventory',
@@ -63,14 +62,14 @@ import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
       name: 'list_active_orders',
       path: () => route(''),
     },
-  ])
+  ]))
 
-  watchEffect(() => {
-    invNum.value;
-    routes[3].disable;
-    console.log('WATCH', invNum.value)
-    console.log('DISABLE', routes[3].disable)
-  })
+  // watchEffect(() => {
+  //   invNum.value;
+  //   routes[3].disable;
+  //   console.log('WATCH', invNum.value)
+  //   console.log('DISABLE', routes[3].disable)
+  // })
 
   console.log('invNum', invNum.value)
 
@@ -99,12 +98,11 @@ import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
   //   invNum.value = selectInventoryStore.inventories.length;
   // })
   onMounted(async() => {
-    console.log('route', _route);
-    await app.updateGetShift();
-    await app.updateCurrentShift();
+    await app.updateTerminalShift();
+    await app.updateLocationShift();
     await selectInventoryStore.updateInventories();
     const invDocs = selectInventoryStore.inventoriesDocuments.length;
-    openCatalog.value = (app.getShift?.shift?.global_shift_id === app.currentShift);
+    openCatalog.value = (app.getShift?.shift?.global_shift_id === app.locationShiftId);
     if( invDocs > 0 ) {
       dialogState.value = true
       invNum.value = invDocs;
@@ -112,22 +110,21 @@ import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
     }
     // await app.updateStateShift();
     console.log('GET STATUS', app.getShift?.shift?.global_shift_id );
-    console.log('CURRENT STATUS', app.currentShift);
+    console.log('CURRENT STATUS', app.locationShiftId);
     console.log('openCatalog STATUS', openCatalog.value);
     console.log('InvDocs', selectInventoryStore.inventoriesDocuments.length);
     console.log('InvDocsRef', invNum.value);
   })
 
   const closingShift = () => {
-     app.closingShift();
+     app.switchTerminalShiftToClosingState();
      router.push('complete-inventory')
     //  app.closedShift();
-    console.log('CLOSED STATUS', app.closeShift);
   }
 
-  const defer = () => {
-    dialogState.value = false;
-  }
+  // const defer = () => {
+  //   dialogState.value = false;
+  // }
 </script>
 
 <template>
@@ -154,7 +151,7 @@ import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
 
     </div>
     <RedirectDialog
-      @complete="defer"
+      @complete="dialogState = false"
       @continue="route('selective-inventory')"
       :modelValue="dialogState"
       nameLeftButton="defer"
