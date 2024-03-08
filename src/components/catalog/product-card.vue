@@ -53,18 +53,6 @@ import IconButton from '../buttons/icon-button.vue';
   const addGoodToCart = (good) => {
     cartStore.increaseItemsCount(good);
     showNotify();
-    // // Запускаем таймер на 15 минут
-    // timer.value = setTimeout(() => {
-    //   $q.notify({
-    //     color: 'warning',
-    //     icon: 'warning',
-    //     position: 'center',
-    //     message: "Ваша корзина будет очищена через 1 минуту.",
-    //     timeout: 6000,
-    //   })
-    // }, 6000);
-
-
   }
 
   const decrease = (good) => {
@@ -94,7 +82,7 @@ import IconButton from '../buttons/icon-button.vue';
 
 
 <template>
-  <div class="card_setting" v-bind="$attrs">
+  <div class="card_setting" v-bind="$attrs" @click="goodDetails">
     <div :class="{'outStock': good && good.stock <= 0, 'available': good && good.stock > 0}">
       <div class="content_container">
         <div class="img_container">
