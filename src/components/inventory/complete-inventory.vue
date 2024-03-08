@@ -27,10 +27,10 @@ const app = useAppStore();
 
   async function submitInventory() {
     try {
-      console.log('ADDED_STATUS', app.addedShift);
       if (route.path === '/open-shift/complete-inventory') {
-        await app.addTerminalShift();
-        await app.updateTerminalShift();
+        app.addTerminalShift();
+        console.log('ADDED_STATUS', app.addedShift);
+        // await app.updateTerminalShift();
         router.push('/hello');
 
       } else if (route == '/close-shift/complete-inventory') {

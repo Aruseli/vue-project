@@ -69,19 +69,19 @@ export const useAppStore = defineStore('app', () => {
   const addTerminalShift = async () => {
     shiftLoading.value = true;
     try {
-      const terminalId = kioskState.params?.terminal_id;
-      const result = await apiUsersWhoami();
-      const userId = result.id;
-      const locationId = kioskState.params?.location_id;
-      locationShiftId.value = await apiGetCurrentShift(locationId!);
       addedShift.value = await apiAddShift(
-        terminalId!,
+        kioskState.params?.terminal_id!,
         locationShiftId.value,
-        userId
+        kioskState.user.id
       );
-      await updateTerminalShift();
+      if (!terminalShiftId.value) {
+        await updateTerminalShift();
+      }
     } catch (error) {
       console.log("addedShift", error);
+      console.log("locationShiftIdADDD", locationShiftId.value);
+      console.log("USERADDD", kioskState.user.id);
+      console.log("TERMINALADDD", kioskState.params?.terminal_id);
     } finally {
       shiftLoading.value = false;
       console.log('addedShift', addedShift.value)
@@ -91,46 +91,45 @@ export const useAppStore = defineStore('app', () => {
   const closedShift = async () => {
     shiftLoading.value = true;
     try {
-      const result = await apiUsersWhoami();
-      const userId = result.id;
       const terminalId = kioskState.params?.terminal_id;
       const terminalShiftId = await apiGetShift(terminalId!);
       const state = 0;
       closeShift.value = await apiCloseShift(
         terminalShiftId.terminal_id,
         state,
-        userId
+        kioskState.user.id
       );
-      console.log("terminalShiftId", terminalShiftId);
+      console.log("terminalShiftIdCLOSE", terminalShiftId);
     } catch (error) {
       console.log("CLOSEShift", error);
+      console.log("terminalShiftIdCLOSE", terminalShiftId.value);
     } finally {
       shiftLoading.value = false;
       console.log("CLOSEShift", closeShift.value);
+      console.log("terminalShiftIdCLOSE", terminalShiftId);
     }
   };
 
-
   const switchTerminalShiftToClosingState = async() => {
-    shiftLoading.value = true;
-    try {
-      const result = await apiUsersWhoami();
-      const userId = result.id;
-      const terminalId = kioskState.params?.terminal_id;
-      const terminalShiftId = await apiGetShift(terminalId!);
-      const state = 5;
-      closingShiftState.value = await apiCloseShift(
-        terminalShiftId.terminal_id,
-        state,
-        userId
-      );
-    } catch (error) {
-      console.log("closingShift", error);
-    } finally {
-      shiftLoading.value = false;
-      console.log('closingShift', closingShiftState.value)
-    }
+  shiftLoading.value = true;
+  try {
+    const terminalId = kioskState.params?.terminal_id;
+    const terminalShiftId = await apiGetShift(terminalId!);
+    const state = 5;
+    closingShiftState.value = await apiCloseShift(
+      terminalShiftId.terminal_id,
+      state,
+      kioskState.user.id
+    );
+  } catch (error) {
+    console.log("closingShiftState.value", closingShiftState.value);
+    console.log("closingShift", error);
+  } finally {
+    shiftLoading.value = false;
+    console.log('closingShift', closingShiftState.value)
   }
+}
+
 
   const updateTerminalShift = async() => {
     shiftLoading.value = true;
@@ -142,6 +141,7 @@ export const useAppStore = defineStore('app', () => {
     } finally {
       shiftLoading.value = false;
       console.log('getShift.value', terminalShiftId.value)
+      console.log('getShiftTERMINAL', kioskState.params?.terminal_id)
     }
   }
 

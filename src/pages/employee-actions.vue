@@ -10,7 +10,6 @@ import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
 
   const $q = useQuasar();
   const router = useRouter();
-  const _route = useRoute();
   const app = useAppStore();
   const selectInventoryStore = useSelectInventoryStore();
   const dialogState = ref(false);
@@ -64,15 +63,6 @@ import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
     },
   ]))
 
-  // watchEffect(() => {
-  //   invNum.value;
-  //   routes[3].disable;
-  //   console.log('WATCH', invNum.value)
-  //   console.log('DISABLE', routes[3].disable)
-  // })
-
-  console.log('invNum', invNum.value)
-
   const showNotify = () => {
     $q.notify({
       position: "center",
@@ -93,23 +83,18 @@ import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
       ],
     });
   }
-  // onBeforeMount(() => {
-  //   selectInventoryStore.updateInventories();
-  //   invNum.value = selectInventoryStore.inventories.length;
-  // })
   onMounted(async() => {
     await app.updateTerminalShift();
     await app.updateLocationShift();
     await selectInventoryStore.updateInventories();
     const invDocs = selectInventoryStore.inventoriesDocuments.length;
-    openCatalog.value = (app.getShift?.shift?.global_shift_id === app.locationShiftId);
+    openCatalog.value = (app.getShift?.global_shift_id === app.locationShiftId);
     if( invDocs > 0 ) {
       dialogState.value = true
       invNum.value = invDocs;
       console.log('IFInvDocsRef', invNum.value);
     }
-    // await app.updateStateShift();
-    console.log('GET STATUS', app.getShift?.shift?.global_shift_id );
+    console.log('GET STATUS', app.getShift?.global_shift_id );
     console.log('CURRENT STATUS', app.locationShiftId);
     console.log('openCatalog STATUS', openCatalog.value);
     console.log('InvDocs', selectInventoryStore.inventoriesDocuments.length);
