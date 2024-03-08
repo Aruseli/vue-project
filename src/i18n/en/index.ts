@@ -66,4 +66,7 @@ export default {
   shift_is_open_switch_to_user_mode: 'The shift is open. Switch to user mode',
   there_are_documents_for_inventory: 'There are documents for inventory',
   defer: 'defer',
+  cash_payment: 'cash payment',
+  cashless_payment: 'cashless payment',
+
 };

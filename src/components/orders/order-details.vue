@@ -69,13 +69,13 @@ import OrderCard from './order-card.vue';
       </div>
     </div>
     <div>
-      <DividerBold class="q-mb-lg" />
+      <DividerBold class="q-mb-md" />
       <div class="row justify-between items-center q-mb-md">
         <div class="text-h4">{{ $t('total') }}</div>
         <div class="text-h3 q-mb-md">
           {{ ordersStore.currentOrder?.totalPrice }} &ensp;&#3647
         </div>
-        <DividerThin class="bg-negative q-mb-lg" />
+        <DividerThin class="bg-negative q-mb-md" />
         <div class="text-h4 row q-gutter-sm text-weight-regular">
           <span>{{ $t('order') }}</span>&ensp;
           <span>{{ ordersStore.currentOrder?.totalCount }}</span>&ensp;
@@ -83,8 +83,24 @@ import OrderCard from './order-card.vue';
           <span>{{ $t('units', { count: ordersStore.currentOrder?.totalCount }) }}</span>
         </div>
       </div>
+      <div class="full-width row justify-between q-mb-sm">
+        <RectangularButton
+          :name="$t('cash_payment')"
+          @click="submitInventory"
+          class="payButton"
+          color="negative"
+          textColor="black"
+          />
+          <RectangularButton
+          color="negative"
+          :name="$t('cashless_payment')"
+          textColor="black"
+          @click="submitInventory"
+          class="payButton"
+        />
+      </div>
       <div class="full-width">
-        <q-btn
+        <!-- <q-btn
           class="full-width text-style q-py-md"
           unelevated
           rounded
@@ -96,7 +112,13 @@ import OrderCard from './order-card.vue';
           <div class="text-h3 text-white text-center text-weight-bold text-header_bg text-uppercase">
             {{ $t('confirm') }}
           </div>
-        </q-btn>
+        </q-btn> -->
+        <RectangularButton
+          :name="$t('confirm')"
+          @click="confirmOrder"
+          :disable="!allowConfirm"
+          class="full-width"
+        />
       </div>
     </div>
   </div>
@@ -113,5 +135,9 @@ import OrderCard from './order-card.vue';
 .router_link_style {
   font-size: 3rem;
   text-decoration: none;
+}
+
+.payButton {
+  width: 49%
 }
 </style>

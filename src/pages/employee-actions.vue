@@ -34,7 +34,7 @@ import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
     {
       name: 'close_shift',
       path: () => switcher(),
-      disable: app.getShift?.shift?.global_shift_id == app.locationShiftId ? false : true,
+      disable: openCatalog.value ? false : true,
     },
     {
       name: 'issue_order',
@@ -43,8 +43,8 @@ import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
     {
       name:'selective_inventory',
       path: () => route('selective-inventory'),
-      disable: invNum.value > 0 ? true : false,
-      badge: invNum.value > 0 ? false : true,
+      disable: invNum.value > 0 ? false : true,
+      badge: invNum.value > 0 ? true : false,
     },
     {
       name: 'complete_inventory',
@@ -144,7 +144,7 @@ import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
             : null
         }"
       >
-        <div v-if="route.badge" class="badge_style bg-positive flex items-center">
+        <div v-if="route.badge == true" class="badge_style bg-positive flex items-center">
           <div class="text-h4 text-white q-px-sm">{{ invNum }}</div>
         </div>
       </RectangularButton>
