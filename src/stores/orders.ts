@@ -16,6 +16,9 @@ export const useOrdersStore = defineStore("orders", () => {
   const ordersLoading = ref(true);
   const ordersLastUpdate = ref(0);
 
+  const payment = ref(null);
+
+
   const currentOrder = ref<ReturnType<typeof documentToOrder> | null>(null);
   const currentOrderDocument = ref<KioskDocument | null>(null);
   const currentOrderLoading = ref(true);
@@ -108,6 +111,7 @@ export const useOrdersStore = defineStore("orders", () => {
     ordersLoading,
     updateOrders,
     scanGood,
+    payment,
   };
 });
 

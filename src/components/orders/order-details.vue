@@ -11,6 +11,7 @@ import OrderCard from './order-card.vue';
   const ordersStore = useOrdersStore();
   const route = useRoute();
   const router = useRouter();
+  const payment = ref('cash' | 'cashless');
 
   const confirmOrder = async () => {
     await ordersStore.confirmCurrentOrderIssue()
@@ -38,6 +39,10 @@ import OrderCard from './order-card.vue';
       router.push('/employee-actions')
     }
   })
+
+  const paymentMethod = (option) => {
+    payment.value = option;
+  }
 
 </script>
 
@@ -86,33 +91,24 @@ import OrderCard from './order-card.vue';
       <div class="full-width row justify-between q-mb-sm">
         <RectangularButton
           :name="$t('cash_payment')"
-          @click="submitInventory"
+          @click="paymentMethod('cash')"
           class="payButton"
-          color="negative"
-          textColor="black"
+          color=""
+          textColor="payment == 'cash' ? 'white' : 'black'"
+          :disable="!allowConfirm"
+          :class="payment == 'cash' && 'selected'"
           />
           <RectangularButton
-          color="negative"
+          color="payment == 'cashless' ? 'primary' : 'negative'"
           :name="$t('cashless_payment')"
-          textColor="black"
-          @click="submitInventory"
+          textColor="payment == 'cashless' ? 'white' : 'black'"
+          @click="paymentMethod('cashless')"
+          :class="payment == 'cashless' && 'selected'"
+          :disable="!allowConfirm"
           class="payButton"
         />
       </div>
       <div class="full-width">
-        <!-- <q-btn
-          class="full-width text-style q-py-md"
-          unelevated
-          rounded
-          no-caps
-          color="primary"
-          @click="confirmOrder"
-          :disable="!allowConfirm"
-        >
-          <div class="text-h3 text-white text-center text-weight-bold text-header_bg text-uppercase">
-            {{ $t('confirm') }}
-          </div>
-        </q-btn> -->
         <RectangularButton
           :name="$t('confirm')"
           @click="confirmOrder"
@@ -138,6 +134,13 @@ import OrderCard from './order-card.vue';
 }
 
 .payButton {
-  width: 49%
+  width: 49%;
+  background-color: var(--q-negative);
+  color: black;
+}
+
+.selected {
+  background-color: var(--q-primary);
+  color: white;
 }
 </style>
