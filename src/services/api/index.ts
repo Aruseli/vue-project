@@ -218,6 +218,7 @@ export type KioskDocument = {
   currency_name: any,
   curr_rate: any,
   comment: any,
+  // fields: { payment_type: string },
   details: {
     id: any,
     state: any,
@@ -267,6 +268,7 @@ export type SaveableDocument = {
   currency_ref: string,
   curr_rate: number,
   comment?: string,
+  // fields: { payment_type: string },
   details: {
     id?: any,
     state: number,
