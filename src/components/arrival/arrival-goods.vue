@@ -81,10 +81,10 @@ const goodsStore = useGoodsStore();
           :key="arrival.id"
           :good_name="arrival.title"
           :actual_quantity="arrival.issued"
-          :confirm="arrivalsStore.blockScan  === arrival.id"
+          :confirmed="arrivalsStore.blockScan  === arrival.id"
           :not_equal="arrival.issued !== arrival.quant"
-          :class="{ 'highlighted': arrival.confirm }"
-          @click="arrival.confirm = !arrival.confirm"
+          :class="{ 'highlighted': arrival.confirmed }"
+          @click="arrival.confirmed = !arrival.confirmed"
         />
       </div>
     </div>

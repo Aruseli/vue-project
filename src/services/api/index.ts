@@ -1,5 +1,5 @@
-import { TerminalParams } from "src/types/kiosk-state";
-import { TERMINAL_TYPE_ID } from "../consts";
+import { Correspondent, TerminalParams, User } from "src/types/kiosk-state";
+import config from 'src/services/config';
 
 async function fetchApi<T = any>(url: string, data?: Record<string, any>, mode: 'json' | 'text' = 'json', headers: any = {}): Promise<T> {
   let response;
@@ -59,7 +59,7 @@ export async function apiAddAnyTerminal(name: string, code: string) {
   const response = await fetchApi<{ data: TerminalParams }>('/api/v2/addAnyTerminal', {
     name,
     code,
-    type_id: TERMINAL_TYPE_ID,
+    type_id: config.terminal_type_id,
   })
   return response.data;
 }
@@ -126,17 +126,16 @@ export async function apiCloseShift(terminalShiftId: string, state: number, user
   return response.data
 }
 
-
-export type User = {
-  id: string,
-  login: string,
-  name: string,
-  tokens: string,
-  rights: { id: string, name: string }[],
-}
-
 export async function apiUsersWhoami() {
   const response = await fetchApi<{ data: User }>('/api/v2/users/whoami')
+  return response.data
+}
+
+export async function apiGetCorrespondentByEntity(entityId: string, corrType: string) {
+  const response = await fetchApi<{ data: Correspondent }>('/api/v2/correspondents/getCorrespondentByEntity', {
+    entityId,
+    corrType,
+  });
   return response.data
 }
 
@@ -204,7 +203,7 @@ export type KioskDocument = {
   dts: any
   doc_type: any,
   abbr_text: any,
-  abbr_num: any,
+  abbr_num?: number,
   doc_date: any,
   doc_order: number,
   corr_from_ref: any,
@@ -258,7 +257,7 @@ export type SaveableDocument = {
   state: number,
   doc_type: string,
   abbr_text?: any,
-  abbr_num?: any,
+  abbr_num?: number,
   doc_date: string, // e.g. '2024-01-24'
   doc_order: number,
   corr_from_ref: string,

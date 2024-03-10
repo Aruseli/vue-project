@@ -2,17 +2,17 @@
   import { useRouter, useRoute } from 'vue-router';
   import { nextTick, onMounted, onBeforeMount, reactive, ref, watch, watchEffect, computed } from 'vue';
   import RectangularButton from '../components/buttons/rectangular-button.vue';
-import { useQuasar } from 'quasar';
-import { t } from 'i18next';
-import { useAppStore } from 'src/stores/app';
-import { useSelectInventoryStore } from 'src/stores/selective-inventory';
-import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
+  import { useQuasar } from 'quasar';
+  import { t } from 'i18next';
+  import { useAppStore } from 'src/stores/app';
+  import { useSelectiveInventoryStore } from 'src/stores/selective-inventory';
+  import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
 
   const $q = useQuasar();
   const router = useRouter();
   const _route = useRoute();
   const app = useAppStore();
-  const selectInventoryStore = useSelectInventoryStore();
+  const selectiveInventoryStore = useSelectiveInventoryStore();
   const dialogState = ref(false);
   const openCatalog = ref(false);
   const invNum = ref(0);
@@ -30,37 +30,49 @@ import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
     {
       name: !openCatalog.value ? 'open_shift' : 'shift_is_open_switch_to_user_mode',
       path: !openCatalog.value ? () => route('open-shift/complete-inventory'): () => route('hello'),
+      disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_open_shift_right_id)),
     },
     {
       name: 'close_shift',
       path: () => switcher(),
       disable: openCatalog.value ? false : true,
+      // // TODO: Analize shift
+      // disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_close_own_shift_right_id) &&
+      //                         !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_close_shift_right_id)),
     },
     {
       name: 'issue_order',
       path: () => route('issuing-order'),
+      disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_issue_order_right_id)),
     },
     {
       name:'selective_inventory',
       path: () => route('selective-inventory'),
       disable: invNum.value > 0 ? false : true,
       badge: invNum.value > 0 ? true : false,
+      // TODO: Merge with appStore
+      // disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_selective_inventory_right_id) &&
+      //                         !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_selective_inventory_extended_right_id)),
     },
     {
       name: 'complete_inventory',
       path: () => route('complete-inventory'),
+      disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_full_inventory_right_id)),
     },
     {
       name: 'arrival_goods',
       path: () => route('employee-actions'),
+      disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_arrival_of_goods_right_id)),
     },
     {
       name: 'print_leftovers',
       path: () => route(''),
+      disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_print_stock_right_id)),
     },
     {
       name: 'list_active_orders',
       path: () => route(''),
+      disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_list_orders_right_id)),
     },
   ]))
 
@@ -94,14 +106,14 @@ import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
     });
   }
   // onBeforeMount(() => {
-  //   selectInventoryStore.updateInventories();
-  //   invNum.value = selectInventoryStore.inventories.length;
+  //   selectiveInventoryStore.updateInventories();
+  //   invNum.value = selectiveInventoryStore.inventories.length;
   // })
   onMounted(async() => {
     await app.updateTerminalShift();
     await app.updateLocationShift();
-    await selectInventoryStore.updateInventories();
-    const invDocs = selectInventoryStore.inventoriesDocuments.length;
+    await selectiveInventoryStore.updateInventories();
+    const invDocs = selectiveInventoryStore.inventoriesDocuments.length;
     openCatalog.value = (app.getShift?.shift?.global_shift_id === app.locationShiftId);
     if( invDocs > 0 ) {
       dialogState.value = true
@@ -112,7 +124,7 @@ import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
     console.log('GET STATUS', app.getShift?.shift?.global_shift_id );
     console.log('CURRENT STATUS', app.locationShiftId);
     console.log('openCatalog STATUS', openCatalog.value);
-    console.log('InvDocs', selectInventoryStore.inventoriesDocuments.length);
+    console.log('InvDocs', selectiveInventoryStore.inventoriesDocuments.length);
     console.log('InvDocsRef', invNum.value);
   })
 
@@ -134,8 +146,8 @@ import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
         v-for="(route, index) in routes"
         :key="index"
         :name='$t(route.name)'
-        :disable='route.disable == true'
-        :class="{ 'blocked': route.disable && route.disable == true }"
+        :disable='route.disable'
+        :class="{ 'blocked': route.disable }"
         @click="() => {
           route.name == 'arrival_goods'
             ? showNotify()

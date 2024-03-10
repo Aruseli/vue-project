@@ -1,20 +1,20 @@
 <script setup>
   import i18next, { t } from 'i18next';
   import moment from 'moment';
-import { useQuasar } from 'quasar';
-import { useGoodsStore } from 'src/stores/goods';
-import { useInventoryStore } from 'src/stores/inventory';
-import { computed, onMounted, ref } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
-import RectangularButton from '../buttons/rectangular-button.vue';
-import DividerBold from '../dividers/divider-bold.vue';
-import ListItem from './list-item.vue';
-import { useAppStore } from 'src/stores/app';
+  import { useQuasar } from 'quasar';
+  import { useGoodsStore } from 'src/stores/goods';
+  import { useInventoryStore } from 'src/stores/inventory';
+  import { computed, onMounted, ref } from 'vue';
+  import { useRouter, useRoute } from 'vue-router';
+  import RectangularButton from '../buttons/rectangular-button.vue';
+  import DividerBold from '../dividers/divider-bold.vue';
+  import ListItem from './list-item.vue';
+  import { useAppStore } from 'src/stores/app';
 
 
-const goodsStore = useGoodsStore();
-const inventoryStore = useInventoryStore();
-const app = useAppStore();
+  const goodsStore = useGoodsStore();
+  const inventoryStore = useInventoryStore();
+  const app = useAppStore();
 
   const router = useRouter();
   const route = useRoute();
@@ -90,7 +90,7 @@ const app = useAppStore();
         <div class="text-h3 row q-gutter-md">
           <span>{{ formattedDate }}</span>
           <span>{{ formattedTime }}</span>
-          <span>№ {{ inventoryStore.docNum }}</span>
+          <span>№ {{ inventoryStore.docNumStr }}</span>
         </div>
       </div>
       <DividerBold />
@@ -105,9 +105,9 @@ const app = useAppStore();
             :actual_quantity="good.quant"
             :good_name="good.title"
             :estimated_quantity="good.stock"
-            :not_equal="good.issued !== good.quant"
-            :class="{ 'highlighted': good.confirm }"
-            @click="good.confirm = !good.confirm"
+            :not_equal="good.stock !== good.quant"
+            :class="{ 'highlighted': good.confirmed }"
+            @click="good.confirmed = !good.confirmed"
           />
         </ol>
       </div>

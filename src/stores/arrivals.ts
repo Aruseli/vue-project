@@ -3,7 +3,6 @@ import { ref, computed } from "vue";
 import { useAppStore } from "./app";
 import { KioskDocument, apiGetDocuments, apiSaveDocument } from "src/services";
 import { useGoodsStore, type Good } from "./goods";
-import { ARRIVALS_CACHE_TTL } from "src/services/consts";
 import { t } from "i18next";
 import { Notify } from 'quasar';
 
@@ -23,13 +22,15 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
   const updateArrivals = async () => {
     arrivalsLoading.value = true;
     try {
-      const terminal_settings = appStore.kioskState.params?.terminal_settings;
+      const settings = appStore.kioskState.settings;
       arrivalsDocuments.value = await apiGetDocuments(
-        [terminal_settings!.goods_arrival_doc_type_id!],
+        [settings!.goods_arrival_doc_type_id!],
         [2]
       );
+      arrivalsDocuments.value = arrivalsDocuments.value.filter(d =>
+        d.corr_to_ref == appStore.kioskState.kioskCorr?.id)
       arrivals.value = arrivalsDocuments.value.map((ag) =>
-      documentGoodsArrival(ag, goodsStore)
+        documentGoodsArrival(ag, goodsStore)
       );
       arrivalsLastUpdate.value = Date.now();
     } finally {
@@ -41,7 +42,7 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
     arrivalGoodsLoading.value = true;
     try {
       // Bug: await apiGetDocument(id) returns none, and we forced to use updateArrivals
-      if (Date.now() - arrivalsLastUpdate.value > ARRIVALS_CACHE_TTL) {
+      if (Date.now() - arrivalsLastUpdate.value > appStore.kioskState.settings!.arrivals_cache_ttl!) {
         await updateArrivals();
       }
       const arrivalDoc = arrivalsDocuments.value.find((d) => d.id == id) || null;
@@ -63,6 +64,7 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
       return;
     }
     doc.state = 0;
+    doc.respperson_ref = appStore.kioskState.userCorr?.id;
     doc.details.forEach((d) => {
       const item = arrival.value?.items.find((i) => i.id == d.good_id);
       if (!item || d.quant != item.quant || item.issued != item.quant) {
@@ -85,7 +87,7 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
 
   const scanArrivalGood = async (good: Good) => {
     const arrivalItem = arrival.value?.items.find((i) => i.id == good.id);
-    if (arrivalItem?.confirm) {
+    if (arrivalItem?.confirmed) {
       return;
     } else {
       if (arrivalItem) {
@@ -143,7 +145,7 @@ function documentGoodsArrival(ad: KioskDocument, goodsStore: ReturnType<typeof u
         title: good?.title,
         image: good?.images[0],
         issued: 0,
-        confirm: false,
+        confirmed: false,
       };
     })
   };
