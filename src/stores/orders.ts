@@ -16,6 +16,9 @@ export const useOrdersStore = defineStore("orders", () => {
   const ordersLoading = ref(true);
   const ordersLastUpdate = ref(0);
 
+  const payment = ref(null);
+
+
   const currentOrder = ref<ReturnType<typeof documentToOrder> | null>(null);
   const currentOrderDocument = ref<KioskDocument | null>(null);
   const currentOrderLoading = ref(true);
@@ -108,6 +111,7 @@ export const useOrdersStore = defineStore("orders", () => {
     ordersLoading,
     updateOrders,
     scanGood,
+    payment,
   };
 });
 
@@ -116,6 +120,7 @@ function documentToOrder(od: KioskDocument, goodsStore: ReturnType<typeof useGoo
   const order = {
     id: od.id,
     orderNumStr: (od.abbr_num?.toString().padStart(4, "0") ?? t('Unknown')),
+    payment: '',
     items: od.details.map(d => {
       const good = goodsStore.getGoodById(d.good_id);
       if (!good) {

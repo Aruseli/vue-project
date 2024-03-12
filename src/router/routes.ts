@@ -50,6 +50,14 @@ const routes: RouteRecordRaw[] = [
         path: "catalog",
         component: () => import("pages/catalog.vue"),
       },
+      {
+        path: "close-shift/:ref",
+        component: () => import("pages/complete-inventory.vue"),
+      },
+      {
+        path: "open-shift/:ref",
+        component: () => import("pages/complete-inventory.vue"),
+      },
     ],
   },
 

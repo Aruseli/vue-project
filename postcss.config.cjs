@@ -15,6 +15,5 @@ module.exports = {
         'last 4 iOS versions'
       ]
     })
-    require('postcss-rtlcss')
   ]
 }

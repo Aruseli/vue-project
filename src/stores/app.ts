@@ -29,10 +29,12 @@ export const useAppStore = defineStore('app', () => {
   const tab = ref('');
   const tabCharacteristics = ref('description');
   const shiftLoading = ref(true);
-  const getShift = ref(null);
-  const currentShift = ref('');
+  const terminalShiftId = ref(null);
+  const locationShiftId = ref('');
   const addedShift = ref(null);
   const closeShift = ref(null);
+  const closingShiftState = ref(null);
+  const lang_dir = ref('ltr');
 
   const openDrawerCart = (state: boolean) => {
     drawerCartState.value = state;
@@ -54,109 +56,93 @@ export const useAppStore = defineStore('app', () => {
     kioskState.globalError = new Error(t('no_terminal_code_provided_on_startup'))
     kioskState.status = 'UnrecoverableError'
   }
-  const updateCurrentShift = async() => {
+  const updateLocationShift = async() => {
     shiftLoading.value = true;
     try {
       const locationId = kioskState.params?.location_id;
-      currentShift.value = await apiGetCurrentShift(locationId!);
+      locationShiftId.value = await apiGetCurrentShift(locationId!);
     } catch (error) {
       console.log('updateShift', error)
     } finally {
       shiftLoading.value = false;
     }
   }
-  const addingShift = async () => {
+  const addTerminalShift = async () => {
     shiftLoading.value = true;
     try {
-      const terminalId = kioskState.params?.terminal_id;
-      const result = await apiUsersWhoami();
-      const userId = result.id;
       addedShift.value = await apiAddShift(
-        terminalId!,
-        currentShift.value,
-        userId
+        kioskState.params?.terminal_id!,
+        locationShiftId.value,
+        kioskState.user.id
       );
+      if (!terminalShiftId.value) {
+        await updateTerminalShift();
+      }
     } catch (error) {
       console.log("addedShift", error);
+      console.log("locationShiftIdADDD", locationShiftId.value);
+      console.log("USERADDD", kioskState.user.id);
+      console.log("TERMINALADDD", kioskState.params?.terminal_id);
     } finally {
       shiftLoading.value = false;
       console.log('addedShift', addedShift.value)
     }
   };
 
-  const closedShift = async() => {
+  const closedShift = async () => {
     shiftLoading.value = true;
     try {
-      const result = await apiUsersWhoami();
-      const userId = result.id;
       const terminalId = kioskState.params?.terminal_id;
       const terminalShiftId = await apiGetShift(terminalId!);
       const state = 0;
       closeShift.value = await apiCloseShift(
-        terminalShiftId,
+        terminalShiftId.terminal_id,
         state,
-        userId
+        kioskState.user.id
       );
-      console.log('terminalShiftId', terminalShiftId);
+      console.log("terminalShiftIdCLOSE", terminalShiftId);
     } catch (error) {
-      console.log("closeShift", error);
+      console.log("CLOSEShift", error);
+      console.log("terminalShiftIdCLOSE", terminalShiftId.value);
     } finally {
       shiftLoading.value = false;
-      console.log('closeShift', closeShift.value);
-
+      console.log("CLOSEShift", closeShift.value);
+      console.log("terminalShiftIdCLOSE", terminalShiftId);
     }
-  }
-  const closingShift = async() => {
-    shiftLoading.value = true;
-    try {
-      const result = await apiUsersWhoami();
-      const userId = result.id;
-      const terminalId = kioskState.params?.terminal_id;
-      const terminalShiftId = await apiGetShift(terminalId!);
-      const state = 5;
-      closeShift.value = await apiCloseShift(
-        terminalShiftId,
-        state,
-        userId
-      );
-    } catch (error) {
-      console.log("closeShift", error);
-    } finally {
-      shiftLoading.value = false;
-      console.log('closeShift', closeShift.value)
-    }
-  }
+  };
 
-  const updateStateShift = async () => {
-    shiftLoading.value = true;
-    try {
-      const terminalId = kioskState.params?.terminal_id;
-      const locationId = kioskState.params?.location_id;
-      getShift.value = await apiGetShift(terminalId!);
-      currentShift.value = await apiGetCurrentShift(locationId!);
-      if(getShift.value !== currentShift.value) {
-        closedShift();
-      }
-    } catch (error) {
-      console.log("closeShift", error);
-    } finally {
-      shiftLoading.value = false;
-      console.log('closeShift', closeShift.value)
-      console.log('getShift', getShift.value)
-    }
-
+  const switchTerminalShiftToClosingState = async() => {
+  shiftLoading.value = true;
+  try {
+    const terminalId = kioskState.params?.terminal_id;
+    const terminalShiftId = await apiGetShift(terminalId!);
+    const state = 5;
+    closingShiftState.value = await apiCloseShift(
+      terminalShiftId.terminal_id,
+      state,
+      kioskState.user.id
+    );
+  } catch (error) {
+    console.log("closingShiftState.value", closingShiftState.value);
+    console.log("closingShift", error);
+  } finally {
+    shiftLoading.value = false;
+    console.log('closingShift', closingShiftState.value)
   }
+}
 
-  const updateGetShift = async() => {
+
+  const updateTerminalShift = async() => {
     shiftLoading.value = true;
     try {
       const terminalId = kioskState.params?.terminal_id;
-      getShift.value = await apiGetShift(terminalId!);
+      terminalShiftId.value = await apiGetShift(terminalId!);
     } catch (error) {
       console.log('updateShift', error)
     } finally {
       shiftLoading.value = false;
-      console.log('getShift.value', getShift.value)
+      console.log('getShift.value', terminalShiftId.value)
+      console.log('getShiftTERMINAL', kioskState.params?.terminal_id)
     }
   }
 
@@ -168,6 +154,8 @@ export const useAppStore = defineStore('app', () => {
     i18next.changeLanguage(lang_code, (err, t) => {
       if(err) { console.log('i18next err', err)}
     })
+    lang_dir.value = i18next.dir(lang_code);
+    console.log('LANG', lang_dir.value)
   }
 
   const resetLocale = async () => {
@@ -218,16 +206,17 @@ export const useAppStore = defineStore('app', () => {
     setLocale,
     resetLocale,
 
-    updateGetShift,
-    updateCurrentShift,
-    addingShift,
+    updateTerminalShift,
+    updateLocationShift,
+    addTerminalShift,
     closedShift,
-    closingShift,
-    updateStateShift,
-    getShift,
-    currentShift,
+    switchTerminalShiftToClosingState,
+    terminalShiftId,
+    locationShiftId,
     addedShift,
     closeShift,
+
+    lang_dir,
   }
 });
 

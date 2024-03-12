@@ -24,7 +24,10 @@ import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
     :reveal-offset="100"
     class="header"
   >
-    <q-toolbar class="justify-between q-mb-lg">
+    <q-toolbar
+      class="justify-between q-mb-lg"
+      :class="app.lang_dir == 'rtl' ? 'row-reverse' : 'row'"
+    >
 
       <LogoSimple>
         <LogoSvgGradient :width="100" :height="100" />
