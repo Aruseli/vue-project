@@ -1,7 +1,7 @@
 export default {
   // Terminal init
   no_terminal_code_provided_on_startup: 'Terminal code is not provided on startup',
-  waiting_terminal_registration: 'Ожидание подтверждения регистрации в системе...',
+  waiting_terminal_registration: 'Waiting for confirmation of registration in the system...',
   field_is_required: 'this field must be filled',
   password_consists_characters: 'password consists of 6 characters',
   unsuccessful_login_attempt: 'Login attempt was unsuccessful',

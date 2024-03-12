@@ -82,7 +82,7 @@ import IconButton from '../buttons/icon-button.vue';
 
 
 <template>
-  <div class="card_setting" :class="[good && good.stock <= 0 && 'disabled no-pointer-events']" v-bind="$attrs" @click="goodDetails">
+  <div class="card_setting" :class="[good && good.stock <= 0 && 'disabled no-pointer-events']" v-bind="$attrs" @click="goodDetails"  >
     <div>
       <div class="content_container">
         <div class="img_container">

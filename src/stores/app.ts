@@ -34,6 +34,7 @@ export const useAppStore = defineStore('app', () => {
   const addedShift = ref(null);
   const closeShift = ref(null);
   const closingShiftState = ref(null);
+  const lang_dir = ref('ltr');
 
   const openDrawerCart = (state: boolean) => {
     drawerCartState.value = state;
@@ -153,6 +154,8 @@ export const useAppStore = defineStore('app', () => {
     i18next.changeLanguage(lang_code, (err, t) => {
       if(err) { console.log('i18next err', err)}
     })
+    lang_dir.value = i18next.dir(lang_code);
+    console.log('LANG', lang_dir.value)
   }
 
   const resetLocale = async () => {
@@ -212,6 +215,8 @@ export const useAppStore = defineStore('app', () => {
     locationShiftId,
     addedShift,
     closeShift,
+
+    lang_dir,
   }
 });
 
