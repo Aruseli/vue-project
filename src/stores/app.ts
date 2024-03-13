@@ -35,6 +35,7 @@ export const useAppStore = defineStore('app', () => {
   const closeShift = ref(null);
   const closingShiftState = ref(null);
   const lang_dir = ref('ltr');
+  const altUI = ref(true);
 
   const openDrawerCart = (state: boolean) => {
     drawerCartState.value = state;
@@ -80,12 +81,8 @@ export const useAppStore = defineStore('app', () => {
       }
     } catch (error) {
       console.log("addedShift", error);
-      console.log("locationShiftIdADDD", locationShiftId.value);
-      console.log("USERADDD", kioskState.user.id);
-      console.log("TERMINALADDD", kioskState.params?.terminal_id);
     } finally {
       shiftLoading.value = false;
-      console.log('addedShift', addedShift.value)
     }
   };
 
@@ -217,6 +214,7 @@ export const useAppStore = defineStore('app', () => {
     closeShift,
 
     lang_dir,
+    altUI,
   }
 });
 

@@ -82,7 +82,7 @@ import IconButton from '../buttons/icon-button.vue';
 
 
 <template>
-  <div class="card_setting" :class="[good && good.stock <= 0 && 'disabled no-pointer-events']" v-bind="$attrs" @click="goodDetails"  >
+  <div :class="[good && good.stock <= 0 && 'disabled no-pointer-events', !app.altUI ? 'card_setting' : 'card_setting_alt']" v-bind="$attrs" @click="goodDetails"  >
     <div>
       <div class="content_container">
         <div class="img_container">
@@ -100,23 +100,56 @@ import IconButton from '../buttons/icon-button.vue';
         </div>
         <div>
           <div class="column no-wrap items-left">
-            <div class="text-h4 q-mb-xs ellipsis first_letter">
+            <div
+              class="text-h4 q-mb-xs ellipsis first_letter"
+              :class="[!app.altUI ? 'text-h4 ellipsis' : 'text-h5 text-center']"
+            >
               {{ good?.title }}
             </div>
 
-            <div class="text-h3">
+            <div class="text-h3" v-if="!app.altUI">
               &#3647&ensp;{{ good?.price }}
             </div>
           </div>
         </div>
 
-        <div class="block_description" @click="goodDetails">
+        <div v-if="!app.altUI" class="block_description" @click="goodDetails">
           <div class="text-body1" v-html="sliceDescription"/>
         </div>
 
       </div>
 
-      <div>
+      <div v-if="app.altUI">
+        <q-btn v-if="!goodInCart"
+          class="full-width"
+          unelevated
+          rounded
+          no-caps
+          color="primary"
+          text-color="white"
+          @click="addGoodToCart(good)"
+          >
+          <div class="text-center text-h5 q-py-xs text-uppercase">
+            &#3647&ensp;{{ good?.price }}
+          </div>
+        </q-btn>
+        <div class="row justify-between items-center" v-else>
+          <IconButton
+            :icon="evaMinusOutline"
+            @click="decrease(good)"
+            class="q-pa-xs"
+          />
+          <div class="text-h4 q-ma-none">{{ goodInCart.quant }}</div>
+          <IconButton
+            :icon="evaPlusOutline"
+            :disabled="goodInCart?.quant >= good?.stock"
+            @click="increase(good)"
+            class="q-pa-xs"
+          />
+        </div>
+      </div>
+
+      <div v-if="!app.altUI">
         <q-btn v-if="!goodInCart"
           class="full-width"
           unelevated
@@ -251,11 +284,24 @@ import IconButton from '../buttons/icon-button.vue';
 
 <style lang="scss" scoped>
   $calc_width: calc(var(--width_coefficient) + var(--coefficient));
+  $calc_width_alt: calc(16rem + 4vmin);
+
 
   .card_setting {
     border-radius: var(--border-sm);
     box-shadow: var(--box-shadow--product_cart);
-    width: calc(var(--width_coefficient) + var(--coefficient));
+    width: $calc_width;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.3rem;
+    background-color: var(--q-header_bg);
+  }
+  .card_setting_alt {
+    border-radius: var(--border-sm);
+    box-shadow: var(--box-shadow--product_cart);
+    width: $calc_width_alt;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -266,6 +312,14 @@ import IconButton from '../buttons/icon-button.vue';
   .img_container {
     max-width: $calc_width;
     max-height: $calc_width;
+    border-radius : var(--px30);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    border: thin solid var(--q-accent);
+  }
+  .img_container_alt {
+    max-width: calc_width_alt;
+    max-height: calc_width_alt;
     border-radius : var(--px30);
     overflow: hidden;
     margin-bottom: 1.5rem;

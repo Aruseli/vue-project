@@ -20,13 +20,13 @@ import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
 
 <template>
   <q-header
-    reveal
+    :reveal="!app.altUI ? true : false"
     :reveal-offset="100"
-    class="header"
+    :class="[!app.altUI ? 'header' : 'header_alt']"
   >
     <q-toolbar
-      class="justify-between q-mb-lg"
-      :class="app.lang_dir == 'rtl' ? 'row-reverse' : 'row'"
+      class="justify-between"
+      :class="[app.lang_dir == 'rtl' ? 'row-reverse' : 'row', !app.altUI ? 'q-mb-lg' : 'q-mb-none']"
     >
 
       <LogoSimple>
@@ -50,7 +50,7 @@ import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
       </div>
     </q-toolbar>
 
-    <div class="relative-position">
+    <div class="relative-position" v-if="!app.altUI">
       <q-tabs
         v-model="app.tab"
         dense
@@ -70,6 +70,15 @@ import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
   color: var(--q-text);
   background-color: transparent;
   padding: var(--px90) 4.8rem 1.5rem 4.8rem;
+}
+
+.header_alt {
+  color: var(--q-text);
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+  margin: 2rem;
+  box-shadow: var(--border-shadow);
 }
 
 .badge_style {
