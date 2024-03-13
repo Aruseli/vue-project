@@ -7,132 +7,141 @@
   import { useAppStore } from 'src/stores/app';
   import { useSelectiveInventoryStore } from 'src/stores/selective-inventory';
   import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
+import { delay } from 'src/services';
 
   const $q = useQuasar();
   const router = useRouter();
-  const _route = useRoute();
   const app = useAppStore();
   const selectiveInventoryStore = useSelectiveInventoryStore();
   const dialogState = ref(false);
-  const openCatalog = ref(false);
-  const invNum = ref(0);
+  const inventoryRequests = ref(0);
 
-  const sum = computed(() => invNum.value)
   const route = (path) => {
     router.push(path);
   }
-  const switcher = async () => {
-    await app.switchTerminalShiftToClosingState();
-    router.push('close-shift/complete-inventory');
-  }
 
-  const routes = computed(() => ([
-    {
-      name: !openCatalog.value ? 'open_shift' : 'shift_is_open_switch_to_user_mode',
-      path: !openCatalog.value ? () => route('open-shift/complete-inventory'): () => route('hello'),
-      disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_open_shift_right_id)),
-    },
-    {
-      name: 'close_shift',
-      path: () => switcher(),
-      disable: openCatalog.value ? false : true,
-      // // TODO: Analize shift
-      // disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_close_own_shift_right_id) &&
-      //                         !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_close_shift_right_id)),
-    },
-    {
-      name: 'issue_order',
-      path: () => route('issuing-order'),
-      disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_issue_order_right_id)),
-    },
-    {
-      name:'selective_inventory',
-      path: () => route('selective-inventory'),
-      disable: invNum.value > 0 ? false : true,
-      badge: invNum.value > 0 ? true : false,
-      // TODO: Merge with appStore
-      // disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_selective_inventory_right_id) &&
-      //                         !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_selective_inventory_extended_right_id)),
-    },
-    {
-      name: 'complete_inventory',
-      path: () => route('complete-inventory'),
-      disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_full_inventory_right_id)),
-    },
-    {
-      name: 'arrival_goods',
-      path: () => route('employee-actions'),
-      disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_arrival_of_goods_right_id)),
-    },
-    {
-      name: 'print_leftovers',
-      path: () => route(''),
-      disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_print_stock_right_id)),
-    },
-    {
-      name: 'list_active_orders',
-      path: () => route(''),
-      disable: computed(() => !appStore.kioskState.user?.rights.some(r => r.id == appStore.kioskState.settings.kiosk_list_orders_right_id)),
-    },
-  ]))
+  // {
+  //   name: string,
+  //   click: async () => undefined,
+  //   disable: boolean,
+  //   badge: boolean | undefined,
+  // }
+  const buttons = computed(() => {
+    const inventoryOnShiftOpen = app.kioskState.settings?.shifts__inventory_on_open;
+    const inventoryOnShiftClose = app.kioskState.settings?.shifts__inventory_on_close;
+    const skipInventoryOnOpen = app.kioskState.settings?.shifts__skip_inventory_on_open_if_same_user &&
+      app.kioskState.terminalShiftPreviousClosedBy == app.kioskState.user?.id;
+
+    return [
+      {
+        name: (app.customerModeIsAllowed) ? 'shift_is_open_switch_to_user_mode' : 'open_shift',
+        click: async () => {
+          if (app.customerModeIsAllowed) {
+            route('hello');
+            return;
+          }
+          if (inventoryOnShiftOpen && !skipInventoryOnOpen) {
+            route('open-shift/complete-inventory');
+          } else {
+            await app.openTerminalShift();
+            route('hello');
+          }
+        },
+        disable: !app.customerModeIsAllowed && !app.shiftOpenIsAllowed,
+      },
+      {
+        name: 'close_shift',
+        click: async () => {
+          if (!app.shiftIsClosing) {
+            await app.startClosingTerminalShift();
+          }
+          if (inventoryOnShiftClose) {
+            route('close-shift/complete-inventory');
+          } else {
+            await app.closeTerminalShift();
+          }
+        },
+        disable: !app.shiftCloseIsAllowed,
+      },
+      {
+        name: 'issue_order',
+        click: () => route('issuing-order'),
+        disable: !app.orderIssueIsAllowed,
+      },
+      {
+        name:'selective_inventory',
+        click: () => route('selective-inventory'),
+        // TODO rights__kiosk_selective_inventory_extended
+        disable: inventoryRequests.value > 0 ? !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_selective_inventory) : true,
+        badge: inventoryRequests.value > 0 ? true : false,
+      },
+      {
+        name: 'complete_inventory',
+        click: () => route('complete-inventory'),
+        disable: !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_full_inventory),
+      },
+      {
+        name: 'arrival_goods',
+        click: async () => {
+          $q.notify({
+            position: "center",
+            color: "positive",
+            classes: "full-width warning_customization",
+            timeout: 1000,
+            icon: 'img:/barcode_scanner.svg',
+            iconSize: '5rem',
+            spinnerSize: '3rem',
+            actions: [
+              {
+                icon: "cancel",
+                'aria-label': 'cancel',
+                label: t("scan_the_barcode_of_the_document"),
+                color: "white",
+                round: true,
+              },
+            ],
+          });
+        },
+        disable: !app.arrivalsAreAllowed,
+      },
+      {
+        name: 'print_leftovers',
+        // TODO print_leftovers
+        click: () => route(''),
+        disable: true || !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_print_stock),
+      },
+      {
+        name: 'list_active_orders',
+        // TODO list_active_orders
+        click: () => route(''),
+        disable: true || !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_list_orders),
+      },
+    ];
+  });
 
   // watchEffect(() => {
-  //   invNum.value;
+  //   inventoryRequests.value;
   //   routes[3].disable;
-  //   console.log('WATCH', invNum.value)
+  //   console.log('WATCH', inventoryRequests.value)
   //   console.log('DISABLE', routes[3].disable)
   // })
 
-  console.log('invNum', invNum.value)
-
-  const showNotify = () => {
-    $q.notify({
-      position: "center",
-      color: "positive",
-      classes: "full-width warning_customization",
-      timeout: 1000,
-      icon: 'img:/barcode_scanner.svg',
-      iconSize: '5rem',
-      spinnerSize: '3rem',
-      actions: [
-        {
-          icon: "cancel",
-          'aria-label': 'cancel',
-          label: t("scan_the_barcode_of_the_document"),
-          color: "white",
-          round: true,
-        },
-      ],
-    });
-  }
   // onBeforeMount(() => {
   //   selectiveInventoryStore.updateInventories();
-  //   invNum.value = selectiveInventoryStore.inventories.length;
+  //   inventoryRequests.value = selectiveInventoryStore.inventories.length;
   // })
   onMounted(async() => {
-    await app.updateTerminalShift();
-    await app.updateLocationShift();
-    await selectiveInventoryStore.updateInventories();
-    const invDocs = selectiveInventoryStore.inventoriesDocuments.length;
-    openCatalog.value = (app.getShift?.shift?.global_shift_id === app.locationShiftId);
-    if( invDocs > 0 ) {
-      dialogState.value = true
-      invNum.value = invDocs;
-      console.log('IFInvDocsRef', invNum.value);
+    if (app.kioskState.status != 'Ready') {
+      // Hack for page reloads
+      await delay(1000);
     }
-    // await app.updateStateShift();
-    console.log('GET STATUS', app.getShift?.shift?.global_shift_id );
-    console.log('CURRENT STATUS', app.locationShiftId);
-    console.log('openCatalog STATUS', openCatalog.value);
-    console.log('InvDocs', selectiveInventoryStore.inventoriesDocuments.length);
-    console.log('InvDocsRef', invNum.value);
+    await app.updateShifts();
+    await selectiveInventoryStore.updateInventories();
+    inventoryRequests.value = selectiveInventoryStore.inventoriesDocuments.length;
+    if( inventoryRequests.value > 0 ) {
+      dialogState.value = true;
+    }
   })
-
-  const closingShift = () => {
-     app.switchTerminalShiftToClosingState();
-     router.push('complete-inventory')
-    //  app.closedShift();
-  }
 
   // const defer = () => {
   //   dialogState.value = false;
@@ -143,21 +152,15 @@
   <q-page class="flex flex-center relative transparent">
     <div class="column justify-center full-height full-width container">
       <RectangularButton
-        v-for="(route, index) in routes"
+        v-for="(button, index) in buttons"
         :key="index"
-        :name='$t(route.name)'
-        :disable='route.disable'
-        :class="{ 'blocked': route.disable }"
-        @click="() => {
-          route.name == 'arrival_goods'
-            ? showNotify()
-            : route.name !== 'arrival_goods'
-            ? route.path()
-            : null
-        }"
+        :name='$t(button.name)'
+        :disable='button.disable'
+        :class="{ 'blocked': button.disable }"
+        @click="button.click"
       >
-        <div v-if="route.badge == true" class="badge_style bg-positive flex items-center">
-          <div class="text-h4 text-white q-px-sm">{{ invNum }}</div>
+        <div v-if="button.badge == true" class="badge_style bg-positive flex items-center">
+          <div class="text-h4 text-white q-px-sm">{{ inventoryRequests }}</div>
         </div>
       </RectangularButton>
 

@@ -45,7 +45,7 @@ export const useOrdersStore = defineStore("orders", () => {
     currentOrderLoading.value = true;
     try {
       // Bug: await apiGetDocument(id) returns none, and we forced to use updateOrders
-      if (Date.now() - ordersLastUpdate.value > appStore.kioskState.settings!.orders_cache_ttl!) {
+      if (Date.now() - ordersLastUpdate.value > appStore.kioskState.settings!.cache__orders_ttl_ms!) {
         await updateOrders();
       }
       const orderDoc = ordersDocuments.value.find((d) => d.id == id) || null;

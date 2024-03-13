@@ -178,7 +178,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
         goodsLoading.value = false
         goodsLoadingWaiter.value.resolve(true)
         if (imagesCacheExpirationAt.value < Date.now()) {
-          imagesCacheExpirationAt.value = Date.now() + settings!.images_cache_cleanup_interval!
+          imagesCacheExpirationAt.value = Date.now() + settings!.cache__images_cleanup_interval_ms!
           cleanupImagesCache() // do not await intentionally
         }
         return

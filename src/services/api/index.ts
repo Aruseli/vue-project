@@ -1,4 +1,4 @@
-import { Correspondent, TerminalParams, User } from "src/types/kiosk-state";
+import { Correspondent, TerminalParams, TerminalShift, User } from "src/types/kiosk-state";
 import config from 'src/services/config';
 
 async function fetchApi<T = any>(url: string, data?: Record<string, any>, mode: 'json' | 'text' = 'json', headers: any = {}): Promise<T> {
@@ -98,14 +98,18 @@ export async function apiGetCurrentShift(locationId: string) {
     id: locationId,
   });
   console.log('apiGetCurrentShift', response)
-  return response.data.id
+  return response.data.id as string
 }
 export async function apiGetShift(terminalId: string) {
   const response = await fetchApi('/api/v2/sales/getShift', {
     id: terminalId,
   });
   console.log('apiGetShift', response)
-  return response.data.shift
+  return response.data as {
+    shift: TerminalShift,
+    last_open_operation: { staff1: string, details: { terminal_shift_id: string } },
+    last_close_operation: { staff1: string, details: { terminal_shift_id: string } },
+  };
 }
 export async function apiAddShift(terminalId: string, locationShiftId: string, user_id: string) {
   const response = await fetchApi('/api/v2/sales/addShift', {
@@ -114,7 +118,7 @@ export async function apiAddShift(terminalId: string, locationShiftId: string, u
     user_id: user_id,
   });
   console.log('apiAddShift', response)
-  return response.data
+  return response.data as { id: string }
 }
 export async function apiCloseShift(terminalShiftId: string, state: number, user_id: string) {
   const response = await fetchApi('/api/v2/sales/closeShift', {
@@ -123,7 +127,7 @@ export async function apiCloseShift(terminalShiftId: string, state: number, user
     user_id: user_id,
   });
   console.log('apiCloseShift', response)
-  return response.data
+  return response.data as { success: number }
 }
 
 export async function apiUsersWhoami() {

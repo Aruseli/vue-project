@@ -42,7 +42,7 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
     arrivalGoodsLoading.value = true;
     try {
       // Bug: await apiGetDocument(id) returns none, and we forced to use updateArrivals
-      if (Date.now() - arrivalsLastUpdate.value > appStore.kioskState.settings!.arrivals_cache_ttl!) {
+      if (Date.now() - arrivalsLastUpdate.value > appStore.kioskState.settings!.cache__arrivals_ttl_ms!) {
         await updateArrivals();
       }
       const arrivalDoc = arrivalsDocuments.value.find((d) => d.id == id) || null;

@@ -27,18 +27,21 @@
 
   async function submitInventory() {
     try {
-      console.log('ADDED_STATUS', app.addedShift);
+      console.log(route.path)
       if (route.path === '/open-shift/complete-inventory') {
-        await app.addTerminalShift();
-        await app.updateTerminalShift();
-        router.push('/hello');
-
-      } else if (route == '/close-shift/complete-inventory') {
+        console.log('open')
         await inventoryStore.submitInventory();
-        app.closedShift();
+        await app.openTerminalShift();
+        router.push(app.shiftIsGood() ? '/hello' : '/employee-actions' );
+      } else if (route.path == '/close-shift/complete-inventory') {
+        console.log('close')
+        await inventoryStore.submitInventory();
+        await app.closeTerminalShift();
         router.push('/employee-actions');
       } else {
+        console.log('just')
         await inventoryStore.submitInventory();
+        router.push('/employee-actions');
       }
     } catch (err) {
       console.error('inventoryStore.submitInventory error:', err)

@@ -43,7 +43,7 @@ export const useSelectiveInventoryStore = defineStore("selectiveInventoryStore",
   const selectInventory = async () => {
     selectedInventoryLoading.value = true;
     try {
-      if (Date.now() - inventoriesLastUpdate.value > appStore.kioskState.settings!.inventories_cache_ttl!) {
+      if (Date.now() - inventoriesLastUpdate.value > appStore.kioskState.settings!.cache__inventories_ttl_ms!) {
         await updateInventories();
       }
       const inventoryDoc = inventoriesDocuments.value[0] || null;

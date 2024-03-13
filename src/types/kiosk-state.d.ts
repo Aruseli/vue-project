@@ -21,21 +21,21 @@ export type Settings = {
   inventory_doc_type_id: string,
   inventory_docdetail_type_id: string,
 
-  kiosk_open_shift_right_id: string,
-  kiosk_close_own_shift_right_id: string,
-  kiosk_close_shift_right_id: string,
-  kiosk_issue_order_right_id: string,
-  kiosk_selective_inventory_right_id: string,
-  kiosk_selective_inventory_extended_right_id: string,
-  kiosk_full_inventory_right_id: string,
-  kiosk_arrival_of_goods_right_id: string,
-  kiosk_list_orders_right_id: string,
-  kiosk_print_stock_right_id: string,
+  rights__kiosk_open_shift: string,
+  rights__kiosk_close_own_shift: string,
+  rights__kiosk_close_any_shift: string,
+  rights__kiosk_issue_order: string,
+  rights__kiosk_selective_inventory: string,
+  rights__kiosk_selective_inventory_extended: string,
+  rights__kiosk_full_inventory: string,
+  rights__kiosk_arrival_of_goods: string,
+  rights__kiosk_list_orders: string,
+  rights__kiosk_print_stock: string,
 
-  images_cache_cleanup_interval: number,
-  orders_cache_ttl: number,
-  arrivals_cache_ttl: number,
-  inventories_cache_ttl: number,
+  cache__images_cleanup_interval_ms: number,
+  cache__orders_ttl_ms: number,
+  cache__arrivals_ttl_ms: number,
+  cache__inventories_ttl_ms: number,
   user_info_update_interval: number,
 
   //TODO: This five lines are not stabilized and not used yet
@@ -44,6 +44,16 @@ export type Settings = {
   customer_inactive_notify_duration_ms: number,
   employee_inactive_notify_duration_ms: number,
   customer_successful_order_notify_duration_ms: number,
+
+  allow_order_issue_in_outdated_shift: boolean,
+  shifts__poll_interval_average_ms: number,
+  shifts__poll_interval_variance_ms: number,
+  shifts__inventory_on_open: boolean,
+  shifts__inventory_on_close: boolean,
+  shifts__skip_inventory_on_open_if_same_user: boolean,
+  shifts__state_open: number,
+  shifts__state_closing: number,
+  shifts__state_closed: number,
 }
 
 export type TerminalParams = {
@@ -75,6 +85,19 @@ export type Correspondent = {
   corrType?: string,
 }
 
+export type TerminalShift = {
+  id: string,
+  datetime_open: any,
+  datetime_close: any,
+  shiftdate: any,
+  /** see config `shifts__state_*` */
+  state: number,
+  object_id: string,
+  /** Location shift id */
+  global_shift_id: string, // location shift id
+  terminal_id: string,
+}
+
 export type KioskState = {
   status: 'Unknown' | 'UnboundTerminal' | 'Unauthenticated' | 'Ready' | 'UnrecoverableError',
   name: string,
@@ -90,4 +113,12 @@ export type KioskState = {
   userCorr?: Correspondent,
   kioskCorr?: Correspondent,
   catalogLocales?: LocaleInfo[],
+  locationShift?: { id: string },
+  terminalShift?: TerminalShift,
+  // TODO
+  /** User ID */
+  terminalShiftOpenedBy?: string,
+  // TODO
+  /** User ID */
+  terminalShiftPreviousClosedBy?: string,
 }

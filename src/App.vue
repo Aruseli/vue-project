@@ -52,31 +52,31 @@ import { useSelectiveInventoryStore } from "./stores/selective-inventory";
           }
           break;
         case '230': // Document
-          if (route.path == '/employee-actions') {
+          if (appStore.orderIssueIsAllowed && route.path == '/employee-actions') {
             await ordersStore.updateOrders()
+            if (process.env.DEV) {
+              console.log('Order barcodes', ordersStore.ordersDocuments.map(d =>
+                `2300${uuidToBarcodeDocId(d.id).toString().padStart(8, "0")}0`))
+            }
             ordersStore.ordersDocuments.forEach(d => {
               // TODO: Check also docType
               if (uuidToBarcodeDocId(d.id) == barcode.docId) {
                 router.push(`/issuing-order/order/${d.id}`)
               }
             });
+          }
+          if (appStore.arrivalsAreAllowed && route.path == '/employee-actions') {
+            await arrivalsStore.updateArrivals();
             if (process.env.DEV) {
-              console.log('Order barcodes', ordersStore.ordersDocuments.map(d =>
+              console.log('Arrival barcodes', arrivalsStore.arrivalsDocuments.map(d =>
                 `2300${uuidToBarcodeDocId(d.id).toString().padStart(8, "0")}0`))
             }
-          }
-          if (route.path == '/employee-actions') {
-            await arrivalsStore.updateArrivals();
             arrivalsStore.arrivalsDocuments.forEach(d => {
               // TODO: Check also docType
               if (uuidToBarcodeDocId(d.id) == barcode.docId) {
                 router.push(`/arrival-goods/${d.id}`)
               }
             });
-            if (process.env.DEV) {
-              console.log('Arrival barcodes', arrivalsStore.arrivalsDocuments.map(d =>
-                `2300${uuidToBarcodeDocId(d.id).toString().padStart(8, "0")}0`))
-            }
           }
           break;
         default:
