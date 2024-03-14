@@ -15,7 +15,7 @@ import Catalog from '../components/catalog/catalog.vue';
 </script>
 
 <template>
-  <q-page class="flex flex-center relative" style="100%">
+  <q-page class="flex flex-center relative" style="height: 100%">
     <CatalogHeader />
     <Catalog />
   </q-page>
