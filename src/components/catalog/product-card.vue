@@ -82,9 +82,9 @@ import IconButton from '../buttons/icon-button.vue';
 
 
 <template>
-  <div :class="[good && good.stock <= 0 && 'disabled no-pointer-events', !app.altUI ? 'card_setting' : 'card_setting_alt']" v-bind="$attrs" @click="goodDetails"  >
+  <div :class="[good && good.stock <= 0 && 'disabled no-pointer-events', !app.altUI ? 'card_setting' : 'card_setting_alt']" v-bind="$attrs">
     <div>
-      <div class="content_container">
+      <div class="content_container" @click="goodDetails">
         <div class="img_container">
           <q-img
             :src="good?.images[0]?.image"
@@ -139,7 +139,7 @@ import IconButton from '../buttons/icon-button.vue';
             @click="decrease(good)"
             class="q-pa-xs"
           />
-          <div class="text-h4 q-ma-none">{{ goodInCart.quant }}</div>
+          <div class="text-h5 q-ma-none">{{ goodInCart.quant }}</div>
           <IconButton
             :icon="evaPlusOutline"
             :disabled="goodInCart?.quant >= good?.stock"
@@ -192,7 +192,8 @@ import IconButton from '../buttons/icon-button.vue';
     >
       <div class="dialog_container">
         <q-card class="dialog_card">
-          <q-btn flat label="X" color="primary" class="absolute-top-right" v-close-popup />
+          <q-btn round color="primary" icon="cancel" class="absolute-top-right" v-close-popup />
+
           <q-card-section class="q-mb-sm">
             <q-carousel
               transition-prev="slide-right"
@@ -234,13 +235,13 @@ import IconButton from '../buttons/icon-button.vue';
               {{ good.name }}
             </div>
           </q-card-section>
-          <q-card-section class="q-mb-md">
+          <q-card-section class="q-mb-sm">
             <div class="text-h2">
               &#3647&ensp;{{ good.price }}
             </div>
           </q-card-section>
-          <q-separator color="secondary" class="q-mb-md" />
-          <q-card-section class="q-pt-none q-mb-lg">
+          <q-separator color="secondary" class="q-mb-sm" />
+          <q-card-section class="q-pt-none q-mb-sm">
             <div class="text-h4 text-capitalize q-mb-sm">{{ $t('description') }}</div>
             <div class="text-body1" v-html="good.description"/>
           </q-card-section>
@@ -256,7 +257,7 @@ import IconButton from '../buttons/icon-button.vue';
                 text-color="white"
                 @click="addGoodToCart(good)"
                 >
-                <div class="text-center text-weight-bold text-h3 text-white q-py-xl text-uppercase">
+                <div class="text-center text-weight-bold text-h4 text-white q-py-sm text-uppercase">
                   {{ $t('buy') }}
                 </div>
               </q-btn>
@@ -264,13 +265,13 @@ import IconButton from '../buttons/icon-button.vue';
                 <IconButton
                   :icon="evaMinusOutline"
                   @click="decrease(good)"
-                  class="q-pa-xl"
+                  class="q-pa-sm"
                 />
                 <div class="text-h4 q-ma-none">{{ goodInCart.quant }}</div>
                 <IconButton
                   :icon="evaPlusOutline"
                   @click="increase(good)"
-                  class="q-pa-xl"
+                  class="q-pa-sm"
                 />
               </div>
             </div>
@@ -284,7 +285,7 @@ import IconButton from '../buttons/icon-button.vue';
 
 <style lang="scss" scoped>
   $calc_width: calc(var(--width_coefficient) + var(--coefficient));
-  $calc_width_alt: calc(16rem + 4vmin);
+  $calc_width_alt: calc(13rem + 3vmin);
 
 
   .card_setting {
@@ -300,13 +301,13 @@ import IconButton from '../buttons/icon-button.vue';
   }
   .card_setting_alt {
     border-radius: var(--border-sm);
-    box-shadow: var(--box-shadow--product_cart);
+    box-shadow: var(--border-shadow);
     width: $calc_width_alt;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 1.3rem;
+    padding: 1rem;
     background-color: var(--q-header_bg);
   }
   .img_container {
@@ -342,8 +343,8 @@ import IconButton from '../buttons/icon-button.vue';
   }
 
   .dialog_container {
-    width: 60vw;
-    max-width: 80vw;
+    width: 50%;
+    max-width: 60vw;
     height: max-content;
   }
 

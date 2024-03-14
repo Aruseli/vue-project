@@ -50,6 +50,7 @@ module.exports = configure(function (ctx) {
         browser: [ 'es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1' ],
         node: 'node16'
       },
+      vueCompiler: true, // required for ref-macros
       chainWebpack: chain => {
         chain.module
           .rule('i18n-resource')

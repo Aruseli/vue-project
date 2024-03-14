@@ -111,11 +111,12 @@ import ProductCard from './product-card.vue';
 </script>
 
 <template>
-  <q-scroll-area v-if="app.altUI" class="q-pa-md goods_container">
-    <div v-for="goodCategory in goodsStore.goods" :key="goodCategory.id">
-      <div class="text-h3">{{ goodCategory.title }}</div>
+  <q-scroll-area v-if="app.altUI" class="q-px-sm goods_container">
+    <div v-for="goodCategory in goodsStore.goods" :key="goodCategory.id" class="q-mb-md">
+      <div :id="goodCategory.id" class="text-h4 q-mb-sm">{{ goodCategory.title }}</div>
+      <div v-if="goodCategory.goods.length == 0" class="text-body1">{{$t('category_empty')}}</div>
       <transition appear @enter="enter">
-        <div class="image_grid">
+        <div class="image_grid_alt">
           <ProductCard :itemId="good.id" v-for="(good, index) in goodCategory.goods" :key="index" />
         </div>
       </transition>
@@ -143,9 +144,10 @@ import ProductCard from './product-card.vue';
 <style lang="scss" scoped>
   $calc_width: calc(var(--width_coefficient) + var(--coefficient));
   $calc_gap: calc(1rem + var(--coefficient_gap));
+  $calc_width_alt: calc(13rem + 3vmin);
 
   .goods_container {
-    width: calc(75vw - 6rem);
+    width: calc(80vw - 6rem);
   }
 .image_grid {
   display: grid;
@@ -156,5 +158,18 @@ import ProductCard from './product-card.vue';
   padding: 0 3.75rem;
   justify-content: center;
   margin-top: 2rem;
+}
+.image_grid_alt {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, $calc_width_alt);
+  grid-gap: 2rem;
+  width: 100%;
+  height: auto;
+  // padding: 0 0.5rem;
+  justify-content: center;
+}
+
+.goods_container > div > div > *:nth-last-child(-n + 1) {
+  height: 100vh;
 }
 </style>

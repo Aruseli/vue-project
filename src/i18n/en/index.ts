@@ -68,5 +68,5 @@ export default {
   defer: 'defer',
   cash_payment: 'cash payment',
   cashless_payment: 'cashless payment',
-
+  category_empty: 'Category is empty',
 };

@@ -11,8 +11,17 @@ const selectTab = (i) => {
   selectedIndex.value = i;
   goodsStore.goods.forEach((goodCategory, index) => {
     goodCategory.isActive = index === i;
+    console.log('goodCategory.isActive', goodCategory.isActive)
   });
 };
+
+const scrollToCategory = (id) => {
+    event.preventDefault();
+    const element = document.getElementById(id);
+    element.scrollIntoView({
+      behavior: 'smooth'
+    });
+  }
 onMounted(() => {
   selectTab(0)
 })
@@ -23,10 +32,12 @@ onMounted(() => {
   <ul class='tabs__header'>
     <li v-for='(goodCategory, index) in goodsStore.goods'
       :key='goodCategory.id'
-      @click='selectTab(index)'
-      class="text-h4"
+      @click="selectTab(index)"
+      class="text-h5"
       :class='[(index == selectedIndex) && "tab__selected"]'>
-      {{ goodCategory.title }}
+      <div @click="scrollToCategory(goodCategory.id)">
+        {{ goodCategory.title }}
+      </div>
     </li>
   </ul>
 
@@ -37,15 +48,12 @@ onMounted(() => {
 .tabs_style {
   box-shadow: var(--border-shadow);
   background-color: white;
-  width: 25vw;
+  width: 20vw;
   height: calc(100vh - 20rem);
-  /* margin-left: 2rem; */
   border-radius: 1.5rem
 }
 
 ul.tabs__header {
-  /* display: flex;
-  flex-direction: column; */
   list-style: none;
   margin: 0;
   padding: 0;
@@ -65,6 +73,7 @@ ul.tabs__header > li.tab__selected {
   padding: 20px;
 }
 li.tab__selected {
-  color: #83FFB3;
+  color: var(--q-primary);
+  text-transform: uppercase;
 }
 </style>

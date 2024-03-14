@@ -16,7 +16,7 @@ $space-x-base: $space-base !default;
 $space-y-base: $space-base !default;
 
 $space-none: (x: 0, y: 0) !default;
-$space-xs: (x: ($space-x-base * .75), y: ($space-y-base * .75)) !default;
+$space-xs: (x: ($space-x-base * .5), y: ($space-y-base * .5)) !default;
 $space-sm: (x: ($space-x-base * 1.5), y: ($space-y-base * 1.5)) !default;
 $space-md: (x: ($space-x-base * 4), y: ($space-y-base * 4)) !default;
 $space-lg: (x: ($space-x-base * 5), y: ($space-y-base * 5)) !default;

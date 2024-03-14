@@ -49,8 +49,8 @@ const props = defineProps({
         </q-card-section>
 
         <q-card-section class="row items-center justify-center q-gutter-md">
-          <RectangularButton :name="$t(props.nameLeftButton)" color="'transparent'" size="lg" class="q-px-xl" @click="emit('complete')" textColor="primary" />
-          <RectangularButton :name="$t(props.nameRightButton)" size="lg" class="q-px-xl" @click="emit('continue')" />
+          <RectangularButton :name="$t(props.nameLeftButton)" color="'transparent'" size="lg" class="q-px-lg" @click="emit('complete')" textColor="primary" />
+          <RectangularButton :name="$t(props.nameRightButton)" size="lg" class="q-px-lg" @click="emit('continue')" />
         </q-card-section>
 
       </q-card>

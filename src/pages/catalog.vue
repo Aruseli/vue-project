@@ -29,7 +29,8 @@ import { useAppStore } from 'src/stores/app';
 
 <style scoped>
 .catalog_container {
-  padding: 0 2rem
+  padding: 0 2rem;
+  column-gap: 2rem;
 }
 </style>
 
