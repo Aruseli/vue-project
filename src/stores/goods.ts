@@ -10,10 +10,7 @@ export type Good = {
   description: string,
   price: number,
   stock: number,
-  images: {
-    id: string,
-    image: string, // base64
-  }[],
+  images_ids: string[],
   code: string
 }
 
@@ -47,10 +44,12 @@ export const useGoodsStore = defineStore('goodsStore', () => {
 
   const cleanupImagesCache = async () => {
     const allImagesIds = new Set(goods.value.flatMap(gc =>
-      gc.goods.flatMap(g => g.images.map(i => i.id))
+      gc.goods.flatMap(g => g.images_ids)
     ))
     const allCachedImagesIds = await goodsDb.images.orderBy('id').primaryKeys() as string[]
-    await goodsDb.images.bulkDelete(allCachedImagesIds.filter(id => !allImagesIds.has(id)))
+    const toDelete = allCachedImagesIds.filter(id => !allImagesIds.has(id))
+    await goodsDb.images.bulkDelete(toDelete)
+    toDelete.forEach(id => imagesCache.delete(id))
   }
 
   const fetchImages = async (imageIds: string[]) => {
@@ -67,7 +66,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     }
   };
 
-  const populateImages = async (goods: ApiGoodCategory[]) => {
+  const updateImagesCache = async (goods: ApiGoodCategory[]) => {
     if (imagesCache.size == 0) {
       await goodsDb.images.each(i => {
         imagesCache.set(i.id, i.image)
@@ -79,16 +78,12 @@ export const useGoodsStore = defineStore('goodsStore', () => {
       );
     const toFetch = allImagesIds.filter(id => !imagesCache.has(id))
     await fetchImages(toFetch)
-    return <GoodCategory[]>goods.map(gc => ({
-      ...gc,
-      goods: gc.goods.filter(g => !!g).map(g => ({
-        ...g,
-        images: g.images_ids.map(id => ({
-          id,
-          image: imagesCache.get(id) ?? throwErr(new Error(`Image is missing: ${id}`)),
-        })),
-      })),
-    }))
+
+    if (imagesCacheExpirationAt.value < Date.now()) {
+      const settings = appStore.kioskState.settings;
+      imagesCacheExpirationAt.value = Date.now() + settings!.cache__images_cleanup_interval_ms!;
+      cleanupImagesCache() // do not await intentionally
+    }
   }
 
   const updateGoods = async (locale: string) => {
@@ -107,7 +102,6 @@ export const useGoodsStore = defineStore('goodsStore', () => {
         }
         const location_id = appStore.kioskState.params?.location_id ?? ''
         // const locale = _locale.value
-        const settings = appStore.kioskState.settings
         const [fetchedGoods, stockRemains] = await Promise.all([
           apiGetGoods(location_id, locale),
           apiGetStockRemains(appStore.kioskState.kioskCorr?.id ?? ''),
@@ -173,14 +167,11 @@ export const useGoodsStore = defineStore('goodsStore', () => {
         // }
         // console.log('Debug inventory goods', await apiSaveDocument(goodsInventoryDoc))
         // --------------------------------------------------
-        goods.value = await populateImages(fetchedGoods)
+        setTimeout(() => updateImagesCache(fetchedGoods), 0);
+        goods.value = fetchedGoods;
         appStore.tab = fetchedGoods[0].id
         goodsLoading.value = false
         goodsLoadingWaiter.value.resolve(true)
-        if (imagesCacheExpirationAt.value < Date.now()) {
-          imagesCacheExpirationAt.value = Date.now() + settings!.cache__images_cleanup_interval_ms!
-          cleanupImagesCache() // do not await intentionally
-        }
         return
       }
       catch (e) {
@@ -225,6 +216,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     imagesCache,
     imagesCacheExpirationAt,
     waitGoodsReady,
+    getImage: (id?: string) => imagesCache.get(id ?? ''),
   }
 },
   // {

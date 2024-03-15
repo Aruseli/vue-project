@@ -1,12 +1,11 @@
 <script setup>
   import { ref } from 'vue';
-  import { productsStore } from '../stores/store';
   import { evaMinusCircleOutline } from '@quasar/extras/eva-icons';
   import { evaPlusCircleOutline } from '@quasar/extras/eva-icons';
   import { evaRadioButtonOffOutline } from '@quasar/extras/eva-icons';
+  import { useGoodsStore } from 'src/stores/goods';
 
-  const store = productsStore();
-
+  const goodsStore = useGoodsStore();
   const openDialog = ref(false);
   let slide=ref(0);
 
@@ -43,10 +42,10 @@
             padding
             class="bg-white shadow-1 round-borders fit"
           >
-            <q-carousel-slide v-for="(image, index) in selectedProduct.images" :key="index" :name="index" class="column no-wrap flex-center">
+            <q-carousel-slide v-for="(image, index) in selectedProduct.images_ids" :key="index" :name="index" class="column no-wrap flex-center">
               <div class="imgContainer bg-red">
                 <q-img
-                  :src="image.image"
+                  :src="goodsStore.getImage(image)"
                   style="width: 200px; height: 200px;"
                 >
                   <template #loading>

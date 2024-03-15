@@ -13,8 +13,8 @@ import { useSelectiveInventoryStore } from "./stores/selective-inventory";
   const router = useRouter()
 
   eventEmitter.on('local-ws', async evt => {
-    const appStore = useAppStore() // Don't move up: it will break init (query params are unaccessible)
-    const ordersStore = useOrdersStore()
+    const appStore = useAppStore(); // Don't move up: it will break init (query params are unaccessible)
+    const ordersStore = useOrdersStore();
     const goodsStore = useGoodsStore();
     const arrivalsStore = useArrivalsStore();
     const inventoryStore = useInventoryStore();

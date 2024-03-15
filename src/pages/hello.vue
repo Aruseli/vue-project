@@ -23,6 +23,7 @@
   }
 
   onMounted(() => {
+    app.resetLocale();
     updateShifts();
   })
   onUnmounted(() => {

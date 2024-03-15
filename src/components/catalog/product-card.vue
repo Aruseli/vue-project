@@ -87,7 +87,7 @@ import IconButton from '../buttons/icon-button.vue';
       <div class="content_container">
         <div class="img_container">
           <q-img
-            :src="good?.images[0]?.image"
+            :src="goodsStore.getImage(good?.images_ids?.[0])"
             :alt="good?.title"
             :ratio="4/3"
           >
@@ -175,14 +175,14 @@ import IconButton from '../buttons/icon-button.vue';
               class="bg-transparent round-borders fit"
             >
               <q-carousel-slide
-                v-for="(image, index) in good.images"
+                v-for="(image, index) in good.images_ids"
                 :key="index"
                 :name="index"
                 class="column no-wrap flex-center"
               >
                 <div class="img_container_dialog">
                   <q-img
-                    :src="image.image"
+                    :src="goodsStore.getImage(image)"
                     :ratio="4/3"
                     class="dialog_img"
                   >

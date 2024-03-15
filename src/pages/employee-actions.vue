@@ -3,15 +3,17 @@
   import { nextTick, onMounted, onBeforeMount, reactive, ref, watch, watchEffect, computed } from 'vue';
   import RectangularButton from '../components/buttons/rectangular-button.vue';
   import { useQuasar } from 'quasar';
-  import { t } from 'i18next';
+  import i18next, { t } from 'i18next';
   import { useAppStore } from 'src/stores/app';
   import { useSelectiveInventoryStore } from 'src/stores/selective-inventory';
   import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
-import { delay } from 'src/services';
+  import { delay } from 'src/services';
+  import { useGoodsStore } from 'src/stores/goods';
 
   const $q = useQuasar();
   const router = useRouter();
   const app = useAppStore();
+  const goodsStore = useGoodsStore();
   const selectiveInventoryStore = useSelectiveInventoryStore();
   const dialogState = ref(false);
   const inventoryRequests = ref(0);
@@ -134,6 +136,9 @@ import { delay } from 'src/services';
     if (app.kioskState.status != 'Ready') {
       // Hack for page reloads
       await delay(1000);
+    }
+    if (app.kioskState.status == 'Ready' && goodsStore.imagesCacheExpirationAt < Date.now()) {
+      goodsStore.updateGoods(i18next.language); // Don't await intentionally
     }
     await app.updateShifts();
     await selectiveInventoryStore.updateInventories();
