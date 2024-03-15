@@ -122,6 +122,7 @@ function documentToOrder(od: KioskDocument, goodsStore: ReturnType<typeof useGoo
   const order = {
     id: od.id,
     orderNumStr: (od.abbr_num?.toString().padStart(4, "0") ?? t('Unknown')),
+    payment: '',
     items: od.details.map(d => {
       const good = goodsStore.getGoodById(d.good_id);
       if (!good) {

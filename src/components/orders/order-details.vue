@@ -41,7 +41,9 @@ import OrderCard from './order-card.vue';
   })
 
   const paymentMethod = (option) => {
-    payment.value = option;
+    if (ordersStore.currentOrder) {
+      ordersStore.currentOrder.payment = option;
+    }
   }
 
 </script>
@@ -93,18 +95,18 @@ import OrderCard from './order-card.vue';
           :name="$t('cash_payment')"
           @click="paymentMethod('cash')"
           class="payButton"
-          color=""
-          textColor="payment == 'cash' ? 'white' : 'black'"
-          :disable="!allowConfirm"
-          :class="payment == 'cash' && 'selected'"
+          :color="ordersStore.currentOrder?.payment  == 'cash' ? 'primary' : 'negative'"
+          :textColor="ordersStore.currentOrder?.payment == 'cash' ? 'white' : 'black'"
+
+          :class="ordersStore.currentOrder?.payment == 'cash' && 'selected'"
           />
           <RectangularButton
-          color="payment == 'cashless' ? 'primary' : 'negative'"
+          :color="ordersStore.currentOrder?.payment == 'cashless' ? 'primary' : 'negative'"
           :name="$t('cashless_payment')"
-          textColor="payment == 'cashless' ? 'white' : 'black'"
+          :textColor="ordersStore.currentOrder?.payment == 'cashless' ? 'white' : 'black'"
           @click="paymentMethod('cashless')"
-          :class="payment == 'cashless' && 'selected'"
-          :disable="!allowConfirm"
+          :class="ordersStore.currentOrder?.payment == 'cashless' && 'selected'"
+
           class="payButton"
         />
       </div>
@@ -136,11 +138,11 @@ import OrderCard from './order-card.vue';
 .payButton {
   width: 49%;
   background-color: var(--q-negative);
-  color: black;
+  // color: black;
 }
 
 .selected {
   background-color: var(--q-primary);
-  color: white;
+  // color: white;
 }
 </style>

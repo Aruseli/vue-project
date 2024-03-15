@@ -121,17 +121,6 @@
     ];
   });
 
-  // watchEffect(() => {
-  //   inventoryRequests.value;
-  //   routes[3].disable;
-  //   console.log('WATCH', inventoryRequests.value)
-  //   console.log('DISABLE', routes[3].disable)
-  // })
-
-  // onBeforeMount(() => {
-  //   selectiveInventoryStore.updateInventories();
-  //   inventoryRequests.value = selectiveInventoryStore.inventories.length;
-  // })
   onMounted(async() => {
     if (app.kioskState.status != 'Ready') {
       // Hack for page reloads
