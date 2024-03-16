@@ -47,8 +47,8 @@ const props = defineProps({
         </q-card-section>
 
         <q-card-section class="row items-center justify-evenly">
-          <RectangularButton :name="$t(props.nameLeftButton)" color="transparent" class="q-px-md-md q-px-xs-sm q-py-xs-xs" @click="emit('complete')" textColor="primary" />
-          <RectangularButton :name="$t(props.nameRightButton)" class="q-px-md-md q-px-xs-sm q-py-xs-xs" @click="emit('continue')" />
+          <RectangularButton :name="$t(props.nameLeftButton)" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="emit('complete')" textColor="primary" />
+          <RectangularButton :name="$t(props.nameRightButton)" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="emit('continue')" />
         </q-card-section>
 
       </q-card>
@@ -58,7 +58,7 @@ const props = defineProps({
 
 <style>
 .card_container {
-  width: 60vw;
+  width: 70vw;
   max-width: 80vw;
   height: max-content;
   @media (max-width: 899px) {

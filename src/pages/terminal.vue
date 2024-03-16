@@ -52,7 +52,7 @@
 
 <template>
   <q-page class="flex flex-center relative bg-secondary" style="height: 100%; width: 100%">
-    <div class="q-pa-lg items-center column" style="width: 50vw">
+    <div class="q-pa-lg-lg q-pa-xs-sm items-center column" style="width: 50vw">
       <div v-if="statusIsUnrecoverableError">
         <q-card class='bg-secondary no-box-shadow'>
           <q-card-section>
@@ -124,7 +124,7 @@
             autocomplete="username"
             bg-color="white"
             input-class="input_settings"
-            class="q-mb-md"
+            class="q-mb-lg-md q-mb-xs-sm"
           />
           <q-input
             v-model="state.userPassword"
@@ -140,7 +140,7 @@
             color="black"
             outlined
             autocomplete="current-password"
-            class="q-mb-lg"
+            class="q-mb-lg-md q-mb-xs-sm"
             bg-color="white"
             input-class="input_settings"
           >

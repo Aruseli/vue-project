@@ -35,7 +35,7 @@ import ProductCard from './product-card.vue';
   }
 
   const enter = () => {
-    gsap.to('.card_setting', {
+    gsap.to('.card_setting_alt', {
       duration: 0.5,
       // delay: 28,
       scale: 1.02,
@@ -114,15 +114,17 @@ console.log('DIR', dir);
 </script>
 
 <template>
-  <q-tab-panels v-model="app.tab" animated swipeable class="window-height window-width" v-if="app.altUI == false">
-    <q-tab-panel v-for="goodCategory in goodsStore.goods" :name="goodCategory.id">
+  <q-scroll-area class="q-px-xs-none goods_container">
+    <div v-for="goodCategory in goodsStore.goods" :key="goodCategory.id" class="q-mb-md">
+      <div :id="goodCategory.id" class="text-h4 q-mb-sm">{{ goodCategory.title }}</div>
+      <div v-if="goodCategory.goods.length == 0" class="text-body1">{{$t('category_empty')}}</div>
       <transition appear @enter="enter">
-        <div class="image_grid">
+        <div class="image_grid_alt">
           <ProductCard :itemId="good.id" v-for="(good, index) in goodCategory.goods" :key="index" />
         </div>
       </transition>
-    </q-tab-panel>
-  </q-tab-panels>
+    </div>
+  </q-scroll-area>
   <RedirectDialog
     @complete="redirect"
     @continue="closeDialog"
@@ -134,21 +136,28 @@ console.log('DIR', dir);
 </template>
 
 <style lang="scss" scoped>
-  $calc_width: calc(var(--width_coefficient) + var(--coefficient));
-  $calc_gap: calc(1rem + var(--coefficient_gap));
+  $calc_width_alt: calc(12rem + 3vmax);
+  $calc_width_alt_mobile: calc(12rem + 2vmax);
 
-.image_grid {
+  .goods_container {
+    width: calc(80vw - 6rem);
+    @media (max-width: 1300px) {
+      width: calc(80vw - 3rem);
+    }
+  }
+.image_grid_alt {
   display: grid;
   grid-template-columns: repeat( auto-fit, minmax(20%, 1fr));
   gap: 2rem;
   width: 100%;
   height: auto;
-  padding: 0 4rem;
-  // justify-content: center;
-  margin-top: 2rem;
+  padding: 0 0.2rem;
   @media(max-width: 1300px) {
-    padding: 0 2rem;
     grid-template-columns: repeat( auto-fit, minmax(25.5%, 1fr));
   }
+}
+
+.goods_container > div > div > *:nth-last-child(-n + 1) {
+  height: 100vh;
 }
 </style>

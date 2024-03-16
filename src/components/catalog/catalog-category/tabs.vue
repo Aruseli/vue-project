@@ -16,12 +16,12 @@ const selectTab = (i) => {
 };
 
 const scrollToCategory = (id) => {
-    event.preventDefault();
-    const element = document.getElementById(id);
-    element.scrollIntoView({
-      behavior: 'smooth'
-    });
-  }
+  event.preventDefault();
+  const element = document.getElementById(id);
+  element.scrollIntoView({
+    behavior: 'smooth'
+  });
+}
 onMounted(() => {
   selectTab(0)
 })
@@ -34,7 +34,7 @@ onMounted(() => {
       :key='goodCategory.id'
       @click="selectTab(index)"
       class="text-h5"
-      :class='[(index == selectedIndex) && "tab__selected"]'>
+      :class='[(index == selectedIndex)  && "tab__selected"]'>
       <div @click="scrollToCategory(goodCategory.id)">
         {{ goodCategory.title }}
       </div>

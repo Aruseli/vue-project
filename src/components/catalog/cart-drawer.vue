@@ -69,7 +69,6 @@ import DividerThin from '../dividers/divider-thin.vue';
 
 </script>
 
-
 <template>
   <q-drawer
     dark
@@ -78,32 +77,32 @@ import DividerThin from '../dividers/divider-thin.vue';
     overlay
     elevated
     behavior="mobile"
-    :width="1200"
+    :width="900"
   >
-    <div class="q-pa-md">
-      <div class="row items-center q-mb-md">
+    <div class="q-pa-lg-md q-pa-xs-sm">
+      <div class="row items-center q-mb-lg-md q-mb-xs-xs">
 
         <IconButton
           round
           :icon="evaArrowBack"
           @click="closeDrawerCart"
-          class="q-pa-xs"
+          class="q-pa-xs back_button col-1"
         />
-        <div class="text-h1 text-center text-text text-uppercase col-11">
+        <div class="text-h2 text-center text-text text-uppercase col-10">
           {{ $t('order') }}
         </div>
       </div>
       <div class="bg-negative full-width" style="height: 0.1rem" />
     </div>
 
-    <div v-if="!cartStore.cart.length" class="q-pa-lg text-center">
+    <div v-if="!cartStore.cart.length" class="q-pa-lg-md q-pa-xs-sm text-center">
       <div class="text-h2">{{ $t('empty_cart') }}</div>
     </div>
 
     <q-scroll-area class="fit">
       <div class="row container_settings">
         <div class="cart_product_item row" v-for="(item, index) in cartStore.cartExtended" :key="index">
-          <div class="col-3 q-pr-md">
+          <div class="col-3 q-pr-sm">
             <q-img
               :src="item.image"
               ration="16/9"
@@ -142,7 +141,7 @@ import DividerThin from '../dividers/divider-thin.vue';
                   @click="() => cartStore.increaseItemsCount(item)"
                   class="q-pa-xs"
                 />
-                <div class='text-h4 q-mx-md q-my-none'>{{ item.quant }}</div>
+                <div class='text-h4 q-mx-lg-md q-mx-xs-sm q-my-none'>{{ item.quant }}</div>
                 <IconButton
                   round
                   :icon="evaMinusOutline"
@@ -156,14 +155,16 @@ import DividerThin from '../dividers/divider-thin.vue';
       </div>
     </q-scroll-area>
 
-    <div class="q-pa-md bg-white">
-      <DividerBold class="q-mb-md" />
-      <div class="row justify-between items-center q-mb-md">
-        <div class="text-h2">{{ $t('total') }}</div>
-        <div class="text-h2 q-mb-md">
-          {{ cartStore.totalPrice }} &ensp;&#3647
+    <div class="q-pa-lg-md q-pa-xs-sm bg-white">
+      <DividerBold class="q-mb-lg-md q-mb-xs-sm" />
+      <div class="row justify-between items-center">
+        <div class="q-mb-lg-md q-mb-xs-sm row justify-between fit">
+          <div class="text-h3">{{ $t('total') }}</div>
+          <div class="text-h3">
+            {{ cartStore.totalPrice }} &ensp;&#3647
+          </div>
         </div>
-        <DividerThin class="bg-negative q-mb-md" />
+        <DividerThin class="bg-negative q-mb-sm" />
         <div class="text-h4 row q-gutter-sm text-weight-regular">
           <span>{{ $t('order') }}</span>
           <span>{{ cartStore.totalQuantity }}</span>
@@ -172,7 +173,7 @@ import DividerThin from '../dividers/divider-thin.vue';
       </div>
       <div class="full-width" v-show="cartStore.cart.length">
         <RectangularButton
-          class="fit"
+          class="fit q-py-xs-sm"
           :name="$t('checkout')"
           :disable="isDisabled"
           @click="submitOrder"
@@ -204,7 +205,7 @@ import DividerThin from '../dividers/divider-thin.vue';
             <div class="text-subtitle2 text-center text-weight-bold">
               {{$t('contact_seller_for_further_information')}}
             </div>
-            <DividerBold class="q-mb-lg" />
+            <DividerBold class="q-mb-md" />
           </q-card-section>
           <q-card-section class="q-pt-none">
             <div class="text-h1 text-center text-uppercase text-weight-bold">
@@ -259,5 +260,14 @@ import DividerThin from '../dividers/divider-thin.vue';
     width: 70vw;
     max-width: 80vw;
     height: max-content;
+  }
+
+  .back_button {
+    width: 5rem;
+    height: 5rem;
+    @media (max-width: 1300px) {
+      width: 3rem;
+      height: 3rem;
+    }
   }
 </style>

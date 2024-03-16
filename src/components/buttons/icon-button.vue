@@ -6,7 +6,7 @@
     size: {
       type: String,
       required: false,
-      default: 'xl'
+      default: 'lg'
     },
     color: {
       type: String,
@@ -35,6 +35,3 @@
     <q-icon flat :color="textColor" :size="size" :name="icon" />
    </q-btn>
 </template>
-
-<style scoped>
-</style>

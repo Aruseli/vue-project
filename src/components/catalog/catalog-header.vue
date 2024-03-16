@@ -20,17 +20,17 @@ import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
 
 <template>
   <q-header
-    :reveal="!app.altUI ? true : false"
+    :reveal="app.altUI == false ? true : false"
     :reveal-offset="100"
-    :class="[!app.altUI ? 'header' : 'header_alt']"
+    :class="[app.altUI == false ? 'header' : 'header_alt']"
   >
     <q-toolbar
       class="justify-between q-py-lg-xs"
-      :class="[app.lang_dir == 'rtl' ? 'row-reverse' : 'row', !app.altUI ? 'q-mb-lg' : 'q-mb-none']"
+      :class="[app.lang_dir == 'rtl' ? 'row-reverse' : 'row', app.altUI == false ? 'q-mb-lg-lg q-mb-xs-xs' : 'q-mb-none']"
     >
 
       <LogoSimple>
-        <LogoSvgGradient width="clamp(3.125rem, 2.3988rem + 3.6311vi, 6.25rem)" :height="100" />
+        <LogoSvgGradient :height="100" />
       </LogoSimple>
 
       <div>
@@ -38,8 +38,8 @@ import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
           <BinIconNew>
             <path v-show="cart.totalQuantity > 0" d="M23.2899 99.4944C49.461 103 73.5796 103 97.2395 99.4944C102.698 74.689 108.441 46.9768 108.441 46.9768C105.441 53.2274 94.0429 62.2554 64.2143 50.7154C34.3857 39.1754 19.7312 46.7492 14.5884 53C14.5884 53 19.6068 79.6892 23.2899 99.4944Z" fill="#0eb60b" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="path"/>
           </BinIconNew>
-          <div v-if="cart.totalQuantity > 0" class="badge_style bg-positive flex items-center">
-            <div class="text-h4 text-white q-px-sm">{{ cart.totalQuantity }}</div>
+          <div v-if="cart.totalQuantity > 0" class="badge_style bg-positive flex items-center justify-center">
+            <div class="text-h5 text-white">{{ cart.totalQuantity }}</div>
           </div>
           <!-- <q-badge
             align="bottom"
@@ -50,7 +50,7 @@ import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
       </div>
     </q-toolbar>
 
-    <div class="relative-position" v-if="!app.altUI">
+    <div class="relative-position" v-if="app.altUI == false">
       <q-tabs
         v-model="app.tab"
         dense
@@ -70,6 +70,9 @@ import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
   color: var(--q-text);
   background-color: transparent;
   padding: var(--px90) 4.8rem 1.5rem 4.8rem;
+  @media (max-width: 1300px) {
+    padding: 1.5rem;
+  }
 }
 
 .header_alt {
@@ -93,6 +96,12 @@ import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
   min-width: 4.5rem;
   width: max-content;
   height: 4.5rem;
+  @media (max-width: 1300px) {
+    min-width: 2.5rem;
+    height: 2.5rem;
+    bottom: 1rem;
+    left: 1rem;
+  }
 }
 
 .q-tabs__content > *:not(:last-of-type) {
