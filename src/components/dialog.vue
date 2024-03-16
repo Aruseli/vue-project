@@ -1,11 +1,8 @@
 <script setup>
   import { ref } from 'vue';
-  import { productsStore } from '../stores/store';
   import { evaMinusCircleOutline } from '@quasar/extras/eva-icons';
   import { evaPlusCircleOutline } from '@quasar/extras/eva-icons';
   import { evaRadioButtonOffOutline } from '@quasar/extras/eva-icons';
-
-  const store = productsStore();
 
   const openDialog = ref(false);
   let slide=ref(0);

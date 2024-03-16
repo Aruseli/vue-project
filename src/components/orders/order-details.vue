@@ -11,6 +11,7 @@ import OrderCard from './order-card.vue';
   const ordersStore = useOrdersStore();
   const route = useRoute();
   const router = useRouter();
+  const payment = ref('cash' | 'cashless');
 
   const confirmOrder = async () => {
     await ordersStore.confirmCurrentOrderIssue()
@@ -38,6 +39,12 @@ import OrderCard from './order-card.vue';
       router.push('/employee-actions')
     }
   })
+
+  const paymentMethod = (option) => {
+    if (ordersStore.currentOrder) {
+      ordersStore.currentOrder.payment = option;
+    }
+  }
 
 </script>
 
@@ -69,13 +76,13 @@ import OrderCard from './order-card.vue';
       </div>
     </div>
     <div>
-      <DividerBold class="q-mb-lg" />
+      <DividerBold class="q-mb-md" />
       <div class="row justify-between items-center q-mb-md">
         <div class="text-h4">{{ $t('total') }}</div>
         <div class="text-h3 q-mb-md">
           {{ ordersStore.currentOrder?.totalPrice }} &ensp;&#3647
         </div>
-        <DividerThin class="bg-negative q-mb-lg" />
+        <DividerThin class="bg-negative q-mb-md" />
         <div class="text-h4 row q-gutter-sm text-weight-regular">
           <span>{{ $t('order') }}</span>&ensp;
           <span>{{ ordersStore.currentOrder?.totalCount }}</span>&ensp;
@@ -83,20 +90,33 @@ import OrderCard from './order-card.vue';
           <span>{{ $t('units', { count: ordersStore.currentOrder?.totalCount }) }}</span>
         </div>
       </div>
+      <div class="full-width row justify-between q-mb-sm">
+        <RectangularButton
+          :name="$t('cash_payment')"
+          @click="paymentMethod('cash')"
+          class="payButton"
+          :color="ordersStore.currentOrder?.payment  == 'cash' ? 'primary' : 'negative'"
+          :textColor="ordersStore.currentOrder?.payment == 'cash' ? 'white' : 'black'"
+
+          :class="ordersStore.currentOrder?.payment == 'cash' && 'selected'"
+          />
+          <RectangularButton
+          :color="ordersStore.currentOrder?.payment == 'cashless' ? 'primary' : 'negative'"
+          :name="$t('cashless_payment')"
+          :textColor="ordersStore.currentOrder?.payment == 'cashless' ? 'white' : 'black'"
+          @click="paymentMethod('cashless')"
+          :class="ordersStore.currentOrder?.payment == 'cashless' && 'selected'"
+
+          class="payButton"
+        />
+      </div>
       <div class="full-width">
-        <q-btn
-          class="full-width text-style q-py-md"
-          unelevated
-          rounded
-          no-caps
-          color="primary"
+        <RectangularButton
+          :name="$t('confirm')"
           @click="confirmOrder"
           :disable="!allowConfirm"
-        >
-          <div class="text-h3 text-white text-center text-weight-bold text-header_bg text-uppercase">
-            {{ $t('confirm') }}
-          </div>
-        </q-btn>
+          class="full-width"
+        />
       </div>
     </div>
   </div>
@@ -113,5 +133,16 @@ import OrderCard from './order-card.vue';
 .router_link_style {
   font-size: 3rem;
   text-decoration: none;
+}
+
+.payButton {
+  width: 49%;
+  background-color: var(--q-negative);
+  // color: black;
+}
+
+.selected {
+  background-color: var(--q-primary);
+  // color: white;
 }
 </style>

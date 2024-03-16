@@ -24,7 +24,7 @@
       type: Boolean,
       required: false,
       default: false
-    }
+    },
   })
 
   const emit = defineEmits(['click']);
@@ -34,7 +34,9 @@
 </script>
 
 <template>
-   <q-btn :size="size" unelevated rounded :color="color" :text-color="textColor" @click="click" v-bind="$attrs" :disable="disable">{{ props.name }}</q-btn>
+   <q-btn :size="size" unelevated rounded :color="color" :text-color="textColor" @click="click" v-bind="$attrs" :disable="disable">{{ props.name }}
+    <slot></slot>
+   </q-btn>
 </template>
 
 <style scoped>

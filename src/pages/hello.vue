@@ -1,11 +1,40 @@
 <script setup>
   import Logo from 'src/components/logo/logo.vue';
   import { useRouter } from 'vue-router';
-  import { ref } from 'vue';
+  import { onMounted, onUnmounted, ref } from 'vue';
   import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
+  import { useAppStore } from 'src/stores/app';
 
   const router = useRouter();
   const show = ref(true);
+  const shiftsUpdateTimer = ref(null);
+  const app = useAppStore();
+
+  const updateShifts = async () => {
+    await app.updateShifts();
+    if (!app.shiftIsGood) {
+      await app.lockTerminal();
+    }
+
+    const pollingIsActive = shiftsUpdateTimer.value !== null;
+    if (pollingIsActive) {
+      clearTimeout(shiftsUpdateTimer.value);
+
+      const intervalAvg = app.kioskState.settings?.shifts__poll_interval_average_ms ?? 600000;
+      const intervalVar = app.kioskState.settings?.shifts__poll_interval_variance_ms ?? 120000;
+      const nextTick = intervalAvg + intervalVar * (2 * Math.random() - 1);
+      shiftsUpdateTimer.value = setTimeout(updateShifts, nextTick);
+    }
+  }
+
+  onMounted(() => {
+    app.resetLocale();
+    shiftsUpdateTimer.value = setTimeout(updateShifts, 0);
+  })
+  onUnmounted(() => {
+    clearTimeout(shiftsUpdateTimer.value);
+    shiftsUpdateTimer.value = null;
+  })
 </script>
 
 <template>

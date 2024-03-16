@@ -5,16 +5,19 @@
   import { useGoodsStore } from 'src/stores/goods';
   import { useInventoryStore } from 'src/stores/inventory';
   import { computed, onMounted, ref } from 'vue';
-  import { useRouter } from 'vue-router';
+  import { useRouter, useRoute } from 'vue-router';
   import RectangularButton from '../buttons/rectangular-button.vue';
   import DividerBold from '../dividers/divider-bold.vue';
   import ListItem from './list-item.vue';
+  import { useAppStore } from 'src/stores/app';
 
 
   const goodsStore = useGoodsStore();
   const inventoryStore = useInventoryStore();
+  const app = useAppStore();
 
   const router = useRouter();
+  const route = useRoute();
 
   const $q = useQuasar();
 
@@ -24,7 +27,18 @@
 
   async function submitInventory() {
     try {
-      await inventoryStore.submitInventory()
+      if (route.path === '/open-shift/complete-inventory') {
+        await inventoryStore.submitInventory();
+        await app.openTerminalShift();
+        router.push(app.shiftIsGood() ? '/hello' : '/employee-actions' );
+      } else if (route.path == '/close-shift/complete-inventory') {
+        await inventoryStore.submitInventory();
+        await app.closeTerminalShift();
+        router.push('/employee-actions');
+      } else {
+        await inventoryStore.submitInventory();
+        router.push('/employee-actions');
+      }
     } catch (err) {
       console.error('inventoryStore.submitInventory error:', err)
       $q.notify({
@@ -90,7 +104,7 @@
             :actual_quantity="good.quant"
             :good_name="good.title"
             :estimated_quantity="good.stock"
-            :not_equal="good.issued !== good.quant"
+            :not_equal="good.stock !== good.quant"
             :class="{ 'highlighted': good.confirmed }"
             @click="good.confirmed = !good.confirmed"
           />
@@ -122,7 +136,6 @@
           :name="$t('confirm')"
           class="col-5"
           @click="submitInventory"
-          :disable="!allowConfirm"
         />
         <RectangularButton
           color="warning"

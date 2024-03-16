@@ -3,7 +3,6 @@ import { ref } from "vue";
 import { useAppStore } from "./app";
 import { KioskDocument, apiGetDocuments, apiSaveDocument } from "src/services";
 import { useGoodsStore, type Good } from "./goods";
-import { ORDERS_CACHE_TTL } from "src/services/consts";
 import { t } from "i18next";
 import { Notify } from 'quasar';
 
@@ -16,6 +15,9 @@ export const useOrdersStore = defineStore("orders", () => {
   const ordersLoading = ref(true);
   const ordersLastUpdate = ref(0);
 
+  const payment = ref(null);
+
+
   const currentOrder = ref<ReturnType<typeof documentToOrder> | null>(null);
   const currentOrderDocument = ref<KioskDocument | null>(null);
   const currentOrderLoading = ref(true);
@@ -23,11 +25,13 @@ export const useOrdersStore = defineStore("orders", () => {
   const updateOrders = async () => {
     ordersLoading.value = true;
     try {
-      const terminal_settings = appStore.kioskState.params?.terminal_settings;
+      const settings = appStore.kioskState.settings;
       ordersDocuments.value = await apiGetDocuments(
-        [terminal_settings!.invoice_doc_type_id!],
+        [settings!.invoice_doc_type_id!],
         [2]
       );
+      ordersDocuments.value = ordersDocuments.value.filter(d =>
+        d.corr_from_ref == appStore.kioskState.kioskCorr?.id)
       orders.value = ordersDocuments.value.map((od) =>
         documentToOrder(od, goodsStore)
       );
@@ -41,7 +45,7 @@ export const useOrdersStore = defineStore("orders", () => {
     currentOrderLoading.value = true;
     try {
       // Bug: await apiGetDocument(id) returns none, and we forced to use updateOrders
-      if (Date.now() - ordersLastUpdate.value > ORDERS_CACHE_TTL) {
+      if (Date.now() - ordersLastUpdate.value > appStore.kioskState.settings!.cache__orders_ttl_ms!) {
         await updateOrders();
       }
       const orderDoc = ordersDocuments.value.find((d) => d.id == id) || null;
@@ -63,6 +67,7 @@ export const useOrdersStore = defineStore("orders", () => {
       return;
     }
     doc.state = 0;
+    doc.respperson_ref = appStore.kioskState.userCorr?.id;
     doc.details.forEach((d) => {
       const item = currentOrder.value?.items.find((i) => i.id == d.good_id);
       if (!item || d.quant != item.quant || item.issued != item.quant) {
@@ -108,6 +113,7 @@ export const useOrdersStore = defineStore("orders", () => {
     ordersLoading,
     updateOrders,
     scanGood,
+    payment,
   };
 });
 
@@ -116,6 +122,7 @@ function documentToOrder(od: KioskDocument, goodsStore: ReturnType<typeof useGoo
   const order = {
     id: od.id,
     orderNumStr: (od.abbr_num?.toString().padStart(4, "0") ?? t('Unknown')),
+    payment: '',
     items: od.details.map(d => {
       const good = goodsStore.getGoodById(d.good_id);
       if (!good) {
@@ -126,7 +133,7 @@ function documentToOrder(od: KioskDocument, goodsStore: ReturnType<typeof useGoo
         quant: d.quant,
         price: d.total / d.quant,
         title: good?.title,
-        image: good?.images[0],
+        image: good?.images[0]?.image,
         issued: 0,
       };
     })

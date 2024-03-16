@@ -13,8 +13,8 @@ import { useSelectiveInventoryStore } from "./stores/selective-inventory";
   const router = useRouter()
 
   eventEmitter.on('local-ws', async evt => {
-    const appStore = useAppStore() // Don't move up: it will break init (query params are unaccessible)
-    const ordersStore = useOrdersStore()
+    const appStore = useAppStore(); // Don't move up: it will break init (query params are unaccessible)
+    const ordersStore = useOrdersStore();
     const goodsStore = useGoodsStore();
     const arrivalsStore = useArrivalsStore();
     const inventoryStore = useInventoryStore();
@@ -52,8 +52,12 @@ import { useSelectiveInventoryStore } from "./stores/selective-inventory";
           }
           break;
         case '230': // Document
-          if (route.path == '/employee-actions') {
+          if (appStore.orderIssueIsAllowed && route.path == '/employee-actions') {
             await ordersStore.updateOrders()
+            if (process.env.DEV) {
+              console.log('Order barcodes', ordersStore.ordersDocuments.map(d =>
+                `2300${uuidToBarcodeDocId(d.id).toString().padStart(8, "0")}0`))
+            }
             ordersStore.ordersDocuments.forEach(d => {
               // TODO: Check also docType
               if (uuidToBarcodeDocId(d.id) == barcode.docId) {
@@ -61,8 +65,12 @@ import { useSelectiveInventoryStore } from "./stores/selective-inventory";
               }
             });
           }
-          if (route.path == '/employee-actions') {
+          if (appStore.arrivalsAreAllowed && route.path == '/employee-actions') {
             await arrivalsStore.updateArrivals();
+            if (process.env.DEV) {
+              console.log('Arrival barcodes', arrivalsStore.arrivalsDocuments.map(d =>
+                `2300${uuidToBarcodeDocId(d.id).toString().padStart(8, "0")}0`))
+            }
             arrivalsStore.arrivalsDocuments.forEach(d => {
               // TODO: Check also docType
               if (uuidToBarcodeDocId(d.id) == barcode.docId) {

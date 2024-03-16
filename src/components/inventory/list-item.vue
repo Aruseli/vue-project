@@ -39,7 +39,7 @@
       <div class="text-h4 col-3">{{ props.good_name }}</div>
       <div class="text-txt col-3">
         <span class="text-txt">{{$t('estimated_quantity')}}</span>&ensp;
-        {{ props.estimated_quantity }}&ensp;{{ $t('pc') }}
+        {{ props.estimated_quantity }}&ensp;{{ $t('pc', {count: props.estimated_quantity}) }}
       </div>
       <div class="quat_container flex row items-center q-gutter-lg">
         <div class="text-txt text-secondary">{{$t('actual_quantity')}}</div>

@@ -1,7 +1,7 @@
 export default {
   // Terminal init
   no_terminal_code_provided_on_startup: 'Terminal code is not provided on startup',
-  waiting_terminal_registration: 'Ожидание подтверждения регистрации в системе...',
+  waiting_terminal_registration: 'Waiting for confirmation of registration in the system...',
   field_is_required: 'this field must be filled',
   password_consists_characters: 'password consists of 6 characters',
   unsuccessful_login_attempt: 'Login attempt was unsuccessful',
@@ -62,6 +62,13 @@ export default {
   product_has_already_been_scanned: 'the product has already been scanned',
   are_you_here: 'Are you still here?',
   buying_session_will_end_in: 'The buying session will end in:',
-  seconds_one: 'second',
-  seconds_other: 'seconds',
+  minutes: 'minutes',
+  shift_is_open_switch_to_user_mode: 'The shift is open. Switch to user mode',
+  there_are_documents_for_inventory: 'There are documents for inventory',
+  defer: 'defer',
+  cash_payment: 'cash payment',
+  cashless_payment: 'cashless payment',
+  error_during_shift_open: 'Shift openning error',
+  error_during_shift_close: 'Shift close error',
+  error_during_shift_closing: 'Shift start close error',
 };
