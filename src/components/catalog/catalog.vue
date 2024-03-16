@@ -35,12 +35,6 @@ import ProductCard from './product-card.vue';
   const lastAnimationStartedAt = ref(0);
   const dialogState = ref(false);
 
-  const userInactivityTimings = {
-    inactivityBeforeRedirect: 37000,
-    animationStartBeforeRedirect: 9000,
-    countdownDuration: 7000,
-  };
-
   // Функция-обработчик, которая переведет на новую страницу
   const redirect = () => {
     router.push('hello');
@@ -50,7 +44,7 @@ import ProductCard from './product-card.vue';
 
   const tick = () => {
     if (Date.now() - redirectAt.value > 60*1000) {
-      redirectAt.value = Date.now() + userInactivityTimings.inactivityBeforeRedirect;
+      redirectAt.value = Date.now() + app.kioskState.settings?.customer_inactivity_before_redirect ?? 37000;
     }
 
     const timeBeforeRedirect = redirectAt.value - Date.now();
@@ -60,7 +54,7 @@ import ProductCard from './product-card.vue';
       return;
     }
 
-    if (timeBeforeRedirect < userInactivityTimings.countdownDuration) {
+    if (timeBeforeRedirect < app.kioskState.settings?.customer_inactivity_countdown_duration ?? 7000) {
       // countdown phase
       countdown.value = Math.floor(timeBeforeRedirect / 1000);
       dialogState.value = true;
@@ -68,10 +62,11 @@ import ProductCard from './product-card.vue';
     }
     dialogState.value = false;
 
-    if (timeBeforeRedirect < userInactivityTimings.animationStartBeforeRedirect) {
+    const animationStartBeforeRedirect = app.kioskState.settings?.customer_inactivity_animation_start_before_redirect;
+    if (timeBeforeRedirect < animationStartBeforeRedirect) {
       // animation phase
       const timeSinceLastAnimationStart = Date.now() - lastAnimationStartedAt.value;
-      if (timeSinceLastAnimationStart < userInactivityTimings.animationStartBeforeRedirect) {
+      if (timeSinceLastAnimationStart < animationStartBeforeRedirect) {
         return;
       }
       console.log("Entering animation", timeBeforeRedirect);
@@ -84,21 +79,21 @@ import ProductCard from './product-card.vue';
   }
 
   function closeDialog() {
-    redirectAt.value = Date.now() + userInactivityTimings.inactivityBeforeRedirect;
+    redirectAt.value = Date.now() + app.kioskState.settings?.customer_inactivity_before_redirect ?? 37000;
   }
 
   function resetRedirectTimer() {
     if (dialogState.value) {
       return;
     }
-    redirectAt.value = Date.now() + userInactivityTimings.inactivityBeforeRedirect;
+    redirectAt.value = Date.now() + app.kioskState.settings?.customer_inactivity_before_redirect ?? 37000;
   }
 
   const redirectTimer = ref(null);
   const boundResetTimer = resetRedirectTimer.bind(this);
   onMounted(() => {
     // Запускаем таймер
-    redirectAt.value = Date.now() + userInactivityTimings.inactivityBeforeRedirect;
+    redirectAt.value = Date.now() + app.kioskState.settings?.customer_inactivity_before_redirect ?? 37000;
     redirectTimer.value = setInterval(() => tick(), 100);
     // Обрабатываем события
     ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>

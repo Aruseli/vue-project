@@ -133,7 +133,7 @@ function documentToOrder(od: KioskDocument, goodsStore: ReturnType<typeof useGoo
         quant: d.quant,
         price: d.total / d.quant,
         title: good?.title,
-        image: goodsStore.getImage(good?.images_ids[0]),
+        image: good?.images[0]?.image,
         issued: 0,
       };
     })

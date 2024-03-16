@@ -81,7 +81,7 @@ export const useCartStore = defineStore('cartStore',
         const good = goodsStore.getGoodById(ci.id);
         return {
           ...ci,
-          image: goodsStore.getImage(good?.images_ids[0]),
+          image: good?.images[0]?.image,
           title: good?.title,
         }
       })

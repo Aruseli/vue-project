@@ -16,18 +16,24 @@
       await app.lockTerminal();
     }
 
-    const intervalAvg = app.kioskState.settings?.shifts__poll_interval_average_ms ?? 600000;
-    const intervalVar = app.kioskState.settings?.shifts__poll_interval_variance_ms ?? 120000;
-    const nextTick = intervalAvg + intervalVar * (2 * Math.random() - 1)
-    shiftsUpdateTimer.value = setTimeout(updateShifts, nextTick);
+    const pollingIsActive = shiftsUpdateTimer.value !== null;
+    if (pollingIsActive) {
+      clearTimeout(shiftsUpdateTimer.value);
+
+      const intervalAvg = app.kioskState.settings?.shifts__poll_interval_average_ms ?? 600000;
+      const intervalVar = app.kioskState.settings?.shifts__poll_interval_variance_ms ?? 120000;
+      const nextTick = intervalAvg + intervalVar * (2 * Math.random() - 1);
+      shiftsUpdateTimer.value = setTimeout(updateShifts, nextTick);
+    }
   }
 
   onMounted(() => {
     app.resetLocale();
-    updateShifts();
+    shiftsUpdateTimer.value = setTimeout(updateShifts, 0);
   })
   onUnmounted(() => {
     clearTimeout(shiftsUpdateTimer.value);
+    shiftsUpdateTimer.value = null;
   })
 </script>
 

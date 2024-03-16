@@ -10,7 +10,10 @@ export type Good = {
   description: string,
   price: number,
   stock: number,
-  images_ids: string[],
+  images: {
+    id: string,
+    image?: string, // base64
+  }[],
   code: string
 }
 
@@ -44,7 +47,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
 
   const cleanupImagesCache = async () => {
     const allImagesIds = new Set(goods.value.flatMap(gc =>
-      gc.goods.flatMap(g => g.images_ids)
+      gc.goods.flatMap(g => g.images.map(i => i.id))
     ))
     const allCachedImagesIds = await goodsDb.images.orderBy('id').primaryKeys() as string[]
     const toDelete = allCachedImagesIds.filter(id => !allImagesIds.has(id))
@@ -66,18 +69,21 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     }
   };
 
-  const updateImagesCache = async (goods: ApiGoodCategory[]) => {
+  const updateImages = async () => {
     if (imagesCache.size == 0) {
       await goodsDb.images.each(i => {
         imagesCache.set(i.id, i.image)
       })
     }
-    const allImagesIds = goods.flatMap(gc =>
-        gc.goods.filter(g => !!g)
-                .flatMap(g => g.images_ids)
-      );
+    const allImagesIds = goods.value.flatMap(gc =>
+      gc.goods.flatMap(g => g.images.map(i => i.id))
+    )
     const toFetch = allImagesIds.filter(id => !imagesCache.has(id))
     await fetchImages(toFetch)
+
+    goods.value.forEach(gc => gc.goods.forEach(g => g.images.forEach(i => {
+      i.image = imagesCache.get(i.id);
+    })));
 
     if (imagesCacheExpirationAt.value < Date.now()) {
       const settings = appStore.kioskState.settings;
@@ -167,8 +173,17 @@ export const useGoodsStore = defineStore('goodsStore', () => {
         // }
         // console.log('Debug inventory goods', await apiSaveDocument(goodsInventoryDoc))
         // --------------------------------------------------
-        setTimeout(() => updateImagesCache(fetchedGoods), 0);
-        goods.value = fetchedGoods;
+        goods.value = fetchedGoods.map(gc => ({
+          ...gc,
+          goods: gc.goods.filter(g => !!g).map(g => ({
+            ...g,
+            images: g.images_ids.map(id => ({
+              id,
+              image: imagesCache.get(id),
+            }))
+          })),
+        }));
+        setTimeout(() => updateImages(), 0);
         appStore.tab = fetchedGoods[0].id
         goodsLoading.value = false
         goodsLoadingWaiter.value.resolve(true)
@@ -216,7 +231,6 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     imagesCache,
     imagesCacheExpirationAt,
     waitGoodsReady,
-    getImage: (id?: string) => imagesCache.get(id ?? ''),
   }
 },
   // {

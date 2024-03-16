@@ -43,11 +43,12 @@ export default {
     "cache__inventories_ttl_ms": 120*1000,
     "user_info_update_interval": (process.env.DEV) ? 60_000 : 600_000,
 
-    "customer_inactive_after_ms": 60000,
+    "customer_inactivity_before_redirect": 37000,
+    "customer_inactivity_countdown_duration": 7000,
+    "customer_inactivity_animation_start_before_redirect": 9000,
+    "customer_successful_order_notify_duration_ms": 7000,
     "employee_inactive_after_ms": 120000,
-    "customer_inactive_notify_duration_ms": 7000,
     "employee_inactive_notify_duration_ms": 30000,
-    "customer_successful_order_notify_duration_ms": 10000,
 
     "allow_order_issue_in_outdated_shift": true,
     "shifts__poll_interval_average_ms": 600*1000,

@@ -38,12 +38,13 @@ export type Settings = {
   cache__inventories_ttl_ms: number,
   user_info_update_interval: number,
 
-  //TODO: This five lines are not stabilized and not used yet
-  customer_inactive_after_ms: number,
-  employee_inactive_after_ms: number,
-  customer_inactive_notify_duration_ms: number,
-  employee_inactive_notify_duration_ms: number,
+  customer_inactivity_before_redirect: number,
+  customer_inactivity_countdown_duration: number,
+  customer_inactivity_animation_start_before_redirect: number,
   customer_successful_order_notify_duration_ms: number,
+  //TODO: This two lines are not stabilized and not used yet
+  employee_inactive_after_ms: number,
+  employee_inactive_notify_duration_ms: number,
 
   allow_order_issue_in_outdated_shift: boolean,
   shifts__poll_interval_average_ms: number,
