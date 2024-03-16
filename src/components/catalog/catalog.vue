@@ -22,16 +22,16 @@ import ProductCard from './product-card.vue';
   const animation = ref(null);
 
   // Функция-обработчик, которая переведет на новую страницу
-  // const redirect = () => {
-  //   router.push('hello');
-  //   cartStore.clearCart();
-  // }
+  const redirect = () => {
+    router.push('hello');
+    cartStore.clearCart();
+  }
 
   function closeDialog() {
     dialogState.value = false;
-    // clearTimeout(timerRedirect.value);
-    // clearTimeout(animation.value);
-    // clearTimeout(timerWarn.value); // Очистка таймера при закрытии окна
+    clearTimeout(timerRedirect.value);
+    clearTimeout(animation.value);
+    clearTimeout(timerWarn.value); // Очистка таймера при закрытии окна
   }
 
   const enter = () => {
@@ -50,68 +50,71 @@ import ProductCard from './product-card.vue';
   }
 
   // const notifyDelay = app.kioskState.params.terminal_settings.customer_inactive_notify_duration_ms
-  // const warnRedirect = () => {
-  //   dialogState.value = true;
-  //   clearTimeout(timerWarn.value);
-  //   clearTimeout(timerRedirect.value);
-  //   countdown.value = 7
-  //   let intervalId = setInterval(() => {
-  //     if (countdown.value > 0) {
-  //       countdown.value--;
-  //     }
-  //     if (dialogState.value == false) {
-  //       clearInterval(intervalId);
-  //     }
-  //     if (countdown.value === 0) {
-  //       clearInterval(intervalId);
-  //       clearTimeout(timerRedirect.value);
-  //       clearTimeout(timerWarn.value);
-  //       // dialogState.value = false;
-  //       redirect();
-  //     }
-  //   }, 1000);
+  const warnRedirect = () => {
+    dialogState.value = true;
+    clearTimeout(timerWarn.value);
+    clearTimeout(timerRedirect.value);
+    countdown.value = 7
+    let intervalId = setInterval(() => {
+      if (countdown.value > 0) {
+        countdown.value--;
+      }
+      if (dialogState.value == false) {
+        clearInterval(intervalId);
+      }
+      if (countdown.value === 0) {
+        clearInterval(intervalId);
+        clearTimeout(timerRedirect.value);
+        clearTimeout(timerWarn.value);
+        // dialogState.value = false;
+        redirect();
+      }
+    }, 1000);
 
-  //   timerWarn.value = setTimeout(() => {
-  //     clearInterval(intervalId);
-  //   }, 7000);
-  // };
+    timerWarn.value = setTimeout(() => {
+      clearInterval(intervalId);
+    }, 7000);
+  };
 
 
   // const redirectDelay = app.kioskState.params.terminal_settings.customer_inactive_after_ms;
-  // const resetTimer = () => {
-  //   if (dialogState.value) {
-  //     return;
-  //   }
-  //   clearTimeout(timerRedirect.value);
-  //   clearTimeout(timerWarn.value);
-  //   clearTimeout(animation.value);
-  //   timerRedirect.value = setTimeout(redirect, 37000);
-  //   timerWarn.value = setTimeout(warnRedirect, 30000);
-  //   animation.value = setTimeout(enter, 28000);
-  // }
+  const resetTimer = () => {
+    if (dialogState.value) {
+      return;
+    }
+    clearTimeout(timerRedirect.value);
+    clearTimeout(timerWarn.value);
+    clearTimeout(animation.value);
+    timerRedirect.value = setTimeout(redirect, 37000);
+    timerWarn.value = setTimeout(warnRedirect, 30000);
+    animation.value = setTimeout(enter, 28000);
+  }
 
-  // const boundResetTimer = resetTimer.bind(this);
-  // onMounted(() => {
-  //   // Запускаем таймер
-  //   resetTimer();
-  //   // Обрабатываем события
-  //   ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
-  //     document.addEventListener(e, boundResetTimer)
-  //   )
-  // })
+  const boundResetTimer = resetTimer.bind(this);
+  onMounted(() => {
+    // Запускаем таймер
+    resetTimer();
+    // Обрабатываем события
+    ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
+      document.addEventListener(e, boundResetTimer)
+    )
+  })
 
-  // onUnmounted(() => {
-  //   clearTimeout(timerRedirect.value);
-  //   clearTimeout(timerWarn.value);
-  //   ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
-  //     document.removeEventListener(e, boundResetTimer)
-  //   )
-  // })
+  onUnmounted(() => {
+    clearTimeout(timerRedirect.value);
+    clearTimeout(timerWarn.value);
+    ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
+      document.removeEventListener(e, boundResetTimer)
+    )
+  })
+
+  const dir = app.lang_dir
+console.log('DIR', dir);
 
 </script>
 
 <template>
-  <q-scroll-area v-if="app.altUI" class="q-px-sm goods_container">
+  <q-scroll-area v-if="app.altUI" class="q-px-lg-sm q-px-xs-none goods_container">
     <div v-for="goodCategory in goodsStore.goods" :key="goodCategory.id" class="q-mb-md">
       <div :id="goodCategory.id" class="text-h4 q-mb-sm">{{ goodCategory.title }}</div>
       <div v-if="goodCategory.goods.length == 0" class="text-body1">{{$t('category_empty')}}</div>
@@ -136,18 +139,22 @@ import ProductCard from './product-card.vue';
     @continue="closeDialog"
     :modelValue="dialogState"
     :timer="countdown"
+    :buttonClass="q-py-lg-sm"
   >
-    <div class="text-h5">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('minutes') }}</div>
+    <div class="text-h5 text-center">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('minutes') }}</div>
   </RedirectDialog>
 </template>
 
 <style lang="scss" scoped>
   $calc_width: calc(var(--width_coefficient) + var(--coefficient));
   $calc_gap: calc(1rem + var(--coefficient_gap));
-  $calc_width_alt: calc(13rem + 3vmin);
+  $calc_width_alt: calc(12rem + 3.5vmin);
 
   .goods_container {
     width: calc(80vw - 6rem);
+    @media (max-width: 1300px) {
+      width: calc(84vw - 6rem);
+    }
   }
 .image_grid {
   display: grid;
@@ -165,7 +172,7 @@ import ProductCard from './product-card.vue';
   grid-gap: 2rem;
   width: 100%;
   height: auto;
-  // padding: 0 0.5rem;
+  padding: 0 0.2rem;
   justify-content: center;
 }
 

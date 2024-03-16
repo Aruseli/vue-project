@@ -40,17 +40,15 @@ const props = defineProps({
   >
     <div class="card_container">
       <q-card class="q-pa-sm">
-        <q-card-section class="row items-center justify-end">
-
-        </q-card-section>
-        <q-card-section class="column items-center q-mb-md">
-          <div class="text-h3 q-mb-sm text-center">{{ $t(props.title) }}</div>
+        <q-card-section class="row items-center justify-end" />
+        <q-card-section class="column items-center q-mb-xs-sm">
+          <div class="text-h3 q-mb-sm-sm q-mb-xs-xs text-center title_style">{{ $t(props.title) }}</div>
           <slot></slot>
         </q-card-section>
 
-        <q-card-section class="row items-center justify-center q-gutter-md">
-          <RectangularButton :name="$t(props.nameLeftButton)" color="'transparent'" size="lg" class="q-px-lg" @click="emit('complete')" textColor="primary" />
-          <RectangularButton :name="$t(props.nameRightButton)" size="lg" class="q-px-lg" @click="emit('continue')" />
+        <q-card-section class="row items-center justify-evenly">
+          <RectangularButton :name="$t(props.nameLeftButton)" color="transparent" class="q-px-md-md q-px-xs-sm q-py-xs-xs" @click="emit('complete')" textColor="primary" />
+          <RectangularButton :name="$t(props.nameRightButton)" class="q-px-md-md q-px-xs-sm q-py-xs-xs" @click="emit('continue')" />
         </q-card-section>
 
       </q-card>
@@ -63,5 +61,14 @@ const props = defineProps({
   width: 60vw;
   max-width: 80vw;
   height: max-content;
+  @media (max-width: 899px) {
+    width: 90vw;
+  }
+}
+.title_style {
+  text-transform: none;
+  @media (max-width: 899px) {
+    text-transform: uppercase;
+  }
 }
 </style>

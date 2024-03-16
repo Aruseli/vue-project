@@ -41,10 +41,18 @@
 <template>
   <div class="main_container full-height">
     <div class="relative-position">
-      <RectangularButton :name="$t('back_to_employee_actions')" :color="'secondary'" size="xl" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/employee-actions')" />
+      <RectangularButton :name="$t('back_to_employee_actions')" :color="secondary" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/employee-actions')" />
 
-      <div class="text-h1 text-uppercase text-center q-mb-md title_padding">{{ $t('open_orders') }}</div>
-      <DividerThin class="q-mb-xl bg-secondary" />
+      <div
+        class="
+          text-h2 text-uppercase text-center
+          q-mb-lg-lg
+          q-mb-xs-sm
+          q-pt-sm-sm
+          q-pt-xs-sm
+        "
+      >{{ $t('open_orders') }}</div>
+      <DividerThin class="q-mb-lg-lg q-mb-xs-sm bg-secondary" />
     </div>
     <div class="orders_container">
       <ExistOrder

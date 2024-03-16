@@ -97,7 +97,7 @@ import DividerThin from '../dividers/divider-thin.vue';
     </div>
 
     <div v-if="!cartStore.cart.length" class="q-pa-lg text-center">
-      <h2>{{ $t('empty_cart') }}</h2>
+      <div class="text-h2">{{ $t('empty_cart') }}</div>
     </div>
 
     <q-scroll-area class="fit">
@@ -142,7 +142,7 @@ import DividerThin from '../dividers/divider-thin.vue';
                   @click="() => cartStore.increaseItemsCount(item)"
                   class="q-pa-xs"
                 />
-                <h4 class='q-mx-md q-my-none'>{{ item.quant }}</h4>
+                <div class='text-h4 q-mx-md q-my-none'>{{ item.quant }}</div>
                 <IconButton
                   round
                   :icon="evaMinusOutline"

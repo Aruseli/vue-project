@@ -56,7 +56,7 @@
       <div v-if="statusIsUnrecoverableError">
         <q-card class='bg-secondary no-box-shadow'>
           <q-card-section>
-            <h2 class="text-white text-center">{{ $t('unrecoverable_error') }}</h2>
+            <div class="text-h2 text-white text-center">{{ $t('unrecoverable_error') }}</div>
             <p>{{ appStore.kioskState.globalError?.message }}</p>
           </q-card-section>
         </q-card>
@@ -73,11 +73,11 @@
       <div v-if="statusIsUnboundTerminal">
         <q-card dark class="flex column items-center">
           <q-card-section>
-            <div class="text-h6 q-ma-sm text-center">
+            <div class="text-h5 q-ma-sm text-center">
               {{ $t('waiting_terminal_registration') }}
             </div>
             <div>
-              <div class="text-h6 text-center q-mb-md text-weight-bold">
+              <div class="text-h5 text-center q-mb-md text-weight-bold">
                 Код терминала <code style="font-family: 'Courier New', monospace">{{ appStore.kioskState.code }}</code>
               </div>
               <div

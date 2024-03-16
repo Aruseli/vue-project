@@ -25,15 +25,15 @@ import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
     :class="[!app.altUI ? 'header' : 'header_alt']"
   >
     <q-toolbar
-      class="justify-between"
+      class="justify-between q-py-lg-xs"
       :class="[app.lang_dir == 'rtl' ? 'row-reverse' : 'row', !app.altUI ? 'q-mb-lg' : 'q-mb-none']"
     >
 
       <LogoSimple>
-        <LogoSvgGradient :width="100" :height="100" />
+        <LogoSvgGradient width="clamp(3.125rem, 2.3988rem + 3.6311vi, 6.25rem)" :height="100" />
       </LogoSimple>
 
-      <div class="">
+      <div>
         <q-btn unelevated round class="relative-position" @click="openDrawer">
           <BinIconNew>
             <path v-show="cart.totalQuantity > 0" d="M23.2899 99.4944C49.461 103 73.5796 103 97.2395 99.4944C102.698 74.689 108.441 46.9768 108.441 46.9768C105.441 53.2274 94.0429 62.2554 64.2143 50.7154C34.3857 39.1754 19.7312 46.7492 14.5884 53C14.5884 53 19.6068 79.6892 23.2899 99.4944Z" fill="#0eb60b" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="path"/>
@@ -75,10 +75,14 @@ import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
 .header_alt {
   color: var(--q-text);
   background-color: white;
-  padding: 1.5rem;
+  padding: 0 1rem;
   border-radius: 1.5rem;
   margin: 2rem;
   box-shadow: var(--border-shadow);
+  @media (max-width: 1300px) {
+    margin: 1rem;
+    padding: 0;
+  }
 }
 
 .badge_style {
@@ -86,7 +90,7 @@ import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
   bottom: -1rem;
   left: -1rem;
   border-radius: 2.5rem;
-  min-width: 3rem;
+  min-width: 4.5rem;
   width: max-content;
   height: 4.5rem;
 }

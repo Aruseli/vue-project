@@ -8,7 +8,7 @@
     size: {
       type: String,
       required: false,
-      default: 'calc(2rem + 0.6vmax)'
+      default: 'xs'
     },
     color: {
       type: String,
@@ -34,7 +34,8 @@
 </script>
 
 <template>
-   <q-btn :size="size" unelevated rounded :color="color" :text-color="textColor" @click="click" v-bind="$attrs" :disable="disable">{{ props.name }}
+   <q-btn :size="size" unelevated rounded :color="color" :text-color="textColor" @click="click" v-bind="$attrs" :disable="disable">
+    <div class="text-subtitle1">{{ props.name }}</div>
     <slot></slot>
    </q-btn>
 </template>

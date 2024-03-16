@@ -79,15 +79,30 @@ const app = useAppStore();
 <template>
   <div class="main_container full-height full-width">
     <div class="relative-position">
-      <RectangularButton :name="$t('back_to_employee_actions')" :color="'secondary'" size="xl" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/employee-actions')" />
+      <RectangularButton :name="$t('back_to_employee_actions')" :color="secondary" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/employee-actions')" />
 
-      <div class="text-h2 text-uppercase text-center q-mb-xl title_padding">{{ $t('complete_inventory') }}</div>
+      <div
+        class="
+          text-h2
+          text-uppercase text-center
+          q-mb-lg-lg
+          q-mb-xs-sm
+          q-pt-sm-sm
+          q-pt-xs-sm
+        "
+      >{{ $t('complete_inventory') }}</div>
 
-      <div class="row justify-between q-mb-md">
-        <div class="text-h3 text-capitalize">
+      <div
+        class="
+          row justify-between
+          q-mb-md-sm
+          q-mb-xs-sm
+        "
+      >
+        <div class="text-capitalize text-h5">
           {{ $t('remaining_goods') }}
         </div>
-        <div class="text-h3 row q-gutter-md">
+        <div class="row date_style text-h5">
           <span>{{ formattedDate }}</span>
           <span>{{ formattedTime }}</span>
           <span>№ {{ inventoryStore.docNum }}</span>
@@ -113,35 +128,48 @@ const app = useAppStore();
       </div>
     </div>
     <div>
-      <DividerBold class="q-mb-lg" />
-      <div class="row justify-between items-center q-mb-xl">
-        <div class="text-h4 row q-gutter-sm">
-          <span>{{$t('total')}}</span>
-          <span>{{inventoryStore.inventory.length}}</span>
-          <span>{{ $t('product') }}</span>
+      <DividerBold
+        class="
+          q-mb-lg-lg
+          q-mb-md-sm
+          q-mb-xs-sm
+        "
+      />
+      <div
+        class="
+          row justify-between items-center
+          q-mb-lg-xl
+          q-mb-md-md
+          q-mb-xs-sm
+        "
+      >
+        <div class="row text-h5">
+          <span class="q-mr-xs-xs">{{$t('total')}}</span>
+          <span class="q-mr-xs-xs">{{inventoryStore.inventory.length}}</span>
+          <span class="q-mr-xs-xs">{{ $t('product') }}</span>
           <span>{{ $t('units', {count: inventoryStore.inventory.length}) }}</span>
         </div>
 
-        <div class="text-h4 text-weight-regular row q-gutter-sm">
-          <div>{{$t('estimated_quantity')}}</div>
-          <div>{{inventoryStore.totalQuantity}}</div>
-          <div>{{ $t('pc', {count: inventoryStore.totalQuantity}) }}</div>
-          <q-separator color="secondary" vertical spaced="lg" size="0.2rem" />
-          <div>{{$t('actual_quantity')}}</div>
-          <div>{{ inventoryStore.totalActualQuant }}</div>
+        <div class="text-h5 text-weight-regular row">
+          <div class="q-mr-xs-xs">{{$t('estimated_quantity')}}</div>
+          <div class="q-mr-xs-xs">{{inventoryStore.totalQuantity}}</div>
+          <div class="q-mr-xs-xs">{{ $t('pc', {count: inventoryStore.totalQuantity}) }}</div>
+          <q-separator color="secondary" vertical class="q-mr-xs-xs" size="0.2rem" />
+          <div class="q-mr-xs-xs">{{$t('actual_quantity')}}</div>
+          <div class="q-mr-xs-xs">{{ inventoryStore.totalActualQuant }}</div>
           <div>{{ $t('pc', {count: inventoryStore.totalActualQuant}) }}</div>
         </div>
       </div>
-      <div class="row justify-center q-gutter-xl">
+      <div class="row justify-evenly">
         <RectangularButton
           :name="$t('confirm')"
-          class="col-5"
+          class="col-5 button_style_confirm"
           @click="submitInventory"
         />
         <RectangularButton
           color="warning"
           :name="$t('declare_discrepancy')"
-          class="col-5"
+          class="col-5 button_style_confirm"
           @click="submitInventory"
         />
       </div>

@@ -14,13 +14,12 @@ import { useAppStore } from 'src/stores/app';
     }
     return scrollInfo;
   }
-
 </script>
 
 <template>
-  <q-page class="flex align-center relative justify-start window-full">
+  <q-page :style="{ direction: app.lang_dir }" class="flex align-center relative justify-start window-full">
     <CatalogHeader />
-    <div v-if="app.altUI" class="row q-mt-md catalog_container">
+    <div v-if="app.altUI" class="row catalog_container">
       <Tabs />
       <Catalog />
     </div>
@@ -31,6 +30,12 @@ import { useAppStore } from 'src/stores/app';
 .catalog_container {
   padding: 0 2rem;
   column-gap: 2rem;
+  margin-top: 4rem;
+  @media (max-width: 1300px) {
+    margin-top: 2.125rem;
+    padding: 0 1rem;
+    column-gap: 1rem;
+  }
 }
 </style>
 

@@ -101,7 +101,7 @@ import IconButton from '../buttons/icon-button.vue';
         <div>
           <div class="column no-wrap items-left">
             <div
-              class="text-h4 q-mb-xs ellipsis first_letter"
+              class="q-mb-xs ellipsis first_letter"
               :class="[!app.altUI ? 'text-h4 ellipsis' : 'text-h5 text-center']"
             >
               {{ good?.title }}
@@ -129,7 +129,7 @@ import IconButton from '../buttons/icon-button.vue';
           text-color="white"
           @click="addGoodToCart(good)"
           >
-          <div class="text-center text-h5 q-py-xs text-uppercase">
+          <div class="text-h5 text-center q-py-xs text-uppercase">
             &#3647&ensp;{{ good?.price }}
           </div>
         </q-btn>
@@ -139,7 +139,7 @@ import IconButton from '../buttons/icon-button.vue';
             @click="decrease(good)"
             class="q-pa-xs"
           />
-          <div class="text-h5 q-ma-none">{{ goodInCart.quant }}</div>
+          <div class="text-h5 no-margin">{{ goodInCart.quant }}</div>
           <IconButton
             :icon="evaPlusOutline"
             :disabled="goodInCart?.quant >= good?.stock"
@@ -159,7 +159,7 @@ import IconButton from '../buttons/icon-button.vue';
           text-color="white"
           @click="addGoodToCart(good)"
           >
-          <div class="text-center text-h4 q-py-xs text-uppercase">
+          <div class="text-h4 text-center q-py-xs text-uppercase">
             {{ $t('buy') }}
           </div>
         </q-btn>
@@ -169,7 +169,7 @@ import IconButton from '../buttons/icon-button.vue';
             @click="decrease(good)"
             class="q-pa-xs"
           />
-          <div class="text-h4 q-ma-none">{{ goodInCart.quant }}</div>
+          <div class="text-h4 no-margin">{{ goodInCart.quant }}</div>
           <IconButton
             :icon="evaPlusOutline"
             :disabled="goodInCart?.quant >= good?.stock"
@@ -257,7 +257,7 @@ import IconButton from '../buttons/icon-button.vue';
                 text-color="white"
                 @click="addGoodToCart(good)"
                 >
-                <div class="text-center text-weight-bold text-h4 text-white q-py-sm text-uppercase">
+                <div class="text-h4 text-center text-weight-bold text-white q-py-sm text-uppercase">
                   {{ $t('buy') }}
                 </div>
               </q-btn>
@@ -267,7 +267,7 @@ import IconButton from '../buttons/icon-button.vue';
                   @click="decrease(good)"
                   class="q-pa-sm"
                 />
-                <div class="text-h4 q-ma-none">{{ goodInCart.quant }}</div>
+                <div class="text-h4 no-margin">{{ goodInCart.quant }}</div>
                 <IconButton
                   :icon="evaPlusOutline"
                   @click="increase(good)"
@@ -285,7 +285,7 @@ import IconButton from '../buttons/icon-button.vue';
 
 <style lang="scss" scoped>
   $calc_width: calc(var(--width_coefficient) + var(--coefficient));
-  $calc_width_alt: calc(13rem + 3vmin);
+  $calc_width_alt: calc(12rem + 4vmin);
 
 
   .card_setting {

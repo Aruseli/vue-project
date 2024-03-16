@@ -40,7 +40,6 @@ onMounted(() => {
       </div>
     </li>
   </ul>
-
 </div>
 </template>
 
@@ -62,6 +61,9 @@ ul.tabs__header {
 ul.tabs__header > li {
   padding: 1.5rem;
   cursor: pointer;
+  @media (max-width: 1300px) {
+    padding: 1rem;
+  }
 }
 
 ul.tabs__header > li.tab__selected {

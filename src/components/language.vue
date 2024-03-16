@@ -26,10 +26,14 @@
       max-width="100%"
       max-height="100%"
       ratio="16/9"
-      class="q-mr-xl img_style"
+      class="
+        q-mr-xs-sm
+        q-mr-lg-md
+        img_style
+      "
       fit='fill'
     />
-    <div class="text-center text-white text-uppercase lang_style">{{ language }}</div>
+    <div class="text-center text-white text-uppercase text-h4">{{ language }}</div>
   </div>
 </template>
 
@@ -44,6 +48,12 @@
     height: 3.5rem;
     border-radius: 0.5rem;
   }
+
+  @media (max-width: 1300px) and (orientation: portrait) {
+    width: 6rem;
+    height: 4rem;
+    border-radius: 0.5rem;
+  }
 }
 .lang_container {
   width: 60vw;
@@ -53,10 +63,4 @@
   }
 }
 
-.lang_style {
-  font-size: 3rem;
-  @media (max-width: 2050px) and (orientation: landscape) {
-    font-size: 1.5rem;
-  }
-}
 </style>

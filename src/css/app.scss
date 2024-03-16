@@ -32,8 +32,11 @@ body {
   font-family: $font-family-nunito;
   color: var(--q-text);
   background: transparent;
-  // direction: '__MSG_@@bidi_dir__';
   // background: #FBFBFF;
+}
+
+html body #q-app[dir='rtl'] {
+  direction: rtl;
 }
 
 body.body--dark {
@@ -81,14 +84,6 @@ body.body--dark {
   // --q-dark-page: #FBFBFF;
   --q-text: #1E1E1E;
   --q-dark: #FBFBFF;
-}
-
-.text-txt {
-  font-size: 1.5rem;
-  font-family: $font-family-nunito;
-  font-weight: normal;
-  line-height: normal;
-  color: var(--q-text);
 }
 
 .first_letter::first-letter {
@@ -258,7 +253,10 @@ padding: 0;
 
 .scroll_area {
   overflow-y: scroll;
-  padding: 0.8rem;
+}
+
+.back_to_menu_button {
+
 }
 
 .highlighted {
@@ -266,3 +264,42 @@ padding: 0;
   filter: drop-shadow(0px 2px 3px var(--q-primary));
 
 }
+
+.text-h1 {
+  font-size: clamp(1.75rem, 5.931vw + 0.215rem, 8rem);
+  line-height: 1.3;
+  letter-spacing: -.01562em;
+  font-weight: 700;
+}
+
+.q-btn .q-icon {
+  font-size: 1.715rem;
+  @media (max-width: 1300px) {
+    font-size: 1.2rem;
+  }
+}
+
+.button_style_confirm {
+  padding: 2.5rem;
+  @media (max-width: 1300px) {
+    padding: 1.5rem;
+
+  }
+  @media (max-width: 899px) {
+    padding: 0.5rem;
+  }
+}
+
+.date_style > *:not(:last-child) {
+  margin-right: 2rem;
+  @media (max-width: 1300px) {
+    margin-right: 0.5rem;
+  }
+}
+
+// .text-h2 {
+//   font-size: calc(1.898vw + 1.009rem);
+//   line-height: 1.3;
+//   letter-spacing: -.01562em;
+//   font-weight: 700;
+// }

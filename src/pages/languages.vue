@@ -21,7 +21,7 @@
 
 <template>
   <q-page class="column justify-center items-center relative hello_bg window-height">
-    <Logo class="logo_row logo" classes="q-mr-md">
+    <Logo class="logo_row logo" classes="q-mr-sm">
       <LogoSvgWhite />
     </Logo>
     <div class="column bg-primary container">
@@ -54,6 +54,9 @@
 
   @media (max-width: 2050px) and (orientation: landscape) {
     padding: 2rem;
+  }
+  @media (max-width: 1300px) and (orientation: portrait) {
+    padding: 1.5rem;
   }
 }
 .container > *:not(:last-child) {

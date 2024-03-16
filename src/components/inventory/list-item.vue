@@ -32,31 +32,36 @@
 </script>
 
 <template>
-  <li
-    class="list_style relative-position row justify-between items-center"
-  >
-    <div class="row justify-between items-center fit q-px-sm q-py-xs">
-      <div class="text-h4 col-3">{{ props.good_name }}</div>
-      <div class="text-txt col-3">
-        <span class="text-txt">{{$t('estimated_quantity')}}</span>&ensp;
+  <li class="list_style relative-position row justify-between items-center">
+    <div class="row justify-between items-center fit q-px-none q-py-sm-xs q-py-xs-none">
+      <div class="text-h5 col-md-3">{{ props.good_name }}</div>
+      <div class="text-body1 col-md-3">
+        <span class="text-body1">{{$t('estimated_quantity')}}</span>&ensp;
         {{ props.estimated_quantity }}&ensp;{{ $t('pc') }}
       </div>
-      <div class="quat_container flex row items-center q-gutter-lg">
-        <div class="text-txt text-secondary">{{$t('actual_quantity')}}</div>
-        <div class="quant_style">
-          <div class="text-h4 q-px-md">
+      <div class="flex row items-center">
+        <div class="text-body1 text-secondary q-mr-sm-sm q-mr-xs-xs">{{$t('actual_quantity')}}</div>
+        <div class="quant_style q-mr-sm-sm q-mr-xs-xs">
+          <div
+            class="
+              text-h5
+              q-px-lg-md
+              q-px-md-sm
+              q-px-sm-xs
+            "
+          >
             {{props.actual_quantity}}
           </div>
         </div>
-        <div class="text-txt">{{ $t('pc', {count: props.actual_quantity}) }}</div>
+        <div class="text-body1">{{ $t('pc', {count: props.actual_quantity}) }}</div>
       </div>
-      <div class="flex row justify-end items-center q-gutter-lg">
-        <q-img src="/state.svg" width="3rem" v-show="not_equal" />
-        <RoundedButton size="1.5rem" @click="click" />
+      <div class="flex row justify-end items-center">
+        <q-img src="/state.svg" v-show="not_equal" class="q-mr-sm-sm q-mr-xs-xs icon_notequal_style" />
+        <RoundedButton size="clamp(0.625rem, 0.4798rem + 0.7262vi, 1.25rem)" @click="click" />
       </div>
 
     </div>
-    <q-separator color="secondary" class="absolute-bottom-left full-width separator_style"  />
+    <q-separator class="absolute-bottom-left full-width separator_style" />
   </li>
   <!-- <DividerThin class="bg-secondary" /> -->
 </template>
@@ -68,12 +73,24 @@
 }
 .separator_style {
   bottom: -0.9rem;
+  background-color: var(--q-secondary);
+  @media (max-width: 1300px) {
+    background-color: var(--q-negative);
+  }
 }
+
 .quant_style {
   width: max-content;
   box-shadow: inset 0 0 2px 3px rgba(0,0,0,0.25);
   height: max-content;
   font-size: 2.5rem;
   border-radius: 1.5rem
+}
+
+.icon_notequal_style {
+  width: 3rem;
+  @media (max-width: 1300px) {
+    width: 1.5rem;
+  }
 }
 </style>

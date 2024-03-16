@@ -14,5 +14,11 @@
 <style scoped lang="scss">
 .container {
   padding: 3.75rem;
+  @media (min-width: 900px) {
+    padding: 1.5rem;
+  }
+  @media (max-width: 899px) {
+    padding: 1rem;
+  }
 }
 </style>

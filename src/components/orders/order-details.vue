@@ -51,13 +51,22 @@ import OrderCard from './order-card.vue';
 <template>
   <div class="main_container full-height">
     <div class="relative-position">
-      <RectangularButton :name="$t('back_to_order_list')" :color="'secondary'" size="xl" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/issuing-order')" />
+      <RectangularButton :name="$t('back_to_order_list')" :color="secondary" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/issuing-order')" />
 
-      <div class="text-h1 text-uppercase text-center q-mb-md title_padding">{{ $t('order') }}&ensp;№{{ ordersStore.currentOrder?.orderNumStr }}</div>
-    <DividerThin class="q-mb-xl bg-secondary" />
+      <div
+        class="
+          text-h2
+          text-uppercase text-center
+          q-mb-lg-lg
+          q-mb-xs-sm
+          q-pt-sm-sm
+          q-pt-xs-sm
+        "
+      >{{ $t('order') }}&ensp;№{{ ordersStore.currentOrder?.orderNumStr }}</div>
+    <DividerThin class="q-mb-md-sm q-mb-xs-sm bg-secondary" />
     </div>
     <div class="scroll_area">
-      <div class="orders_container">
+      <div class="orders_container q-pa-xs">
         <OrderCard
           v-for="order in ordersStore.currentOrder?.items"
           :key="order.id"
@@ -76,14 +85,14 @@ import OrderCard from './order-card.vue';
       </div>
     </div>
     <div>
-      <DividerBold class="q-mb-md" />
-      <div class="row justify-between items-center q-mb-md">
-        <div class="text-h4">{{ $t('total') }}</div>
-        <div class="text-h3 q-mb-md">
-          {{ ordersStore.currentOrder?.totalPrice }} &ensp;&#3647
+      <DividerBold class="q-mb-lg-md q-mb-xs-sm" />
+      <div class="column q-mb-lg-md q-mb-xs-sm">
+        <div class="row justify-between text-h3 q-mb-lg-md q-mb-xs-sm">
+          <div class="q-mr-sm">{{ $t('total') }}</div>
+          <div> {{ ordersStore.currentOrder?.totalPrice }}&ensp;&#3647</div>
         </div>
-        <DividerThin class="bg-negative q-mb-md" />
-        <div class="text-h4 row q-gutter-sm text-weight-regular">
+        <DividerThin class="bg-negative q-mb-lg-md q-mb-xs-sm" />
+        <div class="text-h3 row q-gutter-x-sm text-weight-regular">
           <span>{{ $t('order') }}</span>&ensp;
           <span>{{ ordersStore.currentOrder?.totalCount }}</span>&ensp;
           <span>{{ $t('product') }}</span>
@@ -94,10 +103,10 @@ import OrderCard from './order-card.vue';
         <RectangularButton
           :name="$t('cash_payment')"
           @click="paymentMethod('cash')"
-          class="payButton"
+          class="payButton button_style_confirm"
           :color="ordersStore.currentOrder?.payment  == 'cash' ? 'primary' : 'negative'"
           :textColor="ordersStore.currentOrder?.payment == 'cash' ? 'white' : 'black'"
-
+          :disable="!allowConfirm"
           :class="ordersStore.currentOrder?.payment == 'cash' && 'selected'"
           />
           <RectangularButton
@@ -106,8 +115,8 @@ import OrderCard from './order-card.vue';
           :textColor="ordersStore.currentOrder?.payment == 'cashless' ? 'white' : 'black'"
           @click="paymentMethod('cashless')"
           :class="ordersStore.currentOrder?.payment == 'cashless' && 'selected'"
-
-          class="payButton"
+          :disable="!allowConfirm"
+          class="payButton button_style_confirm"
         />
       </div>
       <div class="full-width">
@@ -115,7 +124,7 @@ import OrderCard from './order-card.vue';
           :name="$t('confirm')"
           @click="confirmOrder"
           :disable="!allowConfirm"
-          class="full-width"
+          class="full-width button_style_confirm"
         />
       </div>
     </div>

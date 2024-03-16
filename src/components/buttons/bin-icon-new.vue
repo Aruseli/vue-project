@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <div class="relative-position">
+  <div class="relative-position bin_mobile_scale">
     <svg height="100" width="100" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" version="1.1" viewBox="0 0 122 106" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:vectornator="http://vectornator.io" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs/>
 
@@ -17,6 +17,11 @@
 </template>
 
 <style scoped>
+.bin_mobile_scale {
+  @media (max-width: 1300px) {
+    transform: scale(0.5);
+  }
+}
 .bin {
   z-index: 2;
 }

@@ -6,8 +6,8 @@
   import { useRoute, useRouter } from "vue-router";
   import { useGoodsStore } from "./stores/goods";
   import { useArrivalsStore } from'src/stores/arrivals';
-import { useInventoryStore } from "./stores/inventory";
-import { useSelectInventoryStore } from "./stores/selective-inventory";
+  import { useInventoryStore } from "./stores/inventory";
+  import { useSelectInventoryStore } from "./stores/selective-inventory";
 
   const route = useRoute()
   const router = useRouter()

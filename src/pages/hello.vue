@@ -12,15 +12,15 @@
   <q-page class="flex flex-center relative relative-position">
     <div class="bg_filtered" />
     <div class="column justify-between window-height full-width container" @click="router.push('languages')">
-      <Logo class="logo_row self-start" classes="q-mr-md">
+      <Logo class="logo_row self-start" classes="q-mr-sm">
         <LogoSvgWhite />
       </Logo>
 
       <Transition name="slide-fade" mode="out-in">
-          <p v-show="show" class="text-h1 text-center text-white text-uppercase">
-            {{ $t('find_your_experience') }}
-          </p>
-        </Transition>
+        <p v-show="show" class="text-h1 text-center text-white text-uppercase">
+          {{ $t('find_your_experience') }}
+        </p>
+      </Transition>
       <div class="column">
         <div class="text-h4 text-center text-grey-2 text-uppercase">
           {{ $t('tap_on_screen') }}
