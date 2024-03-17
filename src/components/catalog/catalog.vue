@@ -114,7 +114,7 @@ console.log('DIR', dir);
 </script>
 
 <template>
-  <q-tab-panels v-model="app.tab" animated swipeable class="window-height window-width" v-if="app.altUI == false">
+  <q-tab-panels v-model="app.tab" animated swipeable class="window-height window-width" v-if="!app.kioskState.settings?.alt_ui">
     <q-tab-panel v-for="goodCategory in goodsStore.goods" :name="goodCategory.id">
       <transition appear @enter="enterCardShake">
         <div class="image_grid">

@@ -55,6 +55,8 @@ export type Settings = {
   shifts__state_open: number,
   shifts__state_closing: number,
   shifts__state_closed: number,
+
+  alt_ui: boolean,
 }
 
 export type TerminalParams = {

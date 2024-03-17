@@ -18,7 +18,6 @@ export const useAppStore = defineStore('app', () => {
   const tabCharacteristics = ref('description');
   const shiftLoading = ref(true);
   const lang_dir = ref('ltr');
-  const altUI = ref(true);
 
   const openDrawerCart = (state: boolean) => {
     drawerCartState.value = state;
@@ -226,7 +225,6 @@ export const useAppStore = defineStore('app', () => {
     setLocale,
     resetLocale,
     lang_dir,
-    altUI,
 
     updateShifts,
     openTerminalShift,

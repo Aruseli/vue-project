@@ -20,13 +20,13 @@ import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
 
 <template>
   <q-header
-    :reveal="app.altUI == false ? true : false"
+    :reveal="!app.kioskState.settings?.alt_ui"
     :reveal-offset="100"
-    :class="[app.altUI == false ? 'header' : 'header_alt']"
+    :class="[!app.kioskState.settings?.alt_ui ? 'header' : 'header_alt']"
   >
     <q-toolbar
       class="justify-between q-py-lg-xs"
-      :class="[app.lang_dir == 'rtl' ? 'row-reverse' : 'row', app.altUI == false ? 'q-mb-lg-lg q-mb-xs-xs' : 'q-mb-none']"
+      :class="[app.lang_dir == 'rtl' ? 'row-reverse' : 'row', !app.kioskState.settings?.alt_ui ? 'q-mb-lg-lg q-mb-xs-xs' : 'q-mb-none']"
     >
 
       <LogoSimple>
@@ -50,7 +50,7 @@ import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
       </div>
     </q-toolbar>
 
-    <div class="relative-position" v-if="app.altUI == false">
+    <div class="relative-position" v-if="!app.kioskState.settings?.alt_ui">
       <q-tabs
         v-model="app.tab"
         dense
