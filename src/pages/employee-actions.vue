@@ -2,112 +2,142 @@
   import { useRouter } from 'vue-router';
   import { onMounted, reactive, ref, watch, watchEffect, computed } from 'vue';
   import RectangularButton from '../components/buttons/rectangular-button.vue';
-import { useQuasar } from 'quasar';
-import { t } from 'i18next';
-import { useAppStore } from 'src/stores/app';
-import { useSelectInventoryStore } from 'src/stores/selective-inventory';
-import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
-import Logo from 'src/components/logo/logo.vue';
-import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
+  import { useQuasar } from 'quasar';
+  import i18next, { t } from 'i18next';
+  import { useAppStore } from 'src/stores/app';
+  import { useSelectiveInventoryStore } from 'src/stores/selective-inventory';
+  import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
+  import Logo from 'src/components/logo/logo.vue';
+  import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
+  import { delay } from 'src/services';
+  import { useGoodsStore } from 'src/stores/goods';
 
   const $q = useQuasar();
   const router = useRouter();
   const app = useAppStore();
-  const selectInventoryStore = useSelectInventoryStore();
+  const goodsStore = useGoodsStore();
+  const selectiveInventoryStore = useSelectiveInventoryStore();
   const dialogState = ref(false);
-  const openCatalog = ref(false);
-  const invNum = ref(0);
+  const inventoryRequests = ref(0);
 
-  const sum = computed(() => invNum.value)
   const route = (path) => {
     router.push(path);
   }
-  const switcher = async () => {
-    await app.switchTerminalShiftToClosingState();
-    router.push('close-shift/complete-inventory');
-  }
 
-  const routes = computed(() => ([
-    {
-      name: !openCatalog.value ? 'open_shift' : 'shift_is_open_switch_to_user_mode',
-      path: !openCatalog.value ? () => route('open-shift/complete-inventory'): () => route('hello'),
-    },
-    {
-      name: 'close_shift',
-      path: () => switcher(),
-      disable: openCatalog.value ? false : true,
-    },
-    {
-      name: 'issue_order',
-      path: () => route('issuing-order'),
-    },
-    {
-      name:'selective_inventory',
-      path: () => route('selective-inventory'),
-      disable: invNum.value > 0 ? false : true,
-      badge: invNum.value > 0 ? true : false,
-    },
-    {
-      name: 'complete_inventory',
-      path: () => route('complete-inventory'),
-    },
-    {
-      name: 'arrival_goods',
-      path: () => route('employee-actions'),
-    },
-    {
-      name: 'print_leftovers',
-      path: () => route(''),
-    },
-    {
-      name: 'list_active_orders',
-      path: () => route(''),
-    },
-  ]))
+  // {
+  //   name: string,
+  //   click: async () => undefined,
+  //   disable: boolean,
+  //   badge: boolean | undefined,
+  // }
+  const buttons = computed(() => {
+    const inventoryOnShiftOpen = app.kioskState.settings?.shifts__inventory_on_open;
+    const inventoryOnShiftClose = app.kioskState.settings?.shifts__inventory_on_close;
+    const skipInventoryOnOpen = app.kioskState.settings?.shifts__skip_inventory_on_open_if_same_user &&
+      app.kioskState.terminalShiftPreviousClosedBy == app.kioskState.user?.id;
 
-  const showNotify = () => {
-    $q.notify({
-      position: "center",
-      color: "positive",
-      classes: "full-width warning_customization",
-      timeout: 1000,
-      icon: 'img:/barcode_scanner.svg',
-      iconSize: '5rem',
-      spinnerSize: '3rem',
-      actions: [
-        {
-          icon: "cancel",
-          'aria-label': 'cancel',
-          label: t("scan_the_barcode_of_the_document"),
-          color: "white",
-          round: true,
+    return [
+      {
+        name: (app.customerModeIsAllowed) ? 'shift_is_open_switch_to_user_mode' : 'open_shift',
+        click: async () => {
+          if (app.customerModeIsAllowed) {
+            route('hello');
+            return;
+          }
+          if (inventoryOnShiftOpen && !skipInventoryOnOpen) {
+            route('open-shift/complete-inventory');
+          } else {
+            await app.openTerminalShift();
+            route('hello');
+          }
         },
-      ],
-    });
-  }
-  onMounted(async() => {
-    await app.updateTerminalShift();
-    await app.updateLocationShift();
-    await selectInventoryStore.updateInventories();
-    const invDocs = selectInventoryStore.inventoriesDocuments.length;
-    openCatalog.value = (app.getShift?.global_shift_id === app.locationShiftId);
-    if( invDocs > 0 ) {
-      dialogState.value = true
-      invNum.value = invDocs;
-      console.log('IFInvDocsRef', invNum.value);
-    }
-    console.log('GET STATUS', app.getShift?.global_shift_id );
-    console.log('CURRENT STATUS', app.locationShiftId);
-    console.log('openCatalog STATUS', openCatalog.value);
-    console.log('InvDocs', selectInventoryStore.inventoriesDocuments.length);
-    console.log('InvDocsRef', invNum.value);
-  })
+        disable: !app.customerModeIsAllowed && !app.shiftOpenIsAllowed,
+      },
+      {
+        name: 'close_shift',
+        click: async () => {
+          if (!app.shiftIsClosing) {
+            await app.startClosingTerminalShift();
+          }
+          if (inventoryOnShiftClose) {
+            route('close-shift/complete-inventory');
+          } else {
+            await app.closeTerminalShift();
+          }
+        },
+        disable: !app.shiftCloseIsAllowed,
+      },
+      {
+        name: 'issue_order',
+        click: () => route('issuing-order'),
+        disable: !app.orderIssueIsAllowed,
+      },
+      {
+        name:'selective_inventory',
+        click: () => route('selective-inventory'),
+        // TODO rights__kiosk_selective_inventory_extended
+        disable: inventoryRequests.value > 0 ? !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_selective_inventory) : true,
+        badge: inventoryRequests.value > 0 ? true : false,
+      },
+      {
+        name: 'complete_inventory',
+        click: () => route('complete-inventory'),
+        disable: !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_full_inventory),
+      },
+      {
+        name: 'arrival_goods',
+        click: async () => {
+          $q.notify({
+            position: "center",
+            color: "positive",
+            classes: "full-width warning_customization",
+            timeout: 1000,
+            icon: 'img:/barcode_scanner.svg',
+            iconSize: '5rem',
+            spinnerSize: '3rem',
+            actions: [
+              {
+                icon: "cancel",
+                'aria-label': 'cancel',
+                label: t("scan_the_barcode_of_the_document"),
+                color: "white",
+                round: true,
+              },
+            ],
+          });
+        },
+        disable: !app.arrivalsAreAllowed,
+      },
+      {
+        name: 'print_leftovers',
+        // TODO print_leftovers
+        click: () => route(''),
+        disable: true || !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_print_stock),
+      },
+      {
+        name: 'list_active_orders',
+        // TODO list_active_orders
+        click: () => route(''),
+        disable: true || !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_list_orders),
+      },
+    ];
+  });
 
-  const closingShift = () => {
-     app.switchTerminalShiftToClosingState();
-     router.push('complete-inventory')
-    //  app.closedShift();
-  }
+  onMounted(async() => {
+    if (app.kioskState.status != 'Ready') {
+      // Hack for page reloads
+      await delay(1000);
+    }
+    if (app.kioskState.status == 'Ready' && goodsStore.imagesCacheExpirationAt < Date.now()) {
+      goodsStore.updateGoods(i18next.language); // Don't await intentionally
+    }
+    await app.updateShifts();
+    await selectiveInventoryStore.updateInventories();
+    inventoryRequests.value = selectiveInventoryStore.inventoriesDocuments.length;
+    if( inventoryRequests.value > 0 ) {
+      dialogState.value = true;
+    }
+  })
 
   // const defer = () => {
   //   dialogState.value = false;
@@ -121,22 +151,16 @@ import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
         <LogoSvgWhite />
       </Logo>
       <RectangularButton
-        v-for="(route, index) in routes"
+        v-for="(button, index) in buttons"
         :key="index"
-        :name='$t(route.name)'
-        :disable='route.disable == true'
+        :name='$t(button.name)'
+        :disable='button.disable'
         class="button_style"
-        :class="{ 'blocked': route.disable && route.disable == true }"
-        @click="() => {
-          route.name == 'arrival_goods'
-            ? showNotify()
-            : route.name !== 'arrival_goods'
-            ? route.path()
-            : null
-        }"
+        :class="{ 'blocked': button.disable }"
+        @click="button.click"
       >
-        <div v-if="route.badge == true" class="badge_style bg-positive flex items-center justify-center">
-          <div class="text-white text-h5">{{ invNum }}</div>
+        <div v-if="button.badge == true" class="badge_style bg-positive flex items-center justify-center">
+          <div class="text-white text-h5">{{ inventoryRequests }}</div>
         </div>
       </RectangularButton>
 

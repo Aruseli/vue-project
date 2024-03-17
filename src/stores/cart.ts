@@ -45,19 +45,19 @@ export const useCartStore = defineStore('cartStore',
     }
 
     const submitOrder = async () => {
-      const terminal_settings = appStore.kioskState.params?.terminal_settings
+      const settings = appStore.kioskState.settings
       const doc = {
         id: undefined,
         state: 2,
-        doc_type: terminal_settings?.invoice_doc_type_id ?? '',
+        doc_type: settings?.invoice_doc_type_id ?? '',
         abbr_text: undefined,
         abbr_num: getNextInvoiceNumber(),
         doc_date: new Date().toISOString(),
         doc_order: 0,
-        corr_from_ref: terminal_settings?.kiosk_corr_id ?? '',
-        corr_to_ref: terminal_settings?.client_corr_id ?? '',
-        respperson_ref: appStore.kioskState.user?.id ?? '',
-        currency_ref: terminal_settings?.currency_id ?? '',
+        corr_from_ref: appStore.kioskState.kioskCorr?.id ?? '',
+        corr_to_ref: settings?.client_corr_id ?? '',
+        respperson_ref: appStore.kioskState.userCorr?.id ?? '',
+        currency_ref: settings?.currency_id ?? '',
         curr_rate: 1,
         comment: undefined,
         details: cart.value.map((item, index) => ({
@@ -65,11 +65,11 @@ export const useCartStore = defineStore('cartStore',
           state: 0,
           rec_order: index + 1,
           good_id: item.id,
-          munit_id: terminal_settings?.munit_id ?? '', // default
+          munit_id: settings?.munit_id ?? '', // default
           quant: item.quant,
           total: item.quant * item.price,
           doc_detail_link: undefined,
-          doc_detail_type: terminal_settings?.invoice_docdetail_type_id ?? '',
+          doc_detail_type: settings?.invoice_docdetail_type_id ?? '',
         })),
       }
       await apiSaveDocument(doc)

@@ -1,54 +1,59 @@
-const SET_COUNTER_IN_LS = 'SET_COUNTER';
 
-function setCounterToLocalStorage(key: string, count: number) {
-  localStorage.setItem(key, JSON.stringify({ counter: count }));
+const COUNTERS_LS_KEY = 'DOC_COUNTERS';
+
+type Counters = {
+  lastReset: number,
+  counters: { [key: string]: number },
 }
 
-let lastCounterResetDate = new Date().setHours(0, 0, 0, 0);
-let counter = 0;
-function resetCounterIfNewDay() {
-  const today = new Date().setHours(0, 0, 0, 0);
-
-  if (today > lastCounterResetDate) {
-    counter = 1;
-    lastCounterResetDate = today;
-  }
-  setCounterToLocalStorage('LAST_RESET', counter);
-}
-
-function getStoredCounterFromLs(key: string) {
+function getCountersFromLocalStorage(): Counters {
   try {
-    const storedData = localStorage.getItem(key);
+    const storedData = localStorage.getItem(COUNTERS_LS_KEY);
 
-    if (!storedData) return null;
-    return JSON.parse(storedData).counter || 1;
+    if (!storedData) {
+      return {
+        lastReset: Date.now(),
+        counters: {} as { [key: string]: number },
+      };
+    }
+    return JSON.parse(storedData);
   } catch (error) {
-    console.warn(`Error retrieving ${key}:`, error);
-    return null;
+    console.warn(`Error retrieving ${COUNTERS_LS_KEY}:`, error);
+    return {
+      lastReset: Date.now(),
+      counters: {} as { [key: string]: number },
+    };
   }
+}
+
+function resetCountersIfNewDay(counters: Counters) {
+  const dayStart = new Date().setHours(0, 0, 0, 0);
+  if (counters.lastReset >= dayStart) {
+    return;
+  }
+  counters.lastReset = Date.now();
+  for (const key in counters.counters) {
+    counters.counters[key] = 0;
+  }
+}
+
+function saveCountersToLocalStorage(counters: Counters) {
+  localStorage.setItem(COUNTERS_LS_KEY, JSON.stringify(counters));
+}
+
+function getNextNumber(key: string) {
+  const counters = getCountersFromLocalStorage();
+  resetCountersIfNewDay(counters);
+  const value = (counters.counters[key] ?? 0) + 1;
+  counters.counters[key] = value;
+  saveCountersToLocalStorage(counters);
+  return value;
 }
 
 export function getNextInventoryNumber() {
-  const storedCount = getStoredCounterFromLs('LAST_RESET');
-  resetCounterIfNewDay();
-  const newCount = storedCount ? storedCount + 1 : 0;
-  setCounterToLocalStorage('LAST_RESET', newCount);
-  return newCount.toString().padStart(4, "0");
-
-  // resetCounterIfNewDay();
-  // counter += 1;
-  // return counter.toString().padStart(4, "0");
+  return getNextNumber('inventory');
 }
 
 export function getNextInvoiceNumber() {
-  const storedCount = getStoredCounterFromLs('LAST_RESET');
-  resetCounterIfNewDay();
-  const newCount = storedCount ? storedCount + 1 : 0;
-  setCounterToLocalStorage('LAST_RESET', newCount);
-  return newCount.toString().padStart(4, "0");
-
-  // resetCounterIfNewDay();
-  // counter += 1;
-  // return counter.toString().padStart(4, "0");
+  return getNextNumber('invoice');
 }
-

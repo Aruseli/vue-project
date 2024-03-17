@@ -37,7 +37,7 @@
       <div class="text-h5 col-md-3">{{ props.good_name }}</div>
       <div class="text-body1 col-md-3">
         <span class="text-body1">{{$t('estimated_quantity')}}</span>&ensp;
-        {{ props.estimated_quantity }}&ensp;{{ $t('pc') }}
+        {{ props.estimated_quantity }}&ensp;{{ $t('pc', {count: props.estimated_quantity}) }}
       </div>
       <div class="flex row items-center">
         <div class="text-body1 text-secondary q-mr-sm-sm q-mr-xs-xs">{{$t('actual_quantity')}}</div>

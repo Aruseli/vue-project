@@ -1,28 +1,28 @@
 <script setup>
   import i18next, { t } from 'i18next';
-import moment from 'moment';
-import { useQuasar } from 'quasar';
-import { useGoodsStore } from 'src/stores/goods';
-import { useSelectInventoryStore } from 'src/stores/selective-inventory';
-import { onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import RectangularButton from '../buttons/rectangular-button.vue';
-import DividerBold from '../dividers/divider-bold.vue';
-import ListItem from './list-item.vue';
+  import moment from 'moment';
+  import { useQuasar } from 'quasar';
+  import { useGoodsStore } from 'src/stores/goods';
+  import { useSelectiveInventoryStore } from 'src/stores/selective-inventory';
+  import { onMounted } from 'vue';
+  import { useRouter } from 'vue-router';
+  import RectangularButton from '../buttons/rectangular-button.vue';
+  import DividerBold from '../dividers/divider-bold.vue';
+  import ListItem from './list-item.vue';
 
   const $q = useQuasar();
 
   const router = useRouter();
-  const selectInventoryStore = useSelectInventoryStore();
+  const selectiveInventoryStore = useSelectiveInventoryStore();
   const goodsStore = useGoodsStore();
 
   onMounted(async () => {
     try {
       await goodsStore.updateGoods(i18next.language)
-      await selectInventoryStore.updateInventories();
-      await selectInventoryStore.selectInventory();
+      await selectiveInventoryStore.updateInventories();
+      await selectiveInventoryStore.selectInventory();
     } catch (err) {
-      console.error('selectInventoryStore.updateInventories error:', err)
+      console.error('selectiveInventoryStore.updateInventories error:', err)
       $q.notify({
         color: 'warning',
         icon: 'warning',
@@ -34,13 +34,13 @@ import ListItem from './list-item.vue';
     }
   })
 
-  const date = selectInventoryStore.selectedInventory?.inventoryDate;
+  const date = selectiveInventoryStore.selectedInventory?.inventoryDate;
   // Format the date using Moment.js
   const formattedDate = moment(date).format('DD.MM.YY HH:mm');
 
 
   const confirmInventory = async () => {
-    await selectInventoryStore.confirmSelectedInventory()
+    await selectiveInventoryStore.confirmSelectedInventory()
     router.push('/employee-actions');
     // TODO возможно стоит добавить диалоговое окно, перед редиректом, с информацией что товар добавлен
   }
@@ -75,7 +75,7 @@ import ListItem from './list-item.vue';
         </div>
         <div class="row date_style text-h5">
           <span>{{ formattedDate }}</span>
-          <span>№{{ selectInventoryStore.selectedInventory?.inventoryNumStr }}</span>
+          <span>№{{ selectiveInventoryStore.selectedInventory?.inventoryNumStr }}</span>
         </div>
       </div>
       <DividerBold />
@@ -85,14 +85,14 @@ import ListItem from './list-item.vue';
       <div>
         <ol class="bg-white text-black relative-position q-pl-none">
           <ListItem
-            v-for="inv in selectInventoryStore.selectedInventory?.items"
+            v-for="inv in selectiveInventoryStore.selectedInventory?.items"
             :key="inv.id"
             :actual_quantity="inv.quant"
             :good_name="inv.title"
             :estimated_quantity="inv.stock"
-            :not_equal="inv.issued !== inv.quant"
-            :class="{ 'highlighted': inv.confirm }"
-            @click="inv.confirm = !inv.confirm"
+            :not_equal="inv.stock !== inv.quant"
+            :class="{ 'highlighted': inv.confirmed }"
+            @click="inv.confirmed = !inv.confirmed"
           />
         </ol>
       </div>
@@ -115,19 +115,19 @@ import ListItem from './list-item.vue';
       >
         <div class="row text-h5">
           <span class="q-mr-xs-xs">{{$t('total')}}</span>
-          <span class="q-mr-xs-xs">{{selectInventoryStore.selectedInventory?.items.length}}</span>
+          <span class="q-mr-xs-xs">{{selectiveInventoryStore.selectedInventory?.items.length}}</span>
           <span class="q-mr-xs-xs">{{ $t('product') }}</span>
-          <span>{{ $t('units', {count: selectInventoryStore.selectedInventory?.items.length}) }}</span>
+          <span>{{ $t('units', {count: selectiveInventoryStore.selectedInventory?.items.length}) }}</span>
         </div>
 
         <div class="text-h5 text-weight-regular row q-gutter-x-sm">
           <div class="q-mr-xs-xs">{{$t('estimated_quantity')}}</div>
-          <div class="q-mr-xs-xs">{{selectInventoryStore.selectedInventory?.totalStock}}</div>
-          <div class="q-mr-xs-xs">{{ $t('pc', {count: selectInventoryStore.selectedInventory?.totalStock}) }}</div>
+          <div class="q-mr-xs-xs">{{selectiveInventoryStore.selectedInventory?.totalStock}}</div>
+          <div class="q-mr-xs-xs">{{ $t('pc', {count: selectiveInventoryStore.selectedInventory?.totalStock}) }}</div>
           <q-separator color="secondary" vertical class="q-mr-xs-xs" size="0.2rem" />
           <div class="q-mr-xs-xs">{{$t('actual_quantity')}}</div>
-          <div class="q-mr-xs-xs">{{ selectInventoryStore.totalQuant }}</div>
-          <div>{{ $t('pc', {count: selectInventoryStore.totalQuant}) }}</div>
+          <div class="q-mr-xs-xs">{{ selectiveInventoryStore.totalQuant }}</div>
+          <div>{{ $t('pc', {count: selectiveInventoryStore.totalQuant}) }}</div>
         </div>
       </div>
       <div class="row justify-evenly">

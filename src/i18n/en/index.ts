@@ -69,4 +69,7 @@ export default {
   cash_payment: 'cash payment',
   cashless_payment: 'cashless payment',
   category_empty: 'Category is empty',
+  error_during_shift_open: 'Shift openning error',
+  error_during_shift_close: 'Shift close error',
+  error_during_shift_closing: 'Shift start close error',
 };

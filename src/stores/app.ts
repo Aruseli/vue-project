@@ -1,27 +1,15 @@
 import i18next, { t } from 'i18next';
 import { defineStore } from 'pinia';
-import { Notify } from 'quasar';
+import { Cookies, Notify } from 'quasar';
 import { eventEmitter, initLocalDeviceWsService } from 'src/services';
-import { apiAddAnyTerminal, apiAuth, apiAuthBearer, apiGetCurrentShift, apiGetShift, apiUsersWhoami, apiAddShift, apiCloseShift } from 'src/services/api';
-import { TERMINAL_REGISTRATION_ATTEMPT_INTERVAL, TERMINAL_STATUS_UPDATE_INTERVAL, USER_INFO_UPDATE_INTERVAL } from 'src/services/consts';
+import { apiAddAnyTerminal, apiAuth, apiAuthBearer, apiGetCurrentShift, apiGetShift, apiUsersWhoami, apiAddShift, apiCloseShift, apiGetCorrespondentByEntity } from 'src/services/api';
 import { updateCatalogLocales } from 'src/services/locales';
-import { delay } from 'src/services/utils';
+import { delay, throwErr } from 'src/services/utils';
 import { KioskState } from 'src/types/kiosk-state';
-import { reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { Router, useRouter } from 'vue-router';
+import config from 'src/services/config';
 
-/*
- This is 'app' or 'main' store.
- Предназнечение - хранить глобальные данные для приложения:
- - визуальные состояния при необходимости (например, cartDrawerState)
- - локализации интерфейса
- - может быть, в будущем сессии пользователей (если будут вложенные сессии авторизации)
-
- Здесь же подключается локализация по умолчанию.
-
- На этапе разработки вместо fetch использовать Promise.resolve(SOME_CONSTANT)
- с комментарием "//TODO fetch"
- */
 export const useAppStore = defineStore('app', () => {
   const router = useRouter();
   const drawerCartState = ref(false);
@@ -29,11 +17,6 @@ export const useAppStore = defineStore('app', () => {
   const tab = ref('');
   const tabCharacteristics = ref('description');
   const shiftLoading = ref(true);
-  const terminalShiftId = ref(null);
-  const locationShiftId = ref('');
-  const addedShift = ref(null);
-  const closeShift = ref(null);
-  const closingShiftState = ref(null);
   const lang_dir = ref('ltr');
   const altUI = ref(true);
 
@@ -57,90 +40,119 @@ export const useAppStore = defineStore('app', () => {
     kioskState.globalError = new Error(t('no_terminal_code_provided_on_startup'))
     kioskState.status = 'UnrecoverableError'
   }
-  const updateLocationShift = async() => {
+
+  const updateShifts = async () => {
     shiftLoading.value = true;
     try {
-      const locationId = kioskState.params?.location_id;
-      locationShiftId.value = await apiGetCurrentShift(locationId!);
+      const locationId = kioskState.params?.location_id ?? throwErr("location_id is missing");
+      const terminalId = kioskState.params?.terminal_id ?? throwErr("terminal_id is missing");
+
+      const locationShift = {
+        id: await apiGetCurrentShift(locationId),
+      };
+      const {
+        shift: terminalShift,
+        last_open_operation: lastOpen,
+        last_close_operation: lastClose,
+      } = await apiGetShift(terminalId);
+
+      kioskState.locationShift = locationShift;
+      kioskState.terminalShift = terminalShift;
+      kioskState.terminalShiftOpenedBy = lastOpen?.details?.terminal_shift_id == terminalShift?.id ? lastOpen?.staff1 : undefined;
+      kioskState.terminalShiftPreviousClosedBy = lastClose?.staff1;
+      console.log("Location shift", kioskState.locationShift);
+      console.log("Terminal shift", kioskState.terminalShift);
+      console.log("Terminal shift opened by", kioskState.terminalShiftOpenedBy);
+      console.log("Terminal shift previous closed by", kioskState.terminalShiftPreviousClosedBy);
     } catch (error) {
-      console.log('updateShift', error)
+      console.log('updateShifts error:', error)
     } finally {
       shiftLoading.value = false;
     }
   }
-  const addTerminalShift = async () => {
+
+  const openTerminalShift = async () => {
+    await updateShifts();
     shiftLoading.value = true;
     try {
-      addedShift.value = await apiAddShift(
-        kioskState.params?.terminal_id!,
-        locationShiftId.value,
-        kioskState.user.id
+      if (kioskState.terminalShift) {
+        throwErr('terminalShift exists');
+      }
+      await apiAddShift(
+        kioskState.params?.terminal_id ?? throwErr('terminal_id is missing'),
+        kioskState.locationShift?.id ?? throwErr('locationShift.id is missing'),
+        kioskState.user?.id ?? throwErr('user.id is missing'),
       );
-      if (!terminalShiftId.value) {
-        await updateTerminalShift();
+    } catch (error) {
+      console.log("openTerminalShift error:", error);
+      Notify.create({
+        color: 'warning',
+        position: 'center',
+        message: t('error_during_shift_open'),
+      });
+    } finally {
+      shiftLoading.value = false;
+    }
+    await updateShifts();
+  };
+
+  const closeTerminalShift = async () => {
+    await updateShifts();
+    shiftLoading.value = true;
+    try {
+      if (kioskState.terminalShift?.state == kioskState.settings?.shifts__state_closed) {
+        return;
+      }
+      if (kioskState.terminalShift?.state != kioskState.settings?.shifts__state_closing) {
+        throwErr('wrong terminalShift state');
+      }
+      const result = await apiCloseShift(
+        kioskState.terminalShift?.id ?? throwErr('terminalShift.id is missing'),
+        kioskState.settings?.shifts__state_closed ?? throwErr('settings are missing'),
+        kioskState.user?.id ?? throwErr('user.id is missing'),
+      );
+      if (!result.success) {
+        throwErr("Close shift wasn't successful")
       }
     } catch (error) {
-      console.log("addedShift", error);
+      console.log("closeTerminalShift error:", error);
+      Notify.create({
+        color: 'warning',
+        position: 'center',
+        message: t('error_during_shift_close'),
+      });
     } finally {
       shiftLoading.value = false;
     }
+    await updateShifts();
   };
 
-  const closedShift = async () => {
+  const startClosingTerminalShift = async() => {
+    await updateShifts();
     shiftLoading.value = true;
     try {
-      const terminalId = kioskState.params?.terminal_id;
-      const terminalShiftId = await apiGetShift(terminalId!);
-      const state = 0;
-      closeShift.value = await apiCloseShift(
-        terminalShiftId.terminal_id,
-        state,
-        kioskState.user.id
+      if (kioskState.terminalShift?.state == kioskState.settings?.shifts__state_closing) {
+        return;
+      }
+      if (kioskState.terminalShift?.state != kioskState.settings?.shifts__state_open) {
+        throwErr('wrong terminalShift state');
+      }
+      await apiCloseShift(
+        kioskState.terminalShift?.id ?? throwErr('terminalShift.id is missing'),
+        kioskState.settings?.shifts__state_closing ?? throwErr('settings are missing'),
+        kioskState.user?.id ?? throwErr('user.id is missing'),
       );
-      console.log("terminalShiftIdCLOSE", terminalShiftId);
     } catch (error) {
-      console.log("CLOSEShift", error);
-      console.log("terminalShiftIdCLOSE", terminalShiftId.value);
+      console.log("startClosingTerminalShift error:", error);
+      Notify.create({
+        color: 'warning',
+        position: 'center',
+        message: t('error_during_shift_closing'),
+      });
     } finally {
       shiftLoading.value = false;
-      console.log("CLOSEShift", closeShift.value);
-      console.log("terminalShiftIdCLOSE", terminalShiftId);
     }
-  };
-
-  const switchTerminalShiftToClosingState = async() => {
-  shiftLoading.value = true;
-  try {
-    const terminalId = kioskState.params?.terminal_id;
-    const terminalShiftId = await apiGetShift(terminalId!);
-    const state = 5;
-    closingShiftState.value = await apiCloseShift(
-      terminalShiftId.terminal_id,
-      state,
-      kioskState.user.id
-    );
-  } catch (error) {
-    console.log("closingShiftState.value", closingShiftState.value);
-    console.log("closingShift", error);
-  } finally {
-    shiftLoading.value = false;
-    console.log('closingShift', closingShiftState.value)
-  }
-}
-
-
-  const updateTerminalShift = async() => {
-    shiftLoading.value = true;
-    try {
-      const terminalId = kioskState.params?.terminal_id;
-      terminalShiftId.value = await apiGetShift(terminalId!);
-    } catch (error) {
-      console.log('updateShift', error)
-    } finally {
-      shiftLoading.value = false;
-      console.log('getShift.value', terminalShiftId.value)
-      console.log('getShiftTERMINAL', kioskState.params?.terminal_id)
-    }
+    await updateShifts();
   }
 
   setTimeout(loopUpdateTerminalParams, 0, kioskState);
@@ -156,7 +168,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const resetLocale = async () => {
-    await setLocale(kioskState.params?.terminal_settings?.loc ?? 'en' )
+    await setLocale(kioskState.settings?.loc ?? 'en' )
   }
 
   const login = async (userName: string, userPassword: string) => {
@@ -183,11 +195,22 @@ export const useAppStore = defineStore('app', () => {
     }
 
     // Init locales
-    await updateCatalogLocales(kioskState)
+    await updateCatalogLocales(kioskState);
+    await updateShifts();
   })
 
   //===================================
 
+  const hasRight = (right?: string) => !!right && !!kioskState.user?.rights.some(r => r.id == right);
+  const shiftIsOpen = computed<boolean>(() => kioskState.terminalShift?.state == kioskState.settings?.shifts__state_open);
+  const shiftIsClosing = computed<boolean>(() => kioskState.terminalShift?.state == kioskState.settings?.shifts__state_closing);
+  const shiftIsUpToDate = computed<boolean>(() => kioskState.terminalShift?.global_shift_id == kioskState.locationShift?.id);
+  const shiftIsGood = computed<boolean>(() => shiftIsOpen.value && shiftIsUpToDate.value);
+
+  const lockTerminal = async () => {
+    Cookies.remove('session');
+    await updateCurrentUser(kioskState);
+  }
 
   return {
     drawerCartState,
@@ -202,19 +225,45 @@ export const useAppStore = defineStore('app', () => {
     loginByToken,
     setLocale,
     resetLocale,
-
-    updateTerminalShift,
-    updateLocationShift,
-    addTerminalShift,
-    closedShift,
-    switchTerminalShiftToClosingState,
-    terminalShiftId,
-    locationShiftId,
-    addedShift,
-    closeShift,
-
     lang_dir,
     altUI,
+
+    updateShifts,
+    openTerminalShift,
+    closeTerminalShift,
+    startClosingTerminalShift,
+
+    hasRight,
+    shiftIsOpen,
+    shiftIsUpToDate,
+    shiftIsGood,
+    lockTerminal,
+
+    customerModeIsAllowed: computed<boolean>(() => {
+      return hasRight(kioskState.settings?.rights__kiosk_open_shift)
+        && shiftIsGood.value;
+    }),
+    shiftOpenIsAllowed: computed<boolean>(() => {
+      return hasRight(kioskState.settings?.rights__kiosk_open_shift)
+        && !shiftIsOpen.value
+        && !shiftIsClosing.value;
+    }),
+    shiftCloseIsAllowed: computed<boolean>(() => {
+      const hasRightToCloseShift =
+        hasRight(kioskState.settings?.rights__kiosk_close_any_shift) ||
+        ((kioskState.terminalShiftOpenedBy == kioskState.user?.id) ? hasRight(kioskState.settings?.rights__kiosk_close_own_shift) : false);
+
+      return hasRightToCloseShift && (shiftIsOpen.value || shiftIsClosing.value);
+    }),
+    orderIssueIsAllowed: computed<boolean>(() => {
+      return hasRight(kioskState.settings?.rights__kiosk_issue_order)
+        && shiftIsOpen.value
+        && (shiftIsUpToDate.value || (kioskState.settings?.allow_order_issue_in_outdated_shift || false));
+    }),
+    arrivalsAreAllowed: computed<boolean>(() => {
+      return hasRight(kioskState.settings?.rights__kiosk_arrival_of_goods)
+        && shiftIsGood.value;
+    }),
   }
 });
 
@@ -226,14 +275,19 @@ async function loopUpdateTerminalParams(kioskState: KioskState) {
     let terminalParams = await tryFetchTerminalParams(kioskState.name, kioskState.code);
     if (terminalParams) {
       kioskState.params = terminalParams
+      kioskState.settings = {
+        ...config.settings,
+        ...terminalParams.terminal_settings,
+      };
       console.log('terminalParams', terminalParams)
-      initLocalDeviceWsService(terminalParams.terminal_settings?.tdp ?? "localhost:3010")
+      console.log('settings', kioskState.settings)
+      initLocalDeviceWsService(kioskState.settings?.tdp ?? "localhost:3010")
       updateKioskStatus(kioskState)
     }
     await delay(
       kioskState.params ?
-      TERMINAL_STATUS_UPDATE_INTERVAL :
-      TERMINAL_REGISTRATION_ATTEMPT_INTERVAL
+      config.terminal_status_update_interval :
+      config.terminal_registration_attempt_interval
     )
   }
 }
@@ -270,16 +324,19 @@ async function tryFetchTerminalParams(terminalName: string, terminalCode: string
 async function loopUpdateCurrentUser(kioskState: KioskState) {
   while(true) {
     await updateCurrentUser(kioskState)
-    await delay(USER_INFO_UPDATE_INTERVAL)
+    await delay(kioskState.settings?.user_info_update_interval ?? config.settings.user_info_update_interval)
   }
 }
 
 async function updateCurrentUser(kioskState: KioskState) {
 
   try {
-    const result = await apiUsersWhoami();
-    kioskState.user = result;
-    console.log("whoami", result);
+    kioskState.user = await apiUsersWhoami();
+    console.log("user", kioskState.user);
+    kioskState.userCorr = await apiGetCorrespondentByEntity(kioskState.user?.id, kioskState.settings!.user_corr_type!);
+    console.log("userCorr", kioskState.userCorr);
+    kioskState.kioskCorr = await apiGetCorrespondentByEntity(kioskState.params!.terminal_id!, kioskState.settings!.kiosk_corr_type!);
+    console.log("kioskCorr", kioskState.kioskCorr);
     updateKioskStatus(kioskState);
   } catch (e: any) {
     if (e?.message?.includes("ERR_AUTH")) {
@@ -329,7 +386,7 @@ function deduceStatus(kioskState: KioskState) {
   if (!kioskState.params?.location_id || !kioskState.params?.object_id) {
     return 'UnboundTerminal'
   }
-  if (!kioskState.user) {
+  if (!kioskState.user || !kioskState.userCorr || !kioskState.kioskCorr) {
     return 'Unauthenticated'
   }
   return 'Ready'
