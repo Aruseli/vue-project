@@ -129,7 +129,7 @@ console.log('DIR', dir);
     :modelValue="dialogState"
     :timer="countdown"
   >
-    <div class="text-h5 text-center">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('minutes') }}</div>
+    <div class="text-h5 text-center">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}</div>
   </RedirectDialog>
 </template>
 

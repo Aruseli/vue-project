@@ -57,10 +57,10 @@
         case '230': // Document
           if (appStore.orderIssueIsAllowed && route.path == '/employee-actions') {
             await ordersStore.updateOrders()
-            if (process.env.DEV) {
-              console.log('Order barcodes', ordersStore.ordersDocuments.map(d =>
-                `2300${uuidToBarcodeDocId(d.id).toString().padStart(8, "0")}0`))
-            }
+            // if (process.env.DEV) {
+            console.log('Order barcodes', ordersStore.ordersDocuments.map(d =>
+              `2300${uuidToBarcodeDocId(d.id).toString().padStart(8, "0")}0`))
+            // }
             ordersStore.ordersDocuments.forEach(d => {
               // TODO: Check also docType
               if (uuidToBarcodeDocId(d.id) == barcode.docId) {
@@ -70,10 +70,10 @@
           }
           if (appStore.arrivalsAreAllowed && route.path == '/employee-actions') {
             await arrivalsStore.updateArrivals();
-            if (process.env.DEV) {
-              console.log('Arrival barcodes', arrivalsStore.arrivalsDocuments.map(d =>
-                `2300${uuidToBarcodeDocId(d.id).toString().padStart(8, "0")}0`))
-            }
+            // if (process.env.DEV) {
+            console.log('Arrival barcodes', arrivalsStore.arrivalsDocuments.map(d =>
+              `2300${uuidToBarcodeDocId(d.id).toString().padStart(8, "0")}0`))
+            // }
             arrivalsStore.arrivalsDocuments.forEach(d => {
               // TODO: Check also docType
               if (uuidToBarcodeDocId(d.id) == barcode.docId) {

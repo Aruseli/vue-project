@@ -16,7 +16,7 @@ import { useAppStore } from 'src/stores/app';
       <Tabs />
       <CatalogNew />
     </div>
-    <Catalog />
+    <Catalog v-else />
   </q-page>
 </template>
 
