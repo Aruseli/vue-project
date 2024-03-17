@@ -32,7 +32,10 @@
             const good = goodsStore.getGoodByCode(barcode.code);
             await arrivalsStore.scanArrivalGood(good);
           }
-          if (route.path == '/complete-inventory') {
+          if (route.path == '/complete-inventory' ||
+              route.path == '/open-shift/complete-inventory' ||
+              route.path == '/close-shift/complete-inventory'
+          ) {
             const good = goodsStore.getGoodByCode(barcode.code);
             await inventoryStore.scanInventoryGood(good);
           }

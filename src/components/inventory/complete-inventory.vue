@@ -30,7 +30,7 @@
       if (route.path === '/open-shift/complete-inventory') {
         await inventoryStore.submitInventory();
         await app.openTerminalShift();
-        router.push(app.shiftIsGood() ? '/hello' : '/employee-actions' );
+        router.push(app.shiftIsGood ? '/hello' : '/employee-actions' );
       } else if (route.path == '/close-shift/complete-inventory') {
         await inventoryStore.submitInventory();
         await app.closeTerminalShift();
