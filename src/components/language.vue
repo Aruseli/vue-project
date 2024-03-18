@@ -33,13 +33,13 @@
       "
       fit='fill'
     />
-    <div class="text-center text-white text-uppercase text-h4">{{ language }}</div>
+    <div class="text-center text-white text-uppercase text-h4 lang_style">{{ language }}</div>
   </div>
 </template>
 
 <style scoped>
 .img_style {
-  width: 13rem;
+  width: 11rem;
   height: 7rem;
   border-radius: 1.5rem;
 
@@ -49,10 +49,14 @@
     border-radius: 0.5rem;
   }
 
-  @media (max-width: 1300px) and (orientation: portrait) {
+  @media (max-width: 1300px) {
     width: 6rem;
     height: 4rem;
     border-radius: 0.5rem;
+  }
+  @media (max-width: 770px) {
+    width: 4rem;
+    height: 2.5rem;
   }
 }
 .lang_container {
@@ -60,6 +64,13 @@
 
   @media (max-width: 2050px) and (orientation: landscape) {
     width: 40vw;
+  }
+}
+
+.lang_style {
+  @media (max-width: 770px) {
+    font-size: 1rem;
+    font-weight: 400 !important;
   }
 }
 

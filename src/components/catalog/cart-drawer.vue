@@ -194,12 +194,12 @@ import DividerThin from '../dividers/divider-thin.vue';
       <div class="dialog_container">
         <q-card class="dialog_card dialog_cart">
           <q-card-section>
-            <div class="text-h2 text-uppercase text-center text-weight-bold">
+            <div class="text-h3 text-uppercase text-center text-weight-bold">
               {{$t('order_was_successfully_completed')}}
             </div>
           </q-card-section>
           <q-card-section class="q-pt-none text-center">
-            <q-img src="public/girl.svg" max-width="100%" max-height="100%" width="25rem" height="25rem" />
+            <q-img src="public/girl.svg" max-width="100%" max-height="100%" class="img_style" />
           </q-card-section>
           <q-card-section class="q-pt-none">
             <div class="text-subtitle2 text-center text-weight-bold">
@@ -221,13 +221,28 @@ import DividerThin from '../dividers/divider-thin.vue';
 <style scoped>
   .container_settings {
     padding: var(--px43);
+    @media(max-width: 1300px) {
+      padding: 1.5rem;
+    }
+    @media(max-width: 900px) {
+      padding: 1rem;
+    }
   }
 
   .container_settings > *:not(:last-of-type) {
     margin-bottom: var(--px30);
+    @media(max-width: 1300px) {
+      margin-bottom: 1rem;
+    }
   }
   .container_settings > *:last-of-type {
     margin-bottom: var(--px60);
+    @media(max-width: 1300px) {
+      margin-bottom: var(--px30);
+    }
+    @media(max-width: 900px) {
+      margin-bottom: 1rem;
+    }
   }
   .cart_product_item {
     width: 100%;
@@ -245,6 +260,12 @@ import DividerThin from '../dividers/divider-thin.vue';
 
   .dialog_cart {
     padding: 5rem;
+    @media(max-width: 1300px) {
+      padding: 1.5rem;
+    }
+    @media(max-width: 900px) {
+      padding: 1rem;
+    }
   }
 
   .dialog_cart > *:nth-child(1) {
@@ -268,6 +289,22 @@ import DividerThin from '../dividers/divider-thin.vue';
     @media (max-width: 1300px) {
       width: 3rem;
       height: 3rem;
+    }
+  }
+  .img_style {
+    width: 25rem;
+    height: 25rem;
+    @media(max-width: 1300px) {
+      width: 15rem;
+      height: 15rem;
+    }
+    @media(max-width: 900px) {
+      width: 10rem;
+      height: 10rem;
+    }
+    @media(max-width: 500px) {
+      width: 7rem;
+      height: 7rem;
     }
   }
 </style>

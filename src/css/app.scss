@@ -24,7 +24,6 @@ $font-family-nunito: 'Nunito Sans', sans-serif;
   --border-md: 2rem;
   --box-shadow--product_cart: 0 0 3px 2px #00000039;
   --border-shadow: 0 0 3px 1px #c2c2c2;
-  // --calc_width: calc($width_coefficient + var(--coefficient));
 }
 
 
@@ -289,7 +288,7 @@ padding: 0;
 
   }
   @media (max-width: 899px) {
-    padding: 0.5rem;
+    padding: 1rem;
   }
 }
 

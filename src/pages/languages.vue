@@ -46,6 +46,16 @@
   @media (max-width: 2050px) and (orientation: landscape) {
     padding: 2rem;
   }
+  @media (max-width: 1300px) {
+    padding: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  @media (max-width: 770px) {
+    padding: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 .container {
   width: max-content;
@@ -55,14 +65,24 @@
   @media (max-width: 2050px) and (orientation: landscape) {
     padding: 2rem;
   }
-  @media (max-width: 1300px) and (orientation: portrait) {
+  @media (max-width: 1300px) {
     padding: 1.5rem;
+  }
+  @media (max-width: 770px) {
+    padding: 1rem;
+    width: 90vw;
   }
 }
 .container > *:not(:last-child) {
   margin-bottom: 4rem;
   @media (max-width: 2050px) and (orientation: landscape) {
     margin-bottom: 1.5rem;
+  }
+  @media (max-width: 1300px) {
+    margin-bottom: 1.5rem;
+  }
+  @media (max-width: 770px) {
+    margin-bottom: 1rem;
   }
 }
 

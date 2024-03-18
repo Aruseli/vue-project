@@ -12,25 +12,15 @@ import { useAppStore } from 'src/stores/app';
 <template>
   <q-page :style="{ direction: app.lang_dir }" class="flex align-center relative justify-start window-full">
     <CatalogHeader />
-    <div v-if="app.altUI === true" class="row catalog_container">
-      <Tabs />
-      <CatalogNew />
-    </div>
-    <Catalog />
+    <!-- <div v-if="app.altUI === true" class="row catalog_container">
+      <Tabs /> -->
+    <CatalogNew v-if="app.altUI == true" />
+    <!-- </div> -->
+    <Catalog v-if="app.altUI == false" />
   </q-page>
 </template>
 
 <style scoped>
-.catalog_container {
-  width: 100%;
-  padding: 0 2rem;
-  column-gap: 2rem;
-  margin-top: 4rem;
-  @media (max-width: 1300px) {
-    margin-top: 2.125rem;
-    padding: 0 1rem;
-    column-gap: 1rem;
-  }
-}
+
 </style>
 

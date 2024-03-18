@@ -291,7 +291,7 @@ import IconButton from '../buttons/icon-button.vue';
   .card_setting {
     border-radius: var(--border-sm);
     box-shadow: var(--box-shadow--product_cart);
-    width: $calc_width;
+    width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -302,7 +302,7 @@ import IconButton from '../buttons/icon-button.vue';
   .card_setting_alt {
     border-radius: var(--border-sm);
     box-shadow: var(--border-shadow);
-    width: $calc_width_alt;
+    width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -354,7 +354,7 @@ import IconButton from '../buttons/icon-button.vue';
   }
 
 .block_description {
-  height: 3.5rem;
+  height: 4.5rem;
   overflow: hidden;
 }
 

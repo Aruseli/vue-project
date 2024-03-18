@@ -35,7 +35,7 @@ export const useAppStore = defineStore('app', () => {
   const closeShift = ref(null);
   const closingShiftState = ref(null);
   const lang_dir = ref('ltr');
-  const altUI = ref(true);
+  const altUI = ref(false);
 
   const openDrawerCart = (state: boolean) => {
     drawerCartState.value = state;

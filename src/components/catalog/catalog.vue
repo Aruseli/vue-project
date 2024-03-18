@@ -49,7 +49,6 @@ import ProductCard from './product-card.vue';
     })
   }
 
-  // const notifyDelay = app.kioskState.params.terminal_settings.customer_inactive_notify_duration_ms
   const warnRedirect = () => {
     dialogState.value = true;
     clearTimeout(timerWarn.value);
@@ -76,8 +75,6 @@ import ProductCard from './product-card.vue';
     }, 7000);
   };
 
-
-  // const redirectDelay = app.kioskState.params.terminal_settings.customer_inactive_after_ms;
   const resetTimer = () => {
     if (dialogState.value) {
       return;
@@ -107,14 +104,10 @@ import ProductCard from './product-card.vue';
       document.removeEventListener(e, boundResetTimer)
     )
   })
-
-  const dir = app.lang_dir
-console.log('DIR', dir);
-
 </script>
 
 <template>
-  <q-tab-panels v-model="app.tab" animated swipeable class="window-height window-width" v-if="app.altUI == false">
+  <q-tab-panels v-model="app.tab" animated swipeable class="window-height window-width">
     <q-tab-panel v-for="goodCategory in goodsStore.goods" :name="goodCategory.id">
       <transition appear @enter="enter">
         <div class="image_grid">
@@ -134,21 +127,25 @@ console.log('DIR', dir);
 </template>
 
 <style lang="scss" scoped>
-  $calc_width: calc(var(--width_coefficient) + var(--coefficient));
-  $calc_gap: calc(1rem + var(--coefficient_gap));
 
 .image_grid {
   display: grid;
-  grid-template-columns: repeat( auto-fit, minmax(20%, 1fr));
+  grid-template-columns: repeat(4,  1fr);
   gap: 2rem;
   width: 100%;
   height: auto;
   padding: 0 4rem;
-  // justify-content: center;
   margin-top: 2rem;
+
   @media(max-width: 1300px) {
     padding: 0 2rem;
-    grid-template-columns: repeat( auto-fit, minmax(25.5%, 1fr));
+    grid-template-columns: repeat(3,  1fr);
+  }
+  @media(max-width: 900px) {
+    grid-template-columns: repeat(2,  1fr);
+  }
+  @media(max-width: 500px) {
+    grid-template-columns: 1fr;
   }
 }
 </style>
