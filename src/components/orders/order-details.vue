@@ -11,7 +11,7 @@ import OrderCard from './order-card.vue';
   const ordersStore = useOrdersStore();
   const route = useRoute();
   const router = useRouter();
-  const payment = ref('cash' | 'cashless');
+  const payment = ref('cash' | 'card');
 
   const confirmOrder = async () => {
     await ordersStore.confirmCurrentOrderIssue()
@@ -110,11 +110,11 @@ import OrderCard from './order-card.vue';
           :class="ordersStore.currentOrder?.payment == 'cash' && 'selected'"
           />
           <RectangularButton
-          :color="ordersStore.currentOrder?.payment == 'cashless' ? 'primary' : 'negative'"
-          :name="$t('cashless_payment')"
-          :textColor="ordersStore.currentOrder?.payment == 'cashless' ? 'white' : 'black'"
-          @click="paymentMethod('cashless')"
-          :class="ordersStore.currentOrder?.payment == 'cashless' && 'selected'"
+          :color="ordersStore.currentOrder?.payment == 'card' ? 'primary' : 'negative'"
+          :name="$t('card_payment')"
+          :textColor="ordersStore.currentOrder?.payment == 'card' ? 'white' : 'black'"
+          @click="paymentMethod('card')"
+          :class="ordersStore.currentOrder?.payment == 'card' && 'selected'"
           :disable="!allowConfirm"
           class="payButton button_style_confirm"
         />
