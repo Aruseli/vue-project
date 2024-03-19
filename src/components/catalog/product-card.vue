@@ -82,7 +82,7 @@ import IconButton from '../buttons/icon-button.vue';
 
 
 <template>
-  <div :class="[good && good.stock <= 0 && 'disabled no-pointer-events', app.altUI === false ? 'card_setting' : 'card_setting_alt']" v-bind="$attrs">
+  <div :class="[good && good.stock <= 0 && 'disabled no-pointer-events', !app.kioskState.settings?.alt_ui ? 'card_setting' : 'card_setting_alt']" v-bind="$attrs">
     <div>
       <div class="content_container" @click="goodDetails">
         <div class="img_container">
@@ -102,24 +102,24 @@ import IconButton from '../buttons/icon-button.vue';
           <div class="column no-wrap items-left">
             <div
               class="q-mb-xs ellipsis first_letter"
-              :class="[app.altUI === false ? 'text-h4 ellipsis' : 'text-h5 text-center']"
+              :class="[!app.kioskState.settings?.alt_ui ? 'text-h4 ellipsis' : 'text-h5 text-center']"
             >
               {{ good?.title }}
             </div>
 
-            <div class="text-h3" v-if="!app.altUI">
+            <div class="text-h3" v-if="!app.kioskState.settings?.alt_ui">
               &#3647&ensp;{{ good?.price }}
             </div>
           </div>
         </div>
 
-        <div v-if="app.altUI === false" class="block_description" @click="goodDetails">
+        <div v-if="!app.kioskState.settings?.alt_ui" class="block_description" @click="goodDetails">
           <div class="text-body1" v-html="sliceDescription"/>
         </div>
 
       </div>
 
-      <div v-if="app.altUI === true">
+      <div v-if="app.kioskState.settings?.alt_ui">
         <q-btn v-if="!goodInCart"
           class="full-width"
           unelevated
@@ -149,7 +149,7 @@ import IconButton from '../buttons/icon-button.vue';
         </div>
       </div>
 
-      <div v-if="app.altUI === false">
+      <div v-if="!app.kioskState.settings?.alt_ui">
         <q-btn v-if="!goodInCart"
           class="full-width"
           unelevated

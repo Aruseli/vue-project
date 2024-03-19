@@ -9,8 +9,9 @@ import IconButton from '../buttons/icon-button.vue';
 import RectangularButton from '../buttons/rectangular-button.vue';
 import DividerBold from '../dividers/divider-bold.vue';
 import DividerThin from '../dividers/divider-thin.vue';
+import { useQuasar } from 'quasar';
 
-
+  const $q = useQuasar();
   const router = useRouter();
 
   const app = useAppStore();
@@ -52,8 +53,8 @@ import DividerThin from '../dividers/divider-thin.vue';
       app.openOrderDialog(true);
       setTimeout(() => {
         router.push('hello');
-      }, 7000);
-    } catch {
+      }, app.kioskState.settings?.customer_successful_order_notify_duration_ms ?? 7000);
+    } catch (err) {
       console.error('ordersStore.selectOrder error:', err)
       $q.notify({
         color: 'warning',

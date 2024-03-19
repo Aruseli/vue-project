@@ -1,43 +1,69 @@
+// See also config.json
+export type Settings = {
+  loc: string,
+  tdp: string,
+
+  view_check: string,
+  view_doc_input: string,
+  view_doc_invent: string,
+  view_ord: string,
+
+  client_corr_id: string,
+  user_corr_type: string,
+  kiosk_corr_type: string,
+  currency_id: string,
+  munit_id: string,
+
+  invoice_doc_type_id: string,
+  invoice_docdetail_type_id: string,
+  goods_arrival_doc_type_id: string,
+  goods_arrival_docdetail_type_id: string,
+  inventory_doc_type_id: string,
+  inventory_docdetail_type_id: string,
+
+  rights__kiosk_open_shift: string,
+  rights__kiosk_close_own_shift: string,
+  rights__kiosk_close_any_shift: string,
+  rights__kiosk_issue_order: string,
+  rights__kiosk_selective_inventory: string,
+  rights__kiosk_selective_inventory_extended: string,
+  rights__kiosk_full_inventory: string,
+  rights__kiosk_arrival_of_goods: string,
+  rights__kiosk_list_orders: string,
+  rights__kiosk_print_stock: string,
+
+  cache__images_cleanup_interval_ms: number,
+  cache__orders_ttl_ms: number,
+  cache__arrivals_ttl_ms: number,
+  cache__inventories_ttl_ms: number,
+  user_info_update_interval: number,
+
+  customer_inactivity_before_redirect: number,
+  customer_inactivity_countdown_duration: number,
+  customer_inactivity_animation_start_before_redirect: number,
+  customer_successful_order_notify_duration_ms: number,
+  //TODO: This two lines are not stabilized and not used yet
+  employee_inactive_after_ms: number,
+  employee_inactive_notify_duration_ms: number,
+
+  allow_order_issue_in_outdated_shift: boolean,
+  shifts__poll_interval_average_ms: number,
+  shifts__poll_interval_variance_ms: number,
+  shifts__inventory_on_open: boolean,
+  shifts__inventory_on_close: boolean,
+  shifts__skip_inventory_on_open_if_same_user: boolean,
+  shifts__state_open: number,
+  shifts__state_closing: number,
+  shifts__state_closed: number,
+
+  alt_ui: boolean,
+}
+
 export type TerminalParams = {
   terminal_id?: string,
   location_id?: string,
   object_id?: string,
-  // Stage values for reference:
-  // {
-  //   "loc": "en",
-  //   "tdp": "ws://127.0.0.1:3010",
-  //   "view_ord": "f9fdf826-384d-40ac-a1f3-6551cee8ef98",
-  //   "view_check": "1d7f3262-a073-4ea4-9f2c-7da03aa752a2",
-  //   "view_doc_input": "4d027811-d085-43c2-844f-8c2199d133d8",
-  //   "view_doc_invent": "df812dd8-4f36-412a-ac1e-7c8411d53ee1",
-  //   "kiosk_corr_id": "1362c8b4-3642-408b-9fd0-057acf547c60",
-  //   "client_corr_id": "4b4d99df-3e1a-4e49-853b-2ae324a954ae",
-  //   "invoice_doc_type_id": "3631602d-ef2e-41fe-8aaf-0c063eacb5e1",
-  //   "invoice_docdetail_type_id": "f15e302a-b60e-4a7d-bbba-64d29548355c",
-  //   "goods_arrival_doc_type_id": "c50c9265-6874-4ecc-950f-588145ff3b65",
-  //   "goods_arrival_docdetail_type_id": "bd91b47e-e905-46c5-bbe8-736757f03b87",
-  //   "currency_id": "54a23c08-4fb8-4952-bf17-7ee9528cdfca",
-  //   "munit_id": "f749a8e4-aa0e-42ad-9768-888c8ef5629b"
-  // }
-  terminal_settings?: {
-    loc?: string,
-    tdp?: string,
-    view_check?: string,
-    view_doc_input?: string,
-    view_doc_invent?: string,
-    view_ord?: string,
-    kiosk_corr_id?: string,
-    client_corr_id?: string,
-    invoice_doc_type_id?: string,
-    invoice_docdetail_type_id?: string,
-    goods_arrival_doc_type_id?: string,
-    goods_arrival_docdetail_type_id?: string,
-    inventory_doc_type_id?: string;
-    inventory_docdetail_type_id?: string;
-
-    currency_id?: string,
-    munit_id?: string,
-  },
+  terminal_settings?: Partial<Settings>,
 }
 
 export type LocaleInfo = {
@@ -46,12 +72,56 @@ export type LocaleInfo = {
   name: string, // title??
 }
 
+export type User = {
+  id: string,
+  login: string,
+  name: string,
+  tokens: string,
+  rights: { id: string, name: string }[],
+}
+
+export type Correspondent = {
+  id?: string,
+  name?: string,
+  entityType?: string,
+  entityId?: string,
+  corrType?: string,
+}
+
+export type TerminalShift = {
+  id: string,
+  datetime_open: any,
+  datetime_close: any,
+  shiftdate: any,
+  /** see config `shifts__state_*` */
+  state: number,
+  object_id: string,
+  /** Location shift id */
+  global_shift_id: string, // location shift id
+  terminal_id: string,
+}
+
 export type KioskState = {
   status: 'Unknown' | 'UnboundTerminal' | 'Unauthenticated' | 'Ready' | 'UnrecoverableError',
   name: string,
   code: string,
   params?: TerminalParams,
+  /**
+   * This is the `{ .."config.js"."settings", ..backend_terminal_settings }`.
+   * Settings from server have higher priority than local settings.
+   */
+  settings?: Settings,
   globalError?: Error,
-  user?: any,
+  user?: User,
+  userCorr?: Correspondent,
+  kioskCorr?: Correspondent,
   catalogLocales?: LocaleInfo[],
+  locationShift?: { id: string },
+  terminalShift?: TerminalShift,
+  // TODO
+  /** User ID */
+  terminalShiftOpenedBy?: string,
+  // TODO
+  /** User ID */
+  terminalShiftPreviousClosedBy?: string,
 }
