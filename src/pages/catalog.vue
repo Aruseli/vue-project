@@ -12,10 +12,7 @@ import { useAppStore } from 'src/stores/app';
 <template>
   <q-page :style="{ direction: app.lang_dir }" class="flex align-center relative justify-start window-full">
     <CatalogHeader />
-    <!-- <div v-if="app.altUI === true" class="row catalog_container">
-      <Tabs /> -->
     <CatalogNew v-if="app.kioskState.settings?.alt_ui" />
-    <!-- </div> -->
     <Catalog v-else />
   </q-page>
 </template>
