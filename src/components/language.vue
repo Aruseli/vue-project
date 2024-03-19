@@ -54,6 +54,10 @@
     height: 4rem;
     border-radius: 0.5rem;
   }
+  @media (max-width: 1100px) and (orientation: landscape) {
+    width: 4rem;
+    height: 2.5rem;
+  }
   @media (max-width: 770px) {
     width: 4rem;
     height: 2.5rem;
@@ -68,6 +72,9 @@
 }
 
 .lang_style {
+  @media (max-width: 1100px) and (orientation: landscape) {
+    font-size: 1rem;
+  }
   @media (max-width: 770px) {
     font-size: 1rem;
     font-weight: 400 !important;

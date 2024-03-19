@@ -14,9 +14,9 @@ import { useAppStore } from 'src/stores/app';
     <CatalogHeader />
     <!-- <div v-if="app.altUI === true" class="row catalog_container">
       <Tabs /> -->
-    <CatalogNew v-if="app.kioskState.settings?.alt_ui == true" />
+    <CatalogNew v-if="app.kioskState.settings?.alt_ui" />
     <!-- </div> -->
-    <Catalog v-if="app.kioskState.settings?.alt_ui == false" />
+    <Catalog v-else />
   </q-page>
 </template>
 

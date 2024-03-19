@@ -311,8 +311,9 @@ import IconButton from '../buttons/icon-button.vue';
     background-color: var(--q-header_bg);
   }
   .img_container {
-    max-width: $calc_width;
-    max-height: $calc_width;
+    // max-width: $calc_width;
+    // max-height: $calc_width;
+    width: 100%;
     border-radius : var(--px30);
     overflow: hidden;
     margin-bottom: 1.5rem;
