@@ -129,6 +129,12 @@ body.body--dark {
 .dialog_card {
   background-color: var(--q-header_bg);
   padding: var(--px30);
+  @media (max-width: 1400px) and (orientation: landscape) {
+    padding: 1;
+  }
+  @media (max-width: 1300px) {
+    padding: 1;
+  }
 }
 
 .q-dark {

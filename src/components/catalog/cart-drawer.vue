@@ -158,7 +158,7 @@ import { useQuasar } from 'quasar';
 
     <div class="q-pa-lg-md q-pa-xs-sm bg-white">
       <DividerBold class="q-mb-lg-md q-mb-xs-sm" />
-      <div class="row justify-between items-center">
+      <div :class="[cartStore.cart.length > 0 ? 'q-mb-lg-md q-mb-xs-sm' : 'q-mb-none row justify-between items-center' ]">
         <div class="q-mb-lg-md q-mb-xs-sm row justify-between fit">
           <div class="text-h3">{{ $t('total') }}</div>
           <div class="text-h3">
@@ -166,7 +166,7 @@ import { useQuasar } from 'quasar';
           </div>
         </div>
         <DividerThin class="bg-negative q-mb-sm" />
-        <div class="text-h4 row q-gutter-sm text-weight-regular">
+        <div class="text-h4 row q-gutter-x-sm text-weight-regular">
           <span>{{ $t('order') }}</span>
           <span>{{ cartStore.totalQuantity }}</span>
           <span>{{ $t('pieces', { count: cartStore.totalQuantity }) }}</span>
@@ -193,27 +193,48 @@ import { useQuasar } from 'quasar';
       dark
     >
       <div class="dialog_container">
-        <q-card class="dialog_card dialog_cart">
-          <q-card-section>
-            <div class="text-h3 text-uppercase text-center text-weight-bold">
-              {{$t('order_was_successfully_completed')}}
+        <div class="dialog_cart bg-white column justify-between items-center q-pa-lg-md q-pa-xs-sm">
+          <div class="instruction_info">
+            <div class="text-h3 text-uppercase text-center text-weight-regular q-mb-lg-md q-mb-xs-sm">
+              {{$t('order_is_processed')}}
             </div>
-          </q-card-section>
-          <q-card-section class="q-pt-none text-center">
-            <q-img src="public/girl.svg" max-width="100%" max-height="100%" class="img_style" />
-          </q-card-section>
-          <q-card-section class="q-pt-none">
-            <div class="text-subtitle2 text-center text-weight-bold">
+            <div class="q-mb-lg-md q-mb-xs-sm text-center">
+              <q-img src="public/girl.svg" max-width="100%" max-height="100%" class="img_style" />
+            </div>
+            <div class="text-h4 text-center text-weight-bold q-mb-lg-sm q-mb-xs-xs">
               {{$t('contact_seller_for_further_information')}}
             </div>
-            <DividerBold class="q-mb-md" />
-          </q-card-section>
-          <q-card-section class="q-pt-none">
-            <div class="text-h1 text-center text-uppercase text-weight-bold">
+            <DividerBold class="q-mb-lg-sm q-mb-xs-xs" />
+            <div class="text-h5 text-center text-uppercase text-weight-regular q-mb-lg-lg q-mb-xs-md">
               {{$t('thank_you')}}
             </div>
-          </q-card-section>
-        </q-card>
+            <div class="ordered_list column">
+              <div class="ordered_product row" v-for="(item, index) in cartStore.cartExtended" :key="index">
+                <div class="text-h5">{{ item.title }}</div>
+                <div class="text-h5">
+                  <span>{{ item.quant }}</span>
+                  <span>{{ $t('pieces', { count: item.quant }) }}</span> &#8260;
+                  <span>{{ item.price }}&ensp;&#3647</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="q-mb-lg-md q-mb-xs-sm column items-center full-width">
+            <div class="q-mb-lg-md q-mb-xs-sm row justify-between fit">
+              <div class="text-h5 text-weight-bold">{{ $t('total') }}</div>
+              <div class="text-h5 text-weight-bold">
+                {{ cartStore.totalPrice }} &ensp;&#3647
+              </div>
+            </div>
+            <DividerThin class="bg-negative q-mb-sm" />
+            <div class="text-h5 row q-gutter-x-sm text-weight-regular text-left">
+              <span>{{ $t('order') }}</span>
+              <span>{{ cartStore.totalQuantity }}</span>
+              <span>{{ $t('pieces', { count: cartStore.totalQuantity }) }}</span>
+            </div>
+          </div>
+        </div>
       </div>
     </q-dialog>
   </template>
@@ -245,6 +266,10 @@ import { useQuasar } from 'quasar';
       margin-bottom: 1rem;
     }
   }
+
+  .instruction_info > *:nth-child(-n + 2) {
+
+  }
   .cart_product_item {
     width: 100%;
     height: max-content;
@@ -259,7 +284,7 @@ import { useQuasar } from 'quasar';
     /* margin-right: 2rem; */
   }
 
-  .dialog_cart {
+  dialog_cart bg-white {
     padding: 5rem;
     @media(max-width: 1300px) {
       padding: 1.5rem;
