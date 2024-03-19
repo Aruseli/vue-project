@@ -109,9 +109,9 @@ import IconButton from '../buttons/icon-button.vue';
               {{ good?.title }}
             </div>
 
-            <div class="text-h3" v-if="!app.kioskState.settings?.alt_ui">
-              <span v-if="good && good.stock <= 0">{{ t('out_of_stock') }}</span>
-              <span v-else>&#3647&ensp;{{ good?.price }}</span>
+            <div v-if="!app.kioskState.settings?.alt_ui">
+              <span class="text-h5" v-if="good && good.stock <= 0">{{ t('out_of_stock') }}</span>
+              <span class="text-h3" v-else>&#3647&ensp;{{ good?.price }}</span>
             </div>
           </div>
         </div>
