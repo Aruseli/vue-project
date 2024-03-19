@@ -57,6 +57,9 @@
 <style scoped lang="scss">
 .container {
   padding: 5rem;
+  @media (max-width: 1400px) and (orientation: landscape) {
+    padding: 1.5rem;
+  }
   @media(max-width: 1300px) {
     padding: 1.5rem;
   }
@@ -97,6 +100,10 @@
 .img_style {
   width: 25rem;
   height: 25rem;
+  @media (max-width: 1400px) and (orientation: landscape) {
+    width: 10rem;
+    height: 10rem;
+  }
   @media(max-width: 1300px) {
     width: 15rem;
     height: 15rem;
