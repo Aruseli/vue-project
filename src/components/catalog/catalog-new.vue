@@ -135,16 +135,12 @@ import ProductCard from './product-card.vue';
     )
   })
 
-  const dir = app.lang_dir
-console.log('DIR', dir);
-
 </script>
 
 <template>
   <div class="catalog_container">
     <div class="column tabs_style">
       <ul class='tabs__header'>
-        {{ selectedIndex }}
         <li v-for='(goodCategory, index) in goodsStore.goods'
           :key='goodCategory.id'
           class="text-h5"
@@ -160,7 +156,7 @@ console.log('DIR', dir);
       <article v-for="(goodCategory, index) in goodsStore.goods" :key="goodCategory.id" class="q-mb-md catalog" :id="index" v-intersection="observer">
         <div class="text-h4 q-mb-sm catalog_header">{{ goodCategory.title }}</div>
         <div v-if="goodCategory.goods.length == 0" class="text-body1">{{$t('category_empty')}}</div>
-        <transition appear @enter="enter">
+        <transition appear @enter="enterCardShake">
           <div class="row image_grid_alt">
             <ProductCard :itemId="good.id" v-for="(good, index) in goodCategory.goods" :key="index" />
           </div>

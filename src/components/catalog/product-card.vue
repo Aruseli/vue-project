@@ -69,11 +69,13 @@ import IconButton from '../buttons/icon-button.vue';
 
   onMounted(async () => {
     good.value = goodsStore.getGoodById(props.itemId);
-    await nextTick();
-    if (good.value.description.length > 50) {
-      sliceDescription.value = good.value.description.slice(0, 50) + ' <span style="color: blue">more...</span>';
-    } else {
-      sliceDescription.value = good.value.description;
+    if (!app.kioskState.settings?.alt_ui) {
+      await nextTick();
+      if (good.value.description.length > 50) {
+        sliceDescription.value = good.value.description.slice(0, 50) + ' <span style="color: blue">more...</span>';
+      } else {
+        sliceDescription.value = good.value.description;
+      }
     }
   })
 
