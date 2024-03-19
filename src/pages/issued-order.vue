@@ -20,8 +20,8 @@
 <template>
   <q-page class="flex flex-center relative transparent">
     <div class="column justify-center items-center window-height full-width container">
-      <div class="text-h2 text-uppercase text-center title_style">{{ $t('order_was_issued_successfully') }}</div>
-      <q-img src="public/checked.svg" class="image_style" max-width="100%" max-height="100%" />
+      <div class="text-h2 text-center title_style first_letter">{{ $t('order_was_issued_successfully') }}</div>
+      <q-img src="public/checked.svg" class="img_style" max-width="100%" max-height="100%" />
       <DividerBold class="divider_bold_style" />
       <div class="column items-center full-width q-mb-lg-lg q-mb-xs-sm">
         <div class="q-mb-lg-lg q-mb-xs-sm row justify-between items-center full-width">
@@ -30,7 +30,7 @@
             {{ ordersStore.currentOrder.totalPrice }} &ensp;&#3647
           </div>
         </div>
-        <DividerThin class="bg-negative q-mb-md-md q-mb-xs-sm" />
+        <DividerThin class="bg-negative q-mb-lg-md q-mb-xs-sm" />
         <div class="text-h3 row q-gutter-x-sm text-weight-regular self-start">
           <span>{{$t('order')}}</span>&ensp;
           <span>{{ ordersStore.currentOrder.totalCount }}</span>&ensp;
@@ -42,11 +42,12 @@
         <RectangularButton
           :name="$t('back_to_order_list')"
           @click="goToOrderedList"
-          class="q-mb-lg-xl q-mb-xs-sm"
-        />
-        <RectangularButton
+          class="q-mb-lg-xl q-mb-xs-sm button_style_confirm"
+          />
+          <RectangularButton
           :name="$t('back_to_employee_actions')"
           @click="goToEmployeeActions"
+          class="button_style_confirm"
         />
       </div>
     </div>

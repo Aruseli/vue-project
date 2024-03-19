@@ -41,7 +41,7 @@
 <template>
   <div class="main_container full-height">
     <div class="relative-position">
-      <RectangularButton :name="$t('back_to_employee_actions')" :color="secondary" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/employee-actions')" />
+      <RectangularButton :name="$t('back_to_employee_actions')" color="secondary" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/employee-actions')" />
 
       <div
         class="
