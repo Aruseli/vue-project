@@ -178,8 +178,9 @@
 
 <style scoped lang="scss">
 .container {
+  padding: 4rem;
   @media (max-width: 899px) {
-    padding: 2rem ;
+    padding: 2rem;
   }
 }
 .container > *:not(:last-child) {
