@@ -110,7 +110,8 @@ import IconButton from '../buttons/icon-button.vue';
             </div>
 
             <div class="text-h3" v-if="!app.kioskState.settings?.alt_ui">
-              &#3647&ensp;{{ good?.price }}
+              <span v-if="good && good.stock <= 0">{{ t('out_of_stock') }}</span>
+              <span v-else>&#3647&ensp;{{ good?.price }}</span>
             </div>
           </div>
         </div>
@@ -132,7 +133,8 @@ import IconButton from '../buttons/icon-button.vue';
           @click="addGoodToCart(good)"
           >
           <div class="text-h5 text-center q-py-xs text-uppercase">
-            &#3647&ensp;{{ good?.price }}
+            <span v-if="good && good.stock <= 0">{{ t('out_of_stock') }}</span>
+            <span v-else>&#3647&ensp;{{ good?.price }}</span>
           </div>
         </q-btn>
         <div class="row justify-between items-center" v-else>
