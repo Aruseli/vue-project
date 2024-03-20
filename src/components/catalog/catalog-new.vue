@@ -84,6 +84,7 @@ import ProductCard from './product-card.vue';
     if (timeBeforeRedirect < app.kioskState.settings?.customer_inactivity_countdown_duration ?? 7000) {
       // countdown phase
       countdown.value = Math.floor(timeBeforeRedirect / 1000);
+      app.openLangDialog(false)
       dialogState.value = true;
       return;
     }

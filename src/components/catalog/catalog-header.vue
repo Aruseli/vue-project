@@ -7,6 +7,8 @@ import LogoSimple from '../logo/logo-simple.vue';
 import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
 import IconButton from '../buttons/icon-button.vue';
 import Language from '../language.vue';
+import Modal from '../modal.vue';
+import { onUpdated } from 'vue';
 
 
   const cart = useCartStore();
@@ -20,6 +22,10 @@ import Language from '../language.vue';
     await goodsStore.updateGoods(newLocale);
     app.setLocale(newLocale);
   }
+
+  // onUpdated(() => {
+  //   app.openLangDialog(false);
+  // })
 
 </script>
 
@@ -72,13 +78,7 @@ import Language from '../language.vue';
   </q-header>
 
   <template>
-    <q-dialog
-      v-model="app.langDialog"
-      transition-hide="fade"
-      transition-show="fade"
-      transition-duration="1.8"
-      dark
-    >
+    <Modal v-if="app.langDialog" @click="app.openLangDialog(false)">
       <div class="bg-primary container_languages">
         <Language v-for="lang in app.kioskState.catalogLocales"
           :key="lang.lang_code"
@@ -88,7 +88,7 @@ import Language from '../language.vue';
           @click="changeLanguage(lang.lang_code)"
         />
       </div>
-    </q-dialog>
+    </Modal>
   </template>
 </template>
 
