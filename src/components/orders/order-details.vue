@@ -11,7 +11,6 @@ import OrderCard from './order-card.vue';
   const ordersStore = useOrdersStore();
   const route = useRoute();
   const router = useRouter();
-  const payment = ref('cash' | 'card');
 
   const confirmOrder = async () => {
     await ordersStore.confirmCurrentOrderIssue()

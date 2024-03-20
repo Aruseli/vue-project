@@ -37,7 +37,6 @@ export default {
   estimated_quantity: 'estimated quantity',
   open_orders: 'open orders',
   order: "order",
-  order_was_issued_successfully: 'the order was issued successfully',
   order_is_processed: 'your order is processed',
   order_was_successfully_completed: 'The order was successfully completed!',
   pc_one: 'pc',

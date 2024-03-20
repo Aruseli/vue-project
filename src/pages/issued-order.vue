@@ -21,7 +21,7 @@
   <q-page class="flex flex-center relative transparent">
     <div class="column justify-center items-center window-height full-width container">
       <div class="text-h2 text-center title_style first_letter">{{ $t('order_was_issued_successfully') }}</div>
-      <q-img src="public/checked.svg" class="img_style" max-width="100%" max-height="100%" />
+      <q-img src="/checked.svg" class="img_style" max-width="100%" max-height="100%" />
       <DividerBold class="divider_bold_style" />
       <div class="column items-center full-width q-mb-lg-lg q-mb-xs-sm">
         <div class="q-mb-lg-lg q-mb-xs-sm row justify-between items-center full-width">

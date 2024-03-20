@@ -30,7 +30,7 @@ import ProductCard from './product-card.vue';
     }
   }
 
-  const scrollToCategory = (id) => {
+  const selectCategory = (id) => {
     event.preventDefault();
     const element = document.getElementById(id);
     selectedIndex.value = id;
@@ -145,7 +145,7 @@ import ProductCard from './product-card.vue';
           :key='goodCategory.id'
           class="text-h5"
         >
-          <div @click="scrollToCategory(index)" :class='{active : index == selectedIndex}'>
+          <div @click="selectCategory(index)" :class='{active : index == selectedIndex}'>
             {{ goodCategory.title }}
           </div>
         </li>
@@ -224,7 +224,7 @@ $calc_width_alt_mobile: calc(12rem + 2vmax);
   width: min-content !important;
   min-width: 20vw;
   height: calc(100vh - 20rem);
-  border-radius: 1.5rem
+  border-radius: 1.5rem;
 }
 
 ul.tabs__header {
