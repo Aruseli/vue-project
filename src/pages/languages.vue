@@ -24,7 +24,7 @@
     <Logo class="logo_row logo" classes="q-mr-sm">
       <LogoSvgWhite />
     </Logo>
-    <div class="column bg-primary container">
+    <div class="bg-primary container_languages">
       <language v-for="lang in app.kioskState.catalogLocales"
         :key="lang.lang_code"
         :src="lang.flag_src"
@@ -57,32 +57,31 @@
     transform: translateX(-50%);
   }
 }
-.container {
-  width: max-content;
-  padding: 4rem;
+.container_languages {
+  width: 80vw;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  row-gap: 1rem;
+  justify-content: center;
+  padding: 3rem;
   border-radius: 1rem;
+  overflow: hidden;
 
   @media (max-width: 2050px) and (orientation: landscape) {
-    padding: 2rem;
+    padding: 1.5rem;
+    column-gap: 0.5rem;
+    grid-template-columns: repeat(6, 1fr);
   }
   @media (max-width: 1300px) {
     padding: 1.5rem;
   }
-  @media (max-width: 770px) {
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(4, 1fr);
+    padding: 1.5rem;
+  }
+  @media (max-width: 500px) {
+    grid-template-columns: repeat(3, 1fr);
     padding: 1rem;
-    width: 90vw;
-  }
-}
-.container > *:not(:last-child) {
-  margin-bottom: 4rem;
-  @media (max-width: 2050px) and (orientation: landscape) {
-    margin-bottom: 1.5rem;
-  }
-  @media (max-width: 1300px) {
-    margin-bottom: 1.5rem;
-  }
-  @media (max-width: 770px) {
-    margin-bottom: 1rem;
   }
 }
 

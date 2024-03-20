@@ -5,6 +5,8 @@ import { useGoodsStore } from '../../stores/goods';
 import BinIconNew from '../buttons/bin-icon-new.vue';
 import LogoSimple from '../logo/logo-simple.vue';
 import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
+import IconButton from '../buttons/icon-button.vue';
+import Language from '../language.vue';
 
 
   const cart = useCartStore();
@@ -13,6 +15,10 @@ import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
 
   const openDrawer = () => {
     app.openDrawerCart(true);
+  }
+  const changeLanguage = async (newLocale) => {
+    await goodsStore.updateGoods(newLocale);
+    app.setLocale(newLocale);
   }
 
 </script>
@@ -34,6 +40,12 @@ import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
       </LogoSimple>
 
       <div>
+        <IconButton
+          icon="translate"
+          @click="app.openLangDialog(true)"
+          color='transparent'
+          textColor="black"
+        />
         <q-btn unelevated round class="relative-position" @click="openDrawer">
           <BinIconNew>
             <path v-show="cart.totalQuantity > 0" d="M23.2899 99.4944C49.461 103 73.5796 103 97.2395 99.4944C102.698 74.689 108.441 46.9768 108.441 46.9768C105.441 53.2274 94.0429 62.2554 64.2143 50.7154C34.3857 39.1754 19.7312 46.7492 14.5884 53C14.5884 53 19.6068 79.6892 23.2899 99.4944Z" fill="#0eb60b" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="path"/>
@@ -41,11 +53,6 @@ import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
           <div v-if="cart.totalQuantity > 0" class="badge_style bg-positive flex items-center justify-center">
             <div class="text-h5 text-white">{{ cart.totalQuantity }}</div>
           </div>
-          <!-- <q-badge
-            align="bottom"
-            rounded
-            :label="cart.totalQuantity" class="absolute-bottom-left" color="positive"
-          /> -->
         </q-btn>
       </div>
     </q-toolbar>
@@ -63,6 +70,26 @@ import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
       </q-tabs>
     </div>
   </q-header>
+
+  <template>
+    <q-dialog
+      v-model="app.langDialog"
+      transition-hide="fade"
+      transition-show="fade"
+      transition-duration="1.8"
+      dark
+    >
+      <div class="bg-primary container_languages">
+        <Language v-for="lang in app.kioskState.catalogLocales"
+          :key="lang.lang_code"
+          :src="lang.flag_src"
+          :alt="lang.name"
+          :language="lang.name"
+          @click="changeLanguage(lang.lang_code)"
+        />
+      </div>
+    </q-dialog>
+  </template>
 </template>
 
 <style scoped>
@@ -103,15 +130,36 @@ import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
     left: 1rem;
   }
 }
-
 .q-tabs__content > *:not(:last-of-type) {
   margin-right: 1.5rem;
-
 }
-/* .q-tabs__content > * {
-  background-color: var(--q-primary);
-  border-radius: 4rem;
-  padding: 0.3rem 3rem;
-  color: white;
-} */
+
+.container_languages {
+  width: 80vw;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  row-gap: 1rem;
+  justify-content: center;
+  padding: 3rem;
+  border-radius: 1rem;
+  overflow: hidden;
+
+  @media (max-width: 2050px) and (orientation: landscape) {
+    padding: 1.5rem;
+    column-gap: 0.5rem;
+    grid-template-columns: repeat(6, 1fr);
+  }
+  @media (max-width: 1300px) {
+    padding: 1.5rem;
+  }
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(4, 1fr);
+    padding: 1.5rem;
+  }
+  @media (max-width: 500px) {
+    grid-template-columns: repeat(3, 1fr);
+    padding: 1rem;
+  }
+}
+
 </style>

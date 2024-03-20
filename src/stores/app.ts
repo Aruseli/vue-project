@@ -14,6 +14,7 @@ export const useAppStore = defineStore('app', () => {
   const router = useRouter();
   const drawerCartState = ref(false);
   const orderDialog = ref(false);
+  const langDialog = ref(false);
   const tab = ref('');
   const tabCharacteristics = ref('description');
   const shiftLoading = ref(true);
@@ -25,6 +26,9 @@ export const useAppStore = defineStore('app', () => {
 
   const openOrderDialog = (state: boolean) => {
     orderDialog.value = state;
+  }
+  const openLangDialog = (state: boolean) => {
+    langDialog.value = state;
   }
 
   //===================================
@@ -217,7 +221,9 @@ export const useAppStore = defineStore('app', () => {
     tabCharacteristics,
     openDrawerCart,
     orderDialog,
+    langDialog,
     openOrderDialog,
+    openLangDialog,
 
     kioskState,
     login,

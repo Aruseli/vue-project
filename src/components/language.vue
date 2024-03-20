@@ -19,7 +19,7 @@
 </script>
 
 <template>
-  <div @click="click" class="row justify-start items-center lang_container">
+  <div @click="click" class="lang_container">
     <q-img
       :src="src"
       :alt="language"
@@ -33,7 +33,7 @@
       "
       fit='fill'
     />
-    <div class="text-center text-white text-uppercase text-h4 lang_style">{{ language }}</div>
+    <div class="text-left text-white text-uppercase text-h5 lang_style">{{ language }}</div>
   </div>
 </template>
 
@@ -64,15 +64,11 @@
   }
 }
 .lang_container {
-  width: 60vw;
-
-  @media (max-width: 2050px) and (orientation: landscape) {
-    width: 40vw;
-  }
+  width: min-content;
 }
 
 .lang_style {
-  @media (max-width: 1100px) and (orientation: landscape) {
+  @media (max-width: 1200px) and (orientation: landscape) {
     font-size: 1rem;
   }
   @media (max-width: 770px) {
