@@ -114,12 +114,6 @@
         click: () => route(''),
         disable: true || !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_print_stock),
       },
-      {
-        name: 'list_active_orders',
-        // TODO list_active_orders
-        click: () => route(''),
-        disable: true || !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_list_orders),
-      },
     ];
   });
 
