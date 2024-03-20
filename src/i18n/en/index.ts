@@ -10,7 +10,7 @@ export default {
   // Main menu
   open_shift: 'open a shift',
   close_shift: 'close shift',
-  issue_order: 'issue an order',
+  issue_order: 'active orders',
   selective_inventory: 'selective inventory',
   complete_inventory: 'complete inventory',
   arrival_goods: 'arrival of goods',
