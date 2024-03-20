@@ -3,19 +3,21 @@
 import { t } from 'i18next';
 import { useAppStore } from 'src/stores/app';
 import { useCartStore } from 'src/stores/cart';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import IconButton from '../buttons/icon-button.vue';
 import RectangularButton from '../buttons/rectangular-button.vue';
 import DividerBold from '../dividers/divider-bold.vue';
 import DividerThin from '../dividers/divider-thin.vue';
 import { useQuasar } from 'quasar';
+import { useOrdersStore } from 'src/stores/orders';
 
   const $q = useQuasar();
   const router = useRouter();
 
   const app = useAppStore();
   const cartStore = useCartStore();
+  const ordersStore = useOrdersStore();
 
   // // Если успользовать loading на кнопку Заказа, то при нажатии на кнопку будет отображаться прогресс загрузки
   // const progress = ref({ loading: false, percentage: 0 });
@@ -44,14 +46,13 @@ import { useQuasar } from 'quasar';
   const isDisabled = ref(false);
 
   async function submitOrder() {
-    // orderStore.existOrder();
     // кнопка будет недоступна для повторного клика
     isDisabled.value = true;
-    // emulateLoading(progress);
     try {
       await cartStore.submitOrder()
       app.openOrderDialog(true);
       setTimeout(() => {
+        cartStore.clearCart();
         router.push('hello');
       }, app.kioskState.settings?.customer_successful_order_notify_duration_ms ?? 7000);
     } catch (err) {
@@ -81,7 +82,7 @@ import { useQuasar } from 'quasar';
     :width="900"
   >
     <div class="q-pa-lg-md q-pa-xs-sm">
-      <div class="row items-center q-mb-lg-md q-mb-xs-xs">
+      <div class="row items-center justify-between q-mb-lg-md q-mb-xs-xs">
 
         <IconButton
           round
@@ -92,6 +93,9 @@ import { useQuasar } from 'quasar';
         <div class="text-h2 text-center text-text text-uppercase col-10">
           {{ $t('order') }}
         </div>
+        <q-btn unelevated round @click="cartStore.clearCart()">
+          <q-icon name="img:/bin.svg" size="2.5rem" />
+        </q-btn>
       </div>
       <div class="bg-negative full-width" style="height: 0.1rem" />
     </div>
@@ -128,12 +132,14 @@ import { useQuasar } from 'quasar';
               </q-btn>
             </div>
 
-            <!-- <div class="text-body1 text-weight-regular">
-              {{ item.description }}
-            </div> -->
             <div class="row justify-between items-center">
-              <div class="text-h3">
-                &#3647&ensp;{{ item.price }}
+              <div class="row items-baseline">
+                <span class="text-h3 q-mr-xs">
+                  &#3647&ensp;{{ item.price * item.quant }}
+                </span> <span class="text-h3 q-mr-xs">/</span>
+                <span class="text-h5 text-blue-grey-4">
+                  &#3647&ensp;{{ item.price }}
+                </span>
               </div>
               <div class="row justify-between items-center">
                 <IconButton
@@ -199,7 +205,7 @@ import { useQuasar } from 'quasar';
               {{$t('order_is_processed')}}
             </div>
             <div class="q-mb-lg-md q-mb-xs-sm text-center">
-              <q-img src="public/girl.svg" max-width="100%" max-height="100%" class="img_style" />
+              <q-img src="/girl.svg" max-width="100%" max-height="100%" class="img_style" />
             </div>
             <div class="text-h4 text-center text-weight-bold q-mb-lg-sm q-mb-xs-xs">
               {{$t('contact_seller_for_further_information')}}
@@ -209,18 +215,18 @@ import { useQuasar } from 'quasar';
               {{$t('thank_you')}}
             </div>
             <div class="ordered_list column">
-              <div class="ordered_product row" v-for="(item, index) in cartStore.cartExtended" :key="index">
+              <div class="ordered_product row fit justify-between" v-for="item in cartStore.cartExtended" :key="item.id">
                 <div class="text-h5">{{ item.title }}</div>
                 <div class="text-h5">
                   <span>{{ item.quant }}</span>
-                  <span>{{ $t('pieces', { count: item.quant }) }}</span> &#8260;
-                  <span>{{ item.price }}&ensp;&#3647</span>
+                  <span>{{ $t('pc', { count: item.quant }) }}</span> &#8260;
+                  <span>{{ item.price * item.quant }}&ensp;&#3647</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="q-mb-lg-md q-mb-xs-sm column items-center full-width">
+          <div class="column full-width">
             <div class="q-mb-lg-md q-mb-xs-sm row justify-between fit">
               <div class="text-h5 text-weight-bold">{{ $t('total') }}</div>
               <div class="text-h5 text-weight-bold">
@@ -231,7 +237,7 @@ import { useQuasar } from 'quasar';
             <div class="text-h5 row q-gutter-x-sm text-weight-regular text-left">
               <span>{{ $t('order') }}</span>
               <span>{{ cartStore.totalQuantity }}</span>
-              <span>{{ $t('pieces', { count: cartStore.totalQuantity }) }}</span>
+              <span>{{ $t('pc', { count: cartStore.totalQuantity }) }}</span>
             </div>
           </div>
         </div>
@@ -284,25 +290,19 @@ import { useQuasar } from 'quasar';
     /* margin-right: 2rem; */
   }
 
-  dialog_cart bg-white {
-    padding: 5rem;
-    @media(max-width: 1300px) {
-      padding: 1.5rem;
-    }
-    @media(max-width: 900px) {
-      padding: 1rem;
-    }
-  }
 
   .dialog_cart > *:nth-child(1) {
     margin-bottom: 5rem;
+    @media(max-width: 1300px) {
+      margin-bottom: 3rem;
+    }
   }
-  .dialog_cart > *:nth-child(2) {
+  /* .dialog_cart > *:nth-child(2) {
     margin-bottom: 1.5rem;
   }
   .dialog_cart > *:nth-child(2) {
     margin-bottom: 3rem;
-  }
+  } */
   .dialog_container {
     width: 70vw;
     max-width: 80vw;
@@ -332,5 +332,9 @@ import { useQuasar } from 'quasar';
       width: 7rem;
       height: 7rem;
     }
+  }
+
+  .ordered_list > *:not(:last-child) {
+    margin-bottom: 0.5rem;
   }
 </style>

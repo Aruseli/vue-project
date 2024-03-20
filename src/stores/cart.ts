@@ -19,7 +19,7 @@ export const useCartStore = defineStore('cartStore',
     const increaseItemsCount = (good: Good | CartItem) => {
       const cartItem = cart.value.find(i => i.id == good.id)
       if (cartItem) {
-        cartItem.quant += 1
+        cartItem.quant += 1;
       } else {
         cart.value.push({ id: good.id, quant: 1, price: good.price})
       }
@@ -30,7 +30,7 @@ export const useCartStore = defineStore('cartStore',
       if (!cartItem) {
         return
       }
-      cartItem.quant -= 1
+      cartItem.quant -= 1;
       if (cartItem.quant <= 0) {
         cart.value = cart.value.filter(i => i.id != good.id)
       }
@@ -73,7 +73,7 @@ export const useCartStore = defineStore('cartStore',
         })),
       }
       await apiSaveDocument(doc)
-      clearCart()
+      // clearCart()
     }
 
     const cartExtended = computed(() => {
