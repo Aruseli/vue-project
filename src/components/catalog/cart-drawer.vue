@@ -10,14 +10,12 @@ import RectangularButton from '../buttons/rectangular-button.vue';
 import DividerBold from '../dividers/divider-bold.vue';
 import DividerThin from '../dividers/divider-thin.vue';
 import { useQuasar } from 'quasar';
-import { useOrdersStore } from 'src/stores/orders';
 
   const $q = useQuasar();
   const router = useRouter();
 
   const app = useAppStore();
   const cartStore = useCartStore();
-  const ordersStore = useOrdersStore();
 
   // // Если успользовать loading на кнопку Заказа, то при нажатии на кнопку будет отображаться прогресс загрузки
   // const progress = ref({ loading: false, percentage: 0 });
