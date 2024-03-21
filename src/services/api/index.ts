@@ -91,7 +91,7 @@ export async function apiGetLocale(lang: string) {
     lang,
   });
   console.log('apiGetLocale', response);
-  return response.data.locale[0]?.data;
+  return response.data.locale;
 }
 export async function apiGetCurrentShift(locationId: string) {
   const response = await fetchApi('/api/v2/sales/currentShift', {
