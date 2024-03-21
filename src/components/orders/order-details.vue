@@ -39,11 +39,15 @@ import OrderCard from './order-card.vue';
     }
   })
 
+  const showConfirm = ref(false);
   const paymentMethod = (option) => {
     if (ordersStore.currentOrder) {
       ordersStore.currentOrder.payment = option;
     }
+    showConfirm.value == true;
   }
+
+  const show = ref(false);
 
 </script>
 
@@ -83,7 +87,7 @@ import OrderCard from './order-card.vue';
         />
       </div>
     </div>
-    <div>
+    <div class="q-mb-sm">
       <DividerBold class="q-mb-lg-md q-mb-xs-sm" />
       <div class="column q-mb-lg-md q-mb-xs-sm">
         <div class="row justify-between text-h3 q-mb-lg-md q-mb-xs-sm">
@@ -98,34 +102,39 @@ import OrderCard from './order-card.vue';
           <span>{{ $t('units', { count: ordersStore.currentOrder?.totalCount }) }}</span>
         </div>
       </div>
-      <div class="full-width row justify-between q-mb-sm">
-        <RectangularButton
-          :name="$t('cash_payment')"
-          @click="paymentMethod('cash')"
-          class="payButton button_style_confirm"
-          :color="ordersStore.currentOrder?.payment  == 'cash' ? 'primary' : 'negative'"
-          :textColor="ordersStore.currentOrder?.payment == 'cash' ? 'white' : 'black'"
-          :disable="!allowConfirm"
-          :class="ordersStore.currentOrder?.payment == 'cash' && 'selected'"
-          />
+      <transition name="bounce" mode="out-in">
+        <div
+          class="full-width row justify-between"
+          v-if="ordersStore.currentOrder?.payment == ''"
+        >
           <RectangularButton
-          :color="ordersStore.currentOrder?.payment == 'card' ? 'primary' : 'negative'"
-          :name="$t('card_payment')"
-          :textColor="ordersStore.currentOrder?.payment == 'card' ? 'white' : 'black'"
-          @click="paymentMethod('card')"
-          :class="ordersStore.currentOrder?.payment == 'card' && 'selected'"
-          :disable="!allowConfirm"
-          class="payButton button_style_confirm"
-        />
-      </div>
-      <div class="full-width">
-        <RectangularButton
-          :name="$t('confirm')"
-          @click="confirmOrder"
-          :disable="!allowConfirm"
-          class="full-width button_style_confirm"
-        />
-      </div>
+            :name="$t('cash_payment')"
+            @click="paymentMethod('cash')"
+            class="payButton button_style_confirm"
+            :color="ordersStore.currentOrder?.payment  == 'cash' ? 'primary' : 'negative'"
+            :textColor="ordersStore.currentOrder?.payment == 'cash' ? 'white' : 'black'"
+            :disable="!allowConfirm"
+            :class="ordersStore.currentOrder?.payment == 'cash' && 'selected'"
+            />
+            <RectangularButton
+            :color="ordersStore.currentOrder?.payment == 'card' ? 'primary' : 'negative'"
+            :name="$t('card_payment')"
+            :textColor="ordersStore.currentOrder?.payment == 'card' ? 'white' : 'black'"
+            @click="paymentMethod('card')"
+            :class="ordersStore.currentOrder?.payment == 'card' && 'selected'"
+            :disable="!allowConfirm"
+            class="payButton button_style_confirm"
+          />
+        </div>
+        <div class="full-width" v-else>
+          <RectangularButton
+            :name="$t('confirm')"
+            @click="confirmOrder"
+            :disable="!allowConfirm"
+            class="full-width button_style_confirm"
+          />
+        </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -152,5 +161,15 @@ import OrderCard from './order-card.vue';
 .selected {
   background-color: var(--q-primary);
   // color: white;
+}
+
+.bounce-enter-from {
+  opacity: 0;
+}
+.bounce-enter-to {
+  opacity: 1;
+}
+.bounce-enter-active {
+  transition: opacity 2s cubic-bezier(0.215, 0.610, 0.355, 1);
 }
 </style>
