@@ -73,4 +73,6 @@ export default {
   error_during_shift_close: 'Shift close error',
   error_during_shift_closing: 'Shift start close error',
   out_of_stock: 'out of stock',
+  yes: 'yes',
+  no: 'no',
 };

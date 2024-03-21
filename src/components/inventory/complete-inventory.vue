@@ -10,6 +10,9 @@
   import DividerBold from '../dividers/divider-bold.vue';
   import ListItem from './list-item.vue';
   import { useAppStore } from 'src/stores/app';
+  import RedirectDialog from '../dialog/redirect-dialog.vue';
+
+  const dialogState = ref(false);
 
 
   const goodsStore = useGoodsStore();
@@ -78,7 +81,7 @@
 <template>
   <div class="main_container full-height full-width">
     <div class="relative-position">
-      <RectangularButton :name="$t('back_to_employee_actions')" :color="secondary" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/employee-actions')" />
+      <RectangularButton :name="$t('back_to_employee_actions')" color="secondary" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/employee-actions')" />
 
       <div
         class="
@@ -112,7 +115,7 @@
 
     <div class="scroll_area">
       <div>
-        <ol class="bg-white text-black relative-position q-pl-none">
+        <ol class="bg-white text-black relative-position ol_style">
           <ListItem
             v-for="good in inventoryStore.inventory"
             :key="good.id"
@@ -122,6 +125,7 @@
             :not_equal="good.stock !== good.quant"
             :class="{ 'highlighted': good.confirmed }"
             @click="good.confirmed = !good.confirmed"
+            @clear="dialogState = true"
           />
         </ol>
       </div>
@@ -174,6 +178,14 @@
       </div>
     </div>
   </div>
+  <RedirectDialog
+    @complete="dialogState = false"
+    @continue="route('selective-inventory')"
+    :modelValue="dialogState"
+    nameLeftButton="yes"
+    nameRightButton="no"
+    title="Are you sure you want to rescan the Romashka product"
+  />
 </template>
 
 <style scoped>
@@ -188,5 +200,9 @@
 }
 ol li {
   margin-bottom: 2.5rem;
+}
+
+ol {
+  padding: 0 3px;
 }
 </style>

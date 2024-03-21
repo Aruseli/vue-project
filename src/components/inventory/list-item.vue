@@ -1,6 +1,6 @@
 <script setup>
   import RoundedButton from '../buttons/rounded-button.vue';
-
+  import IconButton from '../buttons/icon-button.vue';
   const props = defineProps({
     good_name: {
       type: String,
@@ -24,16 +24,20 @@
     },
   })
 
-  const emit = defineEmits(['click']);
+  const emit = defineEmits(['click', 'clear']);
   const click = () => {
-    emit('click')
-  }
+    emit('click');
+  };
+
+  const clear = () => {
+    emit('clear');
+  };
 
 </script>
 
 <template>
   <li class="list_style relative-position row justify-between items-center">
-    <div class="row justify-between items-center fit q-px-none q-py-sm-xs q-py-xs-none">
+    <div class="row justify-between items-center fit q-py-xs content_block">
       <div class="text-h5 col-md-3">{{ props.good_name }}</div>
       <div class="text-body1 col-md-3">
         <span class="text-body1">{{$t('estimated_quantity')}}</span>&ensp;
@@ -58,18 +62,27 @@
       <div class="flex row justify-end items-center">
         <q-img src="/state.svg" v-show="not_equal" class="q-mr-sm-sm q-mr-xs-xs icon_notequal_style" />
         <RoundedButton size="clamp(0.625rem, 0.4798rem + 0.7262vi, 1.25rem)" @click="click" />
+        <IconButton
+          icon="delete_forever"
+          @click="clear"
+          class="q-pa-xs"
+          color="transparent"
+          textColor="primary"
+        />
       </div>
-
     </div>
     <q-separator class="absolute-bottom-left full-width separator_style" />
   </li>
-  <!-- <DividerThin class="bg-secondary" /> -->
 </template>
 
 <style scoped>
 .list_style {
   border-radius: 3rem;
   transition: all 0.5s ease-in-out;
+}
+.content_block {
+  padding-left: 10px;
+  padding-right: 10px;
 }
 .separator_style {
   bottom: -0.9rem;

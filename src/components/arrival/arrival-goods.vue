@@ -58,7 +58,7 @@ const goodsStore = useGoodsStore();
 <template>
   <div class="main_container full-height full-width">
     <div class="relative-position q-mb-xl">
-      <RectangularButton :name="$t('back_to_employee_actions')" :color="secondary" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/employee-actions')" />
+      <RectangularButton :name="$t('back_to_employee_actions')" color="secondary" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/employee-actions')" />
 
       <div
         class="
@@ -100,6 +100,7 @@ const goodsStore = useGoodsStore();
           :not_equal="arrival.issued !== arrival.quant"
           :class="{ 'highlighted': arrival.confirmed }"
           @click="arrival.confirmed = !arrival.confirmed"
+          @clear="() => console.log('1234567890')"
         />
       </div>
     </div>

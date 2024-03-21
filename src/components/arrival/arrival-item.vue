@@ -1,5 +1,6 @@
 <script setup>
   import RoundedButton from '../buttons/rounded-button.vue';
+  import IconButton from '../buttons/icon-button.vue';
 
   const props = defineProps({
     good_name: {
@@ -19,10 +20,14 @@
     },
   })
 
-  const emit = defineEmits(['click']);
+  const emit = defineEmits(['click', 'clear']);
   const click = () => {
-    emit('click')
-  }
+    emit('click');
+  };
+
+  const clear = () => {
+    emit('clear');
+  };
 
 </script>
 
@@ -48,6 +53,13 @@
       <div class="flex row justify-end items-center">
         <q-img src="/state.svg" v-show="not_equal" class="q-mr-sm-sm q-mr-xs-xs icon_notequal_style" />
         <RoundedButton size="clamp(0.625rem, 0.4798rem + 0.7262vi, 1.25rem)" @click="click" />
+        <IconButton
+          icon="delete_forever"
+          @click="clear"
+          class="q-pa-xs"
+          color="transparent"
+          textColor="primary"
+        />
       </div>
   </div>
 </template>
