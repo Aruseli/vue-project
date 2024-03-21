@@ -19,7 +19,7 @@
 
 <template>
   <q-page class="flex flex-center relative transparent">
-    <div class="column justify-center items-center window-height full-width container">
+    <div class="column justify-center items-center full-height full-width container">
       <div class="text-h2 text-center title_style first_letter">{{ $t('order_was_issued_successfully') }}</div>
       <q-img src="/checked.svg" class="img_style" max-width="100%" max-height="100%" />
       <DividerBold class="divider_bold_style" />
