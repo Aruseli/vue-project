@@ -69,6 +69,7 @@
   background-image: url('/start.jpg');
   background-position: center;
   filter: brightness(0.6);
+  background-size: cover;
 }
 .container {
   padding: 5rem;

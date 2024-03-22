@@ -1,6 +1,11 @@
 <script setup>
   import RoundedButton from '../buttons/rounded-button.vue';
   import IconButton from '../buttons/icon-button.vue';
+  import RectangularButton from '../buttons/rectangular-button.vue';
+  import { ref } from 'vue';
+  import Modal from '../modal.vue';
+
+  const dialogState = ref(false);
   const props = defineProps({
     good_name: {
       type: String,
@@ -24,20 +29,20 @@
     },
   })
 
-  const emit = defineEmits(['click', 'clear']);
-  const click = () => {
-    emit('click');
+  const emit = defineEmits(['itemConfirm', 'resetActualQuantity']);
+  const itemConfirm = () => {
+    emit('itemConfirm');
   };
 
-  const clear = () => {
-    emit('clear');
+  const resetQuant = () => {
+    emit('resetActualQuantity');
+    dialogState.value = false;
   };
-
 </script>
 
 <template>
-  <li class="list_style relative-position row justify-between items-center">
-    <div class="row justify-between items-center fit q-py-xs content_block">
+  <li class="list_style relative-position row justify-between items-center q-py-sm">
+    <div class="row justify-between items-center fit q-py-xs content_block" v-bind="$attrs">
       <div class="text-h5 col-md-3">{{ props.good_name }}</div>
       <div class="text-body1 col-md-3">
         <span class="text-body1">{{$t('estimated_quantity')}}</span>&ensp;
@@ -61,10 +66,10 @@
       </div>
       <div class="flex row justify-end items-center">
         <q-img src="/state.svg" v-show="not_equal" class="q-mr-sm-sm q-mr-xs-xs icon_notequal_style" />
-        <RoundedButton size="clamp(0.625rem, 0.4798rem + 0.7262vi, 1.25rem)" @click="click" />
+        <RoundedButton size="clamp(0.625rem, 0.4798rem + 0.7262vi, 1.25rem)" @click="itemConfirm" />
         <IconButton
           icon="delete_forever"
-          @click="clear"
+          @click="dialogState = true"
           class="q-pa-xs"
           color="transparent"
           textColor="primary"
@@ -73,19 +78,29 @@
     </div>
     <q-separator class="absolute-bottom-left full-width separator_style" />
   </li>
+  <Modal v-if="dialogState">
+    <div class="dialog_style overflow-hidden q-pa-md-md q-pa-xs-sm bg-white">
+
+      <div class="text-h3 q-mb-md-md q-mb-xs-sm text-center title_style">{{ $t('are_you_sure_you_want_to_rescan_the_product') }} <span class="text-italic">{{ props.good_name }} ?</span></div>
+
+      <div class="row justify-evenly items-center">
+        <RectangularButton :name="$t('no')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs col-3" @click="dialogState = false" textColor="primary" />
+        <RectangularButton :name="$t('yes')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs col-3" @click="resetQuant" />
+      </div>
+    </div>
+  </Modal>
 </template>
 
 <style scoped>
 .list_style {
-  border-radius: 3rem;
   transition: all 0.5s ease-in-out;
 }
 .content_block {
-  padding-left: 10px;
+  padding-left: 1.5rem;
   padding-right: 10px;
 }
 .separator_style {
-  bottom: -0.9rem;
+  bottom: 0;
   background-color: var(--q-secondary);
   @media (max-width: 1300px) {
     background-color: var(--q-negative);
@@ -105,5 +120,9 @@
   @media (max-width: 1300px) {
     width: 1.5rem;
   }
+}
+
+.dialog_style {
+  border-radius: 2rem;
 }
 </style>

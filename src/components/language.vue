@@ -49,14 +49,14 @@
     border-radius: 0.5rem;
   }
 
-  @media (max-width: 1300px) {
-    width: 6rem;
-    height: 4rem;
-    border-radius: 0.5rem;
-  }
   @media (max-width: 1100px) and (orientation: landscape) {
     width: 4rem;
     height: 2.5rem;
+  }
+  @media (max-width: 1500px) {
+    width: 6rem;
+    height: 4rem;
+    border-radius: 0.5rem;
   }
   @media (max-width: 770px) {
     width: 4rem;

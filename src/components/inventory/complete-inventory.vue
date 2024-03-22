@@ -10,10 +10,6 @@
   import DividerBold from '../dividers/divider-bold.vue';
   import ListItem from './list-item.vue';
   import { useAppStore } from 'src/stores/app';
-  import RedirectDialog from '../dialog/redirect-dialog.vue';
-
-  const dialogState = ref(false);
-
 
   const goodsStore = useGoodsStore();
   const inventoryStore = useInventoryStore();
@@ -124,8 +120,8 @@
             :estimated_quantity="good.stock"
             :not_equal="good.stock !== good.quant"
             :class="{ 'highlighted': good.confirmed }"
-            @click="good.confirmed = !good.confirmed"
-            @clear="dialogState = true"
+            @itemConfirm="good.confirmed = !good.confirmed"
+            @resetActualQuantity="good.quant = 0"
           />
         </ol>
       </div>
@@ -178,14 +174,6 @@
       </div>
     </div>
   </div>
-  <RedirectDialog
-    @complete="dialogState = false"
-    @continue="route('selective-inventory')"
-    :modelValue="dialogState"
-    nameLeftButton="yes"
-    nameRightButton="no"
-    title="Are you sure you want to rescan the Romashka product"
-  />
 </template>
 
 <style scoped>

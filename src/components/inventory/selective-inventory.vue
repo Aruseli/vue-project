@@ -92,8 +92,8 @@
             :estimated_quantity="inv.stock"
             :not_equal="inv.stock !== inv.quant"
             :class="{ 'highlighted': inv.confirmed }"
-            @click="inv.confirmed = !inv.confirmed"
-            @clear="() => console.log('1234567890')"
+            @itemConfirm="inv.confirmed = !inv.confirmed"
+            @resetActualQuantity="inv.quant = 0"
           />
         </ol>
       </div>

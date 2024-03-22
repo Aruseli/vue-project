@@ -99,8 +99,8 @@ const goodsStore = useGoodsStore();
           :confirmed="arrivalsStore.blockScan  === arrival.id"
           :not_equal="arrival.issued !== arrival.quant"
           :class="{ 'highlighted': arrival.confirmed }"
-          @click="arrival.confirmed = !arrival.confirmed"
-          @clear="() => console.log('1234567890')"
+          @itemConfirm="arrival.confirmed = !arrival.confirmed"
+          @resetActualQuantity="arrival.issued = 0"
         />
       </div>
     </div>

@@ -75,4 +75,5 @@ export default {
   out_of_stock: 'out of stock',
   yes: 'yes',
   no: 'no',
+  are_you_sure_you_want_to_rescan_the_product: 'Are you sure you want to rescan the product',
 };

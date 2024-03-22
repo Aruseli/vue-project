@@ -4,6 +4,7 @@ import { KioskDocument, apiGetDocuments, apiSaveDocument } from "src/services";
 import { computed, ref } from "vue";
 import { useAppStore } from "./app";
 import { useGoodsStore, type Good } from "./goods";
+import { Notify } from 'quasar';
 
 export const useSelectiveInventoryStore = defineStore("selectiveInventoryStore", () => {
   const appStore = useAppStore();
@@ -98,21 +99,21 @@ export const useSelectiveInventoryStore = defineStore("selectiveInventoryStore",
     if (!selectedInventoryItem) {
       return;
     }
-    if (selectedInventoryItem?.confirmed) {
+    if (selectedInventoryItem?.confirmed == true) {
+      if (selectedInventoryItem.quant >= selectedInventoryItem.stock) {
+        console.error("Stop scan");
+        Notify.create({
+          color: "warning",
+          position: "center",
+          classes: "text-h3 text-center text-uppercase",
+          timeout: 3000,
+          textColor: "white",
+          message: t("product_has_already_been_scanned"),
+        });
+        return;
+      }
       return;
     }
-    // if (selectedInventoryItem.quant >= selectedInventoryItem.stock) {
-    //   console.error("Stop scan");
-    //   Notify.create({
-    //     color: "warning",
-    //     position: "center",
-    //     classes: "text-h3 text-center text-uppercase",
-    //     timeout: 30000,
-    //     textColor: "white",
-    //     message: t("product_has_already_been_scanned"),
-    //   });
-    //   return;
-    // }
     selectedInventoryItem.quant += 1;
   };
 

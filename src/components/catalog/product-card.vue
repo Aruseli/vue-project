@@ -79,7 +79,6 @@ import IconButton from '../buttons/icon-button.vue';
     }
   })
 
-
 </script>
 
 
