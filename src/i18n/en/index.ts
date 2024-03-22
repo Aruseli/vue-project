@@ -76,4 +76,5 @@ export default {
   yes: 'yes',
   no: 'no',
   are_you_sure_you_want_to_rescan_the_product: 'Are you sure you want to rescan the product',
+  you_are_scanning_an_item_whose_quantity_has_been_confirmed: 'You are scanning an item whose quantity has been confirmed',
 };

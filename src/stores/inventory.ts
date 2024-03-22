@@ -133,7 +133,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
           classes: "text-h3 text-center text-uppercase",
           timeout: 3000,
           textColor: "white",
-          message: t("product_has_already_been_scanned"),
+          message: t("you_are_scanning_an_item_whose_quantity_has_been_confirmed"),
         });
       return;
     }
