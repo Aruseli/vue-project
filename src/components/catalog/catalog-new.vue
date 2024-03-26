@@ -224,7 +224,7 @@ $calc_width_alt_mobile: calc(12rem + 2vmax);
   // width: 20vw;
   width: min-content !important;
   min-width: 20vw;
-  height: calc(100vh - 20rem);
+  height: calc(100% - 2rem);
   border-radius: 1.5rem;
 }
 
