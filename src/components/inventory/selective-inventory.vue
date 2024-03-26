@@ -94,6 +94,7 @@
             :class="{ 'highlighted': inv.confirmed }"
             @itemConfirm="inv.confirmed = !inv.confirmed"
             @resetActualQuantity="inv.quant = 0"
+            :id="inv.id"
           />
         </ol>
       </div>

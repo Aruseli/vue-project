@@ -122,6 +122,7 @@
             :class="{ 'highlighted': good.confirmed }"
             @itemConfirm="good.confirmed = !good.confirmed"
             @resetActualQuantity="good.quant = 0"
+            :id="good.id"
           />
         </ol>
       </div>

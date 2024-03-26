@@ -27,6 +27,11 @@
       required: false,
       default: false,
     },
+    id: {
+      type: String,
+      required: false,
+      default: 0,
+    },
   })
 
   const emit = defineEmits(['itemConfirm', 'resetActualQuantity']);
@@ -38,6 +43,10 @@
     emit('resetActualQuantity');
     dialogState.value = false;
   };
+  const openModal = (id) => {
+    if (id === props.id)
+    dialogState.value = true;
+  }
 </script>
 
 <template>
@@ -69,7 +78,7 @@
         <RoundedButton size="clamp(0.625rem, 0.4798rem + 0.7262vi, 1.25rem)" @click="itemConfirm" />
         <IconButton
           icon="delete_forever"
-          @click="dialogState = true"
+          @click="() => openModal(props.id)"
           class="q-pa-xs"
           color="transparent"
           textColor="primary"
@@ -78,15 +87,12 @@
     </div>
     <q-separator class="absolute-bottom-left full-width separator_style" />
   </li>
-  <Modal v-if="dialogState">
-    <div class="dialog_style overflow-hidden q-pa-md-md q-pa-xs-sm bg-white">
+  <Modal :isOpen="dialogState">
+    <div class="text-h3 q-mb-md-md q-mb-xs-sm text-center title_style">{{ $t('are_you_sure_you_want_to_rescan_the_product') }} <span class="text-italic">{{ props.good_name }} ?</span></div>
 
-      <div class="text-h3 q-mb-md-md q-mb-xs-sm text-center title_style">{{ $t('are_you_sure_you_want_to_rescan_the_product') }} <span class="text-italic">{{ props.good_name }} ?</span></div>
-
-      <div class="row justify-evenly items-center">
-        <RectangularButton :name="$t('no')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs col-3" @click="dialogState = false" textColor="primary" />
-        <RectangularButton :name="$t('yes')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs col-3" @click="resetQuant" />
-      </div>
+    <div class="row justify-evenly items-center">
+      <RectangularButton :name="$t('no')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs col-3" @click="dialogState = false" textColor="primary" />
+      <RectangularButton :name="$t('yes')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs col-3" @click="resetQuant" />
     </div>
   </Modal>
 </template>
@@ -122,7 +128,4 @@
   }
 }
 
-.dialog_style {
-  border-radius: 2rem;
-}
 </style>

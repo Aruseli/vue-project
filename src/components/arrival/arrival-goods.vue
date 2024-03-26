@@ -101,6 +101,7 @@ const goodsStore = useGoodsStore();
           :class="{ 'highlighted': arrival.confirmed }"
           @itemConfirm="arrival.confirmed = !arrival.confirmed"
           @resetActualQuantity="arrival.issued = 0"
+          :id="arrival.id"
         />
       </div>
     </div>
