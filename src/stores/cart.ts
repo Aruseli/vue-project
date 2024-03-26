@@ -72,8 +72,10 @@ export const useCartStore = defineStore('cartStore',
           doc_detail_type: settings?.invoice_docdetail_type_id ?? '',
         })),
       }
-      await apiSaveDocument(doc)
+      const documentId = await apiSaveDocument(doc)
+      
       clearCart()
+      return documentId;
     }
 
     const cartExtended = computed(() => {
