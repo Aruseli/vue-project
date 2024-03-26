@@ -1,6 +1,6 @@
 <script setup>
   import { evaArrowBack, evaMinusOutline, evaPlusOutline } from '@quasar/extras/eva-icons';
-import { t } from 'i18next';
+import i18next, { t } from 'i18next';
 import { useAppStore } from 'src/stores/app';
 import { useCartStore } from 'src/stores/cart';
 import { onMounted, ref } from 'vue';
@@ -10,6 +10,7 @@ import RectangularButton from '../buttons/rectangular-button.vue';
 import DividerBold from '../dividers/divider-bold.vue';
 import DividerThin from '../dividers/divider-thin.vue';
 import { useQuasar } from 'quasar';
+import { apiReportsGetView, wsSendMessage } from 'src/services';
 
   const $q = useQuasar();
   const router = useRouter();
@@ -49,7 +50,37 @@ import { useQuasar } from 'quasar';
     isDisabled.value = true;
     // emulateLoading(progress);
     try {
-      await cartStore.submitOrder()
+      const documentId = await cartStore.submitOrder()
+      $q.loading.show();
+      try {
+        const orderViewId = "a59a2a47-7ebb-497d-80ff-5b9386726871";
+        const langCode = i18next.language;
+        const viewData = await apiReportsGetView(orderViewId, [
+          {
+            "name": "doc_id",
+            "value": documentId,
+            "expression": documentId
+          },
+          {
+            "name": "lang_code",
+            "value": langCode,
+            "expression": langCode
+          }
+        ]);
+        console.log({viewData});
+        wsSendMessage('check-print', viewData);
+      }
+      catch(e) {
+        console.log(e);
+        $q.notify({
+          message: 'Error occured',
+          icon: 'warning',
+          color: 'warning',
+        });
+      }
+      finally {
+        $q.loading.hide();
+      }
       app.openOrderDialog(true);
       setTimeout(() => {
         router.push('hello');
@@ -67,6 +98,7 @@ import { useQuasar } from 'quasar';
       isDisabled.value = false
     }
   }
+
 
 </script>
 
