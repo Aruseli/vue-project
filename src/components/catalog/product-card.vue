@@ -8,10 +8,10 @@ import { useAppStore } from '../../stores/app';
 import { useCartStore } from '../../stores/cart';
 import { useGoodsStore } from '../../stores/goods';
 import IconButton from '../buttons/icon-button.vue';
+import ProductModal from './product-modal.vue';
 
 
   const $q = useQuasar();
-  const openDialog = ref(false);
   const slide = ref(0);
   const good = ref(undefined);
 
@@ -28,7 +28,7 @@ import IconButton from '../buttons/icon-button.vue';
 
   const showNotify = () => {
     $q.notify({
-      timeout: 3000,
+      timeout: 1000,
       multiLine: true,
       color: 'primary',
       classes: 'full-width notification_styles',
@@ -45,9 +45,12 @@ import IconButton from '../buttons/icon-button.vue';
 
   const goodInCart = computed(() => cartStore.cart.find((item) => item.id === props.itemId))
 
-  const goodDetails = () => {
-    openDialog.value = true;
-  }
+  // const goodDetails = (id) => {
+  //   console.log('id', id)
+  //   if (id === props.itemId) {
+  //     goodsStore.openDialog = !goodsStore.openDialog;
+  //   }
+  // }
   const timer = ref(null);
 
   const addGoodToCart = (good) => {
@@ -57,7 +60,6 @@ import IconButton from '../buttons/icon-button.vue';
 
   const decrease = (good) => {
     cartStore.decreaseItemsCount(good);
-    // showNotify();
   }
 
   const increase = (good) => {
@@ -68,16 +70,23 @@ import IconButton from '../buttons/icon-button.vue';
   const sliceDescription = ref(null);
 
   onMounted(async () => {
-    good.value = goodsStore.getGoodById(props.itemId);
     if (!app.kioskState.settings?.alt_ui) {
-      await nextTick();
-      if (good.value.description.length > 50) {
-        sliceDescription.value = good.value.description.slice(0, 50) + ' <span style="color: blue">more...</span>';
-      } else {
-        sliceDescription.value = good.value.description;
+      good.value = goodsStore.getGoodById(props.itemId);
+      if (!app.kioskState.settings?.alt_ui) {
+        await nextTick();
+        if (good.value.description.length > 50) {
+          sliceDescription.value = good.value.description.slice(0, 50) + ' <span style="color: blue">more...</span>';
+        } else {
+          sliceDescription.value = good.value.description;
+        }
       }
     }
   })
+
+  const openModal = (id) => {
+    if (id === props.itemId)
+    goodsStore.openDialog = true;
+  }
 
 </script>
 
@@ -85,7 +94,7 @@ import IconButton from '../buttons/icon-button.vue';
 <template>
   <div :class="[good && good.stock <= 0 && 'disabled no-pointer-events', !app.kioskState.settings?.alt_ui ? 'card_setting' : 'card_setting_alt']" v-bind="$attrs">
     <div>
-      <div class="content_container" @click="goodDetails">
+      <div class="content_container" @click="() => goodsStore.goodDetails(props.itemId)">
         <div class="img_container">
           <q-img
             :src="good?.images[0]?.image"
@@ -115,7 +124,7 @@ import IconButton from '../buttons/icon-button.vue';
           </div>
         </div>
 
-        <div v-if="!app.kioskState.settings?.alt_ui" class="block_description" @click="goodDetails">
+        <div v-if="!app.kioskState.settings?.alt_ui" class="block_description" @click="() => goodsStore.goodDetails(props.itemId)">
           <div class="text-body1" v-html="sliceDescription"/>
         </div>
 
@@ -185,103 +194,7 @@ import IconButton from '../buttons/icon-button.vue';
   </div>
 
   <template>
-    <q-dialog
-      v-model="openDialog"
-      transition-hide="fade"
-      transition-show="fade"
-      transition-duration="1.8"
-      dark="true"
-      class="relative-position"
-    >
-      <div class="dialog_container">
-        <q-card class="dialog_card">
-          <q-btn round color="primary" icon="cancel" class="absolute-top-right" v-close-popup />
-
-          <q-card-section class="q-mb-xs-xs">
-            <q-carousel
-              transition-prev="slide-right"
-              transition-next="slide-left"
-              swipeable
-              animated
-              v-model="slide"
-              control-color="primary"
-              :navigation-icon="ionEllipse"
-              navigation
-              infinite
-              padding
-              class="bg-transparent round-borders fit"
-            >
-              <q-carousel-slide
-                v-for="(image, index) in good.images"
-                :key="index"
-                :name="index"
-                class="column no-wrap flex-center"
-              >
-                <div class="img_container_dialog">
-                  <q-img
-                    :src="image.image"
-                    :ratio="4/3"
-                    class="dialog_img"
-                  >
-                    <template #loading>
-                      <div class="text-subtitle1 text-black">
-                        Loading...
-                      </div>
-                    </template>
-                  </q-img>
-                </div>
-              </q-carousel-slide>
-            </q-carousel>
-          </q-card-section>
-          <q-card-section class="q-mb-lg-sm q-mb-xs-xs">
-            <div class="text-h3">
-              {{ good.name }}
-            </div>
-          </q-card-section>
-          <q-card-section class="q-mb-lg-sm q-mb-xs-xs">
-            <div class="text-h2">
-              &#3647&ensp;{{ good.price }}
-            </div>
-          </q-card-section>
-          <q-separator color="secondary" class="q-mb-lg-sm q-mb-xs-xs" />
-          <q-card-section class="q-pt-none q-mb-sm">
-            <div class="text-h4 text-capitalize q-mb-lg-sm q-mb-xs-xs">{{ $t('description') }}</div>
-            <div class="text-body1" v-html="good.description"/>
-          </q-card-section>
-          <q-card-section>
-            <div class="full-width">
-              <q-btn
-                v-if="!goodInCart"
-                class="full-width text_style"
-                unelevated
-                rounded
-                no-caps
-                color="primary"
-                text-color="white"
-                @click="addGoodToCart(good)"
-                >
-                <div class="text-h4 text-center text-weight-bold text-white q-py-lg-sm q-py-sm-xs text-uppercase">
-                  {{ $t('buy') }}
-                </div>
-              </q-btn>
-              <div class="row justify-between items-center" v-else>
-                <IconButton
-                  :icon="evaMinusOutline"
-                  @click="decrease(good)"
-                  class="q-pa-lg-sm q-pa-sm-xs"
-                />
-                <div class="text-h4 no-margin">{{ goodInCart.quant }}</div>
-                <IconButton
-                  :icon="evaPlusOutline"
-                  @click="increase(good)"
-                  class="q-pa-lg-sm q-pa-sm-xs"
-                />
-              </div>
-            </div>
-          </q-card-section>
-        </q-card>
-      </div>
-    </q-dialog>
+    <ProductModal :good="good" />
   </template>
 
 </template>

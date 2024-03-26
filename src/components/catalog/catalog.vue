@@ -37,6 +37,7 @@ import ProductCard from './product-card.vue';
 
   // Функция-обработчик, которая переведет на новую страницу
   const redirect = () => {
+    app.drawerCartState = false;
     router.push('hello');
     cartStore.clearCart();
     redirectAt.value = 0;

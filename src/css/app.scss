@@ -170,11 +170,13 @@ body.body--dark {
 .notification_styles .q-notification {
   max-width: 85vw;
 }
-.notification_styles .q-notification--multi-line {
+.q-notification--multi-line {
   min-height: 9rem;
+  border-radius: 5rem;
 }
 .notification_styles .q-notification__actions {
   justify-content: center;
+
 }
 .notification_styles .q-notification__actions > button > span:nth-child(2) {
   font-size: 2rem;

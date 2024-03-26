@@ -3,9 +3,9 @@
   import IconButton from '../buttons/icon-button.vue';
   import RectangularButton from '../buttons/rectangular-button.vue';
   import { ref } from 'vue';
-  import Modal from '../modal.vue';
+  import Modal from '../overlay/modal.vue';
 
-  const dialogState = ref(false);
+  const switchModal = ref(false);
   const props = defineProps({
     good_name: {
       type: String,
@@ -41,11 +41,11 @@
 
   const resetQuant = () => {
     emit('resetActualQuantity');
-    dialogState.value = false;
+    switchModal.value = false;
   };
   const openModal = (id) => {
     if (id === props.id)
-    dialogState.value = true;
+    switchModal.value = true;
   }
 </script>
 
@@ -87,11 +87,11 @@
     </div>
     <q-separator class="absolute-bottom-left full-width separator_style" />
   </li>
-  <Modal :isOpen="dialogState">
-    <div class="text-h3 q-mb-md-md q-mb-xs-sm text-center title_style">{{ $t('are_you_sure_you_want_to_rescan_the_product') }} <span class="text-italic">{{ props.good_name }} ?</span></div>
+  <Modal :isOpen="switchModal" class="bg-white">
+    <div class="text-h3 q-mb-md-md q-mb-xs-sm text-center">{{ $t('are_you_sure_you_want_to_rescan_the_product') }} <span class="text-italic">{{ props.good_name }} ?</span></div>
 
     <div class="row justify-evenly items-center">
-      <RectangularButton :name="$t('no')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs col-3" @click="dialogState = false" textColor="primary" />
+      <RectangularButton :name="$t('no')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs col-3" @click="switchModal = false" textColor="primary" />
       <RectangularButton :name="$t('yes')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs col-3" @click="resetQuant" />
     </div>
   </Modal>

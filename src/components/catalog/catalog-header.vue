@@ -7,9 +7,8 @@ import LogoSimple from '../logo/logo-simple.vue';
 import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
 import IconButton from '../buttons/icon-button.vue';
 import Language from '../language.vue';
-import Modal from '../modal.vue';
+import Modal from '../overlay/modal.vue';
 import { onUpdated } from 'vue';
-
 
   const cart = useCartStore();
   const goodsStore = useGoodsStore();
@@ -78,7 +77,7 @@ import { onUpdated } from 'vue';
   </q-header>
 
   <template>
-    <Modal v-if="app.langDialog" @click="app.openLangDialog(false)">
+    <Modal :isOpen="app.langDialog" @click="app.openLangDialog(false)">
       <div class="bg-primary container_languages">
         <Language v-for="lang in app.kioskState.catalogLocales"
           :key="lang.lang_code"

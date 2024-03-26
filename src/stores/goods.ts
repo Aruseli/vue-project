@@ -44,6 +44,19 @@ export const useGoodsStore = defineStore('goodsStore', () => {
   const goodsLoadingWaiter = ref(new Deferred())
   goodsLoadingWaiter.value.resolve(false)
   const imagesCacheExpirationAt = ref(Date.now())
+  const openDialog = ref(false)
+
+  const goodDetails = (id: string) => {
+    console.log('id', id)
+    const good = goods.value.flatMap(gc => gc.goods).find(g => g.id == id)
+    console.log('good', good?.id)
+    if (id === good?.id) {
+      console.log('openDialog.value1', openDialog.value)
+      openDialog.value = true;
+      console.log('openDialog.value2', openDialog.value)
+    }
+    console.log('openDialog.value3', openDialog.value)
+  }
 
   const cleanupImagesCache = async () => {
     const allImagesIds = new Set(goods.value.flatMap(gc =>
@@ -219,6 +232,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
   }
 
   return {
+    openDialog,
     goods: goods,
     getGoodById,
     getGoodByIdHits, // debug
@@ -231,6 +245,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     imagesCache,
     imagesCacheExpirationAt,
     waitGoodsReady,
+    goodDetails,
   }
 },
   // {
