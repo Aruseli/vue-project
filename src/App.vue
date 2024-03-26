@@ -94,5 +94,6 @@
   <router-view />
   <div class="bg_layer" />
   <div id="modal" />
+  <div id="drawer" />
 </template>
 
