@@ -18,6 +18,7 @@ import ProductModal from './product-modal.vue';
   const cartStore = useCartStore();
   const goodsStore = useGoodsStore();
   const app = useAppStore();
+  const openDialog = ref(false)
 
   const props = defineProps({
     itemId: {
@@ -51,7 +52,7 @@ import ProductModal from './product-modal.vue';
   //     goodsStore.openDialog = !goodsStore.openDialog;
   //   }
   // }
-  const timer = ref(null);
+  // const timer = ref(null);
 
   const addGoodToCart = (good) => {
     cartStore.increaseItemsCount(good);
@@ -94,7 +95,7 @@ import ProductModal from './product-modal.vue';
 <template>
   <div :class="[good && good.stock <= 0 && 'disabled no-pointer-events', !app.kioskState.settings?.alt_ui ? 'card_setting' : 'card_setting_alt']" v-bind="$attrs">
     <div>
-      <div class="content_container" @click="() => goodsStore.goodDetails(props.itemId)">
+      <div class="content_container" @click="openDialog = true">
         <div class="img_container">
           <q-img
             :src="good?.images[0]?.image"
@@ -124,7 +125,7 @@ import ProductModal from './product-modal.vue';
           </div>
         </div>
 
-        <div v-if="!app.kioskState.settings?.alt_ui" class="block_description" @click="() => goodsStore.goodDetails(props.itemId)">
+        <div v-if="!app.kioskState.settings?.alt_ui" class="block_description" @click="openDialog = true">
           <div class="text-body1" v-html="sliceDescription"/>
         </div>
 
@@ -194,7 +195,7 @@ import ProductModal from './product-modal.vue';
   </div>
 
   <template>
-    <ProductModal :good="good" />
+    <ProductModal :good="good" :isOpen="openDialog" @click="openDialog = false" />
   </template>
 
 </template>

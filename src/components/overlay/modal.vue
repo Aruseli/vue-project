@@ -14,17 +14,17 @@ const emit = defineEmits(['click']);
 <template>
   <teleport to="#modal">
     <transition name="modal-animation">
-        <div class="modal_bg" v-if="props.isOpen" @click="emit('click')">
-          <div
-            class="dialog_style overflow-hidden q-pa-md-md q-pa-xs-sm"
-            role="dialog"
-            aria-modal="true"
-            v-bind="$attrs"
-          >
-            <slot></slot>
-          </div>
+      <div class="modal_bg" v-if="props.isOpen" @click="emit('click')">
+        <div
+          class="dialog_style overflow-hidden q-pa-md-md q-pa-xs-sm"
+          role="dialog"
+          aria-modal="true"
+          v-bind="$attrs"
+        >
+          <slot></slot>
         </div>
-      </transition>
+      </div>
+    </transition>
   </teleport>
 </template>
 

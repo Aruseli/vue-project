@@ -13,6 +13,7 @@ import Modal from '../overlay/modal.vue';
 
   const $q = useQuasar();
   const slide = ref(0);
+  const openDialog = ref(false);
 
   const cartStore = useCartStore();
   const goodsStore = useGoodsStore();
@@ -22,6 +23,11 @@ import Modal from '../overlay/modal.vue';
     good: {
       type: Object,
       default: function () { return {} }
+    },
+    isOpen: {
+      type: Boolean,
+      required: true,
+      default:false,
     }
   })
 
@@ -57,15 +63,14 @@ import Modal from '../overlay/modal.vue';
     cartStore.increaseItemsCount(good);
     showNotify();
   }
-
+  const emit = defineEmits(['click']);
 </script>
 
-
 <template>
-  <Modal :isOpen="goodsStore.openDialog" @click="goodsStore.openDialog = false">
+  <Modal :isOpen="props.isOpen" @click="emit('click')">
     <div class="dialog_container">
       <q-card class="dialog_card">
-        <q-btn round color="primary" icon="cancel" class="absolute-top-right" @click="goodsStore.openDialog = false" />
+        <q-btn round color="primary" icon="close" class="close_button text-white" @click="goodsStore.openDialog = false" />
 
         <q-card-section class="q-mb-xs-xs">
           <q-carousel
@@ -174,5 +179,11 @@ import Modal from '../overlay/modal.vue';
   .dialog_img {
     width: 100%;
     border: thin solid var(--q-accent);
+  }
+
+  .close_button {
+    position: absolute;
+    top: 0;
+    right: -3rem;
   }
 </style>

@@ -66,9 +66,9 @@ import { onUpdated } from 'vue';
       <q-tabs
         v-model="app.tab"
         dense
-        narrow-indicator
         no-caps
-        outside-arrows
+        active-color="black"
+        indicator-color="transparent"
         align="left"
       >
         <q-tab v-for="goodCategory in goodsStore.goods" :name="goodCategory.id" :label="goodCategory.title" content-class="category_tab_label_style" />
