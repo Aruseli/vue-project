@@ -29,7 +29,7 @@ import ProductModal from './product-modal.vue';
 
   const showNotify = () => {
     $q.notify({
-      timeout: 1000,
+      timeout: 100000,
       multiLine: true,
       color: 'primary',
       classes: 'full-width notification_styles',

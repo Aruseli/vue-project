@@ -189,10 +189,21 @@ body.body--dark {
 
 .notification_styles .q-notification {
   max-width: 85vw;
+
 }
 .q-notification--multi-line {
-  min-height: 9rem;
+  height: 9rem;
   border-radius: 5rem;
+  @media (max-width: 1400px) and (orientation: landscape) {
+    height: 6.5rem;
+  }
+  @media (max-width: 1300px) {
+    height: 6.5rem;
+
+  }
+  @media (max-width: 899px) {
+    height: 3.5rem;
+  }
 }
 .notification_styles .q-notification__actions {
   justify-content: center;
@@ -202,6 +213,21 @@ body.body--dark {
   font-size: 2rem;
   font-weight: bold;
   padding: 2rem;
+  height: 3rem;
+  @media (max-width: 1400px) and (orientation: landscape) {
+    height: 1.5rem;
+    padding: 1.5rem;
+  }
+  @media (max-width: 1300px) {
+    height: 1.5rem;
+    font-size: 1.5rem;
+    padding: 1rem;
+  }
+  @media (max-width: 899px) {
+    height: 1.5rem;
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
 }
 .notification_styles .q-notifications__list {
   margin-bottom: 6rem;
