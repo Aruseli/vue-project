@@ -146,7 +146,7 @@ export async function apiGetCorrespondentByEntity(entityId: string, corrType: st
 export async function apiReportsGetView(viewId: string, parameters?: Record<string, any> | Array<Record<string,any>>) {
   const response = await fetchApi('/api/v2/reports/getView', { view_id: viewId, parameters },'text')
   console.log({response})
-  return response.data
+  return response
 }
 
 export type ApiGoodCategory = {
