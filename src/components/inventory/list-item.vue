@@ -30,7 +30,7 @@
     id: {
       type: String,
       required: false,
-      default: 0,
+      default: '',
     },
   })
 

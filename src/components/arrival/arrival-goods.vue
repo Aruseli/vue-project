@@ -57,7 +57,7 @@ const goodsStore = useGoodsStore();
 
 <template>
   <div class="main_container full-height full-width">
-    <div class="relative-position q-mb-xl">
+    <div class="relative-position q-mb-lg-xl q-mb-xs-sm">
       <RectangularButton :name="$t('back_to_employee_actions')" color="secondary" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/employee-actions')" />
 
       <div
@@ -155,12 +155,8 @@ const goodsStore = useGoodsStore();
   display: grid;
   grid-template-rows: max-content 1fr 0.1fr;
 }
-
-ol li {
-  margin-bottom: 2.5rem;
-}
-.arrivals_container > *:not(:last-child) {
-  margin-bottom: 2rem;
+.arrivals_container {
+  padding: 0.5rem;
 }
 
 </style>

@@ -26,7 +26,7 @@
     id: {
       type: String,
       required: false,
-      default: 0,
+      default: '',
     },
   })
 
@@ -36,7 +36,8 @@
   };
 
   const resetQuant = () => {
-    emit('resetActualQuantity')
+    emit('resetActualQuantity');
+    dialogState.value = false;
   };
 
   const openModal = (id) => {
@@ -47,7 +48,7 @@
 </script>
 
 <template>
-  <div class="container_style row justify-between items-center">
+  <div class="container_style row justify-between items-center" v-bind="$attrs">
     <div class="text-h5 col-3">{{ props.good_name }}</div>
     <div class="quat_container flex row items-center">
       <div class="text-body1 text-secondary q-mr-sm-sm q-mr-xs-xs">{{$t('actual_quantity')}}</div>
@@ -93,6 +94,7 @@
   border-radius: var(--border-sm);
   padding: var(--px30);
   transition: all 0.5s ease-in-out;
+  margin-bottom: 1.5rem;
   @media (max-width: 1300px) {
     padding: 1rem;
   }

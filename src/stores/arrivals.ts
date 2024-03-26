@@ -87,26 +87,35 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
 
   const scanArrivalGood = async (good: Good) => {
     const arrivalItem = arrival.value?.items.find((i) => i.id == good.id);
-    if (arrivalItem?.confirmed) {
+    if (!arrivalItem) {
       return;
-    } else {
-      if (arrivalItem) {
-        if (arrivalItem.issued >= arrivalItem.quant) {
-          console.error("Stop scan");
-          Notify.create({
-            color: "warning",
-            position: "center",
-            classes: "text-h3 text-center text-uppercase",
-            timeout: 30000,
-            textColor: "white",
-            message: t("product_has_already_been_scanned"),
-          });
-          return;
-        }
-        arrivalItem.issued += 1;
-        totalQuant;
-      }
     }
+    if (arrivalItem.issued >= arrivalItem.quant) {
+      console.error("Stop scan");
+      Notify.create({
+        color: "warning",
+        position: "center",
+        classes: "text-h3 text-center text-uppercase",
+        timeout: 30000,
+        textColor: "white",
+        message: t("product_has_already_been_scanned"),
+      });
+      return;
+    }
+    if (arrivalItem.confirmed == true) {
+      console.error("Stop scan");
+      Notify.create({
+        color: "warning",
+        position: "center",
+        classes: "text-h3 text-center text-uppercase",
+        timeout: 3000,
+        textColor: "white",
+        message: t("you_are_scanning_an_item_whose_quantity_has_been_confirmed"),
+      });
+    return;
+    }
+    arrivalItem.issued += 1;
+    totalQuant;
   };
 
 
