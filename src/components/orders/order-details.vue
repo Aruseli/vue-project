@@ -7,15 +7,59 @@ import RectangularButton from '../buttons/rectangular-button.vue';
 import DividerBold from '../dividers/divider-bold.vue';
 import DividerThin from '../dividers/divider-thin.vue';
 import OrderCard from './order-card.vue';
+import i18next from 'i18next'
+import { apiReportsGetView, wsSendMessage } from 'src/services';
+import { useQuasar } from 'quasar';
 
+  const $q = useQuasar();
   const ordersStore = useOrdersStore();
   const route = useRoute();
   const router = useRouter();
   const payment = ref('cash' | 'cashless');
 
   const confirmOrder = async () => {
+    const doc = ordersStore.currentOrderDocument
+    if(!doc) {
+      return;
+    }
+
     await ordersStore.confirmCurrentOrderIssue()
+
+    console.log("FREEPHOENIX GOING TO PRINT")
+    const documentId = doc.id;
+    try {
+      const orderViewId = "0dc0b092-361d-4b48-9852-5246309c0d42";
+      const langCode = i18next.language;
+      const viewData = await apiReportsGetView(orderViewId, [
+        {
+          "name": "doc_id",
+          "value": documentId,
+          "expression": documentId
+        },
+        {
+          "name": "lang_code",
+          "value": langCode,
+          "expression": langCode
+        }
+      ]);
+      console.log({viewData});
+      wsSendMessage('check-print', viewData);
+    }
+    catch(e) {
+      console.log(e);
+      $q.notify({
+        message: 'Error occured',
+        icon: 'warning',
+        color: 'warning',
+      });
+    }
+    finally {
+      $q.loading.hide();
+    }
+
     router.push('/issued-order');
+
+    
   }
 
   const allowClickScan = ref(process.env.DEV);
