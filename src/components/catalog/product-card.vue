@@ -71,15 +71,13 @@ import ProductModal from './product-modal.vue';
   const sliceDescription = ref(null);
 
   onMounted(async () => {
+    good.value = goodsStore.getGoodById(props.itemId);
     if (!app.kioskState.settings?.alt_ui) {
-      good.value = goodsStore.getGoodById(props.itemId);
-      if (!app.kioskState.settings?.alt_ui) {
-        await nextTick();
-        if (good.value.description.length > 50) {
-          sliceDescription.value = good.value.description.slice(0, 50) + ' <span style="color: blue">more...</span>';
-        } else {
-          sliceDescription.value = good.value.description;
-        }
+      await nextTick();
+      if (good.value.description.length > 50) {
+        sliceDescription.value = good.value.description.slice(0, 50) + ' <span style="color: blue">more...</span>';
+      } else {
+        sliceDescription.value = good.value.description;
       }
     }
   })
