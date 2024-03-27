@@ -28,7 +28,7 @@ import { useQuasar } from 'quasar';
     console.log("FREEPHOENIX GOING TO PRINT")
     const documentId = doc.id;
     try {
-      const orderViewId = "0dc0b092-361d-4b48-9852-5246309c0d42";
+      const orderViewId = "ff7ce8d1-989f-4fc6-9ad4-4aacf65da9f8";
       const langCode = i18next.language;
       const viewData = await apiReportsGetView(orderViewId, [
         {
