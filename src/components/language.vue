@@ -43,6 +43,11 @@
   height: 7rem;
   border-radius: 1.5rem;
 
+  @media (max-width: 2350px) and (orientation: landscape) {
+    width: 5rem;
+    height: 3.5rem;
+    border-radius: 0.5rem;
+  }
   @media (max-width: 2050px) and (orientation: landscape) {
     width: 5rem;
     height: 3.5rem;
@@ -52,15 +57,17 @@
   @media (max-width: 1100px) and (orientation: landscape) {
     width: 4rem;
     height: 2.5rem;
-  }
-  @media (max-width: 1500px) {
-    width: 6rem;
-    height: 4rem;
     border-radius: 0.5rem;
   }
-  @media (max-width: 770px) {
+  @media (max-width: 1500px) {
+    width: 5rem;
+    height: 3.5rem;
+    border-radius: 0.5rem;
+  }
+  @media (max-width: 900px) {
     width: 4rem;
     height: 2.5rem;
+    border-radius: 0.5rem;
   }
 }
 .lang_container {
