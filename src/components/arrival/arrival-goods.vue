@@ -9,7 +9,7 @@ import { useRoute, useRouter } from 'vue-router';
 import RectangularButton from '../buttons/rectangular-button.vue';
 import DividerBold from '../dividers/divider-bold.vue';
 import ArrivalItem from './arrival-item.vue';
-import { apiReportsGetView, wsSendMessage } from 'src/services';
+import { apiReportsGetView, printDocument, wsSendMessage } from 'src/services';
 
 const goodsStore = useGoodsStore();
 
@@ -54,39 +54,13 @@ const goodsStore = useGoodsStore();
     }
   })
 
-  async function print({documentId}) {
-    console.log({documentId})
-    
-    try {
-      const orderViewId = "f8e0f371-87e6-460a-8010-011eabef8757";
-      const langCode = i18next.language;
-      const viewData = await apiReportsGetView(orderViewId, [
-        {
-          "name": "doc_id",
-          "value": documentId,
-          "expression": documentId
-        },
-        {
-          "name": "lang_code",
-          "value": langCode,
-          "expression": langCode
-        }
-      ]);
-      console.log({viewData});
-      wsSendMessage('check-print', viewData);
-    }
-    catch(e) {
-      console.error(e);
-    }
-  }
-
 </script>
 
 <template>
   <div class="main_container full-height full-width">
     <div class="relative-position q-mb-xl">
       <RectangularButton :name="$t('back_to_employee_actions')" :color="'secondary'" size="xl" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/employee-actions')" />
-      <RectangularButton :name="$t('print')" :color="'secondary'" size="xl" class="q-pr-sm" @click="print({documentId: arrivalsStore.arrivalDocument.id})" /> 
+      <RectangularButton :name="$t('print')" :color="'secondary'" size="xl" class="q-pr-sm" @click="printDocument({documentId: arrivalsStore.arrivalDocument.id, $q})" /> 
 
       <div class="text-h2 text-uppercase text-center q-mb-xl title_padding">{{ $t('arrival_goods') }}</div>
 
