@@ -75,7 +75,7 @@ export const useCartStore = defineStore('cartStore',
       const documentId = await apiSaveDocument(doc)
       
       clearCart()
-      return documentId;
+      return {documentId};
     }
 
     const cartExtended = computed(() => {

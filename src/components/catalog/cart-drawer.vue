@@ -50,8 +50,30 @@ import { apiReportsGetView, wsSendMessage } from 'src/services';
     isDisabled.value = true;
     // emulateLoading(progress);
     try {
-      const documentId = await cartStore.submitOrder()
-      $q.loading.show();
+      const {documentId} = await cartStore.submitOrder()
+      await print({documentId})
+
+      app.openOrderDialog(true);
+      setTimeout(() => {
+        router.push('hello');
+      }, app.kioskState.settings?.customer_successful_order_notify_duration_ms ?? 7000);
+    } catch (err) {
+      console.error('ordersStore.selectOrder error:', err)
+      $q.notify({
+        color: 'warning',
+        icon: 'warning',
+        position: 'center',
+        message: t('unable_to_submit_order'),
+        timeout: 6000,
+      })
+    } finally {
+      isDisabled.value = false
+    }
+  }
+
+  async function print({documentId}) {
+    console.log({documentId})
+    $q.loading.show();
       try {
         const orderViewId = "a59a2a47-7ebb-497d-80ff-5b9386726871";
         const langCode = i18next.language;
@@ -81,22 +103,6 @@ import { apiReportsGetView, wsSendMessage } from 'src/services';
       finally {
         $q.loading.hide();
       }
-      app.openOrderDialog(true);
-      setTimeout(() => {
-        router.push('hello');
-      }, app.kioskState.settings?.customer_successful_order_notify_duration_ms ?? 7000);
-    } catch (err) {
-      console.error('ordersStore.selectOrder error:', err)
-      $q.notify({
-        color: 'warning',
-        icon: 'warning',
-        position: 'center',
-        message: t('unable_to_submit_order'),
-        timeout: 6000,
-      })
-    } finally {
-      isDisabled.value = false
-    }
   }
 
 
