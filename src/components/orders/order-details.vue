@@ -25,41 +25,43 @@ import { useQuasar } from 'quasar';
 
     await ordersStore.confirmCurrentOrderIssue()
 
-    console.log("FREEPHOENIX GOING TO PRINT")
-    const documentId = doc.id;
-    try {
-      const orderViewId = "ff7ce8d1-989f-4fc6-9ad4-4aacf65da9f8";
-      const langCode = i18next.language;
-      const viewData = await apiReportsGetView(orderViewId, [
-        {
-          "name": "doc_id",
-          "value": documentId,
-          "expression": documentId
-        },
-        {
-          "name": "lang_code",
-          "value": langCode,
-          "expression": langCode
-        }
-      ]);
-      console.log({viewData});
-      wsSendMessage('check-print', viewData);
-    }
-    catch(e) {
-      console.log(e);
-      $q.notify({
-        message: 'Error occured',
-        icon: 'warning',
-        color: 'warning',
-      });
-    }
-    finally {
-      $q.loading.hide();
-    }
-
     router.push('/issued-order');
 
     
+  }
+
+  async function print({documentId}) {
+    console.log({documentId})
+    $q.loading.show();
+      try {
+        const orderViewId = "a59a2a47-7ebb-497d-80ff-5b9386726871";
+        const langCode = i18next.language;
+        const viewData = await apiReportsGetView(orderViewId, [
+          {
+            "name": "doc_id",
+            "value": documentId,
+            "expression": documentId
+          },
+          {
+            "name": "lang_code",
+            "value": langCode,
+            "expression": langCode
+          }
+        ]);
+        console.log({viewData});
+        wsSendMessage('check-print', viewData);
+      }
+      catch(e) {
+        console.log(e);
+        $q.notify({
+          message: 'Error occured',
+          icon: 'warning',
+          color: 'warning',
+        });
+      }
+      finally {
+        $q.loading.hide();
+      }
   }
 
   const allowClickScan = ref(process.env.DEV);
@@ -158,6 +160,14 @@ import { useQuasar } from 'quasar';
         <RectangularButton
           :name="$t('confirm')"
           @click="confirmOrder"
+          :disable="!allowConfirm"
+          class="full-width"
+        />
+      </div>
+      <div class="full-width">
+        <RectangularButton
+          :name="$t('print')"
+          @click="print({documentId: ordersStore.currentOrderDocument.id})"
           :disable="!allowConfirm"
           class="full-width"
         />
