@@ -10,7 +10,7 @@
   import DividerBold from '../dividers/divider-bold.vue';
   import ListItem from './list-item.vue';
   import { useAppStore } from 'src/stores/app';
-import { apiReportsGetView, wsSendMessage } from 'src/services';
+import { apiReportsGetView, printDocument, wsSendMessage } from 'src/services';
 
 
   const goodsStore = useGoodsStore();
@@ -46,22 +46,7 @@ import { apiReportsGetView, wsSendMessage } from 'src/services';
         documentId = docId;
         router.push('/employee-actions');
       }
-      const orderViewId = "3d8779b5-2705-4668-a7fd-fd51e480890c";
-      const langCode = i18next.language;
-      const viewData = await apiReportsGetView(orderViewId, [
-        {
-          "name": "doc_id",
-          "value": documentId,
-          "expression": documentId
-        },
-        {
-          "name": "lang_code",
-          "value": langCode,
-          "expression": langCode
-        }
-      ]);
-      console.log({viewData});
-      wsSendMessage('check-print', viewData);
+      await printDocument({documentId, $q, viewId: '3d8779b5-2705-4668-a7fd-fd51e480890c'})
     }
     catch(e) {
       console.log(e);
