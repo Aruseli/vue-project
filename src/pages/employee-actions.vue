@@ -7,7 +7,7 @@
   import { useAppStore } from 'src/stores/app';
   import { useSelectiveInventoryStore } from 'src/stores/selective-inventory';
   import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
-  import { delay } from 'src/services';
+  import { delay, printLeftovers } from 'src/services';
   import { useGoodsStore } from 'src/stores/goods';
 
   const $q = useQuasar();
@@ -17,6 +17,10 @@
   const selectiveInventoryStore = useSelectiveInventoryStore();
   const dialogState = ref(false);
   const inventoryRequests = ref(0);
+
+  console.log(`!app.shiftIsGood`, !app.shiftIsGood)
+  console.log(`!app.hasRight(app.kioskState.settings?.rights__kiosk_print_stock)`, !app.hasRight(app.kioskState.settings?.rights__kiosk_print_stock))
+  
 
   const route = (path) => {
     router.push(path);
@@ -109,8 +113,11 @@
       {
         name: 'print_leftovers',
         // TODO print_leftovers
-        click: () => route(''),
-        disable: true || !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_print_stock),
+        click: () => {
+          // TODO: Add routing to print_leftovers and there add print button that calls the following printLeftovers function
+          // await printLeftovers({...yourOptions})
+        },
+        disable: !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_print_stock),
       },
       {
         name: 'list_active_orders',
