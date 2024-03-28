@@ -88,7 +88,10 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
         doc_detail_type: settings?.inventory_docdetail_type_id ?? "",
       })),
     };
-    await apiSaveDocument(doc);
+    const documentId = await apiSaveDocument(doc);
+    return {
+      documentId
+    }
   };
 
   const updateInventory = async () => {
