@@ -50,31 +50,6 @@ function connect(address: string) {
 
       eventEmitter.emit('local-ws', wsMessage);
       console.log(`local-ws`+ JSON.stringify(wsMessage, null, 2));
-
-      if(wsMessage.cmd === 'barcode') {
-        // TODO: Where should I get documentId?
-        // try {
-        //   const orderViewId = "a59a2a47-7ebb-497d-80ff-5b9386726871";
-        //   const langCode = i18next.language;
-        //   const viewData = await apiReportsGetView(orderViewId, [
-        //     {
-        //       "name": "doc_id",
-        //       "value": documentId,
-        //       "expression": documentId
-        //     },
-        //     {
-        //       "name": "lang_code",
-        //       "value": langCode,
-        //       "expression": langCode
-        //     }
-        //   ]);
-        //   console.log({viewData});
-        //   wsSendMessage('check-print', viewData);
-        // }
-        // catch(e) {
-        //   console.error(e);
-        // }
-      }
     }
     catch (e) {
       if (process.env.DEBUG) {
