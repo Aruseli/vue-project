@@ -51,7 +51,7 @@ import { apiReportsGetView, wsSendMessage,printDocument } from 'src/services';
     // emulateLoading(progress);
     try {
       const {documentId} = await cartStore.submitOrder()
-      await printDocument({documentId, $q})
+      await printDocument({documentId, $q, viewId: 'a59a2a47-7ebb-497d-80ff-5b9386726871'})
 
       app.openOrderDialog(true);
       setTimeout(() => {

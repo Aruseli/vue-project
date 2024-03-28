@@ -60,7 +60,7 @@ const goodsStore = useGoodsStore();
   <div class="main_container full-height full-width">
     <div class="relative-position q-mb-xl">
       <RectangularButton :name="$t('back_to_employee_actions')" :color="'secondary'" size="xl" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/employee-actions')" />
-      <RectangularButton :name="$t('print')" :color="'secondary'" size="xl" class="q-pr-sm" @click="printDocument({documentId: arrivalsStore.arrivalDocument.id, $q})" /> 
+      <RectangularButton :name="$t('print')" :color="'secondary'" size="xl" class="q-pr-sm" @click="printDocument({documentId: arrivalsStore.arrivalDocument.id, $q, viewId:'f8e0f371-87e6-460a-8010-011eabef8757'})" /> 
 
       <div class="text-h2 text-uppercase text-center q-mb-xl title_padding">{{ $t('arrival_goods') }}</div>
 

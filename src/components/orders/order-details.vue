@@ -133,7 +133,7 @@ import { useQuasar } from 'quasar';
       <div class="full-width">
         <RectangularButton
           :name="$t('print')"
-          @click="printDocument({documentId: ordersStore.currentOrderDocument.id, $q})"
+          @click="printDocument({documentId: ordersStore.currentOrderDocument.id, $q, viewId: 'ff7ce8d1-989f-4fc6-9ad4-4aacf65da9f8'})"
           :disable="!allowConfirm"
           class="full-width"
         />
