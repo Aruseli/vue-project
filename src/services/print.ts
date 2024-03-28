@@ -49,6 +49,22 @@ export async function printDocument({documentId, $q, viewId, langCode = i18next.
 
 type PrintDocumentOptions = {documentId: number, $q: QVueGlobals, viewId: string, langCode: string}
 
+export async function printCheck({$q, viewId = 'ff7ce8d1-989f-4fc6-9ad4-4aacf65da9f8', documentId, langCode = i18next.language}: PrintDocumentOptions) {
+  return await printDocument({documentId, $q, viewId, langCode});
+}
+
+export async function printOrder({$q, viewId = 'a59a2a47-7ebb-497d-80ff-5b9386726871', documentId, langCode = i18next.language}: PrintDocumentOptions) {
+  return await printDocument({documentId, $q, viewId, langCode});
+}
+
+export async function printGoodsArrival({$q, viewId = 'f8e0f371-87e6-460a-8010-011eabef8757', documentId, langCode = i18next.language}: PrintDocumentOptions) {
+  return await printDocument({documentId, $q, viewId, langCode});
+}
+
+export async function printInventory({$q, viewId = '3d8779b5-2705-4668-a7fd-fd51e480890c', documentId, langCode = i18next.language}: PrintDocumentOptions) {
+  return await printDocument({documentId, $q, viewId, langCode});
+}
+
 /**
  * Prints leftovers
  * 
