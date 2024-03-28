@@ -10,7 +10,7 @@ import RectangularButton from '../buttons/rectangular-button.vue';
 import DividerBold from '../dividers/divider-bold.vue';
 import DividerThin from '../dividers/divider-thin.vue';
 import { useQuasar } from 'quasar';
-import { apiReportsGetView, wsSendMessage,printDocument } from 'src/services';
+import { apiReportsGetView, wsSendMessage,printOrder } from 'src/services';
 
   const $q = useQuasar();
   const router = useRouter();
@@ -51,7 +51,7 @@ import { apiReportsGetView, wsSendMessage,printDocument } from 'src/services';
     // emulateLoading(progress);
     try {
       const {documentId} = await cartStore.submitOrder()
-      await printDocument({documentId, $q, viewId: 'a59a2a47-7ebb-497d-80ff-5b9386726871'})
+      await printOrder({documentId, $q, viewId: 'a59a2a47-7ebb-497d-80ff-5b9386726871'})
 
       app.openOrderDialog(true);
       setTimeout(() => {
