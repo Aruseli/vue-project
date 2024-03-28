@@ -28,50 +28,52 @@ import { apiReportsGetView, wsSendMessage } from 'src/services';
 
   async function submitInventory() {
     try {
-      // $q.loading.show();
-      // try {
-      //   // TODO: TypeError: Cannot read properties of null (reading 'id'). Where should I get document id from then?
-      //   const documentId = inventoryStore.inventoryDocument.id;
-      //   const orderViewId = "3d8779b5-2705-4668-a7fd-fd51e480890c";
-      //   const langCode = i18next.language;
-      //   const viewData = await apiReportsGetView(orderViewId, [
-      //     {
-      //       "name": "doc_id",
-      //       "value": documentId,
-      //       "expression": documentId
-      //     },
-      //     {
-      //       "name": "lang_code",
-      //       "value": langCode,
-      //       "expression": langCode
-      //     }
-      //   ]);
-      //   console.log({viewData});
-      //   wsSendMessage('check-print', viewData);
-      // }
-      // catch(e) {
-      //   console.log(e);
-      //   $q.notify({
-      //     message: 'Error occured',
-      //     icon: 'warning',
-      //     color: 'warning',
-      //   });
-      // }
-      // finally {
-      //   $q.loading.hide();
-      // }
+      $q.loading.show();
+      try {
+      let documentId;
       if (route.path === '/open-shift/complete-inventory') {
-        await inventoryStore.submitInventory();
+        const {documentId: docId} = await inventoryStore.submitInventory();
+        documentId = docId;
         await app.openTerminalShift();
         router.push(app.shiftIsGood() ? '/hello' : '/employee-actions' );
       } else if (route.path == '/close-shift/complete-inventory') {
-        await inventoryStore.submitInventory();
+        const {documentId: docId} = await inventoryStore.submitInventory();
+        documentId = docId;
         await app.closeTerminalShift();
         router.push('/employee-actions');
       } else {
-        await inventoryStore.submitInventory();
+        const {documentId: docId} = await inventoryStore.submitInventory();
+        documentId = docId;
         router.push('/employee-actions');
       }
+      const orderViewId = "3d8779b5-2705-4668-a7fd-fd51e480890c";
+      const langCode = i18next.language;
+      const viewData = await apiReportsGetView(orderViewId, [
+        {
+          "name": "doc_id",
+          "value": documentId,
+          "expression": documentId
+        },
+        {
+          "name": "lang_code",
+          "value": langCode,
+          "expression": langCode
+        }
+      ]);
+      console.log({viewData});
+      wsSendMessage('check-print', viewData);
+    }
+    catch(e) {
+      console.log(e);
+      $q.notify({
+        message: 'Error occured',
+        icon: 'warning',
+        color: 'warning',
+      });
+    }
+    finally {
+      $q.loading.hide();
+    }
     } catch (err) {
       console.error('inventoryStore.submitInventory error:', err)
       $q.notify({
