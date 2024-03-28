@@ -3,13 +3,12 @@ import { QVueGlobals } from "quasar";
 import { apiReportsGetView } from "./api";
 import { wsSendMessage } from "./local-device-ws";
 
-export async function printDocument({documentId, $q}: {documentId: number, $q: QVueGlobals}) {
+export async function printDocument({documentId, $q, viewId}: {documentId: number, $q: QVueGlobals, viewId: string}) {
   console.log({documentId})
   $q.loading.show();
     try {
-      const orderViewId = "a59a2a47-7ebb-497d-80ff-5b9386726871";
       const langCode = i18next.language;
-      const viewData = await apiReportsGetView(orderViewId, [
+      const viewData = await apiReportsGetView(viewId, [
         {
           "name": "doc_id",
           "value": documentId,
