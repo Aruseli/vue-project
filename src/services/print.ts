@@ -35,8 +35,19 @@ export async function printDocument({documentId, $q, viewId, langCode = i18next.
     }
 }
 
-export async function printLeftovers({documentId, $q, viewId = '3b3ed231-f11c-46d9-ba66-253a05940968', dateTo, shouldShowZeroRemains, stockList, langCode = i18next.language}: {documentId: number, $q: QVueGlobals, viewId?: string, stockList: Array<string>, dateTo: string, shouldShowZeroRemains: boolean, langCode?: string}) {
-  console.log({documentId})
+/**
+ * Prints leftovers
+ * 
+ * @example
+ * ```
+<IconButton
+  round
+  :icon="print"
+  @click="printLeftovers({$q, dateTo: '21.03.2024', shouldShowZeroRemains: true, stockList: ['1362c8b4-3642-408b-9fd0-057acf547c60']})"
+/>
+ * ```
+ */
+export async function printLeftovers({$q, viewId = '3b3ed231-f11c-46d9-ba66-253a05940968', dateTo, shouldShowZeroRemains, stockList, langCode = i18next.language}: {$q: QVueGlobals, viewId?: string, stockList: Array<string>, dateTo: string, shouldShowZeroRemains: boolean, langCode?: string}) {
   $q.loading.show();
     try {
       const viewData = await apiReportsGetView(viewId, [
