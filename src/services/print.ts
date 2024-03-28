@@ -15,7 +15,7 @@ import { wsSendMessage } from "./local-device-ws";
  * />
  * ```
  */
-export async function printDocument({documentId, $q, viewId, langCode = i18next.language}: {documentId: number, $q: QVueGlobals, viewId: string, langCode: string}) {
+export async function printDocument({documentId, $q, viewId, langCode = i18next.language}: PrintDocumentOptions) {
   console.log({documentId})
   $q.loading.show();
     try {
@@ -46,6 +46,8 @@ export async function printDocument({documentId, $q, viewId, langCode = i18next.
       $q.loading.hide();
     }
 }
+
+type PrintDocumentOptions = {documentId: number, $q: QVueGlobals, viewId: string, langCode: string}
 
 /**
  * Prints leftovers
