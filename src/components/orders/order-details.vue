@@ -147,22 +147,15 @@ import OrderCard from './order-card.vue';
 .orders_container > *:not(:last-of-type) {
   margin-bottom: var(--px30);
 }
-.router_link_style {
-  font-size: 3rem;
-  text-decoration: none;
-}
-
 .payButton {
   width: 49%;
   background-color: var(--q-negative);
   // color: black;
 }
-
 .selected {
   background-color: var(--q-primary);
   // color: white;
 }
-
 .bounce-enter-from {
   opacity: 0;
 }
