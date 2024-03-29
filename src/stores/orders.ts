@@ -76,7 +76,7 @@ export const useOrdersStore = defineStore("orders", () => {
       }
       d.total = item?.price * d.quant;
     });
-    await apiSaveDocument(doc);
+    await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '');
   };
 
   const scanGood = async (good: Good) => {

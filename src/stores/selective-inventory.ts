@@ -83,7 +83,7 @@ export const useSelectiveInventoryStore = defineStore("selectiveInventoryStore",
       d.total = item?.price ?? 0 * d.quant;
     });
 
-    await apiSaveDocument(doc);
+    await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '');
   };
 
   const totalQuant = computed(() => {

@@ -291,9 +291,9 @@ export const enum DocumentState {
   Draft = 2,
 }
 
-export async function apiSaveDocument(doc: SaveableDocument) {
+export async function apiSaveDocument(doc: SaveableDocument, terminal_shift_id: string) {
   const response = await fetchApi('/api/v2/kiosk/saveDocument', {
-    doc,
+    doc, terminal_shift_id,
   });
   console.log('saveDocument', response);
   return response.data.id as string;

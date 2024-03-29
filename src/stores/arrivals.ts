@@ -72,7 +72,7 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
       }
       d.total = item.price * d.quant;
     });
-    await apiSaveDocument(doc);
+    await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '');
   };
 
   const totalQuant = computed(() => {
