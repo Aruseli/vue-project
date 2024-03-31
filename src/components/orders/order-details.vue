@@ -116,17 +116,17 @@ import OrderCard from './order-card.vue';
             :name="$t('cash_payment')"
             @click="paymentMethod('cash')"
             class="payButton button_style_confirm"
-            :color="selectedPayment === 'card' ? 'primary' : 'negative'"
+            :color="selectedPayment === 'cash' ? 'primary' : 'negative'"
             :textColor="ordersStore.currentOrder?.payment == 'cash' ? 'white' : 'black'"
             :disable="!allowConfirm"
-            :class="{ 'selected': ordersStore.currentOrder?.payment === 'card' }"
+
             />
             <RectangularButton
             :color="ordersStore.currentOrder?.payment === 'card' ? 'primary' : 'negative'"
             :name="$t('card_payment')"
             :textColor="ordersStore.currentOrder?.payment == 'card' ? 'white' : 'black'"
             @click="paymentMethod('card')"
-            :class="ordersStore.currentOrder?.payment == 'card' && 'selected'"
+
             :disable="!allowConfirm"
             class="payButton button_style_confirm"
           />
