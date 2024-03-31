@@ -171,6 +171,6 @@ import OrderCard from './order-card.vue';
   transition: opacity 2s cubic-bezier(0.215, 0.610, 0.355, 1);
 }
 .bounce-leave-active {
-  transition: opacity 16s cubic-bezier(0.215, 0.610, 0.355, 1);
+  transition: opacity 3s cubic-bezier(0.215, 0.610, 0.355, 1);
 }
 </style>

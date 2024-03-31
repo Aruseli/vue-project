@@ -51,7 +51,7 @@ import { onUpdated } from 'vue';
             textColor="black"
             class="q-mr-xl-xl q-mr-xs-sm"
           />
-          <LangDrawer @click="app.openLangDialog(false)" :isOpen="app.langDialog" v-if="!app.kioskState.settings?.alt_ui">
+          <LangDrawer @click="app.openLangDialog(false)" :isOpen="app.langDialog" v-if="app.kioskState.settings?.alt_ui">
             <LanguagesFrame />
           </LangDrawer>
         </div>
@@ -81,7 +81,7 @@ import { onUpdated } from 'vue';
   </q-header>
 
   <template>
-    <Modal :isOpen="app.langDialog" @click="app.openLangDialog(false)" v-if="app.kioskState.settings?.alt_ui">
+    <Modal :isOpen="app.langDialog" @click="app.openLangDialog(false)" v-if="!app.kioskState.settings?.alt_ui">
       <div class="bg-primary container_languages" >
         <Language v-for="lang in app.kioskState.catalogLocales"
           :key="lang.lang_code"
