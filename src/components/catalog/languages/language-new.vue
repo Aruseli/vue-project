@@ -19,15 +19,15 @@
 </script>
 
 <template>
-  <div @click="click" class="lang_container column justify-center items-center">
+  <div @click="click" class="lang_container_new column justify-center items-center">
     <q-img
       :src="src"
       :alt="language"
       ratio="16/9"
-      class="img_style"
+      class="img_style q-mb-sm"
       fit='fill'
     />
-    <div class="text-left text-white text-uppercase text-h5 lang_style">{{ language }}</div>
+    <div class="text-left text-black text-uppercase text-h5 lang_style">{{ language }}</div>
   </div>
 </template>
 
@@ -37,7 +37,7 @@ $width: calc(6.5em + 1.7262vmin);
   height: calc(100% - 3rem);
   width: $width;
 }
-.lang_container {
+.lang_container_new {
   width: 100%;
 }
 

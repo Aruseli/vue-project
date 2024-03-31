@@ -16,7 +16,7 @@ const emit = defineEmits(['click']);
     <transition name="modal-animation">
       <div class="modal_bg" v-if="props.isOpen" @click="emit('click')">
         <div
-          class="dialog_style overflow-hidden q-pa-md-md q-pa-xs-sm"
+          class="dialog_style overflow-hidden q-pa-md-xl q-pa-xs-md"
           role="dialog"
           aria-modal="true"
           v-bind="$attrs"

@@ -8,6 +8,8 @@ import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
 import IconButton from '../buttons/icon-button.vue';
 import Language from '../language.vue';
 import Modal from '../overlay/modal.vue';
+import LanguagesFrame from './languages/languages-frame.vue';
+import LangDrawer from '../overlay/lang-drawer.vue';
 import { onUpdated } from 'vue';
 
   const cart = useCartStore();
@@ -21,10 +23,6 @@ import { onUpdated } from 'vue';
     await goodsStore.updateGoods(newLocale);
     app.setLocale(newLocale);
   }
-
-  // onUpdated(() => {
-  //   app.openLangDialog(false);
-  // })
 
 </script>
 
@@ -44,13 +42,19 @@ import { onUpdated } from 'vue';
         <LogoSvgGradient :height="100" />
       </LogoSimple>
 
-      <div>
-        <IconButton
-          icon="translate"
-          @click="app.openLangDialog(true)"
-          color='transparent'
-          textColor="black"
-        />
+      <div class="row items-center">
+        <div class="relative-position full-height">
+          <IconButton
+            icon="translate"
+            @click="app.openLangDialog(true)"
+            color='transparent'
+            textColor="black"
+            class="q-mr-xl-xl q-mr-xs-sm"
+          />
+          <LangDrawer @click="app.openLangDialog(false)" :isOpen="app.langDialog" v-if="!app.kioskState.settings?.alt_ui">
+            <LanguagesFrame />
+          </LangDrawer>
+        </div>
         <q-btn unelevated round class="relative-position" @click="openDrawer">
           <BinIconNew>
             <path v-show="cart.totalQuantity > 0" d="M23.2899 99.4944C49.461 103 73.5796 103 97.2395 99.4944C102.698 74.689 108.441 46.9768 108.441 46.9768C105.441 53.2274 94.0429 62.2554 64.2143 50.7154C34.3857 39.1754 19.7312 46.7492 14.5884 53C14.5884 53 19.6068 79.6892 23.2899 99.4944Z" fill="#0eb60b" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="path"/>
@@ -77,13 +81,13 @@ import { onUpdated } from 'vue';
   </q-header>
 
   <template>
-    <Modal :isOpen="app.langDialog" @click="app.openLangDialog(false)">
-      <div class="bg-primary container_languages">
+    <Modal :isOpen="app.langDialog" @click="app.openLangDialog(false)" v-if="app.kioskState.settings?.alt_ui">
+      <div class="bg-primary container_languages" >
         <Language v-for="lang in app.kioskState.catalogLocales"
           :key="lang.lang_code"
           :src="lang.flag_src"
           :alt="lang.name"
-          :language="lang.name"
+          :language="lang.lang_code"
           @click="changeLanguage(lang.lang_code)"
         />
       </div>
@@ -91,7 +95,9 @@ import { onUpdated } from 'vue';
   </template>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+$width: calc(6.5em + 1.7262vmin);
+$height: calc(8em + 1.7262vmin);
 .header {
   color: var(--q-text);
   background-color: transparent;
@@ -136,28 +142,17 @@ import { onUpdated } from 'vue';
 .container_languages {
   width: 80vw;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  row-gap: 1rem;
+  grid-template-columns: repeat( auto-fit, minmax($width, 1fr) );
+  grid-auto-rows: minmax($height, 1fr);
+  gap: 3rem;
   justify-content: center;
+  align-items: center;
   padding: 3rem;
   border-radius: 1rem;
   overflow: hidden;
-
-  @media (max-width: 2050px) and (orientation: landscape) {
-    padding: 1.5rem;
-    column-gap: 0.5rem;
-    grid-template-columns: repeat(6, 1fr);
-  }
-  @media (max-width: 1300px) {
-    padding: 1.5rem;
-  }
   @media (max-width: 900px) {
-    grid-template-columns: repeat(4, 1fr);
-    padding: 1.5rem;
-  }
-  @media (max-width: 500px) {
-    grid-template-columns: repeat(3, 1fr);
-    padding: 1rem;
+    gap: 2rem;
+    padding: 2rem;
   }
 }
 

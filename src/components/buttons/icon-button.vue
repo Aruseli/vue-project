@@ -32,6 +32,6 @@
     :text-color="textColor"
     v-bind="$attrs"
     @click="click">
-    <q-icon flat :color="textColor" :size="size" :name="icon" />
+    <q-icon flat :color="textColor" :size="size" :name="icon"></q-icon>
    </q-btn>
 </template>

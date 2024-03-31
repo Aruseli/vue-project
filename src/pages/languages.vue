@@ -29,7 +29,7 @@
         :key="lang.lang_code"
         :src="lang.flag_src"
         :alt="lang.name"
-        :language="lang.name"
+        :language="lang.lang_code"
         @click="changeLanguage(lang.lang_code)"
       />
     </div>
@@ -37,6 +37,8 @@
 </template>
 
 <style scoped lang="scss">
+$width: calc(6.5em + 1.7262vmin);
+$height: calc(8em + 1.7262vmin);
 .logo {
   padding: 5rem;
   position: absolute;
@@ -60,32 +62,23 @@
 .container_languages {
   width: 80vw;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  row-gap: 1rem;
+  grid-template-columns: repeat( auto-fit, minmax($width, 1fr) );
+  grid-auto-rows: minmax($height, 1fr);
+  gap: 3rem;
   justify-content: center;
   padding: 3rem;
   border-radius: 1rem;
   overflow: hidden;
-
-  @media (max-width: 2050px) and (orientation: landscape) {
-    padding: 1.5rem;
-    column-gap: 0.5rem;
-    grid-template-columns: repeat(6, 1fr);
-  }
-  @media (max-width: 1300px) {
-    padding: 1.5rem;
-  }
   @media (max-width: 900px) {
-    grid-template-columns: repeat(4, 1fr);
-    padding: 1.5rem;
-  }
-  @media (max-width: 500px) {
-    grid-template-columns: repeat(3, 1fr);
-    padding: 1rem;
+    gap: 2rem;
+    padding: 2rem;
   }
 }
 
 .hello_bg {
   background-image: url('/start.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 </style>

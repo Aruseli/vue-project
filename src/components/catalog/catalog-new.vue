@@ -176,9 +176,6 @@ import ProductCard from './product-card.vue';
 </template>
 
 <style lang="scss" scoped>
-$calc_width_alt: calc(12rem + 3vmax);
-$calc_width_alt_mobile: calc(12rem + 2vmax);
-
 .catalog_container {
   display: grid;
   grid-template-columns: 0.3fr 1fr;

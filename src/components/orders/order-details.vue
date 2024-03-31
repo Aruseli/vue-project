@@ -152,10 +152,7 @@ import OrderCard from './order-card.vue';
   background-color: var(--q-negative);
   // color: black;
 }
-.selected {
-  background-color: var(--q-primary);
-  // color: white;
-}
+
 .bounce-enter-from {
   opacity: 0;
 }

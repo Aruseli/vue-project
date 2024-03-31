@@ -268,10 +268,7 @@ body.body--dark {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  margin-bottom: 8rem;
-  @media (max-width: 1300px) {
-    margin-bottom: 4rem;
-  }
+  width: clamp(4rem, 4.7352rem + 8.3241vmax, 13rem);
 }
 
 .logo_row {
@@ -282,12 +279,9 @@ body.body--dark {
 }
 
 .q-field__control {
-  height: 4rem;
+  height: clamp(1.5rem, 0.4167rem + 5.4167vmax, 8rem);
   align-items: center;
   box-shadow: inset var(--box-shadow--product_cart);
-}
-.input_settings {
-  font-size: 2rem;
 }
 
 .title_padding {
@@ -353,5 +347,12 @@ padding: 0;
   margin-right: 2rem;
   @media (max-width: 1300px) {
     margin-right: 0.5rem;
+  }
+}
+
+.material-icons {
+  font-size: 5rem !important;
+  @media (max-width: 1300px) {
+    font-size: 3rem !important;
   }
 }

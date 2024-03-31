@@ -181,11 +181,8 @@
   margin-bottom: 2rem;
 }
 .container > *:first-child {
-  margin-bottom: 10rem;
+  margin-bottom: 7rem;
   @media (max-width: 1300px) {
-    margin-bottom: 4rem;
-  }
-  @media (max-width: 899px) {
     margin-bottom: 3rem;
   }
 }

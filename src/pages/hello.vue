@@ -41,7 +41,7 @@
   <q-page class="flex flex-center relative relative-position">
     <div class="bg_filtered" />
     <div class="column justify-between window-height full-width container" @click="router.push('languages')">
-      <Logo class="logo_row self-start" classes="q-mr-sm">
+      <Logo class="logo_row self-start" classes="q-mr-sm img_style">
         <LogoSvgWhite />
       </Logo>
 
@@ -67,13 +67,17 @@
   width: 100vw;
   height: 100vh;
   background-image: url('/start.jpg');
+  background-repeat: no-repeat;
   background-position: center;
-  filter: brightness(0.6);
   background-size: cover;
+  filter: brightness(0.6);
 }
 .container {
   padding: 5rem;
   z-index: 2;
+  @media (max-width: 899px) {
+    padding: 1.5rem;
+  }
 }
 
 .slide-fade-leave-active {
