@@ -1,7 +1,7 @@
 <script setup>
   import { t } from 'i18next';
 import { useOrdersStore } from 'src/stores/orders';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, nextTick, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import RectangularButton from '../buttons/rectangular-button.vue';
 import DividerBold from '../dividers/divider-bold.vue';
@@ -11,6 +11,7 @@ import OrderCard from './order-card.vue';
   const ordersStore = useOrdersStore();
   const route = useRoute();
   const router = useRouter();
+  const payment = ref('cash' | 'cashless');
 
   const confirmOrder = async () => {
     await ordersStore.confirmCurrentOrderIssue()
@@ -37,15 +38,23 @@ import OrderCard from './order-card.vue';
       })
       router.push('/employee-actions')
     }
+    console.log('ordersStore.currentOrder?.payment', ordersStore.currentOrder)
   })
 
   const showConfirm = ref(false);
   const paymentMethod = (option) => {
+    console.log('option0', option)
     if (ordersStore.currentOrder) {
       ordersStore.currentOrder.payment = option;
+      payment.value = option
+      console.log('option1', payment.value)
     }
-    showConfirm.value == true;
+    showConfirm.value = true;
+    console.log('option2', option)
   }
+  const selectedPayment = computed(() => {
+    return ordersStore.currentOrder?.payment
+  });
 
   const show = ref(false);
 
@@ -79,11 +88,7 @@ import OrderCard from './order-card.vue';
           :good_src="order.image.image"
           :good_issued="order.issued"
           :id="order.id"
-          @click="() => {
-            if (allowClickScan) {
-              order.issued += 1;
-            }
-          }"
+
         />
       </div>
     </div>
@@ -111,13 +116,13 @@ import OrderCard from './order-card.vue';
             :name="$t('cash_payment')"
             @click="paymentMethod('cash')"
             class="payButton button_style_confirm"
-            :color="ordersStore.currentOrder?.payment  == 'cash' ? 'primary' : 'negative'"
+            :color="selectedPayment === 'card' ? 'primary' : 'negative'"
             :textColor="ordersStore.currentOrder?.payment == 'cash' ? 'white' : 'black'"
             :disable="!allowConfirm"
-            :class="ordersStore.currentOrder?.payment == 'cash' && 'selected'"
+            :class="{ 'selected': ordersStore.currentOrder?.payment === 'card' }"
             />
             <RectangularButton
-            :color="ordersStore.currentOrder?.payment == 'card' ? 'primary' : 'negative'"
+            :color="ordersStore.currentOrder?.payment === 'card' ? 'primary' : 'negative'"
             :name="$t('card_payment')"
             :textColor="ordersStore.currentOrder?.payment == 'card' ? 'white' : 'black'"
             @click="paymentMethod('card')"
@@ -149,9 +154,12 @@ import OrderCard from './order-card.vue';
 }
 .payButton {
   width: 49%;
-  background-color: var(--q-negative);
-  // color: black;
 }
+.selected {
+  background-color: var(--q-primary);
+  color: white;
+}
+
 
 .bounce-enter-from {
   opacity: 0;
@@ -161,5 +169,8 @@ import OrderCard from './order-card.vue';
 }
 .bounce-enter-active {
   transition: opacity 2s cubic-bezier(0.215, 0.610, 0.355, 1);
+}
+.bounce-leave-active {
+  transition: opacity 16s cubic-bezier(0.215, 0.610, 0.355, 1);
 }
 </style>
