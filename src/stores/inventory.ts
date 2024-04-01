@@ -140,19 +140,10 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     inventoryItem.quant += 1;
   };
 
-  const resetScannedQuantity = (good: Good) => {
-    const inventoryItem = inventory.value?.find((i) => i.id == good.id);
-    if (inventoryItem) {
-      inventoryItem.quant = 0;
-    }
-  };
-
-
   return {
     inventory,
     inventoryDocument,
     inventoryLoading,
-    resetScannedQuantity,
     updateInventory,
     scanInventoryGood,
     submitInventory,

@@ -34,9 +34,6 @@ import ProductCard from './product-card.vue';
     event.preventDefault();
     const element = document.getElementById(id);
     selectedIndex.value = id;
-      goodsStore.goods.forEach((goodCategory, index) => {
-        goodCategory.isActive = index === id;
-      });
     element.scrollIntoView({
       behavior: 'smooth'
     });
@@ -64,6 +61,7 @@ import ProductCard from './product-card.vue';
 
   // Функция-обработчик, которая переведет на новую страницу
   const redirect = () => {
+    app.drawerCartState = false;
     router.push('hello');
     cartStore.clearCart();
     redirectAt.value = 0;

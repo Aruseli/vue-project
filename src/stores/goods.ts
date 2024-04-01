@@ -119,7 +119,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
         // const goodsArrivalDoc = {
         //   id: undefined,
         //   state: 2,
-        //   doc_type: settings?.goods_arrival_doc_type_id ?? '',
+        //   doc_type: appStore.kioskState.settings?.goods_arrival_doc_type_id ?? '',
         //   abbr_text: undefined,
         //   abbr_num: undefined,
         //   doc_date: new Date().toISOString(),
@@ -127,7 +127,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
         //   corr_from_ref: "48395457-cef7-47b0-bb2c-54ccf4f8fda8", // supplier
         //   corr_to_ref: appStore.kioskState.kioskCorr?.id ?? '',
         //   respperson_ref: appStore.kioskState.userCorr?.id ?? '',
-        //   currency_ref: settings?.currency_id ?? '',
+        //   currency_ref: appStore.kioskState.settings?.currency_id ?? '',
         //   curr_rate: 1,
         //   comment: undefined,
         //   details: fetchedGoods.flatMap(gc => gc.goods.filter(g => !!g)).map(g => ({
@@ -135,11 +135,11 @@ export const useGoodsStore = defineStore('goodsStore', () => {
         //     state: 0,
         //     rec_order: 0,
         //     good_id: g.id,
-        //     munit_id: settings?.munit_id ?? '', // default
+        //     munit_id: appStore.kioskState.settings?.munit_id ?? '', // default
         //     quant: 100,
         //     total: 100,
         //     doc_detail_link: undefined,
-        //     doc_detail_type: settings?.goods_arrival_docdetail_type_id ?? '', // outgoing
+        //     doc_detail_type: appStore.kioskState.settings?.goods_arrival_docdetail_type_id ?? '', // outgoing
         //   })),
         // }
         // console.log('Debug arrival goods', await apiSaveDocument(goodsArrivalDoc))

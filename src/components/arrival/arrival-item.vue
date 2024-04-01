@@ -77,7 +77,7 @@
       />
     </div>
   </div>
-  <Modal :isOpen="switchModal">
+  <Modal :isOpen="switchModal" class="bg-white">
     <div class="text-h3 q-mb-md-md q-mb-xs-sm text-center title_style">{{ $t('are_you_sure_you_want_to_rescan_the_product') }} <span class="text-italic">{{ props.good_name }} ?</span></div>
 
     <div class="row justify-evenly items-center">

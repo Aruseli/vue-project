@@ -38,25 +38,17 @@ import OrderCard from './order-card.vue';
       })
       router.push('/employee-actions')
     }
-    console.log('ordersStore.currentOrder?.payment', ordersStore.currentOrder)
   })
 
-  const showConfirm = ref(false);
   const paymentMethod = (option) => {
-    console.log('option0', option)
     if (ordersStore.currentOrder) {
       ordersStore.currentOrder.payment = option;
       payment.value = option
-      console.log('option1', payment.value)
     }
-    showConfirm.value = true;
-    console.log('option2', option)
   }
   const selectedPayment = computed(() => {
     return ordersStore.currentOrder?.payment
   });
-
-  const show = ref(false);
 
 </script>
 
