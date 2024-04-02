@@ -55,7 +55,14 @@ import OrderCard from './order-card.vue';
 <template>
   <div class="main_container full-height">
     <div class="relative-position">
-      <RectangularButton :name="$t('back_to_order_list')" color="secondary" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/issuing-order')" />
+      <RectangularButton
+        :name="$t('back_to_order_list')"
+        color="secondary"
+        icon="arrow_back_ios_new"
+        class="q-pr-sm"
+        classTitle="text-subtitle2"
+        @click="router.push('/issuing-order')"
+      />
 
       <div
         class="
@@ -99,39 +106,32 @@ import OrderCard from './order-card.vue';
           <span>{{ $t('units', { count: ordersStore.currentOrder?.totalCount }) }}</span>
         </div>
       </div>
-      <transition name="bounce" mode="out-in">
-        <div
-          class="full-width row justify-between"
-          v-if="ordersStore.currentOrder?.payment == ''"
-        >
-          <RectangularButton
-            :name="$t('cash_payment')"
-            @click="paymentMethod('cash')"
-            class="payButton button_style_confirm"
-            :color="selectedPayment === 'cash' ? 'primary' : 'negative'"
-            :textColor="ordersStore.currentOrder?.payment == 'cash' ? 'white' : 'black'"
-            :disable="!allowConfirm"
+      <div class="full-width row justify-between q-mb-sm">
+        <RectangularButton
+          :name="$t('cash_payment')"
+          @click="paymentMethod('cash')"
+          class="payButton button_style_confirm"
+          :color="selectedPayment === 'cash' ? 'primary' : 'negative'"
+          :textColor="ordersStore.currentOrder?.payment == 'cash' ? 'white' : 'black'"
+          :disable="!allowConfirm"
+        />
 
-            />
-            <RectangularButton
-            :color="ordersStore.currentOrder?.payment === 'card' ? 'primary' : 'negative'"
-            :name="$t('card_payment')"
-            :textColor="ordersStore.currentOrder?.payment == 'card' ? 'white' : 'black'"
-            @click="paymentMethod('card')"
+        <RectangularButton
+          :color="ordersStore.currentOrder?.payment === 'card' ? 'primary' : 'negative'"
+          :name="$t('card_payment')"
+          :textColor="ordersStore.currentOrder?.payment == 'card' ? 'white' : 'black'"
+          @click="paymentMethod('card')"
 
-            :disable="!allowConfirm"
-            class="payButton button_style_confirm"
-          />
-        </div>
-        <div class="full-width" v-else>
-          <RectangularButton
-            :name="$t('confirm')"
-            @click="confirmOrder"
-            :disable="!allowConfirm"
-            class="full-width button_style_confirm"
-          />
-        </div>
-      </transition>
+          :disable="!allowConfirm"
+          class="payButton button_style_confirm"
+        />
+      </div>
+      <RectangularButton
+        :name="$t('confirm')"
+        @click="confirmOrder"
+        :disable="ordersStore.currentOrder?.payment == ''"
+        class="full-width button_style_confirm"
+      />
     </div>
   </div>
 </template>
