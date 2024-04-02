@@ -34,10 +34,11 @@
 <style scoped lang="scss">
 $width: calc(6.5em + 1.7262vmin);
 .img_style {
-  height: calc(100% - 3rem);
+  height: calc(100% - 3em);
   width: $width;
 }
 .lang_container {
+  height: 100%;
   width: 100%;
 }
 

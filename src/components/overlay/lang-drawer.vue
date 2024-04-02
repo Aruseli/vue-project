@@ -31,14 +31,15 @@ const emit = defineEmits(['click']);
   width: 100vw;
   height: 100vh;
   display: flex;
+  overflow: hidden;
 }
 .lang_drawer_container {
   z-index: 199;
   position: absolute;
   top: 9rem;
-  width: 100%;
+  width: max-content;
   height: calc(100vh - 18rem);
-  padding: 2rem;
+  padding: 3em 2em;
   border-radius: 2rem;
   box-shadow: var(box-shadow);
   box-sizing: border-box;

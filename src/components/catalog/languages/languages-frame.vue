@@ -13,6 +13,7 @@ const router = useRouter();
 const changeLanguage = async (newLocale: string) => {
   await goodsStore.updateGoods(newLocale);
   app.setLocale(newLocale);
+  app.openLangDialog(false);
   router.push("catalog");
 };
 
@@ -21,7 +22,8 @@ const changeLanguage = async (newLocale: string) => {
 <template>
   <BubbleArrow class="bubble" />
   <div class="languages_container">
-    <q-scroll-area class="q-px-xs-none full-height scrollable_container full-width">
+    <!-- <q-scroll-area class="q-px-xs-none full-height scrollable_container full-width"> -->
+    <div class="q-px-xs-none full-height scrollable_container full-width">
       <LanguageNew v-for="lang in app.kioskState.catalogLocales"
         :key="lang.lang_code"
         :src="lang.flag_src"
@@ -29,7 +31,8 @@ const changeLanguage = async (newLocale: string) => {
         :language="lang.lang_code"
         @click="changeLanguage(lang.lang_code)"
       />
-    </q-scroll-area>
+    </div>
+    <!-- </q-scroll-area> -->
   </div>
 </template>
 
@@ -43,8 +46,16 @@ const changeLanguage = async (newLocale: string) => {
 .languages_container {
   height: 100%;
   width: 100%;
+  overflow: hidden;
 }
-.scrollable_container > div > .q-scrollarea__content :not(:last-child) {
+.scrollable_container {
+  overflow: scroll;
+  scrollbar-width: none;
+}
+.scrollable_container > *:not(:last-child) {
   margin-bottom: 4em;
 }
+/* .scrollable_container > div > .q-scrollarea__content :not(:last-child) {
+  margin-bottom: 4em;
+} */
 </style>
