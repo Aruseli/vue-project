@@ -82,6 +82,7 @@
           class="q-pa-xs"
           color="transparent"
           textColor="primary"
+          :disable="props.actual_quantity == 0"
         />
       </div>
     </div>
@@ -91,7 +92,7 @@
     <div class="text-h3 q-mb-md-md q-mb-xs-sm text-center">{{ $t('are_you_sure_you_want_to_rescan_the_product') }} <span class="text-italic">{{ props.good_name }} ?</span></div>
 
     <div class="row justify-evenly items-center">
-      <RectangularButton :name="$t('no')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs col-3" @click="switchModal = false" textColor="primary" />
+      <RectangularButton :name="$t('no')" color="transparent" class="q-px-xs-sm q-py-md-sm q-py-xs-xs col-3" @click="switchModal = false" textColor="primary" />
       <RectangularButton :name="$t('yes')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs col-3" @click="resetQuant" />
     </div>
   </Modal>

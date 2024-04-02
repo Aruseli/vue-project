@@ -15,7 +15,11 @@
     textColor: {
       type: String,
       default: 'white',
-    }
+    },
+    disable: {
+      type: Boolean,
+      default: false,
+    },
   })
 
   const emit = defineEmits(['click']);
@@ -28,10 +32,11 @@
    <q-btn
     unelevated
     rounded
-    :color="color"
-    :text-color="textColor"
+    :disable="props.disable"
+    :color="props.color"
+    :text-color="props.textColor"
     v-bind="$attrs"
     @click="click">
-    <q-icon flat :color="textColor" :size="size" :name="icon"></q-icon>
+    <q-icon flat :color="props.textColor" :size="props.size" :name="props.icon"></q-icon>
    </q-btn>
 </template>
