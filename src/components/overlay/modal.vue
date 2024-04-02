@@ -4,6 +4,11 @@ const props = defineProps({
     type: Boolean,
     required: true,
     default:false,
+  },
+  to: {
+    type: String,
+    required: false,
+    default: "#modal"
   }
 })
 
@@ -12,7 +17,7 @@ const emit = defineEmits(['click']);
 </script>
 
 <template>
-  <teleport to="#modal">
+  <teleport :to="props.to">
     <transition name="modal-animation">
       <div class="modal_bg" v-if="props.isOpen" @click="emit('click')">
         <div

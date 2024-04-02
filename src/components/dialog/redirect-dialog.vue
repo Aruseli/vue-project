@@ -1,6 +1,6 @@
 <script setup>
 import RectangularButton from '../buttons/rectangular-button.vue';
-
+import Modal from '../overlay/modal.vue';
 
 const emit = defineEmits(['complete', 'continue']);
 
@@ -35,9 +35,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <q-dialog
-    v-model="props.modelValue"
-  >
+  <Modal :isOpen="props.modelValue" to="#redirect-dialog">
     <div class="card_container">
       <q-card class="q-pa-sm">
         <q-card-section class="row items-center justify-end" />
@@ -53,7 +51,7 @@ const props = defineProps({
 
       </q-card>
     </div>
-  </q-dialog>
+  </Modal>
 </template>
 
 <style>
