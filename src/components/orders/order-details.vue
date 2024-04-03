@@ -84,7 +84,7 @@ import OrderCard from './order-card.vue';
           :good_title="order.title"
           :good_price="order.price"
           :good_quant="order.quant"
-          :good_src="order.image.image"
+          :good_src="order.image"
           :good_issued="order.issued"
           :id="order.id"
 
