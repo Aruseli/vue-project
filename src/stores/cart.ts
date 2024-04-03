@@ -72,7 +72,7 @@ export const useCartStore = defineStore('cartStore',
           doc_detail_type: settings?.invoice_docdetail_type_id ?? '',
         })),
       }
-      await apiSaveDocument(doc)
+      await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '')
       // clearCart()
     }
 

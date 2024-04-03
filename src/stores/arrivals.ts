@@ -25,7 +25,8 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
       const settings = appStore.kioskState.settings;
       arrivalsDocuments.value = await apiGetDocuments(
         [settings!.goods_arrival_doc_type_id!],
-        [2]
+        [2],
+        [appStore.kioskState.kioskCorr?.id ?? ''],
       );
       arrivalsDocuments.value = arrivalsDocuments.value.filter(d =>
         d.corr_to_ref == appStore.kioskState.kioskCorr?.id)
@@ -72,7 +73,7 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
       }
       d.total = item.price * d.quant;
     });
-    await apiSaveDocument(doc);
+    await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '');
   };
 
   const totalQuant = computed(() => {
