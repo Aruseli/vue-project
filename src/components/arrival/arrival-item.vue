@@ -38,12 +38,6 @@
     emit('resetActualQuantity');
     switchModal.value = false;
   };
-
-  const openModal = (id) => {
-    if (id === props.id)
-    switchModal.value = true;
-  }
-
 </script>
 
 <template>
@@ -70,7 +64,7 @@
       <RoundedButton size="clamp(0.625rem, 0.4798rem + 0.7262vi, 1.25rem)" @click="itemConfirm" />
       <IconButton
         icon="delete_forever"
-        @click="() => openModal(props.id)"
+        @click="switchModal = true"
         class="q-pa-xs"
         color="transparent"
         textColor="primary"
@@ -83,7 +77,7 @@
 
     <div class="row justify-evenly items-center">
       <RectangularButton :name="$t('no')" color="transparent" class="q-px-xs-sm q-py-md-sm q-py-xs-xs col-3" @click="switchModal = false" textColor="primary" />
-      <RectangularButton :name="$t('yes')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs col-3" @click="resetQuant" />
+      <RectangularButton :name="$t('yes')" class="q-px-md-sm q-px-xs-sm q-py-md-sm q-py-xs-xs col-3" @click="resetQuant" />
     </div>
   </Modal>
 </template>

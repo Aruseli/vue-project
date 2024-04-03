@@ -46,10 +46,6 @@ import OrderCard from './order-card.vue';
       payment.value = option
     }
   }
-  const selectedPayment = computed(() => {
-    return ordersStore.currentOrder?.payment
-  });
-
 </script>
 
 <template>
@@ -111,7 +107,7 @@ import OrderCard from './order-card.vue';
           :name="$t('cash_payment')"
           @click="paymentMethod('cash')"
           class="payButton button_style_confirm"
-          :color="selectedPayment === 'cash' ? 'primary' : 'negative'"
+          :color="ordersStore.currentOrder?.payment === 'cash' ? 'primary' : 'negative'"
           :textColor="ordersStore.currentOrder?.payment == 'cash' ? 'white' : 'black'"
           :disable="!allowConfirm"
         />

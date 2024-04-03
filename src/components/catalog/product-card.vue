@@ -81,12 +81,6 @@ import ProductModal from './product-modal.vue';
       }
     }
   })
-
-  const openModal = (id) => {
-    if (id === props.itemId)
-    goodsStore.openDialog = true;
-  }
-
 </script>
 
 
