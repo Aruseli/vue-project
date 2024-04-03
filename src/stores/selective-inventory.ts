@@ -24,7 +24,9 @@ export const useSelectiveInventoryStore = defineStore("selectiveInventoryStore",
     try {
       const settings = appStore.kioskState.settings;
       inventoriesDocuments.value = await apiGetDocuments(
-        [settings!.inventory_doc_type_id!],[2]
+        [settings!.inventory_doc_type_id!],
+        [2],
+        [appStore.kioskState.kioskCorr?.id ?? ''],
       )
 
       inventoriesDocuments.value = inventoriesDocuments.value.filter(d =>

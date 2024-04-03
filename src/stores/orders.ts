@@ -28,7 +28,8 @@ export const useOrdersStore = defineStore("orders", () => {
       const settings = appStore.kioskState.settings;
       ordersDocuments.value = await apiGetDocuments(
         [settings!.invoice_doc_type_id!],
-        [2]
+        [2],
+        [appStore.kioskState.kioskCorr?.id ?? ''],
       );
       ordersDocuments.value = ordersDocuments.value.filter(d =>
         d.corr_from_ref == appStore.kioskState.kioskCorr?.id)
