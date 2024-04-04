@@ -48,7 +48,7 @@ export async function printDocument({documentId, $q, viewId, langCode = i18next.
 }
 
 type PrintDocumentOptions = {documentId: string, $q: QVueGlobals, viewId: string, langCode?: string}
-type PrintSpecificDocumentOptions = PrintDocumentOptions & {
+type PrintSpecificDocumentOptions = Omit<PrintDocumentOptions, 'viewId'> & {
   viewId?: string
 }
 
