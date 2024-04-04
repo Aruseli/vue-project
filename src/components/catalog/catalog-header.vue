@@ -86,7 +86,7 @@ import { onUpdated } from 'vue';
         <Language v-for="lang in app.kioskState.catalogLocales"
           :key="lang.lang_code"
           :src="lang.flag_src"
-          :alt="lang.name"
+          :alt='lang.name'
           :language="lang.lang_code"
           @click="changeLanguage(lang.lang_code)"
         />

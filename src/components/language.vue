@@ -5,6 +5,10 @@
       type: String,
       default: 'src/assets/flags/gb.webp'
     },
+    alt: {
+      type: String,
+      default: 'English',
+    },
     language: {
       type: String,
       default: 'English'
@@ -21,13 +25,13 @@
 <template>
   <div @click="click" class="lang_container column justify-center items-center">
     <q-img
-      :src="src"
-      :alt="language"
+      :src="props.src"
+      :alt="props.alt"
       ratio="16/9"
       class="img_style"
       fit='fill'
     />
-    <div class="text-left text-white text-uppercase text-h5 lang_style">{{ language }}</div>
+    <div class="text-left text-white text-uppercase text-h5 lang_style">{{ props.language }}</div>
   </div>
 </template>
 
