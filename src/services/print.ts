@@ -47,7 +47,8 @@ export async function printDocument({documentId, $q, viewId, langCode = i18next.
     }
 }
 
-type PrintDocumentOptions = {documentId: string, $q: QVueGlobals, viewId: string, langCode: string}
+type PrintDocumentOptions = {documentId: string, $q: QVueGlobals, viewId: string, langCode?: string}
+type PrintSpecificDocumentOptions = 
 
 export async function printCheck({$q, viewId = 'ff7ce8d1-989f-4fc6-9ad4-4aacf65da9f8', documentId, langCode = i18next.language}: PrintDocumentOptions) {
   return await printDocument({documentId, $q, viewId, langCode});
