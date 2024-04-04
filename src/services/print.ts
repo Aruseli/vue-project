@@ -37,7 +37,7 @@ export async function printDocument({documentId, $q, viewId, langCode = i18next.
     catch(e) {
       console.log(e);
       $q.notify({
-        message: 'Error occured',
+        message: 'Print Error occured',
         icon: 'warning',
         color: 'warning',
       });
@@ -109,7 +109,7 @@ export async function printLeftovers({$q, viewId = '3b3ed231-f11c-46d9-ba66-253a
     catch(e) {
       console.log(e);
       $q.notify({
-        message: 'Error occured',
+        message: 'Print Error occured',
         icon: 'warning',
         color: 'warning',
       });
