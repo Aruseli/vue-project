@@ -1,13 +1,14 @@
 // https://quasar.dev/style/sass-scss-variables#variables-list
 
 // text
-$h1: (size: 8rem, line-height: 1.3, letter-spacing: -.01562em, weight: 700) !default;
-$h2: (size: 3.5rem, line-height: 1.3, letter-spacing: -.00833em, weight: 700) !default;
-$h3: (size: 3rem, line-height: 1.3, letter-spacing: normal, weight: 600) !default;
-$h4: (size: 2.5rem, line-height: 1.3, letter-spacing: .00735em, weight: 600) !default;
-$subtitle1: (size: 1.2rem, line-height: 1.2, letter-spacing: .00937em, weight: 400) !default;
-$subtitle2: (size: .875rem, line-height: 1.2, letter-spacing: .00714em, weight: 500) !default;
-$body1: (size: 1.5rem, line-height: 1.2, letter-spacing: .03125em, weight: 400) !default;
+$h1: (size: clamp(1.5rem, 0.4167rem + 5.4167vmax, 8rem), line-height: 1.3, letter-spacing: -.01562em, weight: 700) !default;
+$h2: (size: clamp(1.5rem, 1.0352rem + 2.3239vmax, 3.5rem), line-height: 1.3, letter-spacing: -.00833em, weight: 700) !default;
+$h3: (size: clamp(1rem, 0.5352rem + 2.3239vmax, 3rem), line-height: 1.3, letter-spacing: normal, weight: 600) !default;
+$h4: (size: clamp(1.375rem, 1.1136rem + 1.3072vmax, 2.5rem), line-height: 1.3, letter-spacing: .00735em, weight: 600) !default;
+$h5: (size: clamp(0.875rem, 0.6136rem + 1.3072vmax, 2rem), line-height: 1.3, letter-spacing: .00735em, weight: 600) !default;
+$subtitle1: (size: clamp(0.75rem, 0.5176rem + 1.1619vmax, 1.75rem), line-height: 1.1, letter-spacing: .00937em, weight: 400) !default;
+$subtitle2: (size: clamp(0.625rem, 0.4798rem + 0.7262vmax, 1.25rem), line-height: 1.1, letter-spacing: .00714em, weight: 500) !default;
+$body1: (size: clamp(0.8125rem, 0.6527rem + 0.7988vmax, 1.5rem), line-height: 1.1, letter-spacing: .03125em, weight: 400) !default;
 
 // sizes for define margins/paddings
 $space-base: 16px !default;
@@ -15,11 +16,11 @@ $space-x-base: $space-base !default;
 $space-y-base: $space-base !default;
 
 $space-none: (x: 0, y: 0) !default;
-$space-xs: (x: ($space-x-base * .75), y: ($space-y-base * .75)) !default;
+$space-xs: (x: ($space-x-base * .5), y: ($space-y-base * .5)) !default;
 $space-sm: (x: ($space-x-base * 1.5), y: ($space-y-base * 1.5)) !default;
-$space-md: (x: ($space-x-base * 1.875), y: ($space-y-base * 1.875)) !default;
-$space-lg: (x: ($space-x-base * 5.625), y: ($space-y-base * 5.625)) !default;
-$space-xl: (x: ($space-x-base * 3), y: ($space-y-base * 3)) !default;
+$space-md: (x: ($space-x-base * 4), y: ($space-y-base * 4)) !default;
+$space-lg: (x: ($space-x-base * 5), y: ($space-y-base * 5)) !default;
+$space-xl: (x: ($space-x-base * 6), y: ($space-y-base * 6)) !default;
 
 // q-btn
 $button-rounded-border-radius: 30px !default;

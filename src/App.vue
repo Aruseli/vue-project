@@ -6,8 +6,8 @@
   import { useRoute, useRouter } from "vue-router";
   import { useGoodsStore } from "./stores/goods";
   import { useArrivalsStore } from'src/stores/arrivals';
-import { useInventoryStore } from "./stores/inventory";
-import { useSelectiveInventoryStore } from "./stores/selective-inventory";
+  import { useInventoryStore } from "./stores/inventory";
+  import { useSelectiveInventoryStore } from "./stores/selective-inventory";
 
   const route = useRoute()
   const router = useRouter()
@@ -32,7 +32,10 @@ import { useSelectiveInventoryStore } from "./stores/selective-inventory";
             const good = goodsStore.getGoodByCode(barcode.code);
             await arrivalsStore.scanArrivalGood(good);
           }
-          if (route.path == '/complete-inventory') {
+          if (route.path == '/complete-inventory' ||
+              route.path == '/open-shift/complete-inventory' ||
+              route.path == '/close-shift/complete-inventory'
+          ) {
             const good = goodsStore.getGoodByCode(barcode.code);
             await inventoryStore.scanInventoryGood(good);
           }
@@ -54,10 +57,10 @@ import { useSelectiveInventoryStore } from "./stores/selective-inventory";
         case '230': // Document
           if (appStore.orderIssueIsAllowed && route.path == '/employee-actions') {
             await ordersStore.updateOrders()
-            if (process.env.DEV) {
-              console.log('Order barcodes', ordersStore.ordersDocuments.map(d =>
-                `2300${uuidToBarcodeDocId(d.id).toString().padStart(8, "0")}0`))
-            }
+            // if (process.env.DEV) {
+            console.log('Order barcodes', ordersStore.ordersDocuments.map(d =>
+              `2300${uuidToBarcodeDocId(d.id).toString().padStart(8, "0")}0`))
+            // }
             ordersStore.ordersDocuments.forEach(d => {
               // TODO: Check also docType
               if (uuidToBarcodeDocId(d.id) == barcode.docId) {
@@ -67,10 +70,10 @@ import { useSelectiveInventoryStore } from "./stores/selective-inventory";
           }
           if (appStore.arrivalsAreAllowed && route.path == '/employee-actions') {
             await arrivalsStore.updateArrivals();
-            if (process.env.DEV) {
-              console.log('Arrival barcodes', arrivalsStore.arrivalsDocuments.map(d =>
-                `2300${uuidToBarcodeDocId(d.id).toString().padStart(8, "0")}0`))
-            }
+            // if (process.env.DEV) {
+            console.log('Arrival barcodes', arrivalsStore.arrivalsDocuments.map(d =>
+              `2300${uuidToBarcodeDocId(d.id).toString().padStart(8, "0")}0`))
+            // }
             arrivalsStore.arrivalsDocuments.forEach(d => {
               // TODO: Check also docType
               if (uuidToBarcodeDocId(d.id) == barcode.docId) {
@@ -90,5 +93,8 @@ import { useSelectiveInventoryStore } from "./stores/selective-inventory";
 <template>
   <router-view />
   <div class="bg_layer" />
+  <div id="modal" />
+  <div id="redirect-dialog" />
+  <div id="drawer" />
 </template>
 

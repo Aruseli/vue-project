@@ -59,6 +59,8 @@ export default {
     "shifts__state_open": 2,
     "shifts__state_closing": 5,
     "shifts__state_closed": 0,
+
+    "alt_ui": false,
   },
 
   // These three lines are outside of settings because they are used

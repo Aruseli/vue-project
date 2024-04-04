@@ -50,16 +50,38 @@
 <template>
   <div class="main_container full-height full-width">
     <div class="relative-position">
-      <RectangularButton :name="$t('back_to_employee_actions')" :color="'secondary'" size="xl" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/employee-actions')" />
+      <RectangularButton
+        :name="$t('back_to_employee_actions')"
+        color="secondary"
+        icon="arrow_back_ios_new"
+        class="q-pr-sm"
+        classTitle="text-subtitle2"
+        @click="router.push('/employee-actions')"
+      />
+      <div
+        class="
+          text-h2 text-uppercase text-center
+          q-mb-xl
+          q-mb-lg-lg
+          q-mb-xs-sm
+          q-pt-sm-sm
+          q-pt-xs-sm
+        "
+      >{{ $t('selective_inventory') }}</div>
 
-      <div class="text-h2 text-uppercase text-center q-mb-xl title_padding">{{ $t('selective_inventory') }}</div>
-
-      <div class="row justify-between q-mb-md">
-        <div class="text-h3 text-capitalize">
+      <div
+        class="
+          row justify-between
+          q-mb-md-sm
+          q-mb-xs-sm
+        "
+      >
+        <div class="text-h5 text-capitalize">
           {{ $t('remaining_goods') }}
         </div>
-        <div class="text-h3">
-          {{ formattedDate }}&ensp;№{{ selectiveInventoryStore.selectedInventory?.inventoryNumStr }}
+        <div class="row date_style text-h5">
+          <span>{{ formattedDate }}</span>
+          <span>№{{ selectiveInventoryStore.selectedInventory?.inventoryNumStr }}</span>
         </div>
       </div>
       <DividerBold />
@@ -76,41 +98,56 @@
             :estimated_quantity="inv.stock"
             :not_equal="inv.stock !== inv.quant"
             :class="{ 'highlighted': inv.confirmed }"
-            @click="inv.confirmed = !inv.confirmed"
+            @itemConfirm="inv.confirmed = !inv.confirmed"
+            @resetActualQuantity="inv.quant = 0"
+            :id="inv.id"
           />
         </ol>
       </div>
     </div>
     <div>
-      <DividerBold class="q-mb-lg" />
-      <div class="row justify-between items-center q-mb-xl">
-        <div class="text-h4 row q-gutter-sm">
-          <span>{{$t('total')}}</span>
-          <span>{{selectiveInventoryStore.selectedInventory?.items.length}}</span>
-          <span>{{ $t('product') }}</span>
+      <DividerBold
+        class="
+          q-mb-lg-lg
+          q-mb-md-sm
+          q-mb-xs-sm
+        "
+      />
+      <div
+        class="
+          row justify-between items-center
+          q-mb-lg-xl
+          q-mb-md-md
+          q-mb-xs-sm
+        "
+      >
+        <div class="row text-h5">
+          <span class="q-mr-xs-xs">{{$t('total')}}</span>
+          <span class="q-mr-xs-xs">{{selectiveInventoryStore.selectedInventory?.items.length}}</span>
+          <span class="q-mr-xs-xs">{{ $t('product') }}</span>
           <span>{{ $t('units', {count: selectiveInventoryStore.selectedInventory?.items.length}) }}</span>
         </div>
 
-        <div class="text-h4 text-weight-regular row q-gutter-sm">
-          <div>{{$t('estimated_quantity')}}</div>
-          <div>{{selectiveInventoryStore.selectedInventory?.totalStock}}</div>
-          <div>{{ $t('pc', {count: selectiveInventoryStore.selectedInventory?.totalStock}) }}</div>
-          <q-separator color="secondary" vertical spaced="lg" size="0.2rem" />
-          <div>{{$t('actual_quantity')}}</div>
-          <div>{{ selectiveInventoryStore.totalQuant }}</div>
+        <div class="text-h5 text-weight-regular row q-gutter-x-sm">
+          <div class="q-mr-xs-xs">{{$t('estimated_quantity')}}</div>
+          <div class="q-mr-xs-xs">{{selectiveInventoryStore.selectedInventory?.totalStock}}</div>
+          <div class="q-mr-xs-xs">{{ $t('pc', {count: selectiveInventoryStore.selectedInventory?.totalStock}) }}</div>
+          <q-separator color="secondary" vertical class="q-mr-xs-xs" size="0.2rem" />
+          <div class="q-mr-xs-xs">{{$t('actual_quantity')}}</div>
+          <div class="q-mr-xs-xs">{{ selectiveInventoryStore.totalQuant }}</div>
           <div>{{ $t('pc', {count: selectiveInventoryStore.totalQuant}) }}</div>
         </div>
       </div>
-      <div class="row justify-center q-gutter-xl">
+      <div class="row justify-evenly">
         <RectangularButton
           name="confirm"
-          class="col-5"
+          class="col-5 button_style_confirm"
           @click="confirmInventory"
         />
         <RectangularButton
           color="warning"
           :name="$t('declare_discrepancy')"
-          class="col-5"
+          class="col-5 button_style_confirm"
           @click="confirmInventory"
         />
       </div>

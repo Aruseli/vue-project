@@ -45,10 +45,12 @@ module.exports = configure(function (ctx) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
     build: {
+      // rtl: true,
       target: {
         browser: [ 'es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1' ],
         node: 'node16'
       },
+      vueCompiler: true, // required for ref-macros
       chainWebpack: chain => {
         chain.module
           .rule('i18n-resource')
@@ -122,9 +124,11 @@ module.exports = configure(function (ctx) {
     framework: {
       config: {
         dark: 'auto',
-        // notify:
+        lang: {
+          noHtmlAttrs: true // add this
+        }
       },
-
+      cssAddon: true,
       iconSet: 'material-icons', // Quasar icon set
       // lang: 'en-US', // Quasar language pack
 

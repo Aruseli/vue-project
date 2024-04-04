@@ -1,12 +1,14 @@
 <script setup>
-  import { useRouter, useRoute } from 'vue-router';
-  import { nextTick, onMounted, onBeforeMount, reactive, ref, watch, watchEffect, computed } from 'vue';
+  import { useRouter } from 'vue-router';
+  import { onMounted, reactive, ref, watch, watchEffect, computed } from 'vue';
   import RectangularButton from '../components/buttons/rectangular-button.vue';
   import { useQuasar } from 'quasar';
   import i18next, { t } from 'i18next';
   import { useAppStore } from 'src/stores/app';
   import { useSelectiveInventoryStore } from 'src/stores/selective-inventory';
   import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
+  import Logo from 'src/components/logo/logo.vue';
+  import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
   import { delay } from 'src/services';
   import { useGoodsStore } from 'src/stores/goods';
 
@@ -112,12 +114,6 @@
         click: () => route(''),
         disable: true || !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_print_stock),
       },
-      {
-        name: 'list_active_orders',
-        // TODO list_active_orders
-        click: () => route(''),
-        disable: true || !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_list_orders),
-      },
     ];
   });
 
@@ -143,18 +139,22 @@
 </script>
 
 <template>
-  <q-page class="flex flex-center relative transparent">
-    <div class="column justify-center full-height full-width container">
+  <q-page class="flex flex-center bg-secondary relative-position">
+    <div class="column justify-center items-center full-height full-width container">
+      <Logo class="logo_column" classes="q-mb-md-sm q-mb-xs-xs">
+        <LogoSvgWhite />
+      </Logo>
       <RectangularButton
         v-for="(button, index) in buttons"
         :key="index"
         :name='$t(button.name)'
         :disable='button.disable'
+        class="button_style"
         :class="{ 'blocked': button.disable }"
         @click="button.click"
       >
-        <div v-if="button.badge == true" class="badge_style bg-positive flex items-center">
-          <div class="text-h4 text-white q-px-sm">{{ inventoryRequests }}</div>
+        <div v-if="button.badge == true" class="badge_style bg-positive flex items-center justify-center">
+          <div class="text-white text-h5">{{ inventoryRequests }}</div>
         </div>
       </RectangularButton>
 
@@ -172,13 +172,35 @@
 
 <style scoped lang="scss">
 .container {
-  padding: 5rem;
+  padding: 4rem;
+  @media (max-width: 899px) {
+    padding: 2rem;
+  }
 }
 .container > *:not(:last-child) {
   margin-bottom: 2rem;
 }
+.container > *:first-child {
+  margin-bottom: 7rem;
+  @media (max-width: 1300px) {
+    margin-bottom: 3rem;
+  }
+}
 .blocked {
   filter: brightness(0.3);
+}
+
+.button_style {
+  width: 60vw;
+  padding: 2.5rem;
+  @media (max-width: 1300px) {
+    padding: 1.5rem;
+
+  }
+  @media (max-width: 899px) {
+    width: 100%;
+    padding: 1rem;
+  }
 }
 
 .badge_style {
@@ -186,9 +208,13 @@
   top: -1rem;
   right: -1rem;
   border-radius: 2.5rem;
-  min-width: 3rem;
+  min-width: 4.5rem;
   width: max-content;
   height: 4.5rem;
+  @media (max-width: 1300px) {
+    min-width: 2.5rem;
+    height: 2.5rem;
+  }
 }
 </style>
 

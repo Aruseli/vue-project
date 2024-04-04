@@ -1,23 +1,24 @@
 <script setup>
-import { ref } from 'vue';
 import CatalogHeader from '../components/catalog/catalog-header.vue';
+import CatalogNew from '../components/catalog/catalog-new.vue';
 import Catalog from '../components/catalog/catalog.vue';
+import { useAppStore } from 'src/stores/app';
+import CartDrawer from '../components/catalog/cart/cart-drawer.vue';
 
-  const scrollInfo = ref(true);
-
-  const onScroll = (...info) => {
-    if(info[0].delta.top !== 0) {
-      scrollInfo == true
-    }
-    return scrollInfo;
-  }
+  const app = useAppStore();
 
 </script>
 
 <template>
-  <q-page class="flex flex-center relative" style="height: 100%">
+  <q-page :style="{ direction: app.lang_dir }" class="flex align-center relative justify-start window-full">
+    <CartDrawer />
     <CatalogHeader />
-    <Catalog />
+    <CatalogNew v-if="app.kioskState.settings?.alt_ui" />
+    <Catalog v-else />
   </q-page>
 </template>
+
+<style scoped>
+
+</style>
 

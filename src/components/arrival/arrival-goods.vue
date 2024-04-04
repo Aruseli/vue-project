@@ -57,16 +57,31 @@ const goodsStore = useGoodsStore();
 
 <template>
   <div class="main_container full-height full-width">
-    <div class="relative-position q-mb-xl">
-      <RectangularButton :name="$t('back_to_employee_actions')" :color="'secondary'" size="xl" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/employee-actions')" />
+    <div class="relative-position q-mb-lg-xl q-mb-xs-sm">
+      <RectangularButton :name="$t('back_to_employee_actions')" color="secondary" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/employee-actions')" />
 
-      <div class="text-h2 text-uppercase text-center q-mb-xl title_padding">{{ $t('arrival_goods') }}</div>
+      <div
+        class="
+          text-h2
+          text-uppercase text-center
+          q-mb-lg-lg
+          q-mb-xs-sm
+          q-pt-sm-sm
+          q-pt-xs-sm
+        "
+      >{{ $t('arrival_goods') }}</div>
 
-      <div class="row justify-between q-mb-md">
-        <div class="text-h3 text-capitalize">
+      <div
+        class="
+          row justify-between
+          q-mb-md-sm
+          q-mb-xs-sm
+        "
+      >
+        <div class="text-h5 text-capitalize">
           {{ $t('received_goods') }}
         </div>
-        <div class="text-h3 row q-gutter-md">
+        <div class="text-h5 row q-gutter-x-sm">
           <span>{{ formattedDate }}</span>
           <span>{{ formattedTime }}</span>
           <span>№{{ arrivalsStore.arrival?.arrivalNumStr }}</span>
@@ -84,34 +99,49 @@ const goodsStore = useGoodsStore();
           :confirmed="arrivalsStore.blockScan  === arrival.id"
           :not_equal="arrival.issued !== arrival.quant"
           :class="{ 'highlighted': arrival.confirmed }"
-          @click="arrival.confirmed = !arrival.confirmed"
+          @itemConfirm="arrival.confirmed = !arrival.confirmed"
+          @resetActualQuantity="arrival.issued = 0"
+          :id="arrival.id"
         />
       </div>
     </div>
     <div>
-      <DividerBold class="q-mb-lg" />
-      <div class="row justify-between items-center q-mb-xl">
-        <div class="text-h4 row q-gutter-sm">
-          <span>{{$t('total')}}</span>
-          <span>{{arrivalsStore.arrival?.items.length}}</span>
-          <span>{{ $t('product') }}</span>
+      <DividerBold
+        class="
+          q-mb-lg-lg
+          q-mb-md-sm
+          q-mb-xs-sm
+        "
+      />
+      <div
+        class="
+          row justify-between items-center
+          q-mb-lg-xl
+          q-mb-md-md
+          q-mb-xs-sm
+        "
+      >
+        <div class="text-h5 row">
+          <span class="q-mr-xs-xs">{{$t('total')}}</span>
+          <span class="q-mr-xs-xs">{{arrivalsStore.arrival?.items.length}}</span>
+          <span class="q-mr-xs-xs">{{ $t('product') }}</span>
           <span>{{ $t('units', {count: arrivalsStore.arrival?.items.length}) }}</span>
         </div>
 
-        <div class="text-h4 text-weight-regular row q-gutter-sm">
-          <div>{{$t('estimated_quantity')}}</div>
-          <div>{{arrivalsStore.arrival?.totalCount}}</div>
-          <div>{{ $t('pc', {count: arrivalsStore.arrival?.totalCount}) }}</div>
-          <q-separator color="secondary" vertical spaced="lg" size="0.2rem" />
-          <div>{{$t('actual_quantity')}}</div>
-          <div>{{ arrivalsStore.totalQuant }}</div>
+        <div class="text-h5 text-weight-regular row">
+          <div class="q-mr-xs-xs">{{$t('estimated_quantity')}}</div>
+          <div class="q-mr-xs-xs">{{arrivalsStore.arrival?.totalCount}}</div>
+          <div class="q-mr-xs-xs">{{ $t('pc', {count: arrivalsStore.arrival?.totalCount}) }}</div>
+          <q-separator color="secondary" vertical class="q-mr-xs-xs" size="0.2rem" />
+          <div class="q-mr-xs-xs">{{$t('actual_quantity')}}</div>
+          <div class="q-mr-xs-xs">{{ arrivalsStore.totalQuant }}</div>
           <div>{{ $t('pc', {count: arrivalsStore.totalQuant}) }}</div>
         </div>
       </div>
       <div class="full-width">
         <RectangularButton
           :name="$t('confirm')"
-          class="fit"
+          class="fit button_style_confirm"
           @click="confirmArrival"
           :disable="!allowConfirm"
         />
@@ -125,12 +155,8 @@ const goodsStore = useGoodsStore();
   display: grid;
   grid-template-rows: max-content 1fr 0.1fr;
 }
-
-ol li {
-  margin-bottom: 2.5rem;
-}
-.arrivals_container > *:not(:last-child) {
-  margin-bottom: 2rem;
+.arrivals_container {
+  padding: 0.5rem;
 }
 
 </style>

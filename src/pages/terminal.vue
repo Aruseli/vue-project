@@ -7,6 +7,7 @@
   import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
   import { useAppStore } from 'src/stores/app';
   import { computed } from 'vue';
+  import Rectangular from 'src/components/buttons/rectangular-button.vue';
 
   const $q = useQuasar();
   const appStore = useAppStore();
@@ -51,12 +52,12 @@
 </script>
 
 <template>
-  <q-page class="flex flex-center relative bg-secondary" style="100%">
-    <div class="q-pa-xl items-center column" style="width: 50vw">
+  <q-page class="flex flex-center relative bg-secondary" style="height: 100%; width: 100%">
+    <div class="q-pa-lg-lg q-pa-xs-sm items-center row full-height">
       <div v-if="statusIsUnrecoverableError">
         <q-card class='bg-secondary no-box-shadow'>
           <q-card-section>
-            <h2 class="text-white text-center">{{ $t('unrecoverable_error') }}</h2>
+            <div class="text-h2 text-white text-center">{{ $t('unrecoverable_error') }}</div>
             <p>{{ appStore.kioskState.globalError?.message }}</p>
           </q-card-section>
         </q-card>
@@ -73,11 +74,11 @@
       <div v-if="statusIsUnboundTerminal">
         <q-card dark class="flex column items-center">
           <q-card-section>
-            <div class="text-h6 q-ma-sm text-center">
+            <div class="text-h5 q-ma-sm text-center">
               {{ $t('waiting_terminal_registration') }}
             </div>
             <div>
-              <div class="text-h6 text-center q-mb-md text-weight-bold">
+              <div class="text-h5 text-center q-mb-md text-weight-bold">
                 Код терминала <code style="font-family: 'Courier New', monospace">{{ appStore.kioskState.code }}</code>
               </div>
               <div
@@ -98,7 +99,7 @@
         </q-card>
       </div>
 
-      <div v-if="statusIsUnauthenticated" class="fit">
+      <div v-if="statusIsUnauthenticated" class="full-height row items-center justify-center container">
 
         <Logo class="logo_column">
           <LogoSvgWhite />
@@ -121,10 +122,11 @@
             :dark="false"
             color="black"
             outlined
+            clearable
             autocomplete="username"
             bg-color="white"
-            input-class="input_settings"
-            class="q-mb-md"
+
+            class="q-mb-lg-md q-mb-xs-sm text-h3"
           />
           <q-input
             v-model="state.userPassword"
@@ -140,9 +142,8 @@
             color="black"
             outlined
             autocomplete="current-password"
-            class="q-mb-lg"
+            class="q-mb-lg-md q-mb-xs-sm text-h3"
             bg-color="white"
-            input-class="input_settings"
           >
             <template v-slot:append>
               <q-icon
@@ -154,7 +155,8 @@
           </q-input>
 
           <div class="text-center">
-            <q-btn label="authorization" unelevated size="xl" type="submit" color="primary" class="fit" />
+            <Rectangular name="authorization" type="submit" unelevated class="full-width text-h3 auth_button_style" />
+            <!-- <q-btn label="authorization" unelevated type="submit" color="primary" class="fit" /> -->
           </div>
         </q-form>
       </div>
@@ -163,5 +165,14 @@
 </template>
 
 <style scoped>
-
+.container > *:first-child {
+  margin-bottom: 7rem;
+  @media (max-width: 1300px) {
+    margin-bottom: 3rem;
+  }
+}
+.auth_button_style {
+  height: clamp(2rem, 0.4167rem + 5.4167vi, 8.5rem);
+  /* font-size: clamp(1.5rem, 0.4167rem + 5.4167vi, 8rem); */
+}
 </style>

@@ -21,15 +21,15 @@
 
 <template>
   <q-page class="column justify-center items-center relative hello_bg window-height">
-    <Logo class="logo_row logo" classes="q-mr-md">
+    <Logo class="logo_row logo" classes="q-mr-sm">
       <LogoSvgWhite />
     </Logo>
-    <div class="column bg-primary container">
+    <div class="bg-primary container_languages">
       <language v-for="lang in app.kioskState.catalogLocales"
         :key="lang.lang_code"
         :src="lang.flag_src"
         :alt="lang.name"
-        :language="lang.name"
+        :language="lang.lang_code"
         @click="changeLanguage(lang.lang_code)"
       />
     </div>
@@ -37,6 +37,8 @@
 </template>
 
 <style scoped lang="scss">
+$width: calc(6.5em + 1.7262vmin);
+$height: calc(8em + 1.7262vmin);
 .logo {
   padding: 5rem;
   position: absolute;
@@ -46,24 +48,37 @@
   @media (max-width: 2050px) and (orientation: landscape) {
     padding: 2rem;
   }
-}
-.container {
-  width: max-content;
-  padding: 4rem;
-  border-radius: 1rem;
-
-  @media (max-width: 2050px) and (orientation: landscape) {
-    padding: 2rem;
+  @media (max-width: 1300px) {
+    padding: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  @media (max-width: 770px) {
+    padding: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
-.container > *:not(:last-child) {
-  margin-bottom: 4rem;
-  @media (max-width: 2050px) and (orientation: landscape) {
-    margin-bottom: 1.5rem;
+.container_languages {
+  width: 80vw;
+  display: grid;
+  grid-template-columns: repeat( auto-fit, minmax($width, 1fr) );
+  grid-auto-rows: minmax($height, 1fr);
+  gap: 3rem;
+  justify-content: center;
+  padding: 3rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  @media (max-width: 900px) {
+    gap: 2rem;
+    padding: 2rem;
   }
 }
 
 .hello_bg {
   background-image: url('/start.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 </style>
