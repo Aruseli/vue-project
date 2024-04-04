@@ -24,6 +24,7 @@ import { useQuasar } from 'quasar';
     }
 
     await ordersStore.confirmCurrentOrderIssue()
+    await printCheck({documentId: doc.id, $q})
 
     router.push('/issued-order');
 
@@ -126,14 +127,6 @@ import { useQuasar } from 'quasar';
         <RectangularButton
           :name="$t('confirm')"
           @click="confirmOrder"
-          :disable="!allowConfirm"
-          class="full-width"
-        />
-      </div>
-      <div class="full-width">
-        <RectangularButton
-          :name="$t('print')"
-          @click="printCheck({documentId: ordersStore.currentOrderDocument.id, $q, viewId: 'ff7ce8d1-989f-4fc6-9ad4-4aacf65da9f8'})"
           :disable="!allowConfirm"
           class="full-width"
         />
