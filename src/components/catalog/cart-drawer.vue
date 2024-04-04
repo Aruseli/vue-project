@@ -50,8 +50,7 @@ import { apiReportsGetView, wsSendMessage,printOrder } from 'src/services';
     isDisabled.value = true;
     // emulateLoading(progress);
     try {
-      const {documentId} = await cartStore.submitOrder()
-      await printOrder({documentId, $q, viewId: 'a59a2a47-7ebb-497d-80ff-5b9386726871'})
+      await cartStore.submitOrder({$q})
 
       app.openOrderDialog(true);
       setTimeout(() => {
