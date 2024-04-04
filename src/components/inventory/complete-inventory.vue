@@ -22,31 +22,51 @@ import { apiReportsGetView, printDocument, printInventory, wsSendMessage } from 
 
   const $q = useQuasar();
 
+  const documentId = ref(undefined);
+  const shouldShowPrintConfirmationDialog = ref(false);
+
   const allowConfirm = computed(() => {
     return inventoryStore.inventory?.every(i => i.stock == i.quant)
   });
+
+  async function showPrintConfirmationDialog() {
+    showPrintDialog.value = true;
+  }
+
+  function hidePrintConfirmationDialog() {
+    showPrintDialog.value = false;
+  }
+
+  async function handlePrintConfirmation(printConfirmed) {
+    if (printConfirmed) {
+      await printInventory({documentId, $q}); 
+    }
+    hidePrintConfirmationDialog();
+  }
 
   async function submitInventory() {
     try {
       $q.loading.show();
       try {
-      let documentId;
       if (route.path === '/open-shift/complete-inventory') {
         const {documentId: docId} = await inventoryStore.submitInventory();
-        documentId = docId;
+        documentId.value = docId;
+        await showPrintConfirmationDialog();
         await app.openTerminalShift();
         router.push(app.shiftIsGood() ? '/hello' : '/employee-actions' );
       } else if (route.path == '/close-shift/complete-inventory') {
         const {documentId: docId} = await inventoryStore.submitInventory();
-        documentId = docId;
+        documentId.value = docId;
+        await showPrintConfirmationDialog();
         await app.closeTerminalShift();
         router.push('/employee-actions');
       } else {
         const {documentId: docId} = await inventoryStore.submitInventory();
-        documentId = docId;
+        documentId.value = docId;
+        await showPrintConfirmationDialog();
         router.push('/employee-actions');
       }
-      await printInventory({documentId, $q, viewId: '3d8779b5-2705-4668-a7fd-fd51e480890c'})
+      await printInventory()
     }
     catch(e) {
       console.log(e);
@@ -166,6 +186,15 @@ import { apiReportsGetView, printDocument, printInventory, wsSendMessage } from 
       </div>
     </div>
   </div>
+  <q-dialog v-model="shouldShowPrintConfirmationDialog">
+    <q-card>
+      <q-card-section class="text-h6">{{ $t('confirm_inventory_print') }}</q-card-section>
+      <q-card-actions align="right">
+        <q-btn label="{{$t('cancel')}}" color="negative" @click="handlePrintConfirmation(false)" />
+        <q-btn label="{{$t('confirm')}}" color="primary" @click="handlePrintConfirmation(true)" />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <style scoped>
