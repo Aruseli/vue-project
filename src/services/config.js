@@ -8,10 +8,10 @@ export default {
     "loc": "en",
     "tdp": "ws://127.0.0.1:3010",
 
-    "view_ord": "f9fdf826-384d-40ac-a1f3-6551cee8ef98",
-    "view_check": "1d7f3262-a073-4ea4-9f2c-7da03aa752a2",
-    "view_doc_input": "4d027811-d085-43c2-844f-8c2199d133d8",
-    "view_doc_invent": "df812dd8-4f36-412a-ac1e-7c8411d53ee1",
+    "view_ord": "a59a2a47-7ebb-497d-80ff-5b9386726871",
+    "view_check": "ff7ce8d1-989f-4fc6-9ad4-4aacf65da9f8",
+    "view_doc_input": "f8e0f371-87e6-460a-8010-011eabef8757",
+    "view_doc_invent": "3d8779b5-2705-4668-a7fd-fd51e480890c",
 
     "client_corr_id": "4b4d99df-3e1a-4e49-853b-2ae324a954ae",
     "user_corr_type": "staff",
