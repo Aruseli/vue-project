@@ -10,21 +10,6 @@ const props = defineProps({
     required: true,
     default: false,
   },
-  timer: {
-    type: Number,
-    required: false,
-    default: 10,
-  },
-  nameLeftButton: {
-    type: String,
-    required: false,
-    default: 'complete',
-  },
-  nameRightButton: {
-    type: String,
-    required: false,
-    default: 'continue',
-  },
   title: {
     type: String,
     required: false,
@@ -41,12 +26,11 @@ const props = defineProps({
         <q-card-section class="row items-center justify-end" />
         <q-card-section class="column items-center q-mb-xs-sm">
           <div class="text-h3 q-mb-sm-sm q-mb-xs-xs text-center title_style">{{ $t(props.title) }}</div>
-          <slot></slot>
+          <slot name="content"></slot>
         </q-card-section>
 
         <q-card-section class="row items-center justify-evenly">
-          <RectangularButton :name="$t(props.nameLeftButton)" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="emit('complete')" textColor="primary" />
-          <RectangularButton :name="$t(props.nameRightButton)" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="emit('continue')" />
+          <slot name="actions"></slot>
         </q-card-section>
 
       </q-card>
