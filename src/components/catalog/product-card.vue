@@ -65,7 +65,7 @@ import ProductModal from './product-modal.vue';
   onMounted(async () => {
     good.value = goodsStore.getGoodById(props.itemId);
     if (!app.kioskState.settings?.alt_ui) {
-      await nextTick();
+      // await nextTick();
       if (good.value.description.length > 50) {
         sliceDescription.value = good.value.description.slice(0, 50) + ' <span style="color: blue">more...</span>';
       } else {
@@ -99,7 +99,7 @@ import ProductModal from './product-modal.vue';
               class="q-mb-xs ellipsis first_letter"
               :class="[!app.kioskState.settings?.alt_ui ? 'text-h4 ellipsis' : 'text-h5 text-center']"
             >
-              {{ good?.title }}
+              {{ t(good?.title) }}
             </div>
 
             <div v-if="!app.kioskState.settings?.alt_ui">
@@ -110,7 +110,7 @@ import ProductModal from './product-modal.vue';
         </div>
 
         <div v-if="!app.kioskState.settings?.alt_ui" class="block_description" @click="openDialog = true">
-          <div class="text-body1" v-html="sliceDescription"/>
+          <div class="text-body1" v-html="t(sliceDescription)"/>
         </div>
 
       </div>
