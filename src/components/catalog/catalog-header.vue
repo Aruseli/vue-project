@@ -20,16 +20,16 @@ import { onMounted, watch, computed } from 'vue';
   const openDrawer = () => {
     app.openDrawerCart(true);
   }
-
-  const activeTab = computed(() =>  localStorage.getItem('activeTab'));
-  const changeLanguage = async (newLocale) => {
-    await goodsStore.updateGoods(newLocale);
-    app.setLocale(newLocale);
-    app.tab = activeTab
+  const changeTab = (tab) => {
+    localStorage.setItem('activeTab', tab);
+    app.tab = localStorage.getItem('activeTab');
   }
-  onMounted(() => {
-    console.log('activeTab', activeTab.value)
-  })
+
+  // const changeLanguage = async (newLocale) => {
+  //   await app.setLocale(newLocale);
+  //   await goodsStore.updateGoods(newLocale);
+  //   localStorage.setItem('lang', newLocale)
+  // }
 </script>
 
 
@@ -74,6 +74,7 @@ import { onMounted, watch, computed } from 'vue';
 
     <div class="relative-position" v-if="!app.kioskState.settings?.alt_ui">
       <q-tabs
+        @update:model-value="changeTab(app.tab)"
         v-model="app.tab"
         dense
         no-caps
@@ -94,7 +95,7 @@ import { onMounted, watch, computed } from 'vue';
           :src="lang.flag_src"
           :alt='lang.name'
           :language="lang.lang_code"
-          @click="changeLanguage(lang.lang_code)"
+          @click="goodsStore.changeLanguage(lang.lang_code)"
         />
       </div>
     </Modal>

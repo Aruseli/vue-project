@@ -65,7 +65,7 @@ import ProductModal from './product-modal.vue';
   onMounted(async () => {
     good.value = goodsStore.getGoodById(props.itemId);
     if (!app.kioskState.settings?.alt_ui) {
-      // await nextTick();
+      await nextTick();
       if (good.value.description.length > 50) {
         sliceDescription.value = good.value.description.slice(0, 50) + ' <span style="color: blue">more...</span>';
       } else {
