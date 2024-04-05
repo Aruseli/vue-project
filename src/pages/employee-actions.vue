@@ -18,8 +18,9 @@
   const goodsStore = useGoodsStore();
   const selectiveInventoryStore = useSelectiveInventoryStore();
   const dialogState = ref(false);
-  const redirectDialogState = ref(false);
   const inventoryRequests = ref(0);
+
+  const redirectDialogState = ref(false);
   const redirectAt = ref(0);
   const countdown = ref(0);
 
@@ -29,7 +30,7 @@
     redirectAt.value = 0;
   }
 
-  function closeDialog() {
+  function closeRedirectDialog() {
     redirectAt.value = Date.now() + app.kioskState.settings?.employee_inactivity_before_redirect ?? 150000;
   }
   function resetRedirectTimer() {
@@ -218,11 +219,12 @@
       <template #content>
         <div class="text-h5 text-center">
           <div class="text-h5">{{$t('the_session_will_end_in')}}</div>
-          <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}</div>
+          <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}
+        </div>
       </template>
       <template #actions>
         <RectangularButton :name="$t('complete')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="route('hello')" textColor="primary" />
-        <RectangularButton :name="$t('continue')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="redirectDialogState = false" />
+        <RectangularButton :name="$t('continue')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="closeRedirectDialog" />
       </template>
     </RedirectDialog>
   </q-page>
