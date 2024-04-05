@@ -25,11 +25,11 @@ import { onMounted, watch, computed } from 'vue';
     app.tab = localStorage.getItem('activeTab');
   }
 
-  // const changeLanguage = async (newLocale) => {
-  //   await app.setLocale(newLocale);
-  //   await goodsStore.updateGoods(newLocale);
-  //   localStorage.setItem('lang', newLocale)
-  // }
+  const changeLanguage = async (newLocale) => {
+    await app.setLocale(newLocale);
+    await goodsStore.updateGoods(newLocale);
+    localStorage.setItem('lang', newLocale)
+  }
 </script>
 
 
@@ -95,7 +95,7 @@ import { onMounted, watch, computed } from 'vue';
           :src="lang.flag_src"
           :alt='lang.name'
           :language="lang.lang_code"
-          @click="goodsStore.changeLanguage(lang.lang_code)"
+          @click="changeLanguage(lang.lang_code)"
         />
       </div>
     </Modal>

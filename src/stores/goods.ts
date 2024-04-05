@@ -218,15 +218,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     await goodsLoadingWaiter.value.promise
   }
 
-    const changeLanguage = async (newLocale: string) => {
-      await appStore.setLocale(newLocale);
-      await updateGoods(newLocale);
-      localStorage.setItem("lang", newLocale);
-    };
-
   return {
-    changeLanguage,
-
     goods: goods,
     getGoodById,
     getGoodByIdHits, // debug
