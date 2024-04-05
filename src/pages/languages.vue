@@ -6,7 +6,6 @@
   import { useAppStore } from 'src/stores/app';
   import { useGoodsStore } from 'src/stores/goods';
 
-
   const app = useAppStore();
   const goodsStore = useGoodsStore();
 
@@ -15,6 +14,8 @@
     await goodsStore.updateGoods(newLocale);
     app.setLocale(newLocale);
     router.push('catalog');
+    localStorage.setItem('lang', newLocale);
+    localStorage.setItem('activeTab', app.tab);
   }
 
 </script>
