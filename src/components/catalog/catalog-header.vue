@@ -39,7 +39,7 @@ import { onUpdated } from 'vue';
     >
 
       <LogoSimple>
-        <LogoSvgGradient :height="100" />
+        <LogoSvgGradient class="logo_style" />
       </LogoSimple>
 
       <div class="row items-center">
@@ -153,6 +153,16 @@ $height: calc(8em + 1.7262vmin);
   @media (max-width: 900px) {
     gap: 2rem;
     padding: 2rem;
+  }
+}
+
+.logo_style {
+  width: 7em;
+  @media (max-width: 1500px) {
+    width: 5rem !important;
+  }
+  @media (max-width: 700px) {
+    width: 2.5rem !important;
   }
 }
 
