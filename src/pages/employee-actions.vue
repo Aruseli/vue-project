@@ -1,6 +1,6 @@
 <script setup>
   import { useRouter } from 'vue-router';
-  import { onMounted, reactive, ref, watch, watchEffect, computed } from 'vue';
+  import { onMounted, reactive, ref, watch, watchEffect, computed, onUnmounted } from 'vue';
   import RectangularButton from '../components/buttons/rectangular-button.vue';
   import { useQuasar } from 'quasar';
   import i18next, { t } from 'i18next';
@@ -18,18 +18,54 @@
   const goodsStore = useGoodsStore();
   const selectiveInventoryStore = useSelectiveInventoryStore();
   const dialogState = ref(false);
+  const redirectDialogState = ref(false);
   const inventoryRequests = ref(0);
+  const redirectAt = ref(0);
+  const countdown = ref(0);
 
+  const redirect = () => {
+    redirectDialogState.value = false;
+    router.push('hello');
+    redirectAt.value = 0;
+  }
+
+  function closeDialog() {
+    redirectAt.value = Date.now() + app.kioskState.settings?.employee_inactivity_before_redirect ?? 150000;
+  }
+  function resetRedirectTimer() {
+    if (redirectDialogState.value) {
+      return;
+    }
+    redirectAt.value = Date.now() + app.kioskState.settings?.employee_inactivity_before_redirect ?? 150000;
+  }
+  const redirectTimer = ref(null);
+  const boundResetTimer = resetRedirectTimer.bind(this);
+
+  const tick = () => {
+    if (Date.now() - redirectAt.value > 60*1000) {
+      redirectAt.value = Date.now() + app.kioskState.settings?.employee_inactivity_before_redirect ?? 150000;
+    }
+
+    const timeBeforeRedirect = redirectAt.value - Date.now();
+    if (timeBeforeRedirect < 0) {
+      // redirect phase
+      redirect();
+      return;
+    }
+
+    if (timeBeforeRedirect < app.kioskState.settings?.employee_inactive_notify_duration_ms ?? 30000) {
+      // countdown phase
+      countdown.value = Math.floor(timeBeforeRedirect / 1000);
+      redirectDialogState.value = true;
+      return;
+    }
+    redirectDialogState.value = false;
+    return;
+  }
   const route = (path) => {
     router.push(path);
   }
 
-  // {
-  //   name: string,
-  //   click: async () => undefined,
-  //   disable: boolean,
-  //   badge: boolean | undefined,
-  // }
   const buttons = computed(() => {
     const inventoryOnShiftOpen = app.kioskState.settings?.shifts__inventory_on_open;
     const inventoryOnShiftClose = app.kioskState.settings?.shifts__inventory_on_close;
@@ -131,11 +167,18 @@
     if( inventoryRequests.value > 0 ) {
       dialogState.value = true;
     }
-  })
 
-  // const defer = () => {
-  //   dialogState.value = false;
-  // }
+    redirectAt.value = Date.now() + app.kioskState.settings?.employee_inactivity_before_redirect ?? 150000;
+    redirectTimer.value = setInterval(() => tick(), 100);
+    // Обрабатываем события
+    ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
+      document.addEventListener(e, boundResetTimer)
+    )
+  })
+  onUnmounted(() => {
+    clearTimeout(redirectTimer.value);
+    ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e => document.removeEventListener(e, boundResetTimer))
+  })
 </script>
 
 <template>
@@ -160,13 +203,28 @@
 
     </div>
     <RedirectDialog
-      @complete="dialogState = false"
-      @continue="route('selective-inventory')"
       :modelValue="dialogState"
-      nameLeftButton="defer"
-      nameRightButton="execute"
       title="there_are_documents_for_inventory"
-    />
+    >
+      <template #actions>
+        <RectangularButton :name="$t('defer')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="dialogState = false" textColor="primary" />
+        <RectangularButton :name="$t('execute')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="route('selective-inventory')" />
+      </template>
+    </RedirectDialog>
+    <RedirectDialog
+      :modelValue="redirectDialogState"
+      title="you_are_inactive"
+    >
+      <template #content>
+        <div class="text-h5 text-center">
+          <div class="text-h5">{{$t('the_session_will_end_in')}}</div>
+          <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}</div>
+      </template>
+      <template #actions>
+        <RectangularButton :name="$t('complete')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="route('hello')" textColor="primary" />
+        <RectangularButton :name="$t('continue')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="redirectDialogState = false" />
+      </template>
+    </RedirectDialog>
   </q-page>
 </template>
 
