@@ -13,7 +13,7 @@ import CartDrawer from '../components/catalog/cart/cart-drawer.vue';
   <q-page :style="{ direction: app.lang_dir }" class="flex align-center relative justify-start window-full">
     <CartDrawer />
     <CatalogHeader />
-    <CatalogNew v-if="!app.kioskState.settings?.alt_ui" />
+    <CatalogNew v-if="app.kioskState.settings?.alt_ui" />
     <Catalog v-else />
   </q-page>
 </template>
