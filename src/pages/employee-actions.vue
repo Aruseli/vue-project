@@ -20,49 +20,6 @@
   const dialogState = ref(false);
   const inventoryRequests = ref(0);
 
-  const redirectDialogState = ref(false);
-  const redirectAt = ref(0);
-  const countdown = ref(0);
-
-  const redirect = () => {
-    redirectDialogState.value = false;
-    router.push('hello');
-    redirectAt.value = 0;
-  }
-
-  function closeRedirectDialog() {
-    redirectAt.value = Date.now() + app.kioskState.settings?.employee_inactivity_before_redirect ?? 150000;
-  }
-  function resetRedirectTimer() {
-    if (redirectDialogState.value) {
-      return;
-    }
-    redirectAt.value = Date.now() + app.kioskState.settings?.employee_inactivity_before_redirect ?? 150000;
-  }
-  const redirectTimer = ref(null);
-  const boundResetTimer = resetRedirectTimer.bind(this);
-
-  const tick = () => {
-    if (Date.now() - redirectAt.value > 60*1000) {
-      redirectAt.value = Date.now() + app.kioskState.settings?.employee_inactivity_before_redirect ?? 150000;
-    }
-
-    const timeBeforeRedirect = redirectAt.value - Date.now();
-    if (timeBeforeRedirect < 0) {
-      // redirect phase
-      redirect();
-      return;
-    }
-
-    if (timeBeforeRedirect < app.kioskState.settings?.employee_inactive_notify_duration_ms ?? 30000) {
-      // countdown phase
-      countdown.value = Math.floor(timeBeforeRedirect / 1000);
-      redirectDialogState.value = true;
-      return;
-    }
-    redirectDialogState.value = false;
-    return;
-  }
   const route = (path) => {
     router.push(path);
   }
@@ -169,16 +126,16 @@
       dialogState.value = true;
     }
 
-    redirectAt.value = Date.now() + app.kioskState.settings?.employee_inactivity_before_redirect ?? 150000;
-    redirectTimer.value = setInterval(() => tick(), 100);
+    app.redirectAt = Date.now() + app.kioskState.settings?.employee_inactivity_before_redirect ?? 150000;
+    app.redirectTimer = setInterval(() => app.tick(), 100);
     // Обрабатываем события
     ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
-      document.addEventListener(e, boundResetTimer)
+      document.addEventListener(e, app.boundResetTimer)
     )
   })
   onUnmounted(() => {
-    clearTimeout(redirectTimer.value);
-    ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e => document.removeEventListener(e, boundResetTimer))
+    clearInterval(app.redirectTimer);
+    ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e => document.removeEventListener(e, app.boundResetTimer))
   })
 </script>
 
@@ -213,18 +170,18 @@
       </template>
     </RedirectDialog>
     <RedirectDialog
-      :modelValue="redirectDialogState"
+      :modelValue="app.redirectDialogState"
       title="you_are_inactive"
     >
       <template #content>
         <div class="text-h5 text-center">
           <div class="text-h5">{{$t('the_session_will_end_in')}}</div>
-          <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}
+          <span>{{ app.countdown }}</span>&ensp;{{ $t('seconds', {count: app.countdown}) }}
         </div>
       </template>
       <template #actions>
-        <RectangularButton :name="$t('complete')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="route('hello')" textColor="primary" />
-        <RectangularButton :name="$t('continue')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="closeRedirectDialog" />
+        <RectangularButton :name="$t('complete')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="app.redirect" textColor="primary" />
+        <RectangularButton :name="$t('continue')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="app.closeRedirectDialog" />
       </template>
     </RedirectDialog>
   </q-page>

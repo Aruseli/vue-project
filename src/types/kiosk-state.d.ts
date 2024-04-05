@@ -43,7 +43,7 @@ export type Settings = {
   customer_inactivity_animation_start_before_redirect: number,
   customer_successful_order_notify_duration_ms: number,
   //TODO: This two lines are not stabilized and not used yet
-  employee_inactive_after_ms: number,
+  employee_inactivity_before_redirect: number,
   employee_inactive_notify_duration_ms: number,
 
   allow_order_issue_in_outdated_shift: boolean,
