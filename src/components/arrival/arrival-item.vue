@@ -30,9 +30,6 @@
   })
 
   const emit = defineEmits(['itemConfirm', 'resetActualQuantity']);
-  const itemConfirm = () => {
-    emit('itemConfirm');
-  };
 
   const resetQuant = () => {
     emit('resetActualQuantity');
@@ -60,8 +57,8 @@
       <div class="text-body1">{{ $t('pc', {count: props.actual_quantity}) }}</div>
     </div>
     <div class="flex row justify-end items-center">
-      <q-img src="/state.svg" v-show="not_equal" class="q-mr-sm-sm q-mr-xs-xs icon_notequal_style" />
-      <RoundedButton size="clamp(0.625rem, 0.4798rem + 0.7262vi, 1.25rem)" @click="itemConfirm" />
+      <q-img src="/state.svg" v-show="props.not_equal" class="q-mr-sm-sm q-mr-xs-xs icon_notequal_style" />
+      <RoundedButton size="clamp(0.625rem, 0.4798rem + 0.7262vi, 1.25rem)" @click="emit('itemConfirm')" />
       <IconButton
         icon="delete_forever"
         @click="switchModal = true"

@@ -2,9 +2,6 @@
   import DividerThin from '../dividers/divider-thin.vue';
 
   const emit = defineEmits(['click']);
-  const click = () => {
-    emit('click')
-  }
 
   const props = defineProps({
     good_price: {
@@ -23,7 +20,7 @@
 </script>
 
 <template>
-  <div class="cart_product_item column justify-between bg-white" @click="click">
+  <div class="cart_product_item column justify-between bg-white" @click="emit('click')">
     <div class="row justify-between items-center">
       <div class="text-h4">
         № {{ props.order_number }}

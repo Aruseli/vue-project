@@ -46,14 +46,6 @@ import ProductModal from './product-modal.vue';
 
   const goodInCart = computed(() => cartStore.cart.find((item) => item.id === props.itemId))
 
-  // const goodDetails = (id) => {
-  //   console.log('id', id)
-  //   if (id === props.itemId) {
-  //     goodsStore.openDialog = !goodsStore.openDialog;
-  //   }
-  // }
-  // const timer = ref(null);
-
   const addGoodToCart = (good) => {
     cartStore.increaseItemsCount(good);
     showNotify();

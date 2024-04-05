@@ -23,9 +23,6 @@
   })
 
   const emit = defineEmits(['click']);
-  const click = () => {
-    emit('click')
-  }
 </script>
 
 <template>
@@ -36,7 +33,7 @@
     :color="props.color"
     :text-color="props.textColor"
     v-bind="$attrs"
-    @click="click">
+    @click="emit('click')">
     <q-icon flat :color="props.textColor" :size="props.size" :name="props.icon"></q-icon>
    </q-btn>
 </template>

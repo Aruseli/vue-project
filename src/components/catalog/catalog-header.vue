@@ -49,7 +49,7 @@ import { onUpdated } from 'vue';
             @click="app.openLangDialog(true)"
             color='transparent'
             textColor="black"
-            class="q-mr-xl-xl q-mr-xs-sm"
+            class="q-mr-xl-xl q-mr-xs-xs"
           />
           <LangDrawer @click="app.openLangDialog(false)" :isOpen="app.langDialog" v-if="app.kioskState.settings?.alt_ui">
             <LanguagesFrame />

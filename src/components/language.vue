@@ -16,14 +16,10 @@
   })
 
   const emit = defineEmits(['click']);
-  const click = () => {
-    emit('click')
-  }
-
 </script>
 
 <template>
-  <div @click="click" class="lang_container column justify-center items-center">
+  <div @click="emit('click')" class="lang_container column justify-center items-center">
     <q-img
       :src="props.src"
       :alt="props.alt"

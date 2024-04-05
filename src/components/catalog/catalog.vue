@@ -8,6 +8,7 @@ import { useCartStore } from '../../stores/cart';
 import { useGoodsStore } from '../../stores/goods';
 import RedirectDialog from '../dialog/redirect-dialog.vue';
 import ProductCard from './product-card.vue';
+import RectangularButton from '../buttons/rectangular-button.vue';
 
   const $q = useQuasar();
   const goodsStore = useGoodsStore();
@@ -121,13 +122,14 @@ import ProductCard from './product-card.vue';
       </transition>
     </q-tab-panel>
   </q-tab-panels>
-  <RedirectDialog
-    @complete="redirect"
-    @continue="closeDialog"
-    :modelValue="dialogState"
-    :timer="countdown"
-  >
-    <div class="text-h5 text-center">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}</div>
+  <RedirectDialog :modelValue="dialogState">
+    <template #content>
+      <div class="text-h5 text-center">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}</div>
+    </template>
+    <template #actions>
+      <RectangularButton :name="$t('complete')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="redirect" textColor="primary" />
+      <RectangularButton :name="$t('continue')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="closeDialog" />
+    </template>
   </RedirectDialog>
 </template>
 
