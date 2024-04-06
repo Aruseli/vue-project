@@ -4,11 +4,17 @@
   import { onMounted, onUnmounted, ref } from 'vue';
   import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
   import { useAppStore } from 'src/stores/app';
+  import { forceNewVisit } from 'src/services/tracking';
 
   const router = useRouter();
   const show = ref(true);
   const shiftsUpdateTimer = ref(null);
   const app = useAppStore();
+
+  const onClick = async () => {
+    forceNewVisit();
+    await router.push('languages');
+  }
 
   const updateShifts = async () => {
     await app.updateShifts();
@@ -28,6 +34,7 @@
   }
 
   onMounted(() => {
+    forceNewVisit();
     app.resetLocale();
     shiftsUpdateTimer.value = setTimeout(updateShifts, 0);
   })
@@ -40,7 +47,7 @@
 <template>
   <q-page class="flex flex-center relative relative-position">
     <div class="bg_filtered" />
-    <div class="column justify-between window-height full-width container" @click="router.push('languages')">
+    <div class="column justify-between window-height full-width container" @click="onClick">
       <Logo class="logo_row self-start" classes="q-mr-sm img_style">
         <LogoSvgWhite />
       </Logo>
