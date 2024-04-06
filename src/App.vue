@@ -8,6 +8,7 @@
   import { useArrivalsStore } from'src/stores/arrivals';
   import { useInventoryStore } from "./stores/inventory";
   import { useSelectiveInventoryStore } from "./stores/selective-inventory";
+  import { forceNewVisit } from "./services/tracking";
 
   const route = useRoute()
   const router = useRouter()
@@ -50,6 +51,7 @@
             return
           }
           if (await appStore.loginByToken(barcode.token)) {
+            forceNewVisit();
             await appStore.resetLocale()
             router.push('/employee-actions')
           }
