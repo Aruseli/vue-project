@@ -1,7 +1,7 @@
 <script setup>
   import gsap from 'gsap';
 import { useQuasar } from 'quasar';
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAppStore } from '../../stores/app';
 import { useCartStore } from '../../stores/cart';
@@ -110,14 +110,24 @@ import RectangularButton from '../buttons/rectangular-button.vue';
       document.removeEventListener(e, boundResetTimer)
     )
   })
+
+//   watchEffect(async () => {
+//     const currentLocale = localStorage.getItem('lang');
+//     await goodsStore.updateGoods(currentLocale)
+//     // good.value = goodsStore.getGoodById(props.itemId);
+//     // Дополнительные операции, связанные с изменением языка
+// });
 </script>
 
 <template>
   <q-tab-panels v-model="app.tab" animated swipeable class="window-height window-width">
-    <q-tab-panel v-for="goodCategory in goodsStore.goods" :name="goodCategory.id">
+    <q-tab-panel v-for="goodCategory in goodsStore.goods" :name="goodCategory.id" :key="goodCategory.id">
       <transition appear @enter="enterCardShake">
         <div class="image_grid">
-          <ProductCard :itemId="good.id" v-for="(good, index) in goodCategory.goods" :key="index" />
+          <ProductCard v-for="(good, index) in goodCategory.goods"
+            :good="good"
+            :key="index"
+          />
         </div>
       </transition>
     </q-tab-panel>

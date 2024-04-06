@@ -74,7 +74,7 @@ import { onMounted, watch, computed } from 'vue';
 
     <div class="relative-position" v-if="!app.kioskState.settings?.alt_ui">
       <q-tabs
-        @update:model-value="changeTab(app.tab)"
+
         v-model="app.tab"
         dense
         no-caps
@@ -82,7 +82,7 @@ import { onMounted, watch, computed } from 'vue';
         indicator-color="transparent"
         align="left"
       >
-        <q-tab v-for="goodCategory in goodsStore.goods" :name="goodCategory.id" :label="goodCategory.title" :key="goodCategory.title" content-class="category_tab_label_style" />
+        <q-tab v-for="goodCategory in goodsStore.goods" :name="goodCategory.id" :label="goodCategory.title" :key="goodCategory.id" content-class="category_tab_label_style" />
       </q-tabs>
     </div>
   </q-header>
