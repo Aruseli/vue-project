@@ -40,7 +40,7 @@ const props = defineProps({
 
 <style>
 .card_container {
-  width: 45vw;
+  width: 50vw;
   height: max-content;
   @media (max-width: 899px) {
     width: 90vw;
