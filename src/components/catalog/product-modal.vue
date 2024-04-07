@@ -160,7 +160,7 @@ import Modal from '../overlay/modal.vue';
 </template>
 
 <style scoped lang="scss">
-$close_size: calc(3em + 1.7262vmin);
+$close_size: calc(3em + 2.7262vmin);
   .img_container_dialog {
     width: 100%;
     height: 100%;
@@ -184,7 +184,7 @@ $close_size: calc(3em + 1.7262vmin);
 
   .close_button {
     position: absolute;
-    top: 0;
+    top: -3.8rem;
     right: -3.8rem;
     width: $close_size;
     height: $close_size;
