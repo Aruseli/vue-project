@@ -146,23 +146,6 @@ $height: calc(8em + 1.7262vmin);
   margin-right: 1.5rem;
 }
 
-.container_languages {
-  width: 80vw;
-  display: grid;
-  grid-template-columns: repeat( auto-fit, minmax($width, 1fr) );
-  grid-auto-rows: minmax($height, 1fr);
-  gap: 3rem;
-  justify-content: center;
-  align-items: center;
-  padding: 3rem;
-  border-radius: 1rem;
-  overflow: hidden;
-  @media (max-width: 900px) {
-    gap: 2rem;
-    padding: 2rem;
-  }
-}
-
 .logo_style {
   width: 7em;
   @media (max-width: 1500px) {

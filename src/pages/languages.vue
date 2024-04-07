@@ -38,8 +38,6 @@
 </template>
 
 <style scoped lang="scss">
-$width: calc(6.5em + 1.7262vmin);
-$height: calc(8em + 1.7262vmin);
 .logo {
   padding: 5rem;
   position: absolute;
@@ -60,22 +58,6 @@ $height: calc(8em + 1.7262vmin);
     transform: translateX(-50%);
   }
 }
-.container_languages {
-  width: 80vw;
-  display: grid;
-  grid-template-columns: repeat( auto-fit, minmax($width, 1fr) );
-  grid-auto-rows: minmax($height, 1fr);
-  gap: 3rem;
-  justify-content: center;
-  padding: 3rem;
-  border-radius: 1rem;
-  overflow: hidden;
-  @media (max-width: 900px) {
-    gap: 2rem;
-    padding: 2rem;
-  }
-}
-
 .hello_bg {
   background-image: url('/start.jpg');
   background-position: center;

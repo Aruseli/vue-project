@@ -1,6 +1,8 @@
 /* app global css */
 
 $font-family-nunito: 'Nunito Sans', sans-serif;
+$width: calc(6.5em + 1.7262vmin);
+$height: calc(8em + 1.7262vmin);
 @font-face {
   font-family: $font-family-nunito;
   src: url(./NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf);
@@ -360,3 +362,18 @@ padding: 0;
   }
 }
 
+.container_languages {
+  width: 60vw;
+  display: grid;
+  grid-template-columns: repeat( auto-fit, minmax($width, 1fr) );
+  grid-auto-rows: minmax($height, 1fr);
+  gap: 4rem;
+  justify-content: center;
+  padding: 4rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  @media (max-width: 1620px) {
+    gap: 2rem;
+    padding: 2rem;
+  }
+}
