@@ -13,6 +13,41 @@
   const route = useRoute()
   const router = useRouter()
 
+  eventEmitter.on('redirect', () => {
+    const app = useAppStore();
+
+    app.redirectDialogState = false;
+    if (!app.customerModeIsAllowed) {
+      router.push('/');
+      app.lockTerminal();
+      app.updateShifts();
+    }
+    router.push('hello');
+    app.redirectAt = 0;
+  })
+  eventEmitter.on('tick', () => {
+    const app = useAppStore();
+    if (Date.now() - app.redirectAt > 60*1000) {
+      app.redirectAt = Date.now() + (app.kioskState.settings?.employee_inactivity_before_redirect ?? 150000);
+    }
+
+    const timeBeforeRedirect = app.redirectAt - Date.now();
+    if (timeBeforeRedirect < 0) {
+      // redirect phase
+      eventEmitter.emit('redirect');
+      return;
+    }
+
+    if (timeBeforeRedirect < (app.kioskState.settings?.employee_inactive_notify_duration_ms ?? 30000)) {
+      // countdown phase
+      app.countdown = Math.floor(timeBeforeRedirect / 1000);
+      app.redirectDialogState = true;
+      return;
+    }
+    app.redirectDialogState = false;
+    return;
+  })
+
   eventEmitter.on('local-ws', async evt => {
     const appStore = useAppStore(); // Don't move up: it will break init (query params are unaccessible)
     const ordersStore = useOrdersStore();

@@ -53,11 +53,14 @@ export const useAppStore = defineStore('app', () => {
   }
 
   // start code for redirect windows
-  const redirect = () => {
-    redirectDialogState.value = false;
-    router.push('hello');
-    redirectAt.value = 0;
-  }
+  // const redirect = () => {
+  //   redirectDialogState.value = false;
+  //   if (!customerModeIsAllowed) {
+
+  //   }
+  //   router.push('hello');
+  //   redirectAt.value = 0;
+  // }
 
   function closeRedirectDialog() {
     redirectAt.value =
@@ -71,31 +74,32 @@ export const useAppStore = defineStore('app', () => {
     redirectAt.value =
       Date.now() +
       (kioskState.settings?.employee_inactivity_before_redirect ?? 150000);
+      eventEmitter.emit('redirect');
   }
   const redirectTimer = ref(null);
   const boundResetTimer = resetRedirectTimer.bind(this);
 
-  const tick = () => {
-    if (Date.now() - redirectAt.value > 60*1000) {
-      redirectAt.value = Date.now() + (kioskState.settings?.employee_inactivity_before_redirect ?? 150000);
-    }
+  // const tick = () => {
+  //   if (Date.now() - redirectAt.value > 60*1000) {
+  //     redirectAt.value = Date.now() + (kioskState.settings?.employee_inactivity_before_redirect ?? 150000);
+  //   }
 
-    const timeBeforeRedirect = redirectAt.value - Date.now();
-    if (timeBeforeRedirect < 0) {
-      // redirect phase
-      redirect();
-      return;
-    }
+  //   const timeBeforeRedirect = redirectAt.value - Date.now();
+  //   if (timeBeforeRedirect < 0) {
+  //     // redirect phase
+  //     redirect();
+  //     return;
+  //   }
 
-    if (timeBeforeRedirect < (kioskState.settings?.employee_inactive_notify_duration_ms ?? 30000)) {
-      // countdown phase
-      countdown.value = Math.floor(timeBeforeRedirect / 1000);
-      redirectDialogState.value = true;
-      return;
-    }
-    redirectDialogState.value = false;
-    return;
-  }
+  //   if (timeBeforeRedirect < (kioskState.settings?.employee_inactive_notify_duration_ms ?? 30000)) {
+  //     // countdown phase
+  //     countdown.value = Math.floor(timeBeforeRedirect / 1000);
+  //     redirectDialogState.value = true;
+  //     return;
+  //   }
+  //   redirectDialogState.value = false;
+  //   return;
+  // }
 
   // end code for redirect windows
 
@@ -304,8 +308,8 @@ export const useAppStore = defineStore('app', () => {
     countdown,
     redirectTimer,
     boundResetTimer,
-    tick,
-    redirect,
+    // tick,
+    // redirect,
     closeRedirectDialog,
     resetRedirectTimer,
     //redirect end

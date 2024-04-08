@@ -9,7 +9,7 @@
   import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
   import Logo from 'src/components/logo/logo.vue';
   import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
-  import { delay } from 'src/services';
+  import { delay, eventEmitter } from 'src/services';
   import { useGoodsStore } from 'src/stores/goods';
 
   const $q = useQuasar();
@@ -127,11 +127,12 @@
     }
 
     app.redirectAt = Date.now() + app.kioskState.settings?.employee_inactivity_before_redirect ?? 150000;
-    app.redirectTimer = setInterval(() => app.tick(), 100);
+    app.redirectTimer = setInterval(() => eventEmitter.emit('tick'), 100);
     // Обрабатываем события
     ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
       document.addEventListener(e, app.boundResetTimer)
     )
+    console.log('app.customerModeIsAllowed', app.customerModeIsAllowed)
   })
   onUnmounted(() => {
     clearInterval(app.redirectTimer);
@@ -180,7 +181,7 @@
         </div>
       </template>
       <template #actions>
-        <RectangularButton :name="$t('complete')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="app.redirect" textColor="primary" />
+        <RectangularButton :name="$t('complete')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="eventEmitter.emit('redirect')" textColor="primary" />
         <RectangularButton :name="$t('continue')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="app.closeRedirectDialog" />
       </template>
     </RedirectDialog>
