@@ -49,9 +49,18 @@ function hidePrintConfirmationDialog() {
 
 async function handlePrintConfirmation(printConfirmed) {
   if (printConfirmed) {
-    await printInventory({ documentId, $q });
+    await printInventory({ documentId, $q, appStore: app});
   }
   hidePrintConfirmationDialog();
+  if (route.path === "/open-shift/complete-inventory") {
+    await app.openTerminalShift();
+    router.push(app.shiftIsGood() ? '/hello' : '/employee-actions' );
+  } else if (route.path === "/close-shift/complete-inventory") {
+    await app.closeTerminalShift();
+    router.push('/employee-actions');
+  } else {
+    router.push('/employee-actions');
+  }
 }
 
 async function submitInventory() {
@@ -61,21 +70,14 @@ async function submitInventory() {
       if (route.path === "/open-shift/complete-inventory") {
         const { documentId: docId } = await inventoryStore.submitInventory();
         documentId.value = docId;
-        await showPrintConfirmationDialog();
-        // await app.openTerminalShift();
-        // router.push(app.shiftIsGood() ? '/hello' : '/employee-actions' );
       } else if (route.path == "/close-shift/complete-inventory") {
         const { documentId: docId } = await inventoryStore.submitInventory();
         documentId.value = docId;
-        await showPrintConfirmationDialog();
-        // await app.closeTerminalShift();
-        // router.push('/employee-actions');
       } else {
         const { documentId: docId } = await inventoryStore.submitInventory();
         documentId.value = docId;
-        await showPrintConfirmationDialog();
-        // router.push('/employee-actions');
       }
+      await showPrintConfirmationDialog();
     } catch (e) {
       console.log(e);
       $q.notify({
