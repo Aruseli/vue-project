@@ -89,9 +89,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
       })),
     };
     const documentId = await apiSaveDocument(doc);
-    return {
-      documentId
-    }
+    return {documentId}
   };
 
   const updateInventory = async () => {
