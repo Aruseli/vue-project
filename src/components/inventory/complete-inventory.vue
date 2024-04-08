@@ -11,6 +11,7 @@
   import ListItem from './list-item.vue';
   import { useAppStore } from 'src/stores/app';
 import { apiReportsGetView, printDocument, printInventory, wsSendMessage } from 'src/services';
+import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
 
 
   const goodsStore = useGoodsStore();
@@ -23,18 +24,21 @@ import { apiReportsGetView, printDocument, printInventory, wsSendMessage } from 
   const $q = useQuasar();
 
   const documentId = ref(undefined);
-  const shouldShowPrintConfirmationDialog = ref(false);
+  const isPrintConfirmationDialogVisible = ref(false);
 
   const allowConfirm = computed(() => {
     return inventoryStore.inventory?.every(i => i.stock == i.quant)
   });
 
   async function showPrintConfirmationDialog() {
-    showPrintDialog.value = true;
+    console.log(`shouldShowPrintConfirmationDialog.value = true`)
+    console.log({shouldShowPrintConfirmationDialog: isPrintConfirmationDialogVisible})
+    
+    isPrintConfirmationDialogVisible.value = true;
   }
 
   function hidePrintConfirmationDialog() {
-    showPrintDialog.value = false;
+    isPrintConfirmationDialogVisible.value = false;
   }
 
   async function handlePrintConfirmation(printConfirmed) {
@@ -52,21 +56,20 @@ import { apiReportsGetView, printDocument, printInventory, wsSendMessage } from 
         const {documentId: docId} = await inventoryStore.submitInventory();
         documentId.value = docId;
         await showPrintConfirmationDialog();
-        await app.openTerminalShift();
-        router.push(app.shiftIsGood() ? '/hello' : '/employee-actions' );
+        // await app.openTerminalShift();
+        // router.push(app.shiftIsGood() ? '/hello' : '/employee-actions' );
       } else if (route.path == '/close-shift/complete-inventory') {
         const {documentId: docId} = await inventoryStore.submitInventory();
         documentId.value = docId;
         await showPrintConfirmationDialog();
-        await app.closeTerminalShift();
-        router.push('/employee-actions');
+        // await app.closeTerminalShift();
+        // router.push('/employee-actions');
       } else {
         const {documentId: docId} = await inventoryStore.submitInventory();
         documentId.value = docId;
         await showPrintConfirmationDialog();
-        router.push('/employee-actions');
+        // router.push('/employee-actions');
       }
-      await printInventory()
     }
     catch(e) {
       console.log(e);
@@ -113,6 +116,8 @@ import { apiReportsGetView, printDocument, printInventory, wsSendMessage } from 
       router.push('/employee-actions')
     }
   })
+
+  
 </script>
 
 <template>
@@ -186,15 +191,16 @@ import { apiReportsGetView, printDocument, printInventory, wsSendMessage } from 
       </div>
     </div>
   </div>
-  <q-dialog v-model="shouldShowPrintConfirmationDialog">
-    <q-card>
-      <q-card-section class="text-h6">{{ $t('confirm_inventory_print') }}</q-card-section>
-      <q-card-actions align="right">
-        <q-btn label="{{$t('cancel')}}" color="negative" @click="handlePrintConfirmation(false)" />
-        <q-btn label="{{$t('confirm')}}" color="primary" @click="handlePrintConfirmation(true)" />
-      </q-card-actions>
-    </q-card>
-  </q-dialog>
+  <RedirectDialog
+      v-model:modelValue="isPrintConfirmationDialogVisible"
+      :nameLeftButton="'Print'"
+      :nameRightButton="'Do not print'"
+      @complete="handlePrintConfirmation(true)"
+      @continue="handlePrintConfirmation(false)"
+      :title="'Print Confirmation'"
+    >
+      <p>Print dialog?</p>
+    </RedirectDialog>
 </template>
 
 <style scoped>
