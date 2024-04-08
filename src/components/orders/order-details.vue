@@ -10,8 +10,10 @@ import OrderCard from './order-card.vue';
 import i18next from 'i18next'
 import { apiReportsGetView, printCheck, printDocument, wsSendMessage } from 'src/services';
 import { useQuasar } from 'quasar';
+import { useAppStore } from 'src/stores/app';
 
   const $q = useQuasar();
+  const appStore = useAppStore();
   const ordersStore = useOrdersStore();
   const route = useRoute();
   const router = useRouter();
@@ -24,7 +26,7 @@ import { useQuasar } from 'quasar';
     }
 
     await ordersStore.confirmCurrentOrderIssue()
-    await printCheck({documentId: doc.id, $q})
+    await printCheck({documentId: doc.id, $q, appStore})
 
     router.push('/issued-order');
 
