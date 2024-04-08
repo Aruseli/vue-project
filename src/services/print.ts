@@ -2,6 +2,7 @@ import i18next from "i18next";
 import { QVueGlobals } from "quasar";
 import { apiReportsGetView } from "./api";
 import { wsSendMessage } from "./local-device-ws";
+import { useAppStore } from "src/stores/app";
 
 /**
  * Prints document
@@ -49,23 +50,26 @@ export async function printDocument({documentId, $q, viewId, langCode = i18next.
 
 type PrintDocumentOptions = {documentId: string, $q: QVueGlobals, viewId: string, langCode?: string}
 type PrintSpecificDocumentOptions = Omit<PrintDocumentOptions, 'viewId'> & {
-  viewId?: string
+  viewId?: string,
+  appStore: ReturnType<typeof useAppStore>
 }
 
-export async function printCheck({$q, viewId = 'ff7ce8d1-989f-4fc6-9ad4-4aacf65da9f8', documentId, langCode = i18next.language}: PrintSpecificDocumentOptions) {
-  return await printDocument({documentId, $q, viewId, langCode});
+
+export async function printCheck({$q, documentId, langCode = i18next.language, appStore}: PrintSpecificDocumentOptions) {
+  console.log(`appStore.kioskState.settings!.view_check`, appStore.kioskState.settings!.view_check)
+  return await printDocument({documentId, $q, viewId: appStore.kioskState.settings!.view_check, langCode});
 }
 
-export async function printOrder({$q, viewId = 'a59a2a47-7ebb-497d-80ff-5b9386726871', documentId, langCode = i18next.language}: PrintSpecificDocumentOptions) {
-  return await printDocument({documentId, $q, viewId, langCode});
+export async function printOrder({$q, documentId, langCode = i18next.language, appStore}: PrintSpecificDocumentOptions) {
+  return await printDocument({documentId, $q, viewId: appStore.kioskState.settings!.view_ord, langCode});
 }
 
-export async function printGoodsArrival({$q, viewId = 'f8e0f371-87e6-460a-8010-011eabef8757', documentId, langCode = i18next.language}: PrintSpecificDocumentOptions) {
-  return await printDocument({documentId, $q, viewId, langCode});
+export async function printGoodsArrival({$q, documentId, langCode = i18next.language, appStore}: PrintSpecificDocumentOptions) {
+  return await printDocument({documentId, $q, viewId: appStore.kioskState.settings!.view_doc_input, langCode});
 }
 
-export async function printInventory({$q, viewId = '3d8779b5-2705-4668-a7fd-fd51e480890c', documentId, langCode = i18next.language}: PrintSpecificDocumentOptions) {
-  return await printDocument({documentId, $q, viewId, langCode});
+export async function printInventory({$q, documentId, langCode = i18next.language, appStore}: PrintSpecificDocumentOptions) {
+  return await printDocument({documentId, $q, viewId: appStore.kioskState.settings!.view_doc_invent, langCode});
 }
 
 /**
