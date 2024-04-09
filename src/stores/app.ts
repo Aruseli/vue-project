@@ -65,7 +65,7 @@ export const useAppStore = defineStore('app', () => {
   function closeRedirectDialog() {
     redirectAt.value =
       Date.now() +
-      (kioskState.settings?.employee_inactivity_before_redirect ?? 150000);
+      (kioskState.settings?.employee_menu_inactivity_before_action ?? 150000);
   }
   function resetRedirectTimer() {
     if (redirectDialogState.value) {
@@ -73,7 +73,7 @@ export const useAppStore = defineStore('app', () => {
     }
     redirectAt.value =
       Date.now() +
-      (kioskState.settings?.employee_inactivity_before_redirect ?? 150000);
+      (kioskState.settings?.employee_menu_inactivity_before_action ?? 150000);
       eventEmitter.emit('redirect');
   }
   const redirectTimer = ref(null);
@@ -247,7 +247,7 @@ export const useAppStore = defineStore('app', () => {
   let inited = false;
   eventEmitter.on('kioskState.status', async ({ newStatus }) => {
     if (newStatus != 'Ready') {
-      router.push('/');
+      await router.push('/');
       return
     }
     if (!inited) {
