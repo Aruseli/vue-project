@@ -60,16 +60,16 @@ import ProductModal from './product-modal.vue';
     showNotify();
   }
 
-  const sliceDescription = ref(null);
+  const sliceDescription = computed(() => props.good.description.slice(0, 50) + ' <span style="color: blue">more...</span>');
 
   onMounted(async () => {
     // props.good = goodsStore.getGoodById(props.good?.id);
     if (!app.kioskState.settings?.alt_ui) {
-      await nextTick();
+
       if (props.good.description.length > 50) {
-        sliceDescription.value = props.good.description.slice(0, 50) + ' <span style="color: blue">more...</span>';
+        sliceDescription;
       } else {
-        sliceDescription.value = props.good.description;
+        props.good.description;
       }
     }
   })
