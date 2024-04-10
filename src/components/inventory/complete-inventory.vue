@@ -48,8 +48,10 @@ function hidePrintConfirmationDialog() {
 }
 
 async function handlePrintConfirmation(printConfirmed) {
-  if (printConfirmed) {
-    await printInventory({ documentId, $q, appStore: app});
+  $q.loading.show();
+  try {
+    if (printConfirmed) {
+    await printInventory({ documentId: documentId.value, $q, appStore: app});
   }
   hidePrintConfirmationDialog();
   if (route.path === "/open-shift/complete-inventory") {
@@ -60,6 +62,19 @@ async function handlePrintConfirmation(printConfirmed) {
     router.push('/employee-actions');
   } else {
     router.push('/employee-actions');
+  }
+  } catch (error) {
+    console.error('inventoryStore.submitInventory print error:', error)
+      $q.notify({
+        color: 'warning',
+        icon: 'warning',
+        position: 'center',
+        message: t('unable_to_print_submit_inventory'),
+        timeout: 6000,
+      })
+  } finally {
+  $q.loading.hide();
+  
   }
 }
 
@@ -233,15 +248,19 @@ onMounted(async () => {
     </div>
   </div>
   <RedirectDialog
-    v-model:modelValue="isPrintConfirmationDialogVisible"
-    :nameLeftButton="'Print'"
-    :nameRightButton="'Do not print'"
-    @complete="handlePrintConfirmation(true)"
-    @continue="handlePrintConfirmation(false)"
-    :title="'Print Confirmation'"
-  >
-    <p>Print dialog?</p>
-  </RedirectDialog>
+      :modelValue="isPrintConfirmationDialogVisible"
+      title="print?"
+    >
+      <template #content>
+        <div class="text-h5 text-center">
+          <div class="text-h5">{{$t('print')}}</div>
+        </div>
+      </template>
+      <template #actions>
+        <RectangularButton :name="$t('do_not') + ' ' + $t('print')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="handlePrintConfirmation(false)" textColor="primary" />
+        <RectangularButton :name="$t('print')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="handlePrintConfirmation(true)" />
+      </template>
+    </RedirectDialog>
 </template>
 
 <style scoped>
