@@ -47,8 +47,16 @@ export default {
     "customer_inactivity_countdown_duration": 7000,
     "customer_inactivity_animation_start_before_redirect": 9000,
     "customer_successful_order_notify_duration_ms": 7000,
-    "employee_inactive_after_ms": 120000,
-    "employee_inactive_notify_duration_ms": 30000,
+
+    "employee_menu_inactivity_before_action": 15_000,
+    "employee_menu_inactivity_countdown_duration": 10_000,
+    "employee_menu_inactivity_action": "customer",
+    "employee_docs_inactivity_before_action": 150_000,
+    "employee_docs_inactivity_countdown_duration": 30_000,
+    "employee_docs_inactivity_action": "customer",
+    "employee_doclists_inactivity_before_action": 150_000,
+    "employee_doclists_inactivity_countdown_duration": 30_000,
+    "employee_doclists_inactivity_action": "customer",
 
     "allow_order_issue_in_outdated_shift": true,
     "shifts__poll_interval_average_ms": 600*1000,
@@ -59,6 +67,8 @@ export default {
     "shifts__state_open": 2,
     "shifts__state_closing": 5,
     "shifts__state_closed": 0,
+
+    "alt_ui": false,
   },
 
   // These three lines are outside of settings because they are used

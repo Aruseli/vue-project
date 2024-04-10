@@ -4,6 +4,7 @@ import { KioskDocument, apiGetDocuments, apiSaveDocument } from "src/services";
 import { computed, ref } from "vue";
 import { useAppStore } from "./app";
 import { useGoodsStore, type Good } from "./goods";
+import { Notify } from 'quasar';
 
 export const useSelectiveInventoryStore = defineStore("selectiveInventoryStore", () => {
   const appStore = useAppStore();
@@ -23,7 +24,9 @@ export const useSelectiveInventoryStore = defineStore("selectiveInventoryStore",
     try {
       const settings = appStore.kioskState.settings;
       inventoriesDocuments.value = await apiGetDocuments(
-        [settings!.inventory_doc_type_id!],[2]
+        [settings!.inventory_doc_type_id!],
+        [2],
+        [appStore.kioskState.kioskCorr?.id ?? ''],
       )
 
       inventoriesDocuments.value = inventoriesDocuments.value.filter(d =>
@@ -82,7 +85,7 @@ export const useSelectiveInventoryStore = defineStore("selectiveInventoryStore",
       d.total = item?.price ?? 0 * d.quant;
     });
 
-    await apiSaveDocument(doc);
+    await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '');
   };
 
   const totalQuant = computed(() => {
@@ -98,21 +101,21 @@ export const useSelectiveInventoryStore = defineStore("selectiveInventoryStore",
     if (!selectedInventoryItem) {
       return;
     }
-    if (selectedInventoryItem?.confirmed) {
+    if (selectedInventoryItem?.confirmed == true) {
+      if (selectedInventoryItem.quant >= selectedInventoryItem.stock) {
+        console.error("Stop scan");
+        Notify.create({
+          color: "warning",
+          position: "center",
+          classes: "text-h3 text-center text-uppercase",
+          timeout: 3000,
+          textColor: "white",
+          message: t("you_are_scanning_an_item_whose_quantity_has_been_confirmed"),
+        });
+        return;
+      }
       return;
     }
-    // if (selectedInventoryItem.quant >= selectedInventoryItem.stock) {
-    //   console.error("Stop scan");
-    //   Notify.create({
-    //     color: "warning",
-    //     position: "center",
-    //     classes: "text-h3 text-center text-uppercase",
-    //     timeout: 30000,
-    //     textColor: "white",
-    //     message: t("product_has_already_been_scanned"),
-    //   });
-    //   return;
-    // }
     selectedInventoryItem.quant += 1;
   };
 

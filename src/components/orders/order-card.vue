@@ -33,21 +33,18 @@
   })
 
   const emit = defineEmits(['click']);
-  const click = () => {
-    emit('click')
-  }
 </script>
 
 <template>
   <div
     :class="'cart_product_item row ' + (props.good_issued != props.good_quant ? 'bg-white' : 'bg-positive')"
     v-bind="$attrs"
-    @click="click">
-    <div class="col-3 q-pr-lg">
+    @click="emit('click')">
+    <div class="col-3 q-pr-lg-md q-pr-xs-sm">
       <q-img
         :src="props.good_src"
         ration="4/3"
-        height="15rem"
+        class="img_style"
         fit="unset"
       >
         <template #loading>
@@ -59,15 +56,15 @@
     </div>
     <div class="column justify-between col-9">
       <div class="row justify-between items-center">
-        <div class="text-h2 text-weight-regular">
+        <div class="text-h3 text-weight-regular">
           {{ props.good_title }}
         </div>
       </div>
       <div class="row justify-between items-center">
-        <div class="text-h2">
+        <div class="text-h3">
           &#3647&ensp;{{ props.good_price }}
         </div>
-        <div class="text-h3 row q-gutter-sm">
+        <div class="text-h3 row q-gutter-x-sm">
           <span>{{ props.good_issued > 0 ? props.good_issued + ' / ' : '' }}</span>
           <span>{{ props.good_quant }}</span>
           <span>{{ $t('pc', {count: props.good_quant}) }}</span>
@@ -85,5 +82,15 @@
     border-radius: var(--border-sm);
     box-shadow: var(--box-shadow--product_cart);
     padding: var(--px20);
+    @media (max-width: 1300px) {
+      padding: 1rem;
+    }
+  }
+
+  .img_style {
+    height: 15rem;
+    @media (max-width: 1300px) {
+      height: 7rem;
+    }
   }
 </style>

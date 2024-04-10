@@ -8,7 +8,7 @@
     size: {
       type: String,
       required: false,
-      default: 'calc(2rem + 0.6vmax)'
+      default: 'xs'
     },
     color: {
       type: String,
@@ -25,16 +25,18 @@
       required: false,
       default: false
     },
+    classTitle: {
+      type: String,
+      default: 'text-subtitle1',
+    }
   })
 
   const emit = defineEmits(['click']);
-  const click = () => {
-    emit('click')
-  }
 </script>
 
 <template>
-   <q-btn :size="size" unelevated rounded :color="color" :text-color="textColor" @click="click" v-bind="$attrs" :disable="disable">{{ props.name }}
+   <q-btn :size="props.size" unelevated rounded :color="props.color" :text-color="props.textColor" @click="emit('click')" v-bind="$attrs" :disable="props.disable">
+    <div :class="props.classTitle">{{ props.name }}</div>
     <slot></slot>
    </q-btn>
 </template>

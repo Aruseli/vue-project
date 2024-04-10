@@ -1,13 +1,15 @@
 <script setup>
-  import { useRouter, useRoute } from 'vue-router';
-  import { nextTick, onMounted, onBeforeMount, reactive, ref, watch, watchEffect, computed } from 'vue';
+  import { useRouter } from 'vue-router';
+  import { onMounted, reactive, ref, watch, watchEffect, computed, onUnmounted } from 'vue';
   import RectangularButton from '../components/buttons/rectangular-button.vue';
   import { useQuasar } from 'quasar';
   import i18next, { t } from 'i18next';
   import { useAppStore } from 'src/stores/app';
   import { useSelectiveInventoryStore } from 'src/stores/selective-inventory';
   import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
-  import { delay, printLeftovers } from 'src/services';
+  import Logo from 'src/components/logo/logo.vue';
+  import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
+  import { delay, eventEmitter, printLeftovers } from 'src/services';
   import { useGoodsStore } from 'src/stores/goods';
 
   const $q = useQuasar();
@@ -26,12 +28,6 @@
     router.push(path);
   }
 
-  // {
-  //   name: string,
-  //   click: async () => undefined,
-  //   disable: boolean,
-  //   badge: boolean | undefined,
-  // }
   const buttons = computed(() => {
     const inventoryOnShiftOpen = app.kioskState.settings?.shifts__inventory_on_open;
     const inventoryOnShiftClose = app.kioskState.settings?.shifts__inventory_on_close;
@@ -119,12 +115,6 @@
         },
         disable: !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_print_stock),
       },
-      {
-        name: 'list_active_orders',
-        // TODO list_active_orders
-        click: () => route(''),
-        disable: true || !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_list_orders),
-      },
     ];
   });
 
@@ -142,50 +132,100 @@
     if( inventoryRequests.value > 0 ) {
       dialogState.value = true;
     }
-  })
 
-  // const defer = () => {
-  //   dialogState.value = false;
-  // }
+    app.redirectAt = Date.now() + app.kioskState.settings?.employee_inactivity_before_redirect ?? 150000;
+    app.redirectTimer = setInterval(() => eventEmitter.emit('tick'), 100);
+    // Обрабатываем события
+    ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
+      document.addEventListener(e, app.boundResetTimer)
+    )
+    console.log('app.customerModeIsAllowed', app.customerModeIsAllowed)
+  })
+  onUnmounted(() => {
+    clearInterval(app.redirectTimer);
+    ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e => document.removeEventListener(e, app.boundResetTimer))
+  })
 </script>
 
 <template>
-  <q-page class="flex flex-center relative transparent">
-    <div class="column justify-center full-height full-width container">
+  <q-page class="flex flex-center bg-secondary relative-position">
+    <div class="column justify-center items-center full-height full-width container">
+      <Logo class="logo_column" classes="q-mb-md-sm q-mb-xs-xs">
+        <LogoSvgWhite />
+      </Logo>
       <RectangularButton
         v-for="(button, index) in buttons"
         :key="index"
         :name='$t(button.name)'
         :disable='button.disable'
+        class="button_style"
         :class="{ 'blocked': button.disable }"
         @click="button.click"
       >
-        <div v-if="button.badge == true" class="badge_style bg-positive flex items-center">
-          <div class="text-h4 text-white q-px-sm">{{ inventoryRequests }}</div>
+        <div v-if="button.badge == true" class="badge_style bg-positive flex items-center justify-center">
+          <div class="text-white text-h5">{{ inventoryRequests }}</div>
         </div>
       </RectangularButton>
 
     </div>
     <RedirectDialog
-      @complete="dialogState = false"
-      @continue="route('selective-inventory')"
       :modelValue="dialogState"
-      nameLeftButton="defer"
-      nameRightButton="execute"
       title="there_are_documents_for_inventory"
-    />
+    >
+      <template #actions>
+        <RectangularButton :name="$t('defer')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="dialogState = false" textColor="primary" />
+        <RectangularButton :name="$t('execute')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="route('selective-inventory')" />
+      </template>
+    </RedirectDialog>
+    <RedirectDialog
+      :modelValue="app.redirectDialogState"
+      title="you_are_inactive"
+    >
+      <template #content>
+        <div class="text-h5 text-center">
+          <div class="text-h5">{{$t('the_session_will_end_in')}}</div>
+          <span>{{ app.countdown }}</span>&ensp;{{ $t('seconds', {count: app.countdown}) }}
+        </div>
+      </template>
+      <template #actions>
+        <RectangularButton :name="$t('complete')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="eventEmitter.emit('redirect')" textColor="primary" />
+        <RectangularButton :name="$t('continue')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="app.closeRedirectDialog" />
+      </template>
+    </RedirectDialog>
   </q-page>
 </template>
 
 <style scoped lang="scss">
 .container {
-  padding: 5rem;
+  padding: 4rem;
+  @media (max-width: 899px) {
+    padding: 2rem;
+  }
 }
 .container > *:not(:last-child) {
   margin-bottom: 2rem;
 }
+.container > *:first-child {
+  margin-bottom: 7rem;
+  @media (max-width: 1300px) {
+    margin-bottom: 3rem;
+  }
+}
 .blocked {
   filter: brightness(0.3);
+}
+
+.button_style {
+  width: 60vw;
+  padding: 2.5rem;
+  @media (max-width: 1300px) {
+    padding: 1.5rem;
+
+  }
+  @media (max-width: 899px) {
+    width: 100%;
+    padding: 1rem;
+  }
 }
 
 .badge_style {
@@ -193,9 +233,13 @@
   top: -1rem;
   right: -1rem;
   border-radius: 2.5rem;
-  min-width: 3rem;
+  min-width: 4.5rem;
   width: max-content;
   height: 4.5rem;
+  @media (max-width: 1300px) {
+    min-width: 2.5rem;
+    height: 2.5rem;
+  }
 }
 </style>
 

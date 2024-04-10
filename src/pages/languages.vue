@@ -6,7 +6,6 @@
   import { useAppStore } from 'src/stores/app';
   import { useGoodsStore } from 'src/stores/goods';
 
-
   const app = useAppStore();
   const goodsStore = useGoodsStore();
 
@@ -15,21 +14,23 @@
     await goodsStore.updateGoods(newLocale);
     app.setLocale(newLocale);
     router.push('catalog');
+    localStorage.setItem('lang', newLocale);
+    localStorage.setItem('activeTab', app.tab);
   }
 
 </script>
 
 <template>
   <q-page class="column justify-center items-center relative hello_bg window-height">
-    <Logo class="logo_row logo" classes="q-mr-md">
+    <Logo class="logo_row logo" classes="q-mr-sm">
       <LogoSvgWhite />
     </Logo>
-    <div class="column bg-primary container">
+    <div class="bg-primary container_languages">
       <language v-for="lang in app.kioskState.catalogLocales"
         :key="lang.lang_code"
         :src="lang.flag_src"
         :alt="lang.name"
-        :language="lang.name"
+        :language="lang.lang_code"
         @click="changeLanguage(lang.lang_code)"
       />
     </div>
@@ -46,24 +47,21 @@
   @media (max-width: 2050px) and (orientation: landscape) {
     padding: 2rem;
   }
-}
-.container {
-  width: max-content;
-  padding: 4rem;
-  border-radius: 1rem;
-
-  @media (max-width: 2050px) and (orientation: landscape) {
-    padding: 2rem;
+  @media (max-width: 1300px) {
+    padding: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  @media (max-width: 770px) {
+    padding: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
-.container > *:not(:last-child) {
-  margin-bottom: 4rem;
-  @media (max-width: 2050px) and (orientation: landscape) {
-    margin-bottom: 1.5rem;
-  }
-}
-
 .hello_bg {
   background-image: url('/start.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 </style>

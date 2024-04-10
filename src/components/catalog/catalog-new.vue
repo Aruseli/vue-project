@@ -1,7 +1,7 @@
 <script setup>
   import gsap from 'gsap';
 import { useQuasar } from 'quasar';
-import { onMounted, onUnmounted, ref, watchEffect } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAppStore } from '../../stores/app';
 import { useCartStore } from '../../stores/cart';
@@ -15,9 +15,33 @@ import RectangularButton from '../buttons/rectangular-button.vue';
   const app = useAppStore();
   const cartStore = useCartStore();
   const router = useRouter();
+  const selectedIndex = ref(0);
+
+  const observer = {
+    handler (entry) {
+      if (entry.isIntersecting === true) {
+        console.log(entry.target.id);
+        selectedIndex.value = entry.target.id
+      }
+    },
+    cfg: {
+      root: document.querySelector(".goods_container"),
+      threshold: 0.5,
+      rootMargin: '0% 0% -70% 0%'
+    }
+  }
+
+  const selectCategory = (id) => {
+    event.preventDefault();
+    const element = document.getElementById(id);
+    selectedIndex.value = id;
+    element.scrollIntoView({
+      behavior: 'smooth'
+    });
+  }
 
   const enterCardShake = () => {
-    gsap.to('.card_setting', {
+    gsap.to('.card_setting_alt', {
       duration: 0.5,
       // delay: 28,
       scale: 1.02,
@@ -111,51 +135,72 @@ import RectangularButton from '../buttons/rectangular-button.vue';
     )
   })
 
-//   watchEffect(async () => {
-//     const currentLocale = localStorage.getItem('lang');
-//     await goodsStore.updateGoods(currentLocale)
-//     // good.value = goodsStore.getGoodById(props.itemId);
-//     // Дополнительные операции, связанные с изменением языка
-// });
 </script>
 
 <template>
-  <q-tab-panels v-model="app.tab" animated swipeable class="window-height window-width">
-    <q-tab-panel v-for="goodCategory in goodsStore.goods" :name="goodCategory.id" :key="goodCategory.id">
-      <transition appear @enter="enterCardShake">
-        <div class="image_grid">
-          <ProductCard v-for="(good, index) in goodCategory.goods"
-            :good="good"
-            :key="index"
-          />
-        </div>
-      </transition>
-    </q-tab-panel>
-  </q-tab-panels>
-  <RedirectDialog :modelValue="dialogState">
-    <template #content>
-      <div class="text-h5 text-center">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}</div>
-    </template>
-    <template #actions>
-      <RectangularButton :name="$t('complete')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="redirect" textColor="primary" />
-      <RectangularButton :name="$t('continue')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="closeDialog" />
-    </template>
-  </RedirectDialog>
+  <div class="catalog_container">
+    <div class="column tabs_style">
+      <ul class='tabs__header'>
+        <li v-for='(goodCategory, index) in goodsStore.goods'
+          :key='goodCategory.id'
+          class="text-h5"
+        >
+          <div @click="selectCategory(index)" :class='{active : index == selectedIndex}'>
+            {{ goodCategory.title }}
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <q-scroll-area class="q-px-xs-none goods_container">
+      <article v-for="(goodCategory, index) in goodsStore.goods" :key="goodCategory.id" class="q-mb-md catalog" :id="index" v-intersection="observer">
+        <div class="text-h4 q-mb-sm catalog_header">{{ goodCategory.title }}</div>
+        <div v-if="goodCategory.goods.length == 0" class="text-body1">{{$t('category_empty')}}</div>
+        <transition appear @enter="enterCardShake">
+          <div class="row image_grid_alt">
+            <ProductCard :itemId="good.id" v-for="(good, index) in goodCategory.goods" :key="index" />
+          </div>
+        </transition>
+      </article>
+    </q-scroll-area>
+    <RedirectDialog :modelValue="dialogState">
+      <template #content>
+        <div class="text-h5 text-center">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}</div>
+      </template>
+      <template #actions>
+        <RectangularButton :name="$t('complete')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="redirect" textColor="primary" />
+        <RectangularButton :name="$t('continue')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="closeDialog" />
+      </template>
+    </RedirectDialog>
+  </div>
 </template>
 
 <style lang="scss" scoped>
+.catalog_container {
+  display: grid;
+  grid-template-columns: 0.3fr 1fr;
+  width: 100%;
+  padding: 0 2rem;
+  column-gap: 2rem;
+  margin-top: 4rem;
+  @media (max-width: 1300px) {
+    margin-top: 2.125rem;
+    padding: 0 1rem;
+    column-gap: 1rem;
+  }
+}
 
-.image_grid {
+.goods_container {
+  width: 100%;
+}
+.image_grid_alt {
   display: grid;
   grid-template-columns: repeat(4,  1fr);
-  gap: 2rem;
+  gap: 2em;
   width: 100%;
   height: auto;
-  padding: 0 4rem;
-  margin-top: 2rem;
-
+  padding: 0 0.2em;
   @media(max-width: 1300px) {
-    padding: 0 2rem;
     grid-template-columns: repeat(3,  1fr);
   }
   @media(max-width: 900px) {
@@ -164,5 +209,45 @@ import RectangularButton from '../buttons/rectangular-button.vue';
   @media(max-width: 500px) {
     grid-template-columns: 1fr;
   }
+}
+
+.goods_container > div > div > *:nth-last-child(-n + 1) {
+  height: 100vh;
+}
+
+.tabs_style {
+  box-shadow: var(--border-shadow);
+  background-color: white;
+  // width: 20vw;
+  width: min-content !important;
+  min-width: 20vw;
+  height: calc(100% - 2rem);
+  border-radius: 1.5rem;
+}
+
+ul.tabs__header {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+ul.tabs__header > li {
+  padding: 1.5rem;
+  cursor: pointer;
+  @media (max-width: 1300px) {
+    padding: 1rem;
+  }
+}
+
+.tab {
+  color: black;
+  padding: 20px;
+}
+li > div.active {
+  font-weight: bold;
+  color: var(--q-primary);
+  text-transform: uppercase;
+  scale: 1.05;
+  border-radius: 0.3rem;
 }
 </style>

@@ -3,8 +3,8 @@
 </script>
 
 <template>
-  <div class="relative-position">
-    <svg height="100" width="100" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" version="1.1" viewBox="0 0 122 106" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:vectornator="http://vectornator.io" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <div class="relative-position bin_icon_style">
+    <svg viewBox="0 0 122 106" height="100%" width="100%">
     <defs/>
 
       <g opacity="1" vectornator:layerName="Group 1">
@@ -17,12 +17,13 @@
 </template>
 
 <style scoped>
-.bin {
-  z-index: 2;
-}
-.bg {
-  position: absolute;
-  bottom: 14px; left: 0;
-  z-index: 1;
+.bin_icon_style {
+  width: 5rem !important;
+  @media (max-width: 1500px) {
+    width: 2.5rem !important;
+  }
+  @media (max-width: 700px) {
+    width: 1.5rem !important;
+  }
 }
 </style>

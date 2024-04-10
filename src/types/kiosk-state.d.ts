@@ -43,8 +43,15 @@ export type Settings = {
   customer_inactivity_animation_start_before_redirect: number,
   customer_successful_order_notify_duration_ms: number,
   //TODO: This two lines are not stabilized and not used yet
-  employee_inactive_after_ms: number,
-  employee_inactive_notify_duration_ms: number,
+  employee_menu_inactivity_before_action: number,
+  employee_menu_inactivity_countdown_duration: number,
+  employee_menu_inactivity_action: 'customer' | 'lock' | string,
+  employee_docs_inactivity_before_action: number,
+  employee_docs_inactivity_countdown_duration: number,
+  employee_docs_inactivity_action: 'customer' | 'lock' | string,
+  employee_doclists_inactivity_before_action: number,
+  employee_doclists_inactivity_countdown_duration: number,
+  employee_doclists_inactivity_action: 'customer' | 'lock' | string,
 
   allow_order_issue_in_outdated_shift: boolean,
   shifts__poll_interval_average_ms: number,
@@ -55,6 +62,8 @@ export type Settings = {
   shifts__state_open: number,
   shifts__state_closing: number,
   shifts__state_closed: number,
+
+  alt_ui: boolean,
 }
 
 export type TerminalParams = {

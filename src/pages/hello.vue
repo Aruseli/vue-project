@@ -4,11 +4,17 @@
   import { onMounted, onUnmounted, ref } from 'vue';
   import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
   import { useAppStore } from 'src/stores/app';
+  import { forceNewVisit } from 'src/services/tracking';
 
   const router = useRouter();
   const show = ref(true);
   const shiftsUpdateTimer = ref(null);
   const app = useAppStore();
+
+  const onClick = async () => {
+    forceNewVisit();
+    await router.push('languages');
+  }
 
   const updateShifts = async () => {
     await app.updateShifts();
@@ -28,6 +34,7 @@
   }
 
   onMounted(() => {
+    forceNewVisit();
     app.resetLocale();
     shiftsUpdateTimer.value = setTimeout(updateShifts, 0);
   })
@@ -40,16 +47,16 @@
 <template>
   <q-page class="flex flex-center relative relative-position">
     <div class="bg_filtered" />
-    <div class="column justify-between window-height full-width container" @click="router.push('languages')">
-      <Logo class="logo_row self-start" classes="q-mr-md">
+    <div class="column justify-between window-height full-width container" @click="onClick">
+      <Logo class="logo_row self-start" classes="q-mr-sm img_style">
         <LogoSvgWhite />
       </Logo>
 
       <Transition name="slide-fade" mode="out-in">
-          <p v-show="show" class="text-h1 text-center text-white text-uppercase">
-            {{ $t('find_your_experience') }}
-          </p>
-        </Transition>
+        <p v-show="show" class="text-h1 text-center text-white text-uppercase">
+          {{ $t('find_your_experience') }}
+        </p>
+      </Transition>
       <div class="column">
         <div class="text-h4 text-center text-grey-2 text-uppercase">
           {{ $t('tap_on_screen') }}
@@ -67,12 +74,17 @@
   width: 100vw;
   height: 100vh;
   background-image: url('/start.jpg');
+  background-repeat: no-repeat;
   background-position: center;
+  background-size: cover;
   filter: brightness(0.6);
 }
 .container {
   padding: 5rem;
   z-index: 2;
+  @media (max-width: 899px) {
+    padding: 1.5rem;
+  }
 }
 
 .slide-fade-leave-active {

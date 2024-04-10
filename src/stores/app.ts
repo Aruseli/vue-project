@@ -14,10 +14,19 @@ export const useAppStore = defineStore('app', () => {
   const router = useRouter();
   const drawerCartState = ref(false);
   const orderDialog = ref(false);
+  const langDialog = ref(false);
   const tab = ref('');
   const tabCharacteristics = ref('description');
   const shiftLoading = ref(true);
   const lang_dir = ref('ltr');
+
+
+  // start code for redirect windows
+  const redirectDialogState = ref(false);
+  const redirectAt = ref(0);
+  const countdown = ref(0);
+
+  // end code for redirect windows
 
   const openDrawerCart = (state: boolean) => {
     drawerCartState.value = state;
@@ -25,6 +34,9 @@ export const useAppStore = defineStore('app', () => {
 
   const openOrderDialog = (state: boolean) => {
     orderDialog.value = state;
+  }
+  const openLangDialog = (state: boolean) => {
+    langDialog.value = state;
   }
 
   //===================================
@@ -39,6 +51,57 @@ export const useAppStore = defineStore('app', () => {
     kioskState.globalError = new Error(t('no_terminal_code_provided_on_startup'))
     kioskState.status = 'UnrecoverableError'
   }
+
+  // start code for redirect windows
+  // const redirect = () => {
+  //   redirectDialogState.value = false;
+  //   if (!customerModeIsAllowed) {
+
+  //   }
+  //   router.push('hello');
+  //   redirectAt.value = 0;
+  // }
+
+  function closeRedirectDialog() {
+    redirectAt.value =
+      Date.now() +
+      (kioskState.settings?.employee_menu_inactivity_before_action ?? 150000);
+  }
+  function resetRedirectTimer() {
+    if (redirectDialogState.value) {
+      return;
+    }
+    redirectAt.value =
+      Date.now() +
+      (kioskState.settings?.employee_menu_inactivity_before_action ?? 150000);
+      eventEmitter.emit('redirect');
+  }
+  const redirectTimer = ref(null);
+  const boundResetTimer = resetRedirectTimer.bind(this);
+
+  // const tick = () => {
+  //   if (Date.now() - redirectAt.value > 60*1000) {
+  //     redirectAt.value = Date.now() + (kioskState.settings?.employee_inactivity_before_redirect ?? 150000);
+  //   }
+
+  //   const timeBeforeRedirect = redirectAt.value - Date.now();
+  //   if (timeBeforeRedirect < 0) {
+  //     // redirect phase
+  //     redirect();
+  //     return;
+  //   }
+
+  //   if (timeBeforeRedirect < (kioskState.settings?.employee_inactive_notify_duration_ms ?? 30000)) {
+  //     // countdown phase
+  //     countdown.value = Math.floor(timeBeforeRedirect / 1000);
+  //     redirectDialogState.value = true;
+  //     return;
+  //   }
+  //   redirectDialogState.value = false;
+  //   return;
+  // }
+
+  // end code for redirect windows
 
   const updateShifts = async () => {
     shiftLoading.value = true;
@@ -184,7 +247,7 @@ export const useAppStore = defineStore('app', () => {
   let inited = false;
   eventEmitter.on('kioskState.status', async ({ newStatus }) => {
     if (newStatus != 'Ready') {
-      router.push('/');
+      await router.push('/');
       return
     }
     if (!inited) {
@@ -217,7 +280,9 @@ export const useAppStore = defineStore('app', () => {
     tabCharacteristics,
     openDrawerCart,
     orderDialog,
+    langDialog,
     openOrderDialog,
+    openLangDialog,
 
     kioskState,
     login,
@@ -236,6 +301,18 @@ export const useAppStore = defineStore('app', () => {
     shiftIsUpToDate,
     shiftIsGood,
     lockTerminal,
+
+    //redirect start
+    redirectDialogState,
+    redirectAt,
+    countdown,
+    redirectTimer,
+    boundResetTimer,
+    // tick,
+    // redirect,
+    closeRedirectDialog,
+    resetRedirectTimer,
+    //redirect end
 
     customerModeIsAllowed: computed<boolean>(() => {
       return hasRight(kioskState.settings?.rights__kiosk_open_shift)

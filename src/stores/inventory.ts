@@ -5,6 +5,7 @@ import { getNextInventoryNumber } from "src/services/documents";
 import { computed, ref } from "vue";
 import { useAppStore } from "./app";
 import { useGoodsStore, type Good } from "./goods";
+import { Notify } from 'quasar';
 
 export type InventoryItem = {
   id: string,
@@ -88,7 +89,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
         doc_detail_type: settings?.inventory_docdetail_type_id ?? "",
       })),
     };
-    const documentId = await apiSaveDocument(doc);
+    const documentId = await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '');
     return {documentId}
   };
 
@@ -125,7 +126,16 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     if (!inventoryItem) {
       return;
     }
-    if (inventoryItem?.confirmed){
+    if (inventoryItem?.confirmed == true) {
+        console.error("Stop scan");
+        Notify.create({
+          color: "warning",
+          position: "center",
+          classes: "text-h3 text-center text-uppercase",
+          timeout: 3000,
+          textColor: "white",
+          message: t("you_are_scanning_an_item_whose_quantity_has_been_confirmed"),
+        });
       return;
     }
     inventoryItem.quant += 1;

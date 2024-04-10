@@ -91,7 +91,7 @@ export async function apiGetLocale(lang: string) {
     lang,
   });
   console.log('apiGetLocale', response);
-  return response.data.locale[0]?.data;
+  return response.data.locale;
 }
 export async function apiGetCurrentShift(locationId: string) {
   const response = await fetchApi('/api/v2/sales/currentShift', {
@@ -243,10 +243,11 @@ export type KioskDocument = {
   }[],
 };
 
-export async function apiGetDocuments(types: string[], states: number[]) {
+export async function apiGetDocuments(types: string[], states: number[], corr_ids: string[]) {
   const response = await fetchApi('/api/v2/kiosk/getDocuments', {
     types,
     states,
+    corr_ids,
   });
   return response.data.docs as KioskDocument[];
 }
@@ -292,9 +293,9 @@ export const enum DocumentState {
   Draft = 2,
 }
 
-export async function apiSaveDocument(doc: SaveableDocument) {
+export async function apiSaveDocument(doc: SaveableDocument, terminal_shift_id: string) {
   const response = await fetchApi('/api/v2/kiosk/saveDocument', {
-    doc,
+    doc, terminal_shift_id,
   });
   console.log('saveDocument', response);
   return response.data.id as string;
