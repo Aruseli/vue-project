@@ -54,14 +54,55 @@ type PrintSpecificDocumentOptions = Omit<PrintDocumentOptions, 'viewId'> & {
   appStore: ReturnType<typeof useAppStore>
 }
 
+type PrintOrderDocumentOptions = Omit<PrintDocumentOptions, 'viewId'|'langCode'> & {
+  viewId?: string,
+  appStore: ReturnType<typeof useAppStore>,
+  localLangCode?: string,
+  systemLangCode?: string,
+}
+
 
 export async function printCheck({$q, documentId, langCode = i18next.language, appStore}: PrintSpecificDocumentOptions) {
   console.log(`appStore.kioskState.settings!.view_check`, appStore.kioskState.settings!.view_check)
   return await printDocument({documentId, $q, viewId: appStore.kioskState.settings!.view_check, langCode});
 }
 
-export async function printOrder({$q, documentId, langCode = i18next.language, appStore}: PrintSpecificDocumentOptions) {
-  return await printDocument({documentId, $q, viewId: appStore.kioskState.settings!.view_ord, langCode});
+export async function printOrder({$q, documentId, localLangCode = i18next.language, appStore, systemLangCode = appStore.kioskState.settings!.loc}: PrintOrderDocumentOptions) {
+  console.log({documentId})
+  $q.loading.show();
+    try {
+      const viewId = appStore.kioskState.settings!.view_ord;
+      const viewData = await apiReportsGetView(viewId, [
+        {
+          "name": "doc_id",
+          "value": documentId,
+          "expression": documentId
+        },
+        {
+          "name": "system_lang_code",
+          "value": localLangCode,
+          "expression": localLangCode
+        },
+        {
+          "name": "local_lang_code",
+          "value": localLangCode,
+          "expression": localLangCode
+        }
+      ]);
+      console.log({viewData});
+      wsSendMessage('check-print', viewData);
+    }
+    catch(e) {
+      console.log(e);
+      $q.notify({
+        message: 'Print Error occured',
+        icon: 'warning',
+        color: 'warning',
+      });
+    }
+    finally {
+      $q.loading.hide();
+    }
 }
 
 export async function printGoodsArrival({$q, documentId, langCode = i18next.language, appStore}: PrintSpecificDocumentOptions) {
