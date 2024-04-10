@@ -35,10 +35,6 @@ const allowConfirm = computed(() => {
 });
 
 async function showPrintConfirmationDialog() {
-  console.log(`shouldShowPrintConfirmationDialog.value = true`);
-  console.log({
-    shouldShowPrintConfirmationDialog: isPrintConfirmationDialogVisible,
-  });
 
   isPrintConfirmationDialogVisible.value = true;
 }
