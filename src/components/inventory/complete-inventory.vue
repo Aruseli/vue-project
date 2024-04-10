@@ -51,30 +51,29 @@ async function handlePrintConfirmation(printConfirmed) {
   $q.loading.show();
   try {
     if (printConfirmed) {
-    await printInventory({ documentId: documentId.value, $q, appStore: app});
-  }
-  hidePrintConfirmationDialog();
-  if (route.path === "/open-shift/complete-inventory") {
-    await app.openTerminalShift();
-    router.push(app.shiftIsGood() ? '/hello' : '/employee-actions' );
-  } else if (route.path === "/close-shift/complete-inventory") {
-    await app.closeTerminalShift();
-    router.push('/employee-actions');
-  } else {
-    router.push('/employee-actions');
-  }
+      await printInventory({ documentId: documentId.value, $q, appStore: app });
+    }
+    hidePrintConfirmationDialog();
+    if (route.path === "/open-shift/complete-inventory") {
+      await app.openTerminalShift();
+      router.push(app.shiftIsGood() ? "/hello" : "/employee-actions");
+    } else if (route.path === "/close-shift/complete-inventory") {
+      await app.closeTerminalShift();
+      router.push("/employee-actions");
+    } else {
+      router.push("/employee-actions");
+    }
   } catch (error) {
-    console.error('inventoryStore.submitInventory print error:', error)
-      $q.notify({
-        color: 'warning',
-        icon: 'warning',
-        position: 'center',
-        message: t('unable_to_print_submit_inventory'),
-        timeout: 6000,
-      })
+    console.error("inventoryStore.submitInventory print error:", error);
+    $q.notify({
+      color: "warning",
+      icon: "warning",
+      position: "center",
+      message: t("unable_to_print_submit_inventory"),
+      timeout: 6000,
+    });
   } finally {
-  $q.loading.hide();
-  
+    $q.loading.hide();
   }
 }
 
@@ -94,14 +93,14 @@ async function submitInventory() {
       }
       await showPrintConfirmationDialog();
     } catch (e) {
-      console.error('inventoryStore.submitInventory error:', err)
+      console.error("inventoryStore.submitInventory error:", err);
       $q.notify({
-        color: 'warning',
-        icon: 'warning',
-        position: 'center',
-        message: t('unable_to_submit_inventory'),
+        color: "warning",
+        icon: "warning",
+        position: "center",
+        message: t("unable_to_submit_inventory"),
         timeout: 6000,
-      })
+      });
     } finally {
       $q.loading.hide();
     }
@@ -152,25 +151,14 @@ onMounted(async () => {
         @click="router.push('/employee-actions')"
       />
       <div
-        class="
-          text-h2
-          text-uppercase text-center
-          q-mb-lg-lg
-          q-mb-xs-sm
-          q-pt-sm-sm
-          q-pt-xs-sm
-        "
-      >{{ $t('complete_inventory') }}</div>
-
-      <div
-        class="
-          row justify-between
-          q-mb-md-sm
-          q-mb-xs-sm
-        "
+        class="text-h2 text-uppercase text-center q-mb-lg-lg q-mb-xs-sm q-pt-sm-sm q-pt-xs-sm"
       >
+        {{ $t("complete_inventory") }}
+      </div>
+
+      <div class="row justify-between q-mb-md-sm q-mb-xs-sm">
         <div class="text-capitalize text-h5">
-          {{ $t('remaining_goods') }}
+          {{ $t("remaining_goods") }}
         </div>
         <div class="row date_style text-h5">
           <span>{{ formattedDate }}</span>
@@ -191,7 +179,7 @@ onMounted(async () => {
             :good_name="good.title"
             :estimated_quantity="good.stock"
             :not_equal="good.stock !== good.quant"
-            :class="{ 'highlighted': good.confirmed }"
+            :class="{ highlighted: good.confirmed }"
             @itemConfirm="good.confirmed = !good.confirmed"
             @resetActualQuantity="good.quant = 0"
             :id="good.id"
@@ -200,36 +188,34 @@ onMounted(async () => {
       </div>
     </div>
     <div>
-      <DividerBold
-        class="
-          q-mb-lg-lg
-          q-mb-md-sm
-          q-mb-xs-sm
-        "
-      />
+      <DividerBold class="q-mb-lg-lg q-mb-md-sm q-mb-xs-sm" />
       <div
-        class="
-          row justify-between items-center
-          q-mb-lg-xl
-          q-mb-md-md
-          q-mb-xs-sm
-        "
+        class="row justify-between items-center q-mb-lg-xl q-mb-md-md q-mb-xs-sm"
       >
         <div class="row text-h5">
-          <span class="q-mr-xs-xs">{{$t('total')}}</span>
-          <span class="q-mr-xs-xs">{{inventoryStore.inventory.length}}</span>
-          <span class="q-mr-xs-xs">{{ $t('product') }}</span>
-          <span>{{ $t('units', {count: inventoryStore.inventory.length}) }}</span>
+          <span class="q-mr-xs-xs">{{ $t("total") }}</span>
+          <span class="q-mr-xs-xs">{{ inventoryStore.inventory.length }}</span>
+          <span class="q-mr-xs-xs">{{ $t("product") }}</span>
+          <span>{{
+            $t("units", { count: inventoryStore.inventory.length })
+          }}</span>
         </div>
 
         <div class="text-h5 text-weight-regular row">
-          <div class="q-mr-xs-xs">{{$t('estimated_quantity')}}</div>
-          <div class="q-mr-xs-xs">{{inventoryStore.totalQuantity}}</div>
-          <div class="q-mr-xs-xs">{{ $t('pc', {count: inventoryStore.totalQuantity}) }}</div>
-          <q-separator color="secondary" vertical class="q-mr-xs-xs" size="0.2rem" />
-          <div class="q-mr-xs-xs">{{$t('actual_quantity')}}</div>
+          <div class="q-mr-xs-xs">{{ $t("estimated_quantity") }}</div>
+          <div class="q-mr-xs-xs">{{ inventoryStore.totalQuantity }}</div>
+          <div class="q-mr-xs-xs">
+            {{ $t("pc", { count: inventoryStore.totalQuantity }) }}
+          </div>
+          <q-separator
+            color="secondary"
+            vertical
+            class="q-mr-xs-xs"
+            size="0.2rem"
+          />
+          <div class="q-mr-xs-xs">{{ $t("actual_quantity") }}</div>
           <div class="q-mr-xs-xs">{{ inventoryStore.totalActualQuant }}</div>
-          <div>{{ $t('pc', {count: inventoryStore.totalActualQuant}) }}</div>
+          <div>{{ $t("pc", { count: inventoryStore.totalActualQuant }) }}</div>
         </div>
       </div>
       <div class="row justify-evenly">
@@ -247,20 +233,27 @@ onMounted(async () => {
       </div>
     </div>
   </div>
-  <RedirectDialog
-      :modelValue="isPrintConfirmationDialogVisible"
-      title="print?"
-    >
-      <template #content>
-        <div class="text-h5 text-center">
-          <div class="text-h5">{{$t('print')}}</div>
-        </div>
-      </template>
-      <template #actions>
-        <RectangularButton :name="$t('do_not') + ' ' + $t('print')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="handlePrintConfirmation(false)" textColor="primary" />
-        <RectangularButton :name="$t('print')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="handlePrintConfirmation(true)" />
-      </template>
-    </RedirectDialog>
+  <RedirectDialog :modelValue="isPrintConfirmationDialogVisible" title="print?">
+    <template #content>
+      <div class="text-h5 text-center">
+        <div class="text-h5">{{ $t("print") }}</div>
+      </div>
+    </template>
+    <template #actions>
+      <RectangularButton
+        :name="$t('do_not') + ' ' + $t('print')"
+        color="transparent"
+        class="q-px-md-sm q-px-xs-sm q-py-xs-xs"
+        @click="handlePrintConfirmation(false)"
+        textColor="primary"
+      />
+      <RectangularButton
+        :name="$t('print')"
+        class="q-px-md-sm q-px-xs-sm q-py-xs-xs"
+        @click="handlePrintConfirmation(true)"
+      />
+    </template>
+  </RedirectDialog>
 </template>
 
 <style scoped>
