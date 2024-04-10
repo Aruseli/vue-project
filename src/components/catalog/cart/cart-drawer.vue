@@ -5,13 +5,15 @@ import { useAppStore } from 'src/stores/app';
 import { useCartStore } from 'src/stores/cart';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import IconButton from '../buttons/icon-button.vue';
-import RectangularButton from '../buttons/rectangular-button.vue';
-import DividerBold from '../dividers/divider-bold.vue';
-import DividerThin from '../dividers/divider-thin.vue';
 import { useQuasar } from 'quasar';
 import { apiReportsGetView, wsSendMessage,printOrder } from 'src/services';
+import RectangularButton from 'src/components/buttons/rectangular-button.vue';
+import DividerBold from 'src/components/dividers/divider-bold.vue';
+import DividerThin from 'src/components/dividers/divider-thin.vue';
+import IconButton from 'src/components/buttons/icon-button.vue';
 
+IconButton
+DividerBold
   const $q = useQuasar();
   const router = useRouter();
 
