@@ -10,6 +10,7 @@ import RectangularButton from '../buttons/rectangular-button.vue';
 import DividerBold from '../dividers/divider-bold.vue';
 import ArrivalItem from './arrival-item.vue';
 import { apiReportsGetView, printGoodsArrival, wsSendMessage } from 'src/services';
+import { useAppStore } from 'src/stores/app';
 
 const goodsStore = useGoodsStore();
 
@@ -18,6 +19,7 @@ const goodsStore = useGoodsStore();
   const arrivalsStore = useArrivalsStore();
   const router = useRouter();
   const route = useRoute();
+  const appStore = useAppStore();
 
   const allowConfirm = computed(() => {
     return arrivalsStore.arrival?.items?.every(i => i.issued == i.quant)
@@ -60,7 +62,7 @@ const goodsStore = useGoodsStore();
   <div class="main_container full-height full-width">
     <div class="relative-position q-mb-lg-xl q-mb-xs-sm">
       <RectangularButton :name="$t('back_to_employee_actions')" color="secondary" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/employee-actions')" />
-      <RectangularButton :name="$t('print')" :color="'secondary'" size="xl" class="q-pr-sm" @click="printGoodsArrival({documentId: arrivalsStore.arrivalDocument.id, $q, viewId:'f8e0f371-87e6-460a-8010-011eabef8757'})" /> 
+      <RectangularButton :name="$t('print')" :color="'secondary'" size="xl" class="q-pr-sm" @click="printGoodsArrival({documentId: arrivalsStore.arrivalDocument.id, $q, appStore})" /> 
 
       <div
         class="
