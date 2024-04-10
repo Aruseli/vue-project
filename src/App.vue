@@ -149,11 +149,21 @@
     }
     // document
     if (/^\/(arrival-goods\/.*|issuing-order\/order\/.*|complete-inventory|selective-inventory|close-shift\/complete-inventory|open-shift\/complete-inventory)$/.test(route.path)) {
-      console.log('document') // TODO: replace with return
+      redirectSettings.value = {
+        inactivity_before_action: settings.employee_docs_inactivity_before_action,
+        countdown_duration: settings.employee_docs_inactivity_countdown_duration,
+        action: settings.employee_docs_inactivity_action,
+      }
+      return;
     }
     // lists
     if (/^\/(issuing-order)$/.test(route.path)) {
-      console.log('list') // TODO: replace with return
+      redirectSettings.value = {
+        inactivity_before_action: settings.employee_doclists_inactivity_before_action,
+        countdown_duration: settings.employee_doclists_inactivity_countdown_duration,
+        action: settings.employee_doclists_inactivity_action,
+      }
+      return;
     }
     if (lastErrorPath.value != route.path) {
       lastErrorPath.value = route.path;
