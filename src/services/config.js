@@ -12,6 +12,7 @@ export default {
     "view_check": "ff7ce8d1-989f-4fc6-9ad4-4aacf65da9f8",
     "view_doc_input": "f8e0f371-87e6-460a-8010-011eabef8757",
     "view_doc_invent": "3d8779b5-2705-4668-a7fd-fd51e480890c",
+    "view_doc_leftover": "827dea44-c354-4b5a-aaee-6aff45c01369",
 
     "client_corr_id": "4b4d99df-3e1a-4e49-853b-2ae324a954ae",
     "user_corr_type": "staff",
