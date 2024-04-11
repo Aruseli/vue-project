@@ -63,7 +63,7 @@ export type Settings = {
   shifts__state_closing: number,
   shifts__state_closed: number,
 
-  alt_ui: boolean,
+  alt_ui: 'design_v3' | 'design_v3' | 'design_v3' | string,
 }
 
 export type TerminalParams = {
