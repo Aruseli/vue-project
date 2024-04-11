@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
   import gsap from 'gsap';
 import { useQuasar } from 'quasar';
 import { onMounted, onUnmounted, ref } from 'vue';
@@ -11,6 +11,9 @@ import ProductCard from './product-card.vue';
 import RectangularButton from '../buttons/rectangular-button.vue';
 import LogoSimple from './logo/logo-simple.vue';
 import LogoSvg from './logo/logo-svg.vue';
+import BinButton from './buttons/bin-button.vue';
+import BinIcon from '../icons/bin-icon.vue';
+import BinIconV3 from '../icons/bin-icon-v3.vue';
 
   const $q = useQuasar();
   const goodsStore = useGoodsStore();
@@ -18,6 +21,10 @@ import LogoSvg from './logo/logo-svg.vue';
   const cartStore = useCartStore();
   const router = useRouter();
   const selectedIndex = ref(0);
+
+  const openDrawer = () => {
+    app.openDrawerCart(true);
+  }
 
   const observer = {
     handler (entry) {
@@ -141,13 +148,26 @@ import LogoSvg from './logo/logo-svg.vue';
 </script>
 
 <template>
-  <div class="catalog_container">
-    <div class="header_style">
-      <LogoSimple>
-        <LogoSvg />
+  <div
+    class="catalog_container"
+    :class="[app.kioskState.settings?.alt_ui == 'design_v2' ? 'catalog_container_v2 q-pa-md' : '']"
+  >
+    <header
+      class="row justify-between q-px-md q-py-sm header_style"
+      :class="[app.kioskState.settings?.alt_ui == 'design_v2' ? 'header_style_v2' : '']"
+    >
+      <LogoSimple :text_style="app.kioskState.settings?.alt_ui == 'design_v3' ? 'text-accent' : 'text-primary'">
+        <LogoSvg :fill="app.kioskState.settings?.alt_ui == 'design_v3' ? '#88D863' : '#1f1f1f'" />
       </LogoSimple>
-    </div>
-    <div class="column category_container">
+      <BinButton @click="openDrawer" :quantity="cartStore.totalQuantity">
+        <component :quantity="cartStore.totalQuantity > 0" :is="app.kioskState.settings?.alt_ui == 'design_v3' ? BinIconV3 : BinIcon">
+        </component>
+      </BinButton>
+    </header>
+    <aside
+      class="column category_container"
+      :class="[app.kioskState.settings?.alt_ui == 'design_v2' ? 'category_container_v2' : '']"
+    >
       <ul class='tabs__header'>
         <li v-for='(goodCategory, index) in goodsStore.goods'
           :key='goodCategory.id'
@@ -158,15 +178,15 @@ import LogoSvg from './logo/logo-svg.vue';
           </div>
         </li>
       </ul>
-    </div>
+    </aside>
 
     <q-scroll-area class="q-px-xs-none goods_container">
       <article v-for="(goodCategory, index) in goodsStore.goods" :key="goodCategory.id" class="q-mb-md catalog" :id="index" v-intersection="observer">
         <div class="text-h4 q-mb-sm catalog_header">{{ goodCategory.title }}</div>
         <div v-if="goodCategory.goods.length == 0" class="text-body1">{{$t('category_empty')}}</div>
         <transition appear @enter="enterCardShake">
-          <div class="row image_grid_alt">
-            <ProductCard :itemId="good.id" v-for="(good, index) in goodCategory.goods" :key="index" />
+          <div class="row image_grid">
+            <ProductCard :good="good" v-for="(good, index) in goodCategory.goods" :key="index" />
           </div>
         </transition>
       </article>
@@ -183,9 +203,9 @@ import LogoSvg from './logo/logo-svg.vue';
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
-@import "src/css/app-v3.scss";
+// @import "src/css/app-v3.scss";
 
 .catalog_container {
   background-color: #181818;
@@ -196,45 +216,31 @@ import LogoSvg from './logo/logo-svg.vue';
                       "category catalog";
   grid-template-rows: max-content 1fr;
   grid-template-columns: max-content 1fr;
+  column-gap: 2rem;
   width: 100%;
   height: 100vh;
-
-
-  @media (max-width: 1300px) {
-
-  }
 }
+
+.catalog_container_v2 {
+  background-image: url(/bg.svg);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  row-gap: 2rem;
+}
+
 .header_style {
   grid-area: header;
   border: var(--border);
   height: max-content;
 }
 
-.goods_container {
-  width: 100%;
+.header_style_v2 {
+  color: var(--q-text);
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: var(--border-shadow);
 }
-.image_grid_alt {
-  display: grid;
-  grid-template-columns: repeat(4,  1fr);
-  gap: 2em;
-  width: 100%;
-  height: auto;
-  padding: 0 0.2em;
-  @media(max-width: 1300px) {
-    grid-template-columns: repeat(3,  1fr);
-  }
-  @media(max-width: 900px) {
-    grid-template-columns: repeat(2,  1fr);
-  }
-  @media(max-width: 500px) {
-    grid-template-columns: 1fr;
-  }
-}
-
-.goods_container > div > div > *:nth-last-child(-n + 1) {
-  height: 100vh;
-}
-
 .category_container {
   grid-area: category;
   border-right: var(--border);
@@ -244,7 +250,29 @@ import LogoSvg from './logo/logo-svg.vue';
   min-width: 20vw;
   height: 100%;
 }
-
+.category_container_v2 {
+  box-shadow: var(--border-shadow);
+  background-color: white;
+  border-radius: 1rem;
+}
+.goods_container {
+  width: 100%;
+  padding-right: 2rem;
+}
+.image_grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2em;
+  width: 100%;
+  height: auto;
+  padding: 0 0.2em;
+  @media(max-width: 900px) {
+    grid-template-columns: repeat(2,  1fr);
+  }
+}
+.goods_container > div > div > *:nth-last-child(-n + 1) {
+  height: 100vh;
+}
 ul.tabs__header {
   list-style: none;
   margin: 0;

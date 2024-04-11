@@ -76,7 +76,7 @@ import ProductModal from './product-modal.vue';
 
 
 <template>
-  <div :class="[props.good && props.good.stock <= 0 && 'disabled no-pointer-events', !app.kioskState.settings?.alt_ui ? 'card_setting' : 'card_setting_alt']" v-bind="$attrs">
+  <div :class="[props.good && props.good.stock <= 0 && 'disabled no-pointer-events']" v-bind="$attrs">
     <div>
       <div class="content_container" @click="openDialog = true">
         <div class="img_container">
@@ -199,7 +199,7 @@ import ProductModal from './product-modal.vue';
     padding: 1.3rem;
     background-color: var(--q-header_bg);
   }
-  .card_setting_alt {
+  .card_setting_v2 {
     border-radius: var(--border-sm);
     box-shadow: var(--border-shadow);
     width: 100%;

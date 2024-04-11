@@ -121,6 +121,7 @@ import RectangularButton from '../buttons/rectangular-button.vue';
           <ProductCard v-for="(good, index) in goodCategory.goods"
             :good="good"
             :key="index"
+            class="card_setting"
           />
         </div>
       </transition>

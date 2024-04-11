@@ -3,7 +3,11 @@ const props = defineProps({
   classes: {
     type: String,
     default: 'q-mr-sm'
-  }
+  },
+  text_style: {
+    type: String,
+    default: 'q-mr-sm'
+  },
 })
 
 </script>
@@ -13,8 +17,6 @@ const props = defineProps({
     <div :class="props.classes">
       <slot></slot>
     </div>
-    <div class="text-h3 text-center text-secondary">
-      <span class="text-uppercase text-weight-bold">high</span><span class="text-uppercase text-weight-thin">case</span>
-    </div>
+    <div class="text-h3 text-center text-secondary text-uppercase text-weight-bold" :class="props.text_style">high case</div>
   </div>
 </template>

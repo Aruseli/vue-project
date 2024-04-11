@@ -66,7 +66,7 @@ import ProductModal from './product-modal.vue';
 
 
 <template>
-  <div :class="[props.good && props.good.stock <= 0 && 'disabled no-pointer-events', !app.kioskState.settings?.alt_ui ? 'card_setting' : 'card_setting_alt']" v-bind="$attrs">
+  <div :class="[props.good && props.good.stock <= 0 && 'disabled no-pointer-events', 'card_setting', app.kioskState.settings?.alt_ui == 'design_v2' ? 'card_setting_v2' : '']" v-bind="$attrs">
     <div>
       <div class="content_container" @click="openDialog = true">
         <div class="img_container">
@@ -86,25 +86,25 @@ import ProductModal from './product-modal.vue';
           <div class="column no-wrap items-left">
             <div
               class="q-mb-xs ellipsis first_letter"
-              :class="[!app.kioskState.settings?.alt_ui ? 'text-h4 ellipsis' : 'text-h5 text-center']"
+              :class="[app.kioskState.settings?.alt_ui == 'design_v2'? 'text-h5 text-center' : 'text-h4 ellipsis']"
             >
               {{ $t(props.good?.title) }}
             </div>
 
-            <div v-if="!app.kioskState.settings?.alt_ui">
+            <div v-if="app.kioskState.settings?.alt_ui == 'design_1'">
               <span class="text-h5" v-if="props.good && props.good.stock <= 0">{{ $t('out_of_stock') }}</span>
               <span class="text-h3" v-else>&#3647&ensp;{{ props.good?.price }}</span>
             </div>
           </div>
         </div>
 
-        <div v-if="!app.kioskState.settings?.alt_ui" class="block_description" @click="openDialog = true">
+        <div v-if="app.kioskState.settings?.alt_ui == 'design_1'" class="block_description" @click="openDialog = true">
           <div class="text-body1" v-html="$t(sliceDescription)"/>
         </div>
 
       </div>
 
-      <div v-if="app.kioskState.settings?.alt_ui">
+      <div v-if="app.kioskState.settings?.alt_ui == 'design_2'">
         <q-btn v-if="!goodInCart"
           class="full-width"
           unelevated
@@ -135,7 +135,7 @@ import ProductModal from './product-modal.vue';
         </div>
       </div>
 
-      <div v-if="!app.kioskState.settings?.alt_ui">
+      <div v-if="app.kioskState.settings?.alt_ui == 'design_1'">
         <q-btn v-if="!goodInCart"
           class="full-width"
           unelevated
@@ -189,7 +189,7 @@ import ProductModal from './product-modal.vue';
     padding: 1.3rem;
     background-color: var(--q-header_bg);
   }
-  .card_setting_alt {
+  .card_setting_v2 {
     border-radius: var(--border-sm);
     box-shadow: var(--border-shadow);
     width: 100%;

@@ -13,10 +13,10 @@ import CartDrawer from '../components/catalog/cart/cart-drawer.vue';
 <template>
   <q-page :style="{ direction: app.lang_dir }" class="flex align-center relative justify-start window-full">
     <CartDrawer />
-    <CatalogHeader v-if="app.kioskState.settings?.alt_ui != 'design_v3'"/>
-    <CatalogNew v-if="app.kioskState.settings?.alt_ui == 'design_v2'" />
-    <CatalogV3 v-if="app.kioskState.settings?.alt_ui == 'design_v3'" />
-    <Catalog v-else />
+    <CatalogHeader v-if="app.kioskState.settings?.alt_ui == 'design_v1'"/>
+    <!-- <CatalogNew v-if="app.kioskState.settings?.alt_ui == 'design_v2'" /> -->
+    <Catalog v-if="app.kioskState.settings?.alt_ui == 'design_v1'" />
+    <CatalogV3 v-else />
   </q-page>
 </template>
 
