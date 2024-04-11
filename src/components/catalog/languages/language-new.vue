@@ -1,9 +1,15 @@
 <script setup>
+  import { useAppStore } from '../../../stores/app.ts';
 
+  const app = useAppStore();
   const props = defineProps({
     src: {
       type: String,
       default: 'src/assets/flags/gb.webp'
+    },
+    alt: {
+      type: String,
+      default: 'english'
     },
     language: {
       type: String,
@@ -16,15 +22,22 @@
 </script>
 
 <template>
-  <div @click="emit('click')" class="lang_container_new column justify-center items-center">
+  <div
+    @click="emit('click')"
+    class="lang_container_new justify-center items-center"
+    :class="[app.kioskState.settings?.alt_ui == 'design_v3' ? 'row' : 'column']"
+  >
     <q-img
       :src="props.src"
-      :alt="props.language"
+      :alt="props.alt"
       ratio="16/9"
       class="img_style q-mb-xs"
       fit='fill'
     />
-    <div class="text-left text-black text-uppercase text-h5 lang_style">{{ props.language }}</div>
+    <div
+      class="text-left text-uppercase lang_style"
+      :class="[app.kioskState.settings?.alt_ui == 'design_v3' ? 'text-white text-h2 q-ml-sm' : 'text-black text-h5']"
+    >{{ props.language }}</div>
   </div>
 </template>
 

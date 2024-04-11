@@ -15,6 +15,8 @@ import LogoSvg from '../logo/logo-svg.vue';
 import BinButton from './buttons/bin-button.vue';
 import BinIcon from '../icons/bin-icon.vue';
 import BinIconV3 from '../icons/bin-icon-v3.vue';
+import Modal from '../overlay/modal.vue';
+import LanguageNew from '../catalog/languages/language-new.vue';
 
   const $q = useQuasar();
   const goodsStore = useGoodsStore();
@@ -22,9 +24,16 @@ import BinIconV3 from '../icons/bin-icon-v3.vue';
   const cartStore = useCartStore();
   const router = useRouter();
   const selectedIndex = ref(0);
+  const selectedLang = ref('');
 
   const openDrawer = () => {
     app.openDrawerCart(true);
+  }
+  const changeLanguage = async (newLocale) => {
+    await app.setLocale(newLocale);
+    await goodsStore.updateGoods(newLocale);
+    selectedLang.value = newLocale;
+    console.log('selectedLang.value', selectedLang.value)
   }
 
   const observer = {
@@ -159,7 +168,7 @@ import BinIconV3 from '../icons/bin-icon-v3.vue';
     ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
       document.addEventListener(e, boundResetTimer)
     )
-    console.log("mounted", app.kioskState.settings.alt_ui);
+    selectedLang.value = localStorage.getItem('lang');
   })
 
   onUnmounted(() => {
@@ -220,11 +229,20 @@ import BinIconV3 from '../icons/bin-icon-v3.vue';
           </li>
         </ul>
       </section>
-      <div
-        v-if="app.kioskState.settings?.alt_ui == 'design_v3'"
-        class="text-body1 text-grey"
-      >
-        {{  $t('do_you_need_some_help') }}
+      <div class="column" v-if="app.kioskState.settings?.alt_ui == 'design_v3'">
+        <div class="row">
+          <LanguageNew
+            :language="selectedLang"
+            :src="`/flags/${selectedLang}.webp`"
+            @click="app.openLangDialog(true)"
+          />
+        </div>
+        <q-btn
+          flat
+          color="grey"
+          class="text-body1 text-center help_button"
+          :label="$t('do_you_need_some_help')"
+        />
       </div>
     </aside>
 
@@ -255,6 +273,19 @@ import BinIconV3 from '../icons/bin-icon-v3.vue';
       </template>
     </RedirectDialog>
   </div>
+  <template>
+    <Modal :isOpen="app.langDialog" @click="app.openLangDialog(false)">
+      <div class="bg-grey-3 container_languages_v3" >
+        <LanguageNew v-for="lang in app.kioskState.catalogLocales"
+          :key="lang.lang_code"
+          :src="lang.flag_src"
+          :alt="lang.name"
+          :language="lang.lang_code"
+          @click="changeLanguage(lang.lang_code)"
+        />
+      </div>
+    </Modal>
+  </template>
 </template>
 
 <style lang="scss" scoped>
@@ -313,6 +344,10 @@ import BinIconV3 from '../icons/bin-icon-v3.vue';
   width: 100%;
   height: 0.3em;
 }
+.help_button {
+  text-transform: none;
+}
+
 .goods_container {
   width: 100%;
   padding-right: 2rem;
