@@ -125,7 +125,7 @@ export async function printInventory({$q, documentId, langCode = i18next.languag
  * />
  * ```
  */
-export async function printLeftovers({$q, viewId = '3b3ed231-f11c-46d9-ba66-253a05940968', dateTo, shouldShowZeroRemains, kioskCorrespondentId, langCode = i18next.language}: {$q: QVueGlobals, viewId?: string, kioskCorrespondentId: string, dateTo: string, shouldShowZeroRemains: boolean, langCode?: string}) {
+export async function printLeftovers({$q, viewId = '3b3ed231-f11c-46d9-ba66-253a05940968', dateTo, shouldShowZeroRemains = false, kioskCorrespondentId, langCode = i18next.language}: {$q: QVueGlobals, viewId?: string, kioskCorrespondentId: string, dateTo: string, shouldShowZeroRemains?: boolean, langCode?: string}) {
   $q.loading.show();
     try {
       const viewData = await apiReportsGetView(viewId, [
