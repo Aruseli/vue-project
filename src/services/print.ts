@@ -121,7 +121,7 @@ export async function printInventory({$q, documentId, langCode = i18next.languag
  * <IconButton
  *   round
  *   :icon="print"
- *   @click="printLeftovers({$q, dateTo: '21.03.2024', shouldShowZeroRemains: true, kioskCorrespondentId: '1362c8b4-3642-408b-9fd0-057acf547c60'})"
+ *   @click="printLeftovers({$q, dateTo: '21.03.2024', kioskCorrespondentId: '1362c8b4-3642-408b-9fd0-057acf547c60'})"
  * />
  * ```
  */
