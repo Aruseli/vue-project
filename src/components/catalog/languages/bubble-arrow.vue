@@ -3,32 +3,26 @@ const props = defineProps({
   width: {
     type: String,
     default: '42pt',
-    requare: false
   },
   height: {
     type: String,
     default: '42pt',
-    requare: false
   },
   fill: {
     type: String,
     default: '#ffffff',
-    requare: false
   },
   stroke: {
     type: String,
     default: 'transparent',
-    requare: false
   },
   strokeOpacity: {
     type: Number,
     default: 0.293734,
-    requare: false
   },
   strokeWidth: {
     type: Number,
     default: 1,
-    requare: false
   }
 })
 </script>
@@ -55,14 +49,14 @@ const props = defineProps({
     <g clipPath="url(#bubble-arrow)">
       <path
         d="M0.368666 118.583C0.368666 118.583 46.1949 53.0953 45.3815 0.119826C120.945 54.5578 99.9537 118.88 99.9537 118.88"
-        :fill="fill"
+        :fill="props.fill"
         fill-rule="nonzero"
         opacity="1"
-        :stroke="stroke"
+        :stroke="props.stroke"
         stroke-linecap="butt"
         stroke-linejoin="round"
-        :stroke-opacity="strokeOpacity"
-        :stroke-width="strokeWidth"
+        :stroke-opacity="props.strokeOpacity"
+        :stroke-width="props.strokeWidth"
       />
     </g>
   </svg>

@@ -82,7 +82,6 @@
         color="secondary"
         icon="arrow_back_ios_new"
         class="q-pr-sm"
-        classTitle="text-subtitle2"
         @click="router.push('/employee-actions')"
       />
       <div

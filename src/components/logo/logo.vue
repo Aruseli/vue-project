@@ -10,7 +10,7 @@ const props = defineProps({
 
 <template>
   <div v-bind="$attrs">
-    <div :class="classes" class="img_container">
+    <div :class="props.classes" class="img_container">
       <slot></slot>
     </div>
     <div class="text-h1 text-center text-white">

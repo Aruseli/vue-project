@@ -1,6 +1,8 @@
 /* app global css */
 
 $font-family-nunito: 'Nunito Sans', sans-serif;
+$width: calc(6.5em + 1.7262vmin);
+$height: calc(8em + 1.7262vmin);
 @font-face {
   font-family: $font-family-nunito;
   src: url(./NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf);
@@ -303,6 +305,7 @@ padding: 0;
 
 .scroll_area {
   overflow-y: scroll;
+  scrollbar-width: none;
 }
 
 .back_to_menu_button {
@@ -351,8 +354,27 @@ padding: 0;
 }
 
 .material-icons {
-  font-size: 3rem !important;
-  @media (max-width: 1300px) {
+  font-size: 3.5rem !important;
+  @media (max-width: 1500px) {
+    font-size: 2.5rem !important;
+  }
+  @media (max-width: 700px) {
     font-size: 1.5rem !important;
+  }
+}
+
+.container_languages {
+  width: 60vw;
+  display: grid;
+  grid-template-columns: repeat( auto-fit, minmax($width, 1fr) );
+  grid-auto-rows: minmax($height, 1fr);
+  gap: 4rem;
+  justify-content: center;
+  padding: 4rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  @media (max-width: 1620px) {
+    gap: 2rem;
+    padding: 2rem;
   }
 }

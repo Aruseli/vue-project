@@ -13,7 +13,7 @@ import ProductModal from './product-modal.vue';
 
   const $q = useQuasar();
   const slide = ref(0);
-  const good = ref(undefined);
+  // const good = ref(undefined);
 
   const cartStore = useCartStore();
   const goodsStore = useGoodsStore();
@@ -21,8 +21,8 @@ import ProductModal from './product-modal.vue';
   const openDialog = ref(false)
 
   const props = defineProps({
-    itemId: {
-      type: String,
+    good: {
+      type: Object,
       required: true,
     },
   })
@@ -44,15 +44,7 @@ import ProductModal from './product-modal.vue';
     })
   }
 
-  const goodInCart = computed(() => cartStore.cart.find((item) => item.id === props.itemId))
-
-  // const goodDetails = (id) => {
-  //   console.log('id', id)
-  //   if (id === props.itemId) {
-  //     goodsStore.openDialog = !goodsStore.openDialog;
-  //   }
-  // }
-  // const timer = ref(null);
+  const goodInCart = computed(() => cartStore.cart.find((item) => item.id === props.good.id))
 
   const addGoodToCart = (good) => {
     cartStore.increaseItemsCount(good);
@@ -68,30 +60,19 @@ import ProductModal from './product-modal.vue';
     showNotify();
   }
 
-  const sliceDescription = ref(null);
+  const sliceDescription = computed(() => props.good.description.slice(0, 50) + ' <span style="color: blue">more...</span>');
 
-  onMounted(async () => {
-    good.value = goodsStore.getGoodById(props.itemId);
-    if (!app.kioskState.settings?.alt_ui) {
-      await nextTick();
-      if (good.value.description.length > 50) {
-        sliceDescription.value = good.value.description.slice(0, 50) + ' <span style="color: blue">more...</span>';
-      } else {
-        sliceDescription.value = good.value.description;
-      }
-    }
-  })
 </script>
 
 
 <template>
-  <div :class="[good && good.stock <= 0 && 'disabled no-pointer-events', !app.kioskState.settings?.alt_ui ? 'card_setting' : 'card_setting_alt']" v-bind="$attrs">
+  <div :class="[props.good && props.good.stock <= 0 && 'disabled no-pointer-events', !app.kioskState.settings?.alt_ui ? 'card_setting' : 'card_setting_alt']" v-bind="$attrs">
     <div>
       <div class="content_container" @click="openDialog = true">
         <div class="img_container">
           <q-img
-            :src="good?.images[0]?.image"
-            :alt="good?.title"
+            :src="props.good?.images[0]?.image"
+            :alt="props.good?.title"
             :ratio="4/3"
           >
             <template #loading>
@@ -107,18 +88,18 @@ import ProductModal from './product-modal.vue';
               class="q-mb-xs ellipsis first_letter"
               :class="[!app.kioskState.settings?.alt_ui ? 'text-h4 ellipsis' : 'text-h5 text-center']"
             >
-              {{ good?.title }}
+              {{ $t(props.good?.title) }}
             </div>
 
             <div v-if="!app.kioskState.settings?.alt_ui">
-              <span class="text-h5" v-if="good && good.stock <= 0">{{ t('out_of_stock') }}</span>
-              <span class="text-h3" v-else>&#3647&ensp;{{ good?.price }}</span>
+              <span class="text-h5" v-if="props.good && props.good.stock <= 0">{{ $t('out_of_stock') }}</span>
+              <span class="text-h3" v-else>&#3647&ensp;{{ props.good?.price }}</span>
             </div>
           </div>
         </div>
 
         <div v-if="!app.kioskState.settings?.alt_ui" class="block_description" @click="openDialog = true">
-          <div class="text-body1" v-html="sliceDescription"/>
+          <div class="text-body1" v-html="$t(sliceDescription)"/>
         </div>
 
       </div>
@@ -131,24 +112,24 @@ import ProductModal from './product-modal.vue';
           no-caps
           color="primary"
           text-color="white"
-          @click="addGoodToCart(good)"
+          @click="addGoodToCart(props.good)"
           >
           <div class="text-h5 text-center q-py-xs text-uppercase">
-            <span v-if="good && good.stock <= 0">{{ t('out_of_stock') }}</span>
-            <span v-else>&#3647&ensp;{{ good?.price }}</span>
+            <span v-if="props.good && props.good.stock <= 0">{{ $t('out_of_stock') }}</span>
+            <span v-else>&#3647&ensp;{{ props.good?.price }}</span>
           </div>
         </q-btn>
         <div class="row justify-between items-center" v-else>
           <IconButton
             :icon="evaMinusOutline"
-            @click="decrease(good)"
+            @click="decrease(props.good)"
             class="q-pa-xs"
           />
           <div class="text-h5 no-margin">{{ goodInCart.quant }}</div>
           <IconButton
             :icon="evaPlusOutline"
-            :disabled="goodInCart?.quant >= good?.stock"
-            @click="increase(good)"
+            :disabled="goodInCart?.quant >= props.good?.stock"
+            @click="increase(props.good)"
             class="q-pa-xs"
           />
         </div>
@@ -162,7 +143,7 @@ import ProductModal from './product-modal.vue';
           no-caps
           color="primary"
           text-color="white"
-          @click="addGoodToCart(good)"
+          @click="addGoodToCart(props.good)"
           >
           <div class="text-h5 text-center q-py-xs text-uppercase">
             {{ $t('buy') }}
@@ -171,14 +152,14 @@ import ProductModal from './product-modal.vue';
         <div class="row justify-between items-center" v-else>
           <IconButton
             :icon="evaMinusOutline"
-            @click="decrease(good)"
+            @click="decrease(props.good)"
             class="q-pa-xs"
           />
           <div class="text-h4 no-margin">{{ goodInCart.quant }}</div>
           <IconButton
             :icon="evaPlusOutline"
-            :disabled="goodInCart?.quant >= good?.stock"
-            @click="increase(good)"
+            :disabled="goodInCart?.quant >= props.good?.stock"
+            @click="increase(props.good)"
             class="q-pa-xs"
           />
         </div>
@@ -187,7 +168,7 @@ import ProductModal from './product-modal.vue';
   </div>
 
   <template>
-    <ProductModal :good="good" :isOpen="openDialog" @click="openDialog = false" />
+    <ProductModal :good="props.good" :isOpen="openDialog" @click="openDialog = false" />
   </template>
 
 </template>

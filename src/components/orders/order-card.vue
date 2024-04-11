@@ -33,16 +33,13 @@
   })
 
   const emit = defineEmits(['click']);
-  const click = () => {
-    emit('click')
-  }
 </script>
 
 <template>
   <div
     :class="'cart_product_item row ' + (props.good_issued != props.good_quant ? 'bg-white' : 'bg-positive')"
     v-bind="$attrs"
-    @click="click">
+    @click="emit('click')">
     <div class="col-3 q-pr-lg-md q-pr-xs-sm">
       <q-img
         :src="props.good_src"

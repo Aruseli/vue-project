@@ -12,22 +12,19 @@
   })
 
   const emit = defineEmits(['click']);
-  const click = () => {
-    emit('click')
-  }
 
 </script>
 
 <template>
-  <div @click="click" class="lang_container_new column justify-center items-center">
+  <div @click="emit('click')" class="lang_container_new column justify-center items-center">
     <q-img
-      :src="src"
-      :alt="language"
+      :src="props.src"
+      :alt="props.language"
       ratio="16/9"
       class="img_style q-mb-xs"
       fit='fill'
     />
-    <div class="text-left text-black text-uppercase text-h5 lang_style">{{ language }}</div>
+    <div class="text-left text-black text-uppercase text-h5 lang_style">{{ props.language }}</div>
   </div>
 </template>
 

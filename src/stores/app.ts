@@ -188,7 +188,7 @@ export const useAppStore = defineStore('app', () => {
   let inited = false;
   eventEmitter.on('kioskState.status', async ({ newStatus }) => {
     if (newStatus != 'Ready') {
-      router.push('/');
+      await router.push('/');
       return
     }
     if (!inited) {

@@ -1,6 +1,6 @@
 <script setup>
   import { useRouter } from 'vue-router';
-  import { onMounted, reactive, ref, watch, watchEffect, computed } from 'vue';
+  import { onMounted, reactive, ref, watch, watchEffect, computed, onUnmounted } from 'vue';
   import RectangularButton from '../components/buttons/rectangular-button.vue';
   import { useQuasar } from 'quasar';
   import i18next, { t } from 'i18next';
@@ -9,7 +9,7 @@
   import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
   import Logo from 'src/components/logo/logo.vue';
   import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
-  import { delay } from 'src/services';
+  import { delay, eventEmitter } from 'src/services';
   import { useGoodsStore } from 'src/stores/goods';
 
   const $q = useQuasar();
@@ -24,12 +24,6 @@
     router.push(path);
   }
 
-  // {
-  //   name: string,
-  //   click: async () => undefined,
-  //   disable: boolean,
-  //   badge: boolean | undefined,
-  // }
   const buttons = computed(() => {
     const inventoryOnShiftOpen = app.kioskState.settings?.shifts__inventory_on_open;
     const inventoryOnShiftClose = app.kioskState.settings?.shifts__inventory_on_close;
@@ -131,11 +125,8 @@
     if( inventoryRequests.value > 0 ) {
       dialogState.value = true;
     }
-  })
 
-  // const defer = () => {
-  //   dialogState.value = false;
-  // }
+  })
 </script>
 
 <template>
@@ -160,13 +151,14 @@
 
     </div>
     <RedirectDialog
-      @complete="dialogState = false"
-      @continue="route('selective-inventory')"
       :modelValue="dialogState"
-      nameLeftButton="defer"
-      nameRightButton="execute"
       title="there_are_documents_for_inventory"
-    />
+    >
+      <template #actions>
+        <RectangularButton :name="$t('defer')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="dialogState = false" textColor="primary" />
+        <RectangularButton :name="$t('execute')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="route('selective-inventory')" />
+      </template>
+    </RedirectDialog>
   </q-page>
 </template>
 

@@ -35,7 +35,7 @@
 </script>
 
 <template>
-   <q-btn :size="props.size" unelevated rounded :color="props.color" :text-color="props.textColor" @click="emit('click')" v-bind="$attrs" :disable="disable">
+   <q-btn :size="props.size" unelevated rounded :color="props.color" :text-color="props.textColor" @click="emit('click')" v-bind="$attrs" :disable="props.disable">
     <div :class="props.classTitle">{{ props.name }}</div>
     <slot></slot>
    </q-btn>
