@@ -8,7 +8,7 @@
   import { useSelectiveInventoryStore } from 'src/stores/selective-inventory';
   import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
   import Logo from 'src/components/logo/logo.vue';
-  import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
+  import LogoSvg from 'src/components/logo/logo-svg.vue';
   import { delay, eventEmitter } from 'src/services';
   import { useGoodsStore } from 'src/stores/goods';
 
@@ -133,7 +133,7 @@
   <q-page class="flex flex-center bg-secondary relative-position">
     <div class="column justify-center items-center full-height full-width container">
       <Logo class="logo_column" classes="q-mb-md-sm q-mb-xs-xs">
-        <LogoSvgWhite />
+        <LogoSvg fill="#FAFAFA" />
       </Logo>
       <RectangularButton
         v-for="(button, index) in buttons"

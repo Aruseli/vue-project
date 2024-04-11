@@ -1,7 +1,7 @@
 <script setup>
-  import Logo from 'src/components/logo/logo.vue';
+  import Logo from '../components/logo/logo.vue';
   import language from 'src/components/language.vue';
-  import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
+  import LogoSvg from '../components/logo/logo-svg.vue';
   import { useRouter } from 'vue-router';
   import { useAppStore } from 'src/stores/app';
   import { useGoodsStore } from 'src/stores/goods';
@@ -21,7 +21,7 @@
 <template>
   <q-page class="column justify-center items-center relative hello_bg window-height">
     <Logo class="logo_row logo" classes="q-mr-sm">
-      <LogoSvgWhite />
+      <LogoSvg fill="#FAFAFA" />
     </Logo>
     <div class="bg-primary container_languages">
       <language v-for="lang in app.kioskState.catalogLocales"

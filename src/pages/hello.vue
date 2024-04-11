@@ -2,7 +2,7 @@
   import Logo from 'src/components/logo/logo.vue';
   import { useRouter } from 'vue-router';
   import { onMounted, onUnmounted, ref } from 'vue';
-  import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
+  import LogoSvg from 'src/components/logo/logo-svg.vue';
   import { useAppStore } from 'src/stores/app';
   import { forceNewVisit } from 'src/services/tracking';
 
@@ -49,7 +49,7 @@
     <div class="bg_filtered" />
     <div class="column justify-between window-height full-width container" @click="onClick">
       <Logo class="logo_row self-start" classes="q-mr-sm img_style">
-        <LogoSvgWhite />
+        <LogoSvg fill="#FAFAFA" />
       </Logo>
 
       <Transition name="slide-fade" mode="out-in">

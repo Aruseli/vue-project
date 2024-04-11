@@ -10,8 +10,8 @@ import RedirectDialog from '../dialog/redirect-dialog.vue';
 import ProductCardAlt from './product-card-alt.vue';
 import ProductCard from '../catalog/product-card.vue';
 import RectangularButton from '../buttons/rectangular-button.vue';
-import LogoSimple from './logo/logo-simple.vue';
-import LogoSvg from './logo/logo-svg.vue';
+import LogoSimple from '../logo/logo-simple.vue';
+import LogoSvg from '../logo/logo-svg.vue';
 import BinButton from './buttons/bin-button.vue';
 import BinIcon from '../icons/bin-icon.vue';
 import BinIconV3 from '../icons/bin-icon-v3.vue';
@@ -180,8 +180,14 @@ import BinIconV3 from '../icons/bin-icon-v3.vue';
       class="row justify-between q-px-md q-py-sm header_style"
       :class="[app.kioskState.settings?.alt_ui == 'design_v2' ? 'header_style_v2' : '']"
     >
-      <LogoSimple :text_style="app.kioskState.settings?.alt_ui == 'design_v3' ? 'text-green' : 'text-primary'">
-        <LogoSvg :fill="app.kioskState.settings?.alt_ui == 'design_v3' ? '#88D863' : '#1f1f1f'" />
+      <LogoSimple
+        :text_style="app.kioskState.settings?.alt_ui == 'design_v3' ? 'text-green' : 'text-primary'"
+      >
+        <LogoSvg
+          :fill="app.kioskState.settings?.alt_ui == 'design_v3' ? '#88D863' : '#1f1f1f'"
+          width="6em"
+          height="6em"
+        />
       </LogoSimple>
       <BinButton
         @click="openDrawer"
@@ -271,6 +277,10 @@ import BinIconV3 from '../icons/bin-icon-v3.vue';
   background-color: white;
   border-radius: 1rem;
   box-shadow: var(--border-shadow);
+}
+
+.icon_style {
+  width: 6em;
 }
 
 .category_container {

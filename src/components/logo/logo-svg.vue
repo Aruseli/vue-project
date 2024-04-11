@@ -3,12 +3,20 @@ const props = defineProps({
   fill: {
     type: String,
     default: '#88D863'
+  },
+  width: {
+    type: String,
+    default: "100%"
+  },
+  height: {
+    type: String,
+    default: "100%"
   }
 })
 </script>
 
 <template>
-  <svg width="61" height="70" viewBox="0 0 61 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg :width="width" :height="height" viewBox="0 0 61 70" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clip-path="url(#clip0_192_8065)">
     <path d="M30.3115 70L0 52.5009V17.4991L30.3115 0L60.623 17.4991V52.4991L30.3115 69.9982V70ZM3.779 50.3185L30.3115 65.637L56.844 50.3185V19.6815L30.3115 4.36302L3.779 19.6815V50.3185Z" :fill="props.fill"/>
     <path d="M24.0464 31.398V42.5776L10.6138 35.1932V23.9918L5.48047 21.0283V49.5552L10.6138 52.5187V41.0498L24.0464 48.4342V59.9248L29.1796 62.8884V34.3615L24.0464 31.398Z" :fill="props.fill"/>

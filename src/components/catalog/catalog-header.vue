@@ -4,7 +4,7 @@ import { useCartStore } from '../../stores/cart';
 import { useGoodsStore } from '../../stores/goods';
 import BinIcon from '../icons/bin-icon.vue';
 import LogoSimple from '../logo/logo-simple.vue';
-import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
+import LogoSvg from '../logo/logo-svg.vue';
 import IconButton from '../buttons/icon-button.vue';
 import BinButton from '../components-v3/buttons/bin-button.vue';
 import Language from '../language.vue';
@@ -40,7 +40,7 @@ import { onMounted, watch, computed } from 'vue';
     >
 
       <LogoSimple>
-        <LogoSvgGradient class="logo_style" />
+        <LogoSvg fill="#FAFAFA" />
       </LogoSimple>
 
       <div class="row items-center">

@@ -258,7 +258,7 @@ body.body--dark {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  width: clamp(4rem, 4.7352rem + 8.3241vmax, 13rem);
+  width: max-content;
 }
 
 .logo_row {

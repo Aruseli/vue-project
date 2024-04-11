@@ -4,7 +4,7 @@
   import { t } from 'i18next';
   import { useQuasar } from 'quasar';
   import Logo from '../components/logo/logo.vue';
-  import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
+  import LogoSvg from '../components/logo/logo-svg.vue';
   import { useAppStore } from 'src/stores/app';
   import { computed } from 'vue';
   import Rectangular from 'src/components/buttons/rectangular-button.vue';
@@ -102,7 +102,7 @@
       <div v-if="statusIsUnauthenticated" class="full-height row items-center justify-center container">
 
         <Logo class="logo_column">
-          <LogoSvgWhite />
+          <LogoSvg fill="#FAFAFA" />
         </Logo>
 
         <q-form
