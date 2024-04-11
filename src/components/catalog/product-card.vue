@@ -82,19 +82,17 @@ import ProductModal from './product-modal.vue';
             </template>
           </q-img>
         </div>
-        <div>
-          <div class="column no-wrap items-left">
-            <div
-              class="q-mb-xs ellipsis first_letter"
-              :class="[app.kioskState.settings?.alt_ui == 'design_v2'? 'text-h5 text-center' : 'text-h4 ellipsis']"
-            >
-              {{ $t(props.good?.title) }}
-            </div>
+        <div class="column no-wrap items-left">
+          <div
+            class="q-mb-xs ellipsis first_letter"
+            :class="[app.kioskState.settings?.alt_ui == 'design_v2'? 'text-h5 text-center' : 'text-h4 ellipsis']"
+          >
+            {{ $t(props.good?.title) }}
+          </div>
 
-            <div v-if="app.kioskState.settings?.alt_ui == 'design_1'">
-              <span class="text-h5" v-if="props.good && props.good.stock <= 0">{{ $t('out_of_stock') }}</span>
-              <span class="text-h3" v-else>&#3647&ensp;{{ props.good?.price }}</span>
-            </div>
+          <div v-if="app.kioskState.settings?.alt_ui == 'design_1'">
+            <span class="text-h5" v-if="props.good && props.good.stock <= 0">{{ $t('out_of_stock') }}</span>
+            <span class="text-h3" v-else>&#3647&ensp;{{ props.good?.price }}</span>
           </div>
         </div>
 
@@ -104,7 +102,7 @@ import ProductModal from './product-modal.vue';
 
       </div>
 
-      <div v-if="app.kioskState.settings?.alt_ui == 'design_2'">
+      <div v-if="app.kioskState.settings?.alt_ui == 'design_v2'">
         <q-btn v-if="!goodInCart"
           class="full-width"
           unelevated
@@ -135,7 +133,7 @@ import ProductModal from './product-modal.vue';
         </div>
       </div>
 
-      <div v-if="app.kioskState.settings?.alt_ui == 'design_1'">
+      <div v-else>
         <q-btn v-if="!goodInCart"
           class="full-width"
           unelevated

@@ -61,17 +61,6 @@ import ProductModal from './product-modal.vue';
 
   const sliceDescription = computed(() => props.good.description.slice(0, 50) + ' <span style="color: blue">more...</span>');
 
-  onMounted(async () => {
-    // props.good = goodsStore.getGoodById(props.good?.id);
-    if (!app.kioskState.settings?.alt_ui) {
-
-      if (props.good.description.length > 50) {
-        sliceDescription;
-      } else {
-        props.good.description;
-      }
-    }
-  })
 </script>
 
 
@@ -107,11 +96,6 @@ import ProductModal from './product-modal.vue';
             </div>
           </div>
         </div>
-
-        <div v-if="!app.kioskState.settings?.alt_ui" class="block_description" @click="openDialog = true">
-          <div class="text-body1" v-html="t(sliceDescription)"/>
-        </div>
-
       </div>
 
       <div v-if="app.kioskState.settings?.alt_ui">
@@ -132,14 +116,14 @@ import ProductModal from './product-modal.vue';
         <div class="row justify-between items-center" v-else>
           <IconButton
             :icon="evaMinusOutline"
-            @click="decrease(good)"
+            @click="decrease(props.good)"
             class="q-pa-xs"
           />
           <div class="text-h5 no-margin">{{ goodInCart.quant }}</div>
           <IconButton
             :icon="evaPlusOutline"
             :disabled="goodInCart?.quant >= props.good?.stock"
-            @click="increase(good)"
+            @click="increase(props.good)"
             class="q-pa-xs"
           />
         </div>
@@ -153,7 +137,7 @@ import ProductModal from './product-modal.vue';
           no-caps
           color="primary"
           text-color="white"
-          @click="addGoodToCart(good)"
+          @click="addGoodToCart(props.good)"
           >
           <div class="text-h5 text-center q-py-xs text-uppercase">
             {{ $t('buy') }}
@@ -162,14 +146,14 @@ import ProductModal from './product-modal.vue';
         <div class="row justify-between items-center" v-else>
           <IconButton
             :icon="evaMinusOutline"
-            @click="decrease(good)"
+            @click="decrease(props.good)"
             class="q-pa-xs"
           />
           <div class="text-h4 no-margin">{{ goodInCart.quant }}</div>
           <IconButton
             :icon="evaPlusOutline"
             :disabled="goodInCart?.quant >= good?.stock"
-            @click="increase(good)"
+            @click="increase(props.good)"
             class="q-pa-xs"
           />
         </div>
@@ -178,7 +162,7 @@ import ProductModal from './product-modal.vue';
   </div>
 
   <template>
-    <ProductModal :good="good" :isOpen="openDialog" @click="openDialog = false" />
+    <ProductModal :good="props.good" :isOpen="openDialog" @click="openDialog = false" />
   </template>
 
 </template>

@@ -7,7 +7,8 @@ import { useAppStore } from '../../stores/app';
 import { useCartStore } from '../../stores/cart';
 import { useGoodsStore } from '../../stores/goods';
 import RedirectDialog from '../dialog/redirect-dialog.vue';
-import ProductCard from './product-card.vue';
+import ProductCardAlt from './product-card-alt.vue';
+import ProductCard from '../catalog/product-card.vue';
 import RectangularButton from '../buttons/rectangular-button.vue';
 import LogoSimple from './logo/logo-simple.vue';
 import LogoSvg from './logo/logo-svg.vue';
@@ -162,7 +163,7 @@ import BinIconV3 from '../icons/bin-icon-v3.vue';
       <BinButton
         @click="openDrawer"
         :quantity="cartStore.totalQuantity"
-        :badgeStyleAlt="app.kioskState.settings?.alt_ui == 'design_v3' ? 'bg-red badge_style_v3' : ''"
+        :badgeStyleAlt="app.kioskState.settings?.alt_ui == 'design_v3' ? 'bg-red' : ''"
       >
         <component :quantity="cartStore.totalQuantity > 0" :is="app.kioskState.settings?.alt_ui == 'design_v3' ? BinIconV3 : BinIcon">
         </component>
@@ -190,7 +191,12 @@ import BinIconV3 from '../icons/bin-icon-v3.vue';
         <div v-if="goodCategory.goods.length == 0" class="text-body1">{{$t('category_empty')}}</div>
         <transition appear @enter="enterCardShake">
           <div class="row image_grid">
-            <ProductCard :good="good" v-for="(good, index) in goodCategory.goods" :key="index" />
+            <component
+              :good="good"
+              v-for="(good, index) in goodCategory.goods"
+              :key="index"
+              :is="app.kioskState.settings?.alt_ui == 'design_v3' ? ProductCardAlt : ProductCard"
+            ></component>
           </div>
         </transition>
       </article>
@@ -243,11 +249,6 @@ import BinIconV3 from '../icons/bin-icon-v3.vue';
   box-shadow: var(--border-shadow);
 }
 
-.badge_style_v3 {
-  min-width: 1.5rem;
-  width: max-content;
-  height: 1.5rem;
-}
 .category_container {
   grid-area: category;
   border-right: var(--border);
@@ -269,7 +270,7 @@ import BinIconV3 from '../icons/bin-icon-v3.vue';
 .image_grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2em;
+  gap: 3rem;
   width: 100%;
   height: auto;
   padding: 0 0.2em;
