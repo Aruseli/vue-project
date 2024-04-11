@@ -62,17 +62,6 @@ import ProductModal from './product-modal.vue';
 
   const sliceDescription = computed(() => props.good.description.slice(0, 50) + ' <span style="color: blue">more...</span>');
 
-  onMounted(async () => {
-    // props.good = goodsStore.getGoodById(props.good?.id);
-    if (!app.kioskState.settings?.alt_ui) {
-
-      if (props.good.description.length > 50) {
-        sliceDescription;
-      } else {
-        props.good.description;
-      }
-    }
-  })
 </script>
 
 
@@ -99,18 +88,18 @@ import ProductModal from './product-modal.vue';
               class="q-mb-xs ellipsis first_letter"
               :class="[!app.kioskState.settings?.alt_ui ? 'text-h4 ellipsis' : 'text-h5 text-center']"
             >
-              {{ t(props.good?.title) }}
+              {{ $t(props.good?.title) }}
             </div>
 
             <div v-if="!app.kioskState.settings?.alt_ui">
-              <span class="text-h5" v-if="props.good && props.good.stock <= 0">{{ t('out_of_stock') }}</span>
+              <span class="text-h5" v-if="props.good && props.good.stock <= 0">{{ $t('out_of_stock') }}</span>
               <span class="text-h3" v-else>&#3647&ensp;{{ props.good?.price }}</span>
             </div>
           </div>
         </div>
 
         <div v-if="!app.kioskState.settings?.alt_ui" class="block_description" @click="openDialog = true">
-          <div class="text-body1" v-html="t(sliceDescription)"/>
+          <div class="text-body1" v-html="$t(sliceDescription)"/>
         </div>
 
       </div>
@@ -126,21 +115,21 @@ import ProductModal from './product-modal.vue';
           @click="addGoodToCart(props.good)"
           >
           <div class="text-h5 text-center q-py-xs text-uppercase">
-            <span v-if="props.good && props.good.stock <= 0">{{ t('out_of_stock') }}</span>
+            <span v-if="props.good && props.good.stock <= 0">{{ $t('out_of_stock') }}</span>
             <span v-else>&#3647&ensp;{{ props.good?.price }}</span>
           </div>
         </q-btn>
         <div class="row justify-between items-center" v-else>
           <IconButton
             :icon="evaMinusOutline"
-            @click="decrease(good)"
+            @click="decrease(props.good)"
             class="q-pa-xs"
           />
           <div class="text-h5 no-margin">{{ goodInCart.quant }}</div>
           <IconButton
             :icon="evaPlusOutline"
             :disabled="goodInCart?.quant >= props.good?.stock"
-            @click="increase(good)"
+            @click="increase(props.good)"
             class="q-pa-xs"
           />
         </div>
@@ -154,7 +143,7 @@ import ProductModal from './product-modal.vue';
           no-caps
           color="primary"
           text-color="white"
-          @click="addGoodToCart(good)"
+          @click="addGoodToCart(props.good)"
           >
           <div class="text-h5 text-center q-py-xs text-uppercase">
             {{ $t('buy') }}
@@ -163,14 +152,14 @@ import ProductModal from './product-modal.vue';
         <div class="row justify-between items-center" v-else>
           <IconButton
             :icon="evaMinusOutline"
-            @click="decrease(good)"
+            @click="decrease(props.good)"
             class="q-pa-xs"
           />
           <div class="text-h4 no-margin">{{ goodInCart.quant }}</div>
           <IconButton
             :icon="evaPlusOutline"
             :disabled="goodInCart?.quant >= good?.stock"
-            @click="increase(good)"
+            @click="increase(props.good)"
             class="q-pa-xs"
           />
         </div>
@@ -179,7 +168,7 @@ import ProductModal from './product-modal.vue';
   </div>
 
   <template>
-    <ProductModal :good="good" :isOpen="openDialog" @click="openDialog = false" />
+    <ProductModal :good="props.good" :isOpen="openDialog" @click="openDialog = false" />
   </template>
 
 </template>
