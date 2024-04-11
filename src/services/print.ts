@@ -121,11 +121,11 @@ export async function printInventory({$q, documentId, langCode = i18next.languag
  * <IconButton
  *   round
  *   :icon="print"
- *   @click="printLeftovers({$q, dateTo: '21.03.2024', shouldShowZeroRemains: true, stockList: ['1362c8b4-3642-408b-9fd0-057acf547c60']})"
+ *   @click="printLeftovers({$q, dateTo: '21.03.2024', shouldShowZeroRemains: true, kioskCorrespondentId: '1362c8b4-3642-408b-9fd0-057acf547c60'})"
  * />
  * ```
  */
-export async function printLeftovers({$q, viewId = '3b3ed231-f11c-46d9-ba66-253a05940968', dateTo, shouldShowZeroRemains, stockList, langCode = i18next.language}: {$q: QVueGlobals, viewId?: string, stockList: Array<string>, dateTo: string, shouldShowZeroRemains: boolean, langCode?: string}) {
+export async function printLeftovers({$q, viewId = '3b3ed231-f11c-46d9-ba66-253a05940968', dateTo, shouldShowZeroRemains, kioskCorrespondentId, langCode = i18next.language}: {$q: QVueGlobals, viewId?: string, kioskCorrespondentId: string, dateTo: string, shouldShowZeroRemains: boolean, langCode?: string}) {
   $q.loading.show();
     try {
       const viewData = await apiReportsGetView(viewId, [
@@ -145,9 +145,9 @@ export async function printLeftovers({$q, viewId = '3b3ed231-f11c-46d9-ba66-253a
           "expression": shouldShowZeroRemains
         },
         {
-          "name": "stock_list",
-          "value": `{${stockList.join(',')}}`,
-          "expression": `{${stockList.join(',')}}`
+          "name": "kioskCorrespondentId",
+          "value": `kioskCorrespondentId`,
+          "expression": `kioskCorrespondentId`
         }
       ]
       );
