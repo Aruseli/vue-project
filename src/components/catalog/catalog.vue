@@ -111,12 +111,6 @@ import RectangularButton from '../buttons/rectangular-button.vue';
     )
   })
 
-//   watchEffect(async () => {
-//     const currentLocale = localStorage.getItem('lang');
-//     await goodsStore.updateGoods(currentLocale)
-//     // good.value = goodsStore.getGoodById(props.itemId);
-//     // Дополнительные операции, связанные с изменением языка
-// });
 </script>
 
 <template>

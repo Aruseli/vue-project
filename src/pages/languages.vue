@@ -14,8 +14,6 @@
     await goodsStore.updateGoods(newLocale);
     app.setLocale(newLocale);
     router.push('catalog');
-    localStorage.setItem('lang', newLocale);
-    localStorage.setItem('activeTab', app.tab);
   }
 
 </script>
