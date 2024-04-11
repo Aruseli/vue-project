@@ -109,9 +109,8 @@
       {
         name: 'print_leftovers',
         // TODO print_leftovers
-        click: () => {
-          // TODO: Add routing to print_leftovers and there add print button that calls the following printLeftovers function
-          // await printLeftovers({...yourOptions})
+        click: async () => {
+          await printLeftovers({$q,dateTo: new Date(), kioskCorrespondentId: app.kioskState.kioskCorr.id})
         },
         disable: !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_print_stock),
       },
