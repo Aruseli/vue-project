@@ -67,11 +67,10 @@ export async function printCheck({$q, documentId, langCode = i18next.language, a
   return await printDocument({documentId, $q, viewId: appStore.kioskState.settings!.view_check, langCode});
 }
 
-export async function printOrder({$q, documentId, localLangCode = i18next.language, appStore}: PrintOrderDocumentOptions) {
+export async function printOrder({$q, documentId, localLangCode = i18next.language, appStore,viewId = appStore.kioskState.settings!.view_ord,systemLangCode}: PrintOrderDocumentOptions) {
   console.log({documentId})
   $q.loading.show();
     try {
-      const viewId = appStore.kioskState.settings!.view_ord;
       const viewData = await apiReportsGetView(viewId, [
         {
           "name": "doc_id",
@@ -80,8 +79,8 @@ export async function printOrder({$q, documentId, localLangCode = i18next.langua
         },
         {
           "name": "system_lang_code",
-          "value": localLangCode,
-          "expression": localLangCode
+          "value": systemLangCode,
+          "expression": systemLangCode
         },
         {
           "name": "local_lang_code",
@@ -105,12 +104,12 @@ export async function printOrder({$q, documentId, localLangCode = i18next.langua
     }
 }
 
-export async function printGoodsArrival({$q, documentId, langCode = i18next.language, appStore}: PrintSpecificDocumentOptions) {
-  return await printDocument({documentId, $q, viewId: appStore.kioskState.settings!.view_doc_input, langCode});
+export async function printGoodsArrival({$q,documentId, langCode = i18next.language, appStore, viewId = appStore.kioskState.settings!.view_doc_input}: PrintSpecificDocumentOptions) {
+  return await printDocument({documentId, $q, viewId, langCode});
 }
 
-export async function printInventory({$q, documentId, langCode = i18next.language, appStore}: PrintSpecificDocumentOptions) {
-  return await printDocument({documentId, $q, viewId: appStore.kioskState.settings!.view_doc_invent, langCode});
+export async function printInventory({$q, documentId, langCode = i18next.language, appStore, viewId = appStore.kioskState.settings!.view_doc_invent}: PrintSpecificDocumentOptions) {
+  return await printDocument({documentId, $q, viewId, langCode});
 }
 
 /**
@@ -145,7 +144,7 @@ export async function printLeftovers({$q,appStore, viewId = appStore.kioskState.
           "expression": shouldShowZeroRemains
         },
         {
-          "name": "kioskCorrespondentId",
+          "name": "kiosk_correspondent_id",
           "value": kioskCorrespondentId,
           "expression": kioskCorrespondentId
         }
