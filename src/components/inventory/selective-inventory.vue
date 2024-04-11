@@ -5,16 +5,18 @@
   import { useGoodsStore } from 'src/stores/goods';
   import { useSelectiveInventoryStore } from 'src/stores/selective-inventory';
   import { onMounted , ref} from 'vue';
-  import { useRouter } from 'vue-router';
+  import { useRoute, useRouter } from 'vue-router';
   import RectangularButton from '../buttons/rectangular-button.vue';
   import DividerBold from '../dividers/divider-bold.vue';
   import ListItem from './list-item.vue';
   import { useAppStore } from "src/stores/app";
   import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
+import { printInventory } from 'src/services';
 
   const $q = useQuasar();
 
   const router = useRouter();
+  const route = useRoute();
   const selectiveInventoryStore = useSelectiveInventoryStore();
   const goodsStore = useGoodsStore();
 
@@ -80,6 +82,8 @@ async function handlePrintConfirmation(printConfirmed) {
     });
   } finally {
     $q.loading.hide();
+    router.push('/employee-actions');
+    // TODO возможно стоит добавить диалоговое окно, перед редиректом, с информацией что товар добавлен
   }
 }
 
@@ -89,8 +93,6 @@ async function handlePrintConfirmation(printConfirmed) {
       documentId.value = docId;
       await showPrintConfirmationDialog();
     }
-    router.push('/employee-actions');
-    // TODO возможно стоит добавить диалоговое окно, перед редиректом, с информацией что товар добавлен
   }
 
 </script>
