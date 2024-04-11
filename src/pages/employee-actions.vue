@@ -110,7 +110,9 @@
         name: 'print_leftovers',
         // TODO print_leftovers
         click: async () => {
-          await printLeftovers({$q,dateTo: new Date(), kioskCorrespondentId: app.kioskState.kioskCorr.id})
+          const currentDate = new Date();
+          const dateString = `${currentDate.getDate()}.${currentDate.getMonth() + 1}.${currentDate.getFullYear()}`;
+          await printLeftovers({appStore: app, $q,dateTo: dateString, kioskCorrespondentId: app.kioskState.kioskCorr.id})
         },
         disable: !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_print_stock),
       },
