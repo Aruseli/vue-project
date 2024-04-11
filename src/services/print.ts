@@ -67,7 +67,7 @@ export async function printCheck({$q, documentId, langCode = i18next.language, a
   return await printDocument({documentId, $q, viewId: appStore.kioskState.settings!.view_check, langCode});
 }
 
-export async function printOrder({$q, documentId, localLangCode = i18next.language, appStore, systemLangCode = appStore.kioskState.settings!.loc}: PrintOrderDocumentOptions) {
+export async function printOrder({$q, documentId, localLangCode = i18next.language, appStore}: PrintOrderDocumentOptions) {
   console.log({documentId})
   $q.loading.show();
     try {
@@ -146,8 +146,8 @@ export async function printLeftovers({$q, viewId = '3b3ed231-f11c-46d9-ba66-253a
         },
         {
           "name": "kioskCorrespondentId",
-          "value": `kioskCorrespondentId`,
-          "expression": `kioskCorrespondentId`
+          "value": kioskCorrespondentId,
+          "expression": kioskCorrespondentId
         }
       ]
       );
