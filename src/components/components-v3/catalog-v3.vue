@@ -50,8 +50,8 @@ import BinIconV3 from '../icons/bin-icon-v3.vue';
     });
   }
 
-  const enterCardShake = () => {
-    gsap.to('.card_setting_alt', {
+  const enterCardShakeAlt = () => {
+    gsap.to('.card_setting_v2', {
       duration: 0.5,
       // delay: 28,
       scale: 1.02,
@@ -63,6 +63,29 @@ import BinIconV3 from '../icons/bin-icon-v3.vue';
         each: 0.25,
       }
     })
+  }
+
+  const enterCardShake = () => {
+    gsap.to('.card_setting', {
+      duration: 0.5,
+      // delay: 28,
+      scale: 1.02,
+      boxShadow: "0 -12px 20px -12px rgba(35, 65, 65, 1), 0 12px 20px -12px rgba(35, 65, 65, 1)",
+      ease: "none",
+      stagger: {
+        repeat: 1,
+        yoyo: true,
+        each: 0.25,
+      }
+    })
+  }
+
+  const animation = (ui) => {
+    if(ui == 'design_v2') {
+      return enterCardShake();
+    } else {
+      return enterCardShakeAlt();
+    }
   }
 
   const redirectAt = ref(0);
@@ -108,7 +131,7 @@ import BinIconV3 from '../icons/bin-icon-v3.vue';
       }
       console.log("Entering animation", timeBeforeRedirect);
       lastAnimationStartedAt.value = Date.now();
-      enterCardShake();
+      animation();
       return;
     }
     // boring phase
@@ -189,12 +212,13 @@ import BinIconV3 from '../icons/bin-icon-v3.vue';
       <article v-for="(goodCategory, index) in goodsStore.goods" :key="goodCategory.id" class="q-mb-md catalog" :id="index" v-intersection="observer">
         <div class="text-h4 q-mb-sm catalog_header">{{ goodCategory.title }}</div>
         <div v-if="goodCategory.goods.length == 0" class="text-body1">{{$t('category_empty')}}</div>
-        <transition appear @enter="enterCardShake">
+        <transition appear @enter="animation">
           <div class="row image_grid">
             <component
               :good="good"
               v-for="(good, index) in goodCategory.goods"
               :key="index"
+              :class="[app.kioskState.settings?.alt_ui == 'design_v3' ? 'card_setting_v2' : 'card_setting']"
               :is="app.kioskState.settings?.alt_ui == 'design_v3' ? ProductCardAlt : ProductCard"
             ></component>
           </div>

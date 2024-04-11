@@ -65,7 +65,7 @@ import ProductModal from './product-modal.vue';
 
 
 <template>
-  <div :class="[props.good && props.good.stock <= 0 && 'disabled no-pointer-events']" v-bind="$attrs">
+  <div :class="[props.good && props.good.stock <= 0 && 'disabled no-pointer-events', app.kioskState.settings?.alt_ui == 'design_v2' ? 'card_setting_v2' : '']" v-bind="$attrs">
     <div>
       <div class="content_container" @click="openDialog = true">
         <div class="img_container">
