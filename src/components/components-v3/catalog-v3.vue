@@ -156,10 +156,14 @@ import BinIconV3 from '../icons/bin-icon-v3.vue';
       class="row justify-between q-px-md q-py-sm header_style"
       :class="[app.kioskState.settings?.alt_ui == 'design_v2' ? 'header_style_v2' : '']"
     >
-      <LogoSimple :text_style="app.kioskState.settings?.alt_ui == 'design_v3' ? 'text-accent' : 'text-primary'">
+      <LogoSimple :text_style="app.kioskState.settings?.alt_ui == 'design_v3' ? 'text-green' : 'text-primary'">
         <LogoSvg :fill="app.kioskState.settings?.alt_ui == 'design_v3' ? '#88D863' : '#1f1f1f'" />
       </LogoSimple>
-      <BinButton @click="openDrawer" :quantity="cartStore.totalQuantity">
+      <BinButton
+        @click="openDrawer"
+        :quantity="cartStore.totalQuantity"
+        :badgeStyleAlt="app.kioskState.settings?.alt_ui == 'design_v3' ? 'bg-red badge_style_v3' : ''"
+      >
         <component :quantity="cartStore.totalQuantity > 0" :is="app.kioskState.settings?.alt_ui == 'design_v3' ? BinIconV3 : BinIcon">
         </component>
       </BinButton>
@@ -204,9 +208,6 @@ import BinIconV3 from '../icons/bin-icon-v3.vue';
 </template>
 
 <style lang="scss" scoped>
-
-// @import "src/css/app-v3.scss";
-
 .catalog_container {
   background-color: #181818;
   display: grid;
@@ -240,6 +241,12 @@ import BinIconV3 from '../icons/bin-icon-v3.vue';
   background-color: white;
   border-radius: 1rem;
   box-shadow: var(--border-shadow);
+}
+
+.badge_style_v3 {
+  min-width: 1.5rem;
+  width: max-content;
+  height: 1.5rem;
 }
 .category_container {
   grid-area: category;

@@ -68,7 +68,7 @@ export default {
     "shifts__state_closing": 5,
     "shifts__state_closed": 0,
 
-    "alt_ui": 'design_v3',
+    "alt_ui": 'design_v2',
   },
 
   // These three lines are outside of settings because they are used

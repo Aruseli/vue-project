@@ -4,7 +4,7 @@
 
 <template>
   <div class="relative-position bin_icon_style">
-    <svg width="54" height="48" viewBox="0 0 54 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="64" height="56" viewBox="0 0 54 48" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M16 21L16 33" stroke="#FAFAFA" stroke-width="4" stroke-linecap="round"/>
       <path d="M29 21L29 33" stroke="#FAFAFA" stroke-width="4" stroke-linecap="round"/>
       <path d="M41 21L41 33" stroke="#FAFAFA" stroke-width="4" stroke-linecap="round"/>
