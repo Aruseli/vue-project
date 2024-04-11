@@ -199,19 +199,33 @@ import BinIconV3 from '../icons/bin-icon-v3.vue';
       </BinButton>
     </header>
     <aside
-      class="column category_container"
+      class="column q-pa-sm category_container justify-between"
       :class="[app.kioskState.settings?.alt_ui == 'design_v2' ? 'category_container_v2' : '']"
     >
-      <ul class='tabs__header'>
-        <li v-for='(goodCategory, index) in goodsStore.goods'
-          :key='goodCategory.id'
-          class="text-h5"
-        >
-          <div @click="selectCategory(index)" :class='{active : index == selectedIndex}'>
-            {{ goodCategory.title }}
-          </div>
-        </li>
-      </ul>
+      <section class="column">
+        <div class="categories_style">
+          <span class="text-h3 text-uppercase text-white">
+            {{ $t('categories') }}
+          </span>
+          <div class="bg-white categories_line" />
+        </div>
+        <ul class='tabs__header'>
+          <li v-for='(goodCategory, index) in goodsStore.goods'
+            :key='goodCategory.id'
+            class="text-h5 text-weight-bold"
+          >
+            <div @click="selectCategory(index)" :class='{active : index == selectedIndex}'>
+              {{ goodCategory.title }}
+            </div>
+          </li>
+        </ul>
+      </section>
+      <div
+        v-if="app.kioskState.settings?.alt_ui == 'design_v3'"
+        class="text-body1 text-grey"
+      >
+        {{  $t('do_you_need_some_help') }}
+      </div>
     </aside>
 
     <q-scroll-area class="q-px-xs-none goods_container">
@@ -278,11 +292,6 @@ import BinIconV3 from '../icons/bin-icon-v3.vue';
   border-radius: 1rem;
   box-shadow: var(--border-shadow);
 }
-
-.icon_style {
-  width: 6em;
-}
-
 .category_container {
   grid-area: category;
   border-right: var(--border);
@@ -296,6 +305,13 @@ import BinIconV3 from '../icons/bin-icon-v3.vue';
   box-shadow: var(--border-shadow);
   background-color: white;
   border-radius: 1rem;
+}
+.categories_style {
+  width: max-content;
+}
+.categories_line {
+  width: 100%;
+  height: 0.3em;
 }
 .goods_container {
   width: 100%;
@@ -322,22 +338,19 @@ ul.tabs__header {
 }
 
 ul.tabs__header > li {
-  padding: 1.5rem;
+  padding: 0rem;
   cursor: pointer;
-  @media (max-width: 1300px) {
-    padding: 1rem;
-  }
+  margin-top: 1em;
 }
 
-.tab {
-  color: black;
-  padding: 20px;
+li > div {
+  color: #5D5D5D;
+  // text-transform: uppercase;
+  // scale: 1.05;
 }
 li > div.active {
-  font-weight: bold;
-  color: var(--q-primary);
-  text-transform: uppercase;
-  scale: 1.05;
-  border-radius: 0.3rem;
+  color: var(--body-text);
+  // text-transform: uppercase;
+  // scale: 1.05;
 }
 </style>

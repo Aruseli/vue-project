@@ -3,10 +3,10 @@
 $font-family-nunito: 'Nunito Sans', sans-serif;
 $width: calc(6.5em + 1.7262vmin);
 $height: calc(8em + 1.7262vmin);
-@font-face {
-  font-family: $font-family-nunito;
-  src: url(./NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf);
-}
+// @font-face {
+//   font-family: $font-family-nunito;
+//   src: url(./NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf);
+// }
 
 :root {
   .q-card__actions {

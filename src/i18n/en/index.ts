@@ -83,4 +83,6 @@ export default {
   execute: 'execute',
   complete: 'complete',
   continue: 'continue',
+  categories: 'categories',
+  do_you_need_some_help: 'Do you need some help?',
 };
