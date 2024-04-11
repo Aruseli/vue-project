@@ -158,7 +158,7 @@ import ProductModal from './product-modal.vue';
           <div class="text-h4 no-margin">{{ goodInCart.quant }}</div>
           <IconButton
             :icon="evaPlusOutline"
-            :disabled="goodInCart?.quant >= good?.stock"
+            :disabled="goodInCart?.quant >= props.good?.stock"
             @click="increase(props.good)"
             class="q-pa-xs"
           />
