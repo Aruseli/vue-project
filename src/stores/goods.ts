@@ -116,32 +116,32 @@ export const useGoodsStore = defineStore('goodsStore', () => {
           g.stock = stockRemains.find(v => v.good_id == g.id)?.remain_quant ?? 0
         }))
         // ---------- Generate goods arrival ----------
-        const goodsArrivalDoc = {
-          id: undefined,
-          state: 2,
-          doc_type: appStore.kioskState.settings?.goods_arrival_doc_type_id ?? '',
-          abbr_text: undefined,
-          abbr_num: undefined,
-          doc_date: new Date().toISOString(),
-          doc_order: 0,
-          corr_from_ref: "48395457-cef7-47b0-bb2c-54ccf4f8fda8", // supplier
-          corr_to_ref: appStore.kioskState.kioskCorr?.id ?? '',
-          respperson_ref: appStore.kioskState.userCorr?.id ?? '',
-          currency_ref: appStore.kioskState.settings?.currency_id ?? '',
-          curr_rate: 1,
-          comment: undefined,
-          details: fetchedGoods.flatMap(gc => gc.goods.filter(g => !!g)).map(g => ({
-            id: undefined,
-            state: 0,
-            rec_order: 0,
-            good_id: g.id,
-            munit_id: appStore.kioskState.settings?.munit_id ?? '', // default
-            quant: 100,
-            total: 100,
-            doc_detail_link: undefined,
-            doc_detail_type: appStore.kioskState.settings?.goods_arrival_docdetail_type_id ?? '', // outgoing
-          })),
-        }
+        // const goodsArrivalDoc = {
+        //   id: undefined,
+        //   state: 2,
+        //   doc_type: appStore.kioskState.settings?.goods_arrival_doc_type_id ?? '',
+        //   abbr_text: undefined,
+        //   abbr_num: undefined,
+        //   doc_date: new Date().toISOString(),
+        //   doc_order: 0,
+        //   corr_from_ref: "48395457-cef7-47b0-bb2c-54ccf4f8fda8", // supplier
+        //   corr_to_ref: appStore.kioskState.kioskCorr?.id ?? '',
+        //   respperson_ref: appStore.kioskState.userCorr?.id ?? '',
+        //   currency_ref: appStore.kioskState.settings?.currency_id ?? '',
+        //   curr_rate: 1,
+        //   comment: undefined,
+        //   details: fetchedGoods.flatMap(gc => gc.goods.filter(g => !!g)).map(g => ({
+        //     id: undefined,
+        //     state: 0,
+        //     rec_order: 0,
+        //     good_id: g.id,
+        //     munit_id: appStore.kioskState.settings?.munit_id ?? '', // default
+        //     quant: 100,
+        //     total: 100,
+        //     doc_detail_link: undefined,
+        //     doc_detail_type: appStore.kioskState.settings?.goods_arrival_docdetail_type_id ?? '', // outgoing
+        //   })),
+        // }
         // console.log('Debug arrival goods', await apiSaveDocument(goodsArrivalDoc))
         // --------------------------------------------
         // ---------- Generate selective inventory ----------

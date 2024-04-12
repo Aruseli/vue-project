@@ -20,15 +20,9 @@ import { onMounted, watch, computed } from 'vue';
   const openDrawer = () => {
     app.openDrawerCart(true);
   }
-  const changeTab = (tab) => {
-    localStorage.setItem('activeTab', tab);
-    app.tab = localStorage.getItem('activeTab');
-  }
-
   const changeLanguage = async (newLocale) => {
     await app.setLocale(newLocale);
     await goodsStore.updateGoods(newLocale);
-    localStorage.setItem('lang', newLocale)
   }
 </script>
 
@@ -74,7 +68,6 @@ import { onMounted, watch, computed } from 'vue';
 
     <div class="relative-position" v-if="!app.kioskState.settings?.alt_ui">
       <q-tabs
-
         v-model="app.tab"
         dense
         no-caps
@@ -93,7 +86,7 @@ import { onMounted, watch, computed } from 'vue';
         <Language v-for="lang in app.kioskState.catalogLocales"
           :key="lang.lang_code"
           :src="lang.flag_src"
-          :alt='lang.name'
+          :alt="lang.name"
           :language="lang.lang_code"
           @click="changeLanguage(lang.lang_code)"
         />

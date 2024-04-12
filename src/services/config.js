@@ -49,8 +49,8 @@ export default {
     "customer_inactivity_animation_start_before_redirect": 9000,
     "customer_successful_order_notify_duration_ms": 7000,
 
-    "employee_menu_inactivity_before_action": 15_000,
-    "employee_menu_inactivity_countdown_duration": 10_000,
+    "employee_menu_inactivity_before_action": 150_000,
+    "employee_menu_inactivity_countdown_duration": 30_000,
     "employee_menu_inactivity_action": "customer",
     "employee_docs_inactivity_before_action": 150_000,
     "employee_docs_inactivity_countdown_duration": 30_000,

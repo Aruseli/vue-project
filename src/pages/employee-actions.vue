@@ -134,17 +134,6 @@
       dialogState.value = true;
     }
 
-    app.redirectAt = Date.now() + app.kioskState.settings?.employee_inactivity_before_redirect ?? 150000;
-    app.redirectTimer = setInterval(() => eventEmitter.emit('tick'), 100);
-    // Обрабатываем события
-    ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
-      document.addEventListener(e, app.boundResetTimer)
-    )
-    console.log('app.customerModeIsAllowed', app.customerModeIsAllowed)
-  })
-  onUnmounted(() => {
-    clearInterval(app.redirectTimer);
-    ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e => document.removeEventListener(e, app.boundResetTimer))
   })
 </script>
 
@@ -176,21 +165,6 @@
       <template #actions>
         <RectangularButton :name="$t('defer')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="dialogState = false" textColor="primary" />
         <RectangularButton :name="$t('execute')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="route('selective-inventory')" />
-      </template>
-    </RedirectDialog>
-    <RedirectDialog
-      :modelValue="app.redirectDialogState"
-      title="you_are_inactive"
-    >
-      <template #content>
-        <div class="text-h5 text-center">
-          <div class="text-h5">{{$t('the_session_will_end_in')}}</div>
-          <span>{{ app.countdown }}</span>&ensp;{{ $t('seconds', {count: app.countdown}) }}
-        </div>
-      </template>
-      <template #actions>
-        <RectangularButton :name="$t('complete')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="eventEmitter.emit('redirect')" textColor="primary" />
-        <RectangularButton :name="$t('continue')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="app.closeRedirectDialog" />
       </template>
     </RedirectDialog>
   </q-page>
