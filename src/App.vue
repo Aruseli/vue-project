@@ -249,18 +249,20 @@
   const redirectTimer = ref<NodeJS.Timeout | null>(null);
   const boundResetTimer = resetRedirectTimer.bind(this);
   onMounted(() => {
-    appStore.value = useAppStore() as any;
+    router.isReady().then(() => {
+      appStore.value = useAppStore() as any;
 
-    // Start or reset redirect timer
-    router.afterEach(() => {
-      resetRedirectTimer();
-    })
+      // Start or reset redirect timer
+      router.afterEach(() => {
+        resetRedirectTimer();
+      })
 
-    redirectTimer.value = setInterval(() => tick(), 100);
-    // Обрабатываем события
-    ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
-      document.addEventListener(e, boundResetTimer)
-    )
+      redirectTimer.value = setInterval(() => tick(), 100);
+      // Обрабатываем события
+      ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
+        document.addEventListener(e, boundResetTimer)
+      )
+    });
   })
 
 </script>
