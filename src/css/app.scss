@@ -15,10 +15,10 @@ $height: calc(8em + 1.7262vmin);
   --body-text: #FAFAFA;
   --px20: 1.5rem;
   --px30: 1.875rem;
-  --px43: 2.6rem;
+  --px54: 3.375rem;
   --px60: 3.75rem;
-  --px64: 4rem;
   --px90: 5.5rem;
+  --px120: 7.5rem;
   --coefficient: 5vmax;
   --coefficient_gap: 2vmin;
   --width_coefficient: 22rem;
@@ -28,6 +28,18 @@ $height: calc(8em + 1.7262vmin);
   --box-shadow--product_cart: 0 0 3px 2px #00000069;
   --border-shadow: 0 0 3px 1px #c2c2c2;
   --color-tab-inactive: #4e4e4e;
+}
+
+.q-mb-20 {
+  margin-bottom: var(--px20);
+}
+
+$sizes: ("20": 1.5rem, "54": 3.375rem, "60": 3.75rem, "90": 5.5rem, "120": 7.5rem);
+
+@each $name, $size in $sizes {
+  .mb-#{$name} {
+    margin-bottom: $size;
+  }
 }
 
 body {
@@ -273,7 +285,7 @@ body.body--dark {
 }
 
 .title_padding {
-  padding-top: var(--px64);
+  padding-top: var(--px60);
 }
 
 .q-field--error .q-field__bottom {

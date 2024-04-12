@@ -16,11 +16,11 @@ $space-x-base: $space-base !default;
 $space-y-base: $space-base !default;
 
 $space-none: (x: 0, y: 0) !default;
-$space-xs: (x: ($space-x-base * .5), y: ($space-y-base * .5)) !default;
-$space-sm: (x: ($space-x-base * 1.5), y: ($space-y-base * 1.5)) !default;
-$space-md: (x: ($space-x-base * 3), y: ($space-y-base * 3)) !default;
-$space-lg: (x: ($space-x-base * 4.5), y: ($space-y-base * 4.5)) !default;
-$space-xl: (x: ($space-x-base * 6), y: ($space-y-base * 6)) !default;
+$space-xs: (x: ($space-x-base * .63), y: ($space-y-base * .63)) !default; // 10px
+$space-sm: (x: ($space-x-base * 1), y: ($space-y-base * 1)) !default; // 16px
+$space-md: (x: ($space-x-base * 1.5), y: ($space-y-base * 1.5)) !default; // 24px
+$space-lg: (x: ($space-x-base * 1.875), y: ($space-y-base * 1.875)) !default; // 30px
+$space-xl: (x: ($space-x-base * 2.5), y: ($space-y-base * 2.5)) !default;  // 40px
 
 // q-btn
 $button-rounded-border-radius: 30px !default;
