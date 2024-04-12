@@ -186,7 +186,7 @@ import LanguageNew from '../catalog/languages/language-new.vue';
     :class="[app.kioskState.settings?.alt_ui == 'design_v2' ? 'catalog_container_v2 q-pa-md' : '']"
   >
     <header
-      class="row justify-between q-px-md q-py-sm header_style"
+      class="row justify-between q-pa-xl header_style"
       :class="[app.kioskState.settings?.alt_ui == 'design_v2' ? 'header_style_v2' : '']"
     >
       <LogoSimple
@@ -208,14 +208,14 @@ import LanguageNew from '../catalog/languages/language-new.vue';
       </BinButton>
     </header>
     <aside
-      class="column q-pa-sm category_container justify-between"
+      class="column q-py-xl q-px-lg category_container justify-between"
       :class="[app.kioskState.settings?.alt_ui == 'design_v2' ? 'category_container_v2' : '']"
     >
       <section class="column">
-        <div class="categories_style">
-          <span class="text-h3 text-uppercase text-white">
+        <div class="categories_style mb-60">
+          <div class="text-h3 text-uppercase text-white mb-20">
             {{ $t('categories') }}
-          </span>
+          </div>
           <div class="bg-white categories_line" />
         </div>
         <ul class='tabs__header'>
@@ -375,7 +375,7 @@ ul.tabs__header {
 ul.tabs__header > li {
   padding: 0rem;
   cursor: pointer;
-  margin-top: 1em;
+  margin-bottom: var(--px60);
 }
 
 li > div {
