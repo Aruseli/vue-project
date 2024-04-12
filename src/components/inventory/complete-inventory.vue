@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
   import i18next, { t } from 'i18next';
   import moment from 'moment';
   import { useQuasar } from 'quasar';
