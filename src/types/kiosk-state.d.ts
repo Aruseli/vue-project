@@ -64,6 +64,11 @@ export type Settings = {
   shifts__state_closed: number,
 
   alt_ui: boolean,
+
+  payment_type_id_cash: string,
+  payment_type_id_card: string,
+
+  ext_source: string
 }
 
 export type TerminalParams = {
