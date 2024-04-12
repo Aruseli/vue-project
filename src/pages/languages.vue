@@ -15,6 +15,10 @@
     app.setLocale(newLocale);
     router.push('catalog');
     localStorage.setItem('lang', newLocale);
+    if (app.kioskState.settings?.alt_ui == 'design_v3') {
+      document.body.className = 'v3_body_style'
+    }
+    console.log('FUCKING_FONTS', app.kioskState.settings?.alt_ui)
   }
 
 </script>

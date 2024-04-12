@@ -4,6 +4,10 @@ $font-family-nunito: 'Nunito Sans', sans-serif;
 $width: calc(6.5em + 1.7262vmin);
 $height: calc(8em + 1.7262vmin);
 
+.v3_body_style {
+  font-family: 'Poppins, sans-serif';
+}
+
 :root {
   .q-card__actions {
     padding: 1rem;
