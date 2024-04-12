@@ -261,10 +261,6 @@
     ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
       document.addEventListener(e, boundResetTimer)
     )
-
-    if (appStore.value?.kioskState.settings?.alt_ui == 'design_v3') {
-      document.body.className = 'v3_body_style'
-    }
   })
 
 </script>
@@ -292,9 +288,4 @@
   </RedirectDialog>
 </template>
 
-<style>
-.v3_body_style {
-  font-family: 'Poppins, sans-serif';
-}
-</style>
 
