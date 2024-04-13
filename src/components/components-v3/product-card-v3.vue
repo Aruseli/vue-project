@@ -7,10 +7,11 @@ import { computed, ref } from 'vue';
 import { useAppStore } from '../../stores/app';
 import { useCartStore } from '../../stores/cart';
 import { useGoodsStore } from '../../stores/goods';
-import IconButton from './buttons/icon-button.vue';
+import IconButton from '../buttons/icon-button.vue';
 import ProductModal from './product-modal.vue';
 import AttentionIcon from '../icons/attention-icon.vue';
-
+import BinIconV3 from '../icons/bin-icon-v3.vue';
+import BinButton from './buttons/bin-button.vue';
 
   const $q = useQuasar();
   const slide = ref(0);
@@ -67,104 +68,55 @@ import AttentionIcon from '../icons/attention-icon.vue';
     :class="[props.good && props.good.stock <= 0 && 'disabled no-pointer-events', 'card_setting_v3 bg-grey-2 pa-14']"
     v-bind="$attrs"
   >
-    <div class="row justify-between items-center">
-      <IconButton>
+    <div class="row justify-between items-center q-mb-xs">
+      <IconButton color="bg-white" class="q-pa-none" :customIcon="true" @click="openDialog = true">
         <AttentionIcon />
       </IconButton>
+      <div class="text-body1 row">
+        <div class="mr-14">99% THC</div>
+        <div class="row items-center intensity_icons_container">
+          <div class="intensity_icon bg-red" />
+          <div class="intensity_icon bg-red" />
+          <div class="intensity_icon bg-red" />
+        </div>
+      </div>
     </div>
-      <div class="content_container">
-        <div class="img_container">
-          <q-img
-            :src="props.good?.images[0]?.image"
-            :alt="props.good?.title"
-            :ratio="4/3"
-          >
-            <template #loading>
-              <div class="text-subtitle1 text-black">
-                Loading...
-              </div>
-            </template>
-          </q-img>
-        </div>
-        <div>
-          <div class="column no-wrap items-left">
-            <div
-              class="q-mb-xs ellipsis first_letter"
-              :class="[!app.kioskState.settings?.alt_ui ? 'text-h4 ellipsis' : 'text-h5 text-center']"
-            >
-              {{ t(props.good?.title) }}
-            </div>
-
-            <div v-if="!app.kioskState.settings?.alt_ui">
-              <span class="text-h5" v-if="props.good && props.good.stock <= 0">{{ t('out_of_stock') }}</span>
-              <span class="text-h3" v-else>&#3647&ensp;{{ props.good?.price }}</span>
-            </div>
+    <div class="img_container mb-14 relative-position">
+      <q-img
+        :src="props.good?.images[0]?.image"
+        :alt="props.good?.title"
+        :ratio="4/3"
+        class="img_style"
+      >
+        <template #loading>
+          <div class="text-subtitle1 text-black">
+            Loading...
           </div>
+        </template>
+      </q-img>
+      <div class="absolute-top-left img_angle_top" />
+      <div class="absolute-bottom-right img_angle_bottom" />
+    </div>
+    <div class="row no-wrap justify-between items-center">
+      <div>
+        <div class="q-mb-xs ellipsis text-capitalize text-h5 text-left text-green">
+          {{ t(props.good?.title) }}
+        </div>
+
+        <div class="column">
+          <div class="text-h5" v-if="props.good && props.good.stock <= 0">{{ t('out_of_stock') }}</div>
+          <div class="text-h4" v-else>&#3647&ensp;{{ props.good?.price }}</div>
         </div>
       </div>
-
-      <div v-if="app.kioskState.settings?.alt_ui">
-        <q-btn v-if="!goodInCart"
-          class="full-width"
-          unelevated
-          rounded
-          no-caps
-          color="primary"
-          text-color="white"
-          @click="addGoodToCart(props.good)"
-          >
-          <div class="text-h5 text-center q-py-xs text-uppercase">
-            <span v-if="props.good && props.good.stock <= 0">{{ t('out_of_stock') }}</span>
-            <span v-else>&#3647&ensp;{{ props.good?.price }}</span>
-          </div>
-        </q-btn>
-        <div class="row justify-between items-center" v-else>
-          <IconButton
-            :icon="evaMinusOutline"
-            @click="decrease(props.good)"
-            class="q-pa-xs"
-          />
-          <div class="text-h5 no-margin">{{ goodInCart.quant }}</div>
-          <IconButton
-            :icon="evaPlusOutline"
-            :disabled="goodInCart?.quant >= props.good?.stock"
-            @click="increase(props.good)"
-            class="q-pa-xs"
-          />
-        </div>
+      <div>
+        <BinButton @click="addGoodToCart(props.good)" class="bin_button_style">
+          <BinIconV3 :quantity="cartStore.totalQuantity" class="bin_alt_style" />
+        </BinButton>
       </div>
-
-      <div v-if="!app.kioskState.settings?.alt_ui">
-        <q-btn v-if="!goodInCart"
-          class="full-width"
-          unelevated
-          rounded
-          no-caps
-          color="primary"
-          text-color="white"
-          @click="addGoodToCart(props.good)"
-          >
-          <div class="text-h5 text-center q-py-xs text-uppercase">
-            {{ $t('buy') }}
-          </div>
-        </q-btn>
-        <div class="row justify-between items-center" v-else>
-          <IconButton
-            :icon="evaMinusOutline"
-            @click="decrease(props.good)"
-            class="q-pa-xs"
-          />
-          <div class="text-h4 no-margin">{{ goodInCart.quant }}</div>
-          <IconButton
-            :icon="evaPlusOutline"
-            :disabled="goodInCart?.quant >= good?.stock"
-            @click="increase(props.good)"
-            class="q-pa-xs"
-          />
-        </div>
-      </div>
-
+    </div>
   </div>
+
+
 
   <template>
     <ProductModal :good="props.good" :isOpen="openDialog" @click="openDialog = false" />
@@ -186,54 +138,42 @@ import AttentionIcon from '../icons/attention-icon.vue';
     justify-content: space-between;
     box-shadow: var(--box-shadow--product_cart_v3);
   }
+  .intensity_icons_container > *:not(:last-child) {
+    margin-right: 0.5rem;
+  }
+  .intensity_icon {
+    width: var(--px16);
+    height: var(--px16);
+    border-radius: var(--px16);
+  }
 
   .img_container {
-    // max-width: $calc_width;
-    // max-height: $calc_width;
-    width: 100%;
-    border-radius : var(--px30);
+    width: 52%;
     overflow: hidden;
-    margin-bottom: 1.5rem;
-    border: thin solid var(--q-accent);
+    align-self: center;
+    aspect-ratio: 1;
+    display: flex;
   }
-  .img_container_alt {
-    max-width: calc_width_alt;
-    max-height: calc_width_alt;
-    border-radius : var(--px30);
-    overflow: hidden;
-    margin-bottom: 1.5rem;
-    border: thin solid var(--q-accent);
+  .img_angle_top {
+    border-top: thin solid white;
+    border-left: thin solid white;
+    width: 3rem;
+    height: 3rem;
   }
-  .img_container_dialog {
-    width: 100%;
-    height: 100%;
-    border-radius : var(--px30);
-    overflow: hidden;
-    border: thin solid var(--q-accent);
+  .img_angle_bottom {
+    border-right: thin solid white;
+    border-bottom: thin solid white;
+    width: 3rem;
+    height: 3rem;
   }
-
-  .content_container > *:nth-child(n+2){
-    margin-bottom: 1rem;
+  .bin_button_style {
+    border-radius: var(--px54);
+    border: thin solid green;
+    padding: 0.8em;
   }
-
-  .text_style {
-    font-weight: bold;
+  .bin_alt_style {
+    width: 3rem !important;
+    align-self: stretch;
   }
-
-  .dialog_container {
-    width: 50%;
-    max-width: 60vw;
-    height: max-content;
-  }
-
-  .dialog_img {
-    width: 100%;
-    border: thin solid var(--q-accent);
-  }
-
-.block_description {
-  height: 4.5rem;
-  overflow: hidden;
-}
 
 </style>

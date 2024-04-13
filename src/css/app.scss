@@ -13,6 +13,8 @@ $height: calc(8em + 1.7262vmin);
     padding: 1rem;
   }
   --body-text: #FAFAFA;
+  --px14: 0.875rem;
+  --px16: 1rem;
   --px20: 1.5rem;
   --px30: 1.875rem;
   --px54: 3.375rem;
@@ -33,12 +35,17 @@ $height: calc(8em + 1.7262vmin);
   --color-tab-inactive: #4e4e4e;
 }
 
-$margins: ("20": 1.5rem, "54": 3.375rem, "60": 3.75rem, "90": 5.5rem, "120": 7.5rem);
+$margins: ("14": 0.875rem, "16": 1rem, "20": 1.5rem, "54": 3.375rem, "60": 3.75rem, "90": 5.5rem, "120": 7.5rem);
 $paddings: ("14": 0.875rem, "54": 3.375rem, "60": 3.75rem, "90": 5.5rem, "120": 7.5rem);
 
 @each $name, $size in $margins {
   .mb-#{$name} {
     margin-bottom: $size;
+  }
+}
+@each $name, $size in $margins {
+  .mr-#{$name} {
+    margin-right: $size;
   }
 }
 @each $name, $size in $paddings {

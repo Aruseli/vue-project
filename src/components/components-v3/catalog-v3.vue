@@ -236,7 +236,7 @@ import { useIntersectionObserver } from '@vueuse/core'
     >
       <div class="scrollable_container column justify-between full-height">
         <section class="column">
-          <div class="categories_style mb-60">
+          <div class="categories_style mb-60" v-if="app.kioskState.settings?.alt_ui == 'design_v3'">
             <div class="text-h3 text-uppercase text-white mb-20">
               {{ $t('categories') }}
             </div>
@@ -341,6 +341,7 @@ import { useIntersectionObserver } from '@vueuse/core'
   column-gap: var(--px30);
   width: 100%;
   height: 100vh;
+  color: var(--body-text);
 }
 
 .catalog_container_v2 {
