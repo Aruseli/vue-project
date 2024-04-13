@@ -65,7 +65,7 @@ import ProductModal from './product-modal.vue';
 
 
 <template>
-  <div :class="[props.good && props.good.stock <= 0 && 'disabled no-pointer-events', app.kioskState.settings?.alt_ui == 'design_v2' ? 'card_setting_v2' : '']" v-bind="$attrs">
+  <div :class="[props.good && props.good.stock <= 0 && 'disabled no-pointer-events', app.kioskState.settings?.alt_ui == 'design_v2' ? 'card_setting_v2' : 'card_setting bg-grey-2 pa-14']" v-bind="$attrs">
     <div>
       <div class="content_container" @click="openDialog = true">
         <div class="img_container">
@@ -173,15 +173,12 @@ import ProductModal from './product-modal.vue';
 
 
   .card_setting {
-    border-radius: var(--border-sm);
-    box-shadow: var(--box-shadow--product_cart);
+    border-radius: var(--border-xxs);
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 1.3rem;
-    background-color: var(--q-header_bg);
   }
   .card_setting_v2 {
     border-radius: var(--border-sm);

@@ -22,6 +22,7 @@ $height: calc(8em + 1.7262vmin);
   --coefficient: 5vmax;
   --coefficient_gap: 2vmin;
   --width_coefficient: 22rem;
+  --border-xxs: 0.3rem;
   --border-sm: 1.3rem;
   --border-md: 2rem;
   --border: thin solid var(--body-text);
@@ -34,11 +35,17 @@ $height: calc(8em + 1.7262vmin);
   margin-bottom: var(--px20);
 }
 
-$sizes: ("20": 1.5rem, "54": 3.375rem, "60": 3.75rem, "90": 5.5rem, "120": 7.5rem);
+$margins: ("20": 1.5rem, "54": 3.375rem, "60": 3.75rem, "90": 5.5rem, "120": 7.5rem);
+$paddings: ("14": 0.875rem, "54": 3.375rem, "60": 3.75rem, "90": 5.5rem, "120": 7.5rem);
 
-@each $name, $size in $sizes {
+@each $name, $size in $margins {
   .mb-#{$name} {
     margin-bottom: $size;
+  }
+}
+@each $name, $size in $paddings {
+  .pa-#{$name} {
+    padding: $size;
   }
 }
 
@@ -73,6 +80,7 @@ body.body--dark {
 .body--dark {
   --q-green-light: #ecffda;
   --q-header_bg: #fefefe;
+  --q-grey-2_bg: #1f1f1f;
   --q-dark-page: transparent;
   --q-text: #1E1E1E;
   --q-dark: #FBFBFF;
@@ -81,6 +89,7 @@ body.body--dark {
 .body--light {
   --q-green-light: #ecffda;
   --q-header_bg: #fefefe;
+  --q-grey-2_bg: #1f1f1f;
   --q-dark-page: transparent;
   --q-text: #1E1E1E;
   --q-dark: #FBFBFF;
@@ -384,7 +393,7 @@ padding: 0;
   gap: 4rem;
   justify-content: center;
   padding: 4rem;
-  border-radius: 0.3rem;
+  border-radius: var(--border-xxs);
   overflow: hidden;
   @media (max-width: 1620px) {
     gap: 2rem;

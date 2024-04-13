@@ -7,7 +7,7 @@ import { useAppStore } from '../../stores/app';
 import { useCartStore } from '../../stores/cart';
 import { useGoodsStore } from '../../stores/goods';
 import RedirectDialog from '../dialog/redirect-dialog.vue';
-import ProductCardAlt from './product-card-alt.vue';
+import ProductCardV3 from './product-card-v3.vue';
 import ProductCard from '../catalog/product-card.vue';
 import RectangularButton from '../buttons/rectangular-button.vue';
 import LogoSimple from '../logo/logo-simple.vue';
@@ -186,7 +186,7 @@ import LanguageNew from '../catalog/languages/language-new.vue';
     :class="[app.kioskState.settings?.alt_ui == 'design_v2' ? 'catalog_container_v2 q-pa-md' : '']"
   >
     <header
-      class="row justify-between q-pa-xl header_style"
+      class="row justify-between q-pa-xl header_style bg-grey-2"
       :class="[app.kioskState.settings?.alt_ui == 'design_v2' ? 'header_style_v2' : '']"
     >
       <LogoSimple
@@ -208,7 +208,7 @@ import LanguageNew from '../catalog/languages/language-new.vue';
       </BinButton>
     </header>
     <aside
-      class="column q-py-xl q-px-lg category_container justify-between"
+      class="column q-py-xl q-px-lg category_container justify-between bg-grey-2"
       :class="[app.kioskState.settings?.alt_ui == 'design_v2' ? 'category_container_v2' : '']"
     >
       <section class="column">
@@ -246,9 +246,14 @@ import LanguageNew from '../catalog/languages/language-new.vue';
       </div>
     </aside>
 
-    <q-scroll-area class="q-px-xs-none goods_container">
-      <article v-for="(goodCategory, index) in goodsStore.goods" :key="goodCategory.id" class="q-mb-md catalog" :id="index" v-intersection="observer">
-        <div class="text-h4 q-mb-sm catalog_header">{{ goodCategory.title }}</div>
+    <q-scroll-area class="q-px-xs-none goods_container q-mt-lg">
+      <article v-for="(goodCategory, index) in goodsStore.goods" class="mb-90" :key="goodCategory.id" :id="index" v-intersection="observer">
+        <div
+          class="text-h4 q-mb-lg text-uppercase"
+          :class="[app.kioskState.settings?.alt_ui == 'design_v3' ? 'text-white' : 'text-black']"
+        >
+          {{ goodCategory.title }}
+        </div>
         <div v-if="goodCategory.goods.length == 0" class="text-body1">{{$t('category_empty')}}</div>
         <transition appear @enter="animation">
           <div class="row image_grid">
@@ -256,8 +261,8 @@ import LanguageNew from '../catalog/languages/language-new.vue';
               :good="good"
               v-for="(good, index) in goodCategory.goods"
               :key="index"
-              :class="[app.kioskState.settings?.alt_ui == 'design_v3' ? 'card_setting_v2' : 'card_setting']"
-              :is="app.kioskState.settings?.alt_ui == 'design_v3' ? ProductCardAlt : ProductCard"
+              :class="[app.kioskState.settings?.alt_ui == 'design_v3' ? 'card_setting' : 'card_setting_v2']"
+              :is="app.kioskState.settings?.alt_ui == 'design_v3' ? ProductCardV3 : ProductCard"
             ></component>
           </div>
         </transition>
@@ -298,7 +303,7 @@ import LanguageNew from '../catalog/languages/language-new.vue';
                       "category catalog";
   grid-template-rows: max-content 1fr;
   grid-template-columns: max-content 1fr;
-  column-gap: 2rem;
+  column-gap: var(--px30);
   width: 100%;
   height: 100vh;
 }
@@ -344,14 +349,16 @@ import LanguageNew from '../catalog/languages/language-new.vue';
   width: 100%;
   height: 0.3em;
 }
+
 .help_button {
   text-transform: none;
 }
 
 .goods_container {
   width: 100%;
-  padding-right: 2rem;
+  padding-right: var(--px30);
 }
+
 .image_grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -380,12 +387,8 @@ ul.tabs__header > li {
 
 li > div {
   color: #5D5D5D;
-  // text-transform: uppercase;
-  // scale: 1.05;
 }
 li > div.active {
   color: var(--body-text);
-  // text-transform: uppercase;
-  // scale: 1.05;
 }
 </style>
