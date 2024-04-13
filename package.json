@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.16.4",
+    "@vueuse/core": "^10.9.0",
     "@vueuse/rxjs": "^10.7.0",
     "axios": "^1.2.1",
     "dexie": "^3.2.4",

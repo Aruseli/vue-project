@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import gsap from 'gsap';
-import { useQuasar } from 'quasar';
-import { onMounted, onUnmounted, ref } from 'vue';
+import { useQuasar, IntersectionValue } from 'quasar';
+import { onMounted, onUnmounted, ref, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAppStore } from '../../stores/app';
 import { useCartStore } from '../../stores/cart';
@@ -17,85 +17,84 @@ import BinIcon from '../icons/bin-icon.vue';
 import BinIconV3 from '../icons/bin-icon-v3.vue';
 import Modal from '../overlay/modal.vue';
 import LanguageNew from '../catalog/languages/language-new.vue';
+import { useIntersectionObserver } from '@vueuse/core'
 
+  const target = ref(null);
   const $q = useQuasar();
   const goodsStore = useGoodsStore();
   const app = useAppStore();
   const cartStore = useCartStore();
   const router = useRouter();
-  const selectedIndex = ref(0);
+  const selectedIndex = ref('');
   const selectedLang = ref('');
 
+  const options = {
+    threshold: [0],
+    rootMargin: "0% 0% -70% 0%",
+  }
+
+  const observer = useIntersectionObserver(
+    target,
+    ([ isIntersecting ], observerElement) => {
+      selectedIndex.value = isIntersecting.target.id;
+    }, options
+  )
   const openDrawer = () => {
     app.openDrawerCart(true);
   }
-  const changeLanguage = async (newLocale) => {
+  const changeLanguage = async (newLocale: string) => {
     await app.setLocale(newLocale);
     await goodsStore.updateGoods(newLocale);
     selectedLang.value = newLocale;
-    console.log('selectedLang.value', selectedLang.value)
-  }
+    console.log("selectedLang.value", selectedLang.value);
+  };
 
-  const observer = {
-    handler (entry) {
-      if (entry.isIntersecting === true) {
-        console.log(entry.target.id);
-        selectedIndex.value = entry.target.id
-      }
-    },
-    cfg: {
-      root: document.querySelector(".goods_container"),
-      threshold: 0.5,
-      rootMargin: '0% 0% -70% 0%'
-    }
-  }
-
-  const selectCategory = (id) => {
+  const selectCategory = (id: string, event: Event) => {
     event.preventDefault();
     const element = document.getElementById(id);
     selectedIndex.value = id;
-    element.scrollIntoView({
-      behavior: 'smooth'
+    element?.scrollIntoView({
+      behavior: "smooth",
     });
-  }
+  };
 
-  const enterCardShakeAlt = () => {
-    gsap.to('.card_setting_v2', {
-      duration: 0.5,
-      // delay: 28,
-      scale: 1.02,
-      boxShadow: "0 -12px 20px -12px rgba(35, 65, 65, 1), 0 12px 20px -12px rgba(35, 65, 65, 1)",
-      ease: "none",
-      stagger: {
-        repeat: 1,
-        yoyo: true,
-        each: 0.25,
-      }
-    })
-  }
+    const enterCardShakeAlt = () => {
+      gsap.to('.card_setting_v2', {
+        duration: 0.5,
+        // delay: 28,
+        scale: 1.02,
+        boxShadow: "0 -12px 20px 2px rgba(35, 65, 65, 1), 0 12px 20px 2px rgba(35, 65, 65, 1)",
+        ease: "none",
+        stagger: {
+          repeat: 1,
+          yoyo: true,
+          each: 0.25,
+        }
+      })
+    }
 
-  const enterCardShake = () => {
-    gsap.to('.card_setting', {
-      duration: 0.5,
-      // delay: 28,
-      scale: 1.02,
-      boxShadow: "0 -12px 20px -12px rgba(35, 65, 65, 1), 0 12px 20px -12px rgba(35, 65, 65, 1)",
-      ease: "none",
-      stagger: {
-        repeat: 1,
-        yoyo: true,
-        each: 0.25,
-      }
-    })
-  }
+    const enterCardShake = () => {
+      gsap.to('.card_setting_v3', {
+        duration: 0.5,
+        // delay: 28,
+        scale: 1.02,
+        boxShadow: "0 -12px 20px 2px rgba(136, 216, 99, 1), 0 12px 20px 2px rgba(136, 216, 99, 1)",
+        ease: "none",
+        stagger: {
+          repeat: 1,
+          yoyo: true,
+          each: 0.25,
+        }
+      })
+    }
 
-  const animation = (ui) => {
-    if(ui == 'design_v2') {
+  const animation = (ui: string) => {
+    if (ui === "design_v2") {
       return enterCardShake();
     } else {
       return enterCardShakeAlt();
     }
-  }
+  };
 
   const redirectAt = ref(0);
   const countdown = ref(0);
@@ -111,8 +110,10 @@ import LanguageNew from '../catalog/languages/language-new.vue';
   }
 
   const tick = () => {
-    if (Date.now() - redirectAt.value > 60*1000) {
-      redirectAt.value = Date.now() + app.kioskState.settings?.customer_inactivity_before_redirect ?? 37000;
+    if (Date.now() - redirectAt.value > 60 * 1000) {
+      redirectAt.value =
+        Date.now() +
+        (app.kioskState.settings?.customer_inactivity_before_redirect ?? 37000);
     }
 
     const timeBeforeRedirect = redirectAt.value - Date.now();
@@ -122,66 +123,88 @@ import LanguageNew from '../catalog/languages/language-new.vue';
       return;
     }
 
-    if (timeBeforeRedirect < app.kioskState.settings?.customer_inactivity_countdown_duration ?? 7000) {
+    if (
+      timeBeforeRedirect <
+      (app.kioskState.settings?.customer_inactivity_countdown_duration ?? 7000)
+    ) {
       // countdown phase
       countdown.value = Math.floor(timeBeforeRedirect / 1000);
-      app.openLangDialog(false)
+      app.openLangDialog(false);
       dialogState.value = true;
       return;
     }
     dialogState.value = false;
 
-    const animationStartBeforeRedirect = app.kioskState.settings?.customer_inactivity_animation_start_before_redirect;
+    const animationStartBeforeRedirect =
+      app.kioskState.settings
+        ?.customer_inactivity_animation_start_before_redirect ?? 0;
     if (timeBeforeRedirect < animationStartBeforeRedirect) {
       // animation phase
-      const timeSinceLastAnimationStart = Date.now() - lastAnimationStartedAt.value;
+      const timeSinceLastAnimationStart =
+        Date.now() - lastAnimationStartedAt.value;
       if (timeSinceLastAnimationStart < animationStartBeforeRedirect) {
         return;
       }
       console.log("Entering animation", timeBeforeRedirect);
       lastAnimationStartedAt.value = Date.now();
-      animation();
+      animation("design_v2"); // Pass a string argument to the animation function
       return;
     }
     // boring phase
     return;
-  }
+  };
 
   function closeDialog() {
-    redirectAt.value = Date.now() + app.kioskState.settings?.customer_inactivity_before_redirect ?? 37000;
+    redirectAt.value =
+      Date.now() +
+      (app.kioskState.settings?.customer_inactivity_before_redirect ?? 37000);
   }
 
   function resetRedirectTimer() {
     if (dialogState.value) {
       return;
     }
-    redirectAt.value = Date.now() + app.kioskState.settings?.customer_inactivity_before_redirect ?? 37000;
+    redirectAt.value =
+      Date.now() +
+      (app.kioskState.settings?.customer_inactivity_before_redirect ?? 37000);
   }
 
   const redirectTimer = ref(null);
   const boundResetTimer = resetRedirectTimer.bind(this);
   onMounted(() => {
     // Запускаем таймер
-    redirectAt.value = Date.now() + app.kioskState.settings?.customer_inactivity_before_redirect ?? 37000;
-    redirectTimer.value = setInterval(() => tick(), 100);
+    redirectAt.value =
+      Date.now() +
+      (app.kioskState.settings?.customer_inactivity_before_redirect ?? 37000);
+    redirectTimer.value = setInterval(() => tick(), 100) as unknown as null;
     // Обрабатываем события
-    ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
-      document.addEventListener(e, boundResetTimer)
-    )
-    selectedLang.value = localStorage.getItem('lang');
-  })
+    [
+      "mousemove",
+      "keydown",
+      "click",
+      "scroll",
+      "touchmove",
+      "touchstart",
+    ].forEach((e) => document.addEventListener(e, boundResetTimer));
+    selectedLang.value = localStorage.getItem("lang") || "";
+  });
 
   onUnmounted(() => {
-    clearTimeout(redirectTimer.value);
-    ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
-      document.removeEventListener(e, boundResetTimer)
-    )
-  })
+    clearInterval(redirectTimer.value as unknown as number);
+    [
+      "mousemove",
+      "keydown",
+      "click",
+      "scroll",
+      "touchmove",
+      "touchstart",
+    ].forEach((e) => document.removeEventListener(e, boundResetTimer));
+  });
 
 </script>
 
 <template>
-  <div
+    <div
     class="catalog_container"
     :class="[app.kioskState.settings?.alt_ui == 'design_v2' ? 'catalog_container_v2 q-pa-md' : '']"
   >
@@ -203,59 +226,71 @@ import LanguageNew from '../catalog/languages/language-new.vue';
         :quantity="cartStore.totalQuantity"
         :badgeStyleAlt="app.kioskState.settings?.alt_ui == 'design_v3' ? 'bg-red' : ''"
       >
-        <component :quantity="cartStore.totalQuantity > 0" :is="app.kioskState.settings?.alt_ui == 'design_v3' ? BinIconV3 : BinIcon">
+        <component :quantity="cartStore.totalQuantity" :is="app.kioskState.settings?.alt_ui == 'design_v3' ? BinIconV3 : BinIcon">
         </component>
       </BinButton>
     </header>
     <aside
-      class="column q-py-xl q-px-lg category_container justify-between bg-grey-2"
+      class="q-py-xl q-px-lg category_container bg-grey-2"
       :class="[app.kioskState.settings?.alt_ui == 'design_v2' ? 'category_container_v2' : '']"
     >
-      <section class="column">
-        <div class="categories_style mb-60">
-          <div class="text-h3 text-uppercase text-white mb-20">
-            {{ $t('categories') }}
-          </div>
-          <div class="bg-white categories_line" />
-        </div>
-        <ul class='tabs__header'>
-          <li v-for='(goodCategory, index) in goodsStore.goods'
-            :key='goodCategory.id'
-            class="text-h5 text-weight-bold"
-          >
-            <div @click="selectCategory(index)" :class='{active : index == selectedIndex}'>
-              {{ goodCategory.title }}
+      <div class="scrollable_container column justify-between full-height">
+        <section class="column">
+          <div class="categories_style mb-60">
+            <div class="text-h3 text-uppercase text-white mb-20">
+              {{ $t('categories') }}
             </div>
-          </li>
-        </ul>
-      </section>
-      <div class="column" v-if="app.kioskState.settings?.alt_ui == 'design_v3'">
-        <div class="row">
-          <LanguageNew
-            :language="selectedLang"
-            :src="`/flags/${selectedLang}.webp`"
-            @click="app.openLangDialog(true)"
+            <div class="bg-white categories_line" />
+          </div>
+          <ul class='tabs__header'>
+            <li v-for='(goodCategory, index) in goodsStore.goods'
+              :key='goodCategory.id'
+              class="text-h5 text-weight-bold"
+            >
+              <div @click="selectCategory(goodCategory.id, $event)" :class='{active : goodCategory.id == selectedIndex}'>
+                {{ goodCategory.title }}
+              </div>
+            </li>
+          </ul>
+        </section>
+        <div class="column" v-if="app.kioskState.settings?.alt_ui == 'design_v3'">
+          <div class="row">
+            <LanguageNew
+              :language="selectedLang"
+              :src="`/flags/${selectedLang}.webp`"
+              @click="app.openLangDialog(true)"
+            />
+          </div>
+          <q-btn
+            flat
+            color="grey"
+            class="text-body1 text-center help_button"
+            :label="$t('do_you_need_some_help')"
           />
         </div>
-        <q-btn
-          flat
-          color="grey"
-          class="text-body1 text-center help_button"
-          :label="$t('do_you_need_some_help')"
-        />
       </div>
     </aside>
 
     <q-scroll-area class="q-px-xs-none goods_container q-mt-lg">
-      <article v-for="(goodCategory, index) in goodsStore.goods" class="mb-90" :key="goodCategory.id" :id="index" v-intersection="observer">
+      <article
+        v-for="goodCategory in goodsStore.goods"
+        :key="goodCategory.id"
+        :id="goodCategory.id"
+        ref="target"
+        class="mb-90"
+      >
         <div
           class="text-h4 q-mb-lg text-uppercase"
           :class="[app.kioskState.settings?.alt_ui == 'design_v3' ? 'text-white' : 'text-black']"
         >
           {{ goodCategory.title }}
         </div>
-        <div v-if="goodCategory.goods.length == 0" class="text-body1">{{$t('category_empty')}}</div>
-        <transition appear @enter="animation">
+        <div
+          v-if="goodCategory.goods.length == 0"
+          class="text-body1"
+          :class="[app.kioskState.settings?.alt_ui == 'design_v3' ? 'text-white' : 'text-black']"
+        >{{$t('category_empty')}}</div>
+        <transition appear @enter="animation(app.kioskState.settings?.alt_ui ?? '')">
           <div class="row image_grid">
             <component
               :good="good"
@@ -328,6 +363,11 @@ import LanguageNew from '../catalog/languages/language-new.vue';
   border-radius: 1rem;
   box-shadow: var(--border-shadow);
 }
+
+.scrollable_container {
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
 .category_container {
   grid-area: category;
   border-right: var(--border);
@@ -362,7 +402,7 @@ import LanguageNew from '../catalog/languages/language-new.vue';
 .image_grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 3rem;
+  gap: var(--px20);
   width: 100%;
   height: auto;
   padding: 0 0.2em;

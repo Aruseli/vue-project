@@ -21,6 +21,10 @@
       type: Boolean,
       default: false,
     },
+    customIcon: {
+      type: Boolean,
+      default: false,
+    }
   })
 
   const emit = defineEmits(['click']);
@@ -34,7 +38,9 @@
     :color="props.color"
     :text-color="props.textColor"
     v-bind="$attrs"
-    @click="emit('click')">
-    <q-icon flat :color="props.textColor" :size="props.size" :name="props.icon"></q-icon>
+    @click="emit('click')"
+  >
+    <slot></slot>
+    <q-icon flat :color="props.textColor" :size="props.size" :name="props.icon" v-if="!customIcon"></q-icon>
    </q-btn>
 </template>

@@ -3,12 +3,13 @@
 import { ionEllipse } from '@quasar/extras/ionicons-v6';
 import { t } from 'i18next';
 import { useQuasar } from 'quasar';
-import { computed, nextTick, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useAppStore } from '../../stores/app';
 import { useCartStore } from '../../stores/cart';
 import { useGoodsStore } from '../../stores/goods';
 import IconButton from './buttons/icon-button.vue';
 import ProductModal from './product-modal.vue';
+import AttentionIcon from '../icons/attention-icon.vue';
 
 
   const $q = useQuasar();
@@ -58,16 +59,20 @@ import ProductModal from './product-modal.vue';
     cartStore.increaseItemsCount(good);
     showNotify();
   }
-
-  const sliceDescription = computed(() => props.good.description.slice(0, 50) + ' <span style="color: blue">more...</span>');
-
 </script>
 
 
 <template>
-  <div :class="[props.good && props.good.stock <= 0 && 'disabled no-pointer-events', app.kioskState.settings?.alt_ui == 'design_v2' ? 'card_setting_v2' : 'card_setting bg-grey-2 pa-14']" v-bind="$attrs">
-    <div>
-      <div class="content_container" @click="openDialog = true">
+  <div
+    :class="[props.good && props.good.stock <= 0 && 'disabled no-pointer-events', 'card_setting_v3 bg-grey-2 pa-14']"
+    v-bind="$attrs"
+  >
+    <div class="row justify-between items-center">
+      <IconButton>
+        <AttentionIcon />
+      </IconButton>
+    </div>
+      <div class="content_container">
         <div class="img_container">
           <q-img
             :src="props.good?.images[0]?.image"
@@ -158,7 +163,7 @@ import ProductModal from './product-modal.vue';
           />
         </div>
       </div>
-    </div>
+
   </div>
 
   <template>
@@ -172,25 +177,16 @@ import ProductModal from './product-modal.vue';
   $calc_width_alt: calc(12em + 4.5vmax);
 
 
-  .card_setting {
+  .card_setting_v3 {
     border-radius: var(--border-xxs);
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-shadow: var(--box-shadow--product_cart_v3);
   }
-  .card_setting_v2 {
-    border-radius: var(--border-sm);
-    box-shadow: var(--border-shadow);
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 1rem;
-    background-color: var(--q-header_bg);
-  }
+
   .img_container {
     // max-width: $calc_width;
     // max-height: $calc_width;

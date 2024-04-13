@@ -21,7 +21,7 @@ import RectangularButton from '../buttons/rectangular-button.vue';
       duration: 0.5,
       // delay: 28,
       scale: 1.02,
-      boxShadow: "0 -12px 20px -12px rgba(35, 65, 65, 1), 0 12px 20px -12px rgba(35, 65, 65, 1)",
+      boxShadow: "0 -12px 20px 2px rgba(35, 65, 65, 1), 0 12px 20px 2px rgba(35, 65, 65, 1)",
       ease: "none",
       stagger: {
         repeat: 1,
