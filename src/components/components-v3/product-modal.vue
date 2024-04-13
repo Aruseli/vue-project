@@ -1,14 +1,16 @@
 <script setup>
   import { evaMinusOutline, evaPlusOutline } from '@quasar/extras/eva-icons';
-import { ionEllipse } from '@quasar/extras/ionicons-v6';
-import { t } from 'i18next';
-import { useQuasar } from 'quasar';
-import { computed, nextTick, onMounted, ref } from 'vue';
-import { useAppStore } from '../../stores/app';
-import { useCartStore } from '../../stores/cart';
-import { useGoodsStore } from '../../stores/goods';
-import IconButton from '../buttons/icon-button.vue';
-import Modal from '../overlay/modal.vue';
+  import { ionEllipse } from '@quasar/extras/ionicons-v6';
+  import { t } from 'i18next';
+  import { useQuasar } from 'quasar';
+  import { computed, nextTick, onMounted, ref } from 'vue';
+  import { useAppStore } from '../../stores/app';
+  import { useCartStore } from '../../stores/cart';
+  import { useGoodsStore } from '../../stores/goods';
+  import IconButton from '../buttons/icon-button.vue';
+  import Modal from '../overlay/modal.vue';
+  import Carousel from '../carousel/carousel.vue';
+  import Slide from '../carousel/slide.vue';
 
 
   const $q = useQuasar();
@@ -68,8 +70,76 @@ import Modal from '../overlay/modal.vue';
 
 <template>
   <Modal :isOpen="props.isOpen" @click="emit('click')">
-    <div class="dialog_container">
-      <q-card class="dialog_card">
+    <div class="dialog_container column bg-grey-3 q-pa-xl">
+      <div class="text-h3 text-green">
+        {{ props.good.name }}
+      </div>
+      <div class="row q-mb-lg">
+        <Carousel>
+          <Slide>Hello</Slide>
+        </Carousel>
+        <div class="column text-body1">
+          <div class="text-grey q-mb-lg">{{ $t('characteristics') }}</div>
+
+          <div class="text-grey q-mb-sm">{{ $t('variety') }}</div>
+          <div class="text-white q-mb-lg">
+            <span>{{ $t('hybrid') }}</span>
+            <span>{{ $t('sativa') }}</span>
+            <span>{{ $t('indica') }}</span>
+          </div>
+
+          <div class="text-grey q-mb-sm">{{ $t('taste') }}</div>
+          <div class="text-white q-mb-lg">
+            <span>{{ $t('fruity') }}</span>
+            <span>{{ $t('fresh') }}</span>
+            <span>{{ $t('mint') }}</span>
+          </div>
+
+          <div class="text-grey q-mb-sm">{{ $t('effects') }}</div>
+          <div class=" text-white q-mb-lg">
+            <span>{{ $t('relaxation') }}</span>
+            <span>{{ $t('calm') }}</span>
+          </div>
+
+          <div class="text-grey q-mb-sm">{{ $t('technical_specifications') }}</div>
+          <div class=" text-white">
+            <span>{{ $t('relaxation') }}</span>
+            <span>{{ $t('calm') }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="text-grey text-h5 q-mb-lg">
+        {{ $t('description') }}
+      </div>
+      <div class="text-body1 text-white q-mb-lg" v-html="props.good.description"/>
+      <div class="full-width">
+        <q-btn
+          v-if="!goodInCart"
+          class="full-width"
+          unelevated
+          no-caps
+          color="white"
+          @click="addGoodToCart(good)"
+          >
+          <div class="text-h4 text-center text-black q-py-lg-sm q-py-sm-xs">
+            {{ $t('add_to_cart') }}
+          </div>
+        </q-btn>
+        <div class="row justify-between items-center" v-else>
+          <IconButton
+            :icon="evaMinusOutline"
+            @click="decrease(good)"
+            class="q-pa-lg-sm q-pa-sm-xs"
+          />
+          <div class="text-h4 no-margin">{{ goodInCart.quant }}</div>
+          <IconButton
+            :icon="evaPlusOutline"
+            @click="increase(good)"
+            class="q-pa-lg-sm q-pa-sm-xs"
+          />
+        </div>
+      </div>
+      <!-- <q-card class="dialog_card">
         <q-btn round color="primary" icon="close" class="close_button text-white" @click="goodsStore.openDialog = false" />
 
         <q-card-section class="q-mb-xs-xs">
@@ -109,68 +179,21 @@ import Modal from '../overlay/modal.vue';
           </q-carousel>
         </q-card-section>
         <q-card-section class="q-mb-lg-sm q-mb-xs-xs">
-          <div class="text-h3">
-            {{ props.good.name }}
-          </div>
+
         </q-card-section>
         <q-card-section class="q-mb-lg-sm q-mb-xs-xs">
           <div class="text-h2">
             &#3647&ensp;{{ props.good.price }}
           </div>
         </q-card-section>
-        <q-separator color="secondary" class="q-mb-lg-sm q-mb-xs-xs" />
-        <q-card-section class="q-pt-none q-mb-sm">
-          <div class="text-h4 text-capitalize q-mb-lg-sm q-mb-xs-xs">{{ $t('description') }}</div>
-          <div class="text-body1" v-html="props.good.description"/>
-        </q-card-section>
-        <q-card-section>
-          <div class="full-width">
-            <q-btn
-              v-if="!goodInCart"
-              class="full-width text_style"
-              unelevated
-              rounded
-              no-caps
-              color="primary"
-              text-color="white"
-              @click="addGoodToCart(good)"
-              >
-              <div class="text-h4 text-center text-weight-bold text-white q-py-lg-sm q-py-sm-xs text-uppercase">
-                {{ $t('buy') }}
-              </div>
-            </q-btn>
-            <div class="row justify-between items-center" v-else>
-              <IconButton
-                :icon="evaMinusOutline"
-                @click="decrease(good)"
-                class="q-pa-lg-sm q-pa-sm-xs"
-              />
-              <div class="text-h4 no-margin">{{ goodInCart.quant }}</div>
-              <IconButton
-                :icon="evaPlusOutline"
-                @click="increase(good)"
-                class="q-pa-lg-sm q-pa-sm-xs"
-              />
-            </div>
-          </div>
-        </q-card-section>
-      </q-card>
+      </q-card> -->
     </div>
   </Modal>
 </template>
 
 <style scoped lang="scss">
 $close_size: calc(3em + 2.7262vmin);
-  .img_container_dialog {
-    width: 100%;
-    height: 100%;
-    border-radius : var(--px30);
-    overflow: hidden;
-    border: thin solid var(--q-accent);
-  }
-  .text_style {
-    font-weight: bold;
-  }
+
   .dialog_container {
     width: 50vw;
     max-width: 60vw;
