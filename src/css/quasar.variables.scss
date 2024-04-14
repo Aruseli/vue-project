@@ -8,7 +8,7 @@ $h4: (size: clamp(1.375rem, 1.1136rem + 1.3072vmax, 2.5rem), line-height: 1.3, l
 $h5: (size: clamp(0.875rem, 0.6136rem + 1.3072vmax, 2rem), line-height: 1.3, letter-spacing: .00735em, weight: 600) !default;
 $subtitle1: (size: clamp(0.75rem, 0.5176rem + 1.1619vmax, 1.75rem), line-height: 1.1, letter-spacing: .00937em, weight: 400) !default;
 $subtitle2: (size: clamp(0.625rem, 0.4798rem + 0.7262vmax, 1.25rem), line-height: 1.1, letter-spacing: .00714em, weight: 500) !default;
-$body1: (size: clamp(0.8125rem, 0.6527rem + 0.7988vmax, 1.5rem), line-height: 1.1, letter-spacing: .03125em, weight: 400) !default;
+$body1: (size: clamp(0.8125rem, 0.6527rem + 0.7988vmax, 1.5rem), line-height: 1.5, letter-spacing: .03125em, weight: 400) !default;
 
 // sizes for define margins/paddings
 $space-base: 16px !default;

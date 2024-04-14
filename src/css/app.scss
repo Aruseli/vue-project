@@ -36,7 +36,7 @@ $height: calc(8em + 1.7262vmin);
 }
 
 $margins: ("14": 0.875rem, "16": 1rem, "20": 1.5rem, "54": 3.375rem, "60": 3.75rem, "74": 4.625rem, "90": 5.5rem, "120": 7.5rem);
-$paddings: ("14": 0.875rem, "20": 1.5rem, "54": 3.375rem, "60": 3.75rem, "90": 5.5rem, "120": 7.5rem);
+$paddings: ("14": 0.875rem, "20": 1.5rem, "21": 1.3125rem, "54": 3.375rem, "60": 3.75rem, "90": 5.5rem, "120": 7.5rem);
 
 @each $name, $size in $margins {
   .mb-#{$name} {
@@ -104,6 +104,12 @@ body.body--dark {
   text-transform: uppercase
 }
 
+#modal, #redirect-dialog {
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
 
 .round-button-dark_green {
   background-color: positive;

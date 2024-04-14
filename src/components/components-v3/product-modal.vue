@@ -112,6 +112,8 @@ const addGoodToCart = (good: Good) => {
       <div class="text-grey text-h5 q-mb-lg">
         {{ $t('description') }}
       </div>
+
+      <!-- add to cart -->
       <div class="text-body1 text-white q-mb-lg" v-html="props.good.description"/>
       <div class="full-width">
         <q-btn
@@ -122,21 +124,27 @@ const addGoodToCart = (good: Good) => {
           color="white"
           @click="addGoodToCart(props.good  as Good)"
         >
-          <div class="text-h4 text-center text-black q-py-lg-sm q-py-sm-xs">
+          <div class="text-h4 text-center text-black q-py-sm-xs">
             {{ $t('add_to_cart') }}
           </div>
         </q-btn>
         <div class="row justify-between items-center" v-else>
           <IconButton
+            :rounded="false"
             :icon="evaMinusOutline"
+            color="white"
+            textColor="grey-1"
             @click="decrease(props.good  as Good)"
-            class="q-pa-lg-sm q-pa-sm-xs"
+            class="pa-21"
           />
-          <div class="text-h4 no-margin">{{ goodInCart.quant }}</div>
+          <div class="text-h4 no-margin text-grey">{{ goodInCart.quant }}</div>
           <IconButton
+            :rounded="false"
+            color="white"
+            textColor="grey-1"
             :icon="evaPlusOutline"
             @click="increase(props.good  as Good)"
-            class="q-pa-lg-sm q-pa-sm-xs"
+            class="pa-21"
           />
         </div>
       </div>
@@ -158,7 +166,7 @@ const addGoodToCart = (good: Good) => {
   .slider_grid {
     display: grid;
     grid-template-columns: 1fr 0.7fr;
-    grid-template-rows: 30rem max-content;
+    grid-template-rows: 35rem max-content;
     column-gap: var(--px20);
     row-gap: var(--px20);
     width: 100%;
