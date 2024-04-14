@@ -186,10 +186,10 @@
 
   // Функция-обработчик, которая переведет на новую страницу
   const redirect = async () => {
+    redirectAt.value = 0;
     redirectDialogState.value = false;
     const redirectSettings = getRedirectSettings();
     if (!redirectSettings) {
-      redirectAt.value = 0;
       return;
     }
     if (redirectSettings.action == 'customer') {
