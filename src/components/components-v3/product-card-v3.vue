@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
   import { evaMinusOutline, evaPlusOutline } from '@quasar/extras/eva-icons';
 import { ionEllipse } from '@quasar/extras/ionicons-v6';
 import { t } from 'i18next';
@@ -6,12 +6,14 @@ import { useQuasar } from 'quasar';
 import { computed, ref } from 'vue';
 import { useAppStore } from '../../stores/app';
 import { useCartStore } from '../../stores/cart';
-import { useGoodsStore } from '../../stores/goods';
+import { Good, useGoodsStore } from '../../stores/goods';
 import IconButton from '../buttons/icon-button.vue';
 import ProductModal from './product-modal.vue';
 import AttentionIcon from '../icons/attention-icon.vue';
 import BinIconV3 from '../icons/bin-icon-v3.vue';
 import BinButton from './buttons/bin-button.vue';
+import Carousel from '../carousel/carousel.vue';
+import Slide from '../carousel/slide.vue';
 
   const $q = useQuasar();
   const slide = ref(0);
@@ -47,16 +49,16 @@ import BinButton from './buttons/bin-button.vue';
 
   const goodInCart = computed(() => cartStore.cart.find((item) => item.id === props.good.id))
 
-  const addGoodToCart = (good) => {
+  const addGoodToCart = (good: Good) => {
     cartStore.increaseItemsCount(good);
     showNotify();
   }
 
-  const decrease = (good) => {
+  const decrease = (good: Good) => {
     cartStore.decreaseItemsCount(good);
   }
 
-  const increase = (good) => {
+  const increase = (good: Good) => {
     cartStore.increaseItemsCount(good);
     showNotify();
   }
@@ -109,7 +111,7 @@ import BinButton from './buttons/bin-button.vue';
         </div>
       </div>
       <div>
-        <BinButton @click="addGoodToCart(props.good)" class="bin_button_style">
+        <BinButton @click="addGoodToCart(props.good as Good)" class="bin_button_style">
           <BinIconV3 :quantity="cartStore.totalQuantity" class="bin_alt_style" />
         </BinButton>
       </div>
@@ -119,7 +121,13 @@ import BinButton from './buttons/bin-button.vue';
 
 
   <template>
-    <ProductModal :good="props.good" :isOpen="openDialog" @click="openDialog = false" />
+    <ProductModal :good="props.good" :isOpen="openDialog" @click="openDialog = false">
+      <template #carousel>
+        <Carousel>
+          <Slide v-for="(image, index) in props.good.images" :key="index"  />
+        </Carousel>
+      </template>
+    </ProductModal>
   </template>
 
 </template>
