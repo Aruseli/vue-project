@@ -98,4 +98,8 @@ export default {
   calm: 'calm',
   technical_specifications: 'technical specifications',
   add_to_cart: 'add to cart',
+  your_order: 'your order',
+  positions_one: 'position',
+  positions_other: 'positions',
+  view_order: 'view order',
 };

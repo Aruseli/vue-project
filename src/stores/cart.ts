@@ -16,6 +16,15 @@ export const useCartStore = defineStore('cartStore',
     const appStore = useAppStore();
     const goodsStore = useGoodsStore();
     const cart = ref<CartItem[]>([]);
+    const cta = ref(false);
+
+    const ctaShow = () => {
+      if(cart.value.length == 0) {
+        cta.value = false;
+      }
+      cta.value = true;
+    }
+
     const increaseItemsCount = (good: Good | CartItem) => {
       const cartItem = cart.value.find(i => i.id == good.id)
       if (cartItem) {
@@ -89,6 +98,7 @@ export const useCartStore = defineStore('cartStore',
 
     return {
       cart,
+      cta,
       cartExtended,
       totalQuantity: computed(() => cart.value.reduce((acc, item) => acc + item.quant, 0)),
       totalPrice: computed(() => cart.value.reduce((acc, item) => acc + item.quant * item.price, 0)),
@@ -97,6 +107,7 @@ export const useCartStore = defineStore('cartStore',
       increaseItemsCount,
       removeFromCart,
       submitOrder,
+      ctaShow,
     }
   },
   {

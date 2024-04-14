@@ -5,7 +5,7 @@ $width: calc(6.5em + 1.7262vmin);
 $height: calc(8em + 1.7262vmin);
 
 .v3_body_style {
-  font-family: 'Poppins, sans-serif';
+  font-family: 'Poppins', sans-serif;
 }
 
 :root {
@@ -36,7 +36,7 @@ $height: calc(8em + 1.7262vmin);
 }
 
 $margins: ("14": 0.875rem, "16": 1rem, "20": 1.5rem, "54": 3.375rem, "60": 3.75rem, "74": 4.625rem, "90": 5.5rem, "120": 7.5rem);
-$paddings: ("14": 0.875rem, "54": 3.375rem, "60": 3.75rem, "90": 5.5rem, "120": 7.5rem);
+$paddings: ("14": 0.875rem, "20": 1.5rem, "54": 3.375rem, "60": 3.75rem, "90": 5.5rem, "120": 7.5rem);
 
 @each $name, $size in $margins {
   .mb-#{$name} {
@@ -365,16 +365,6 @@ padding: 0;
   }
 }
 
-// .material-icons {
-//   font-size: 3.5rem !important;
-//   @media (max-width: 1500px) {
-//     font-size: 2.5rem !important;
-//   }
-//   @media (max-width: 700px) {
-//     font-size: 1.5rem !important;
-//   }
-// }
-
 .container_languages {
   width: 60vw;
   display: grid;
@@ -404,4 +394,30 @@ padding: 0;
     gap: 2rem;
     padding: 2rem;
   }
+}
+
+.img_angle_bottom {
+  border-bottom: thin solid white;
+  border-left: thin solid white;
+  width: 5rem;
+  height: 5rem;
+}
+.img_angle_top {
+  border-right: thin solid white;
+  border-top: thin solid white;
+  width: 5rem;
+  height: 5rem;
+}
+
+.slide_img_angle_bottom {
+  border-bottom: thin solid white;
+  border-left: thin solid white;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+.slide_img_angle_top {
+  border-right: thin solid white;
+  border-top: thin solid white;
+  width: 2.5rem;
+  height: 2.5rem;
 }

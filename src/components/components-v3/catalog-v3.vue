@@ -17,7 +17,8 @@ import BinIcon from '../icons/bin-icon.vue';
 import BinIconV3 from '../icons/bin-icon-v3.vue';
 import Modal from '../overlay/modal.vue';
 import LanguageNew from '../catalog/languages/language-new.vue';
-import { useIntersectionObserver } from '@vueuse/core'
+import { useIntersectionObserver } from '@vueuse/core';
+import Cta from './cta.vue';
 
   const target = ref(null);
   const $q = useQuasar();
@@ -237,7 +238,7 @@ import { useIntersectionObserver } from '@vueuse/core'
       <div class="scrollable_container column justify-between full-height">
         <section class="column">
           <div class="categories_style mb-60" v-if="app.kioskState.settings?.alt_ui == 'design_v3'">
-            <div class="text-h3 text-uppercase text-white mb-20">
+            <div class="text-h4 text-uppercase text-white mb-20">
               {{ $t('categories') }}
             </div>
             <div class="bg-white categories_line" />
@@ -271,7 +272,7 @@ import { useIntersectionObserver } from '@vueuse/core'
       </div>
     </aside>
 
-    <q-scroll-area class="q-px-xs-none goods_container q-mt-lg">
+    <q-scroll-area class="q-px-xs-none goods_container q-mt-lg relative-position">
       <article
         v-for="goodCategory in goodsStore.goods"
         :key="goodCategory.id"
@@ -293,8 +294,8 @@ import { useIntersectionObserver } from '@vueuse/core'
         <transition appear @enter="animation(app.kioskState.settings?.alt_ui ?? '')">
           <div class="row image_grid">
             <component
-              :good="good"
               v-for="(good, index) in goodCategory.goods"
+              :good="good"
               :key="index"
               :class="[app.kioskState.settings?.alt_ui == 'design_v3' ? 'card_setting' : 'card_setting_v2']"
               :is="app.kioskState.settings?.alt_ui == 'design_v3' ? ProductCardV3 : ProductCard"
@@ -303,6 +304,7 @@ import { useIntersectionObserver } from '@vueuse/core'
         </transition>
       </article>
     </q-scroll-area>
+    <Cta @click="openDrawer" />
     <RedirectDialog :modelValue="dialogState">
       <template #content>
         <div class="text-h5 text-center">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}</div>
@@ -335,10 +337,10 @@ import { useIntersectionObserver } from '@vueuse/core'
   grid-template-areas:
                       "header header"
                       "category catalog"
-                      "category catalog";
+                      "category catalog"
+                      "category cta";
   grid-template-rows: max-content 1fr;
   grid-template-columns: max-content 1fr;
-  column-gap: var(--px30);
   width: 100%;
   height: 100vh;
   color: var(--body-text);
@@ -398,6 +400,7 @@ import { useIntersectionObserver } from '@vueuse/core'
 .goods_container {
   width: 100%;
   padding-right: var(--px30);
+  padding-left: var(--px30);
 }
 
 .image_grid {
