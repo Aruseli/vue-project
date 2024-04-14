@@ -24,6 +24,22 @@
     customIcon: {
       type: Boolean,
       default: false,
+    },
+    rounded: {
+      type: Boolean,
+      default: true,
+    },
+    flat: {
+      type: Boolean,
+      default: false,
+    },
+    round: {
+      type: Boolean,
+      default: false,
+    },
+    iconStyle: {
+      type: String,
+      default: '',
     }
   })
 
@@ -33,7 +49,9 @@
 <template>
    <q-btn
     unelevated
-    rounded
+    :rounded="rounded"
+    :round="round"
+    :flat="flat"
     :disable="props.disable"
     :color="props.color"
     :text-color="props.textColor"
@@ -41,6 +59,6 @@
     @click="emit('click')"
   >
     <slot></slot>
-    <q-icon flat :color="props.textColor" :size="props.size" :name="props.icon" v-if="!customIcon"></q-icon>
+    <q-icon flat :color="props.textColor" :size="props.size" :name="props.icon" v-if="!customIcon" :class="props.iconStyle"></q-icon>
    </q-btn>
 </template>

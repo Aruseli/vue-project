@@ -70,13 +70,24 @@
 
 <template>
   <Modal :isOpen="props.isOpen" @click="emit('click')">
-    <div class="dialog_container column bg-grey-3 q-pa-xl">
+    <div class="dialog_container column bg-grey-3 q-pa-xl relative-position">
+      <IconButton
+        icon="close"
+        textColor="grey"
+        :rounded="false"
+        :round="true"
+        :flat="true"
+        iconStyle="icon_style"
+        size="xl"
+        class="close_button absolute-top-right"
+        @click="openDialog = false"
+      />
       <div class="text-h3 text-green">
         {{ props.good.name }}
       </div>
       <div class="row q-mb-lg">
         <Carousel>
-          <Slide>Hello</Slide>
+          <Slide v-for="(image, index) in props.good.images" :key="index" />
         </Carousel>
         <div class="column text-body1">
           <div class="text-grey q-mb-lg">{{ $t('characteristics') }}</div>
@@ -139,64 +150,15 @@
           />
         </div>
       </div>
-      <!-- <q-card class="dialog_card">
-        <q-btn round color="primary" icon="close" class="close_button text-white" @click="goodsStore.openDialog = false" />
-
-        <q-card-section class="q-mb-xs-xs">
-          <q-carousel
-            transition-prev="slide-right"
-            transition-next="slide-left"
-            swipeable
-            animated
-            v-model="slide"
-            control-color="primary"
-            :navigation-icon="ionEllipse"
-            navigation
-            infinite
-            padding
-            class="bg-transparent round-borders fit"
-          >
-            <q-carousel-slide
-              v-for="(image, index) in props.good.images"
-              :key="index"
-              :name="index"
-              class="column no-wrap flex-center"
-            >
-              <div class="img_container_dialog">
-                <q-img
-                  :src="image.image"
-                  :ratio="4/3"
-                  class="dialog_img"
-                >
-                  <template #loading>
-                    <div class="text-subtitle1 text-black">
-                      Loading...
-                    </div>
-                  </template>
-                </q-img>
-              </div>
-            </q-carousel-slide>
-          </q-carousel>
-        </q-card-section>
-        <q-card-section class="q-mb-lg-sm q-mb-xs-xs">
-
-        </q-card-section>
-        <q-card-section class="q-mb-lg-sm q-mb-xs-xs">
-          <div class="text-h2">
-            &#3647&ensp;{{ props.good.price }}
-          </div>
-        </q-card-section>
-      </q-card> -->
     </div>
   </Modal>
 </template>
 
 <style scoped lang="scss">
-$close_size: calc(3em + 2.7262vmin);
 
   .dialog_container {
-    width: 50vw;
-    max-width: 60vw;
+    width: 40vw;
+    max-width: 50vw;
     height: max-content;
   }
 
@@ -205,12 +167,13 @@ $close_size: calc(3em + 2.7262vmin);
     border: thin solid var(--q-accent);
   }
 
+  .icon_style {
+    font-size: 2rem !important;
+  }
+
   .close_button {
-    position: absolute;
-    top: -3.8rem;
-    right: -3.8rem;
-    width: $close_size;
-    height: $close_size;
-    box-shadow: var(--box-shadow);
+    width: var(--px54);
+    top: var(--px20);
+    right: var(--px20);
   }
 </style>
