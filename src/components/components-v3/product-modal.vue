@@ -7,8 +7,6 @@ import { useAppStore } from '../../stores/app';
 import { useCartStore } from '../../stores/cart';
 import { Good } from '../../stores/goods';
 import IconButton from '../buttons/icon-button.vue';
-import Carousel from '../carousel/carousel.vue';
-import Slide from '../carousel/slide.vue';
 import Modal from '../overlay/modal.vue';
 
 
@@ -90,41 +88,50 @@ const addGoodToCart = (good: Good) => {
         class="close_button absolute-top-right"
         @click="openDialog = false"
       />
-      <div class="text-h3 text-green">
+      <div class="text-h3 text-green mb-74">
         {{ props.good.name }}
       </div>
-      <div class="row q-mb-lg">
+
+      <!-- carousel + characteristics -->
+      <div class="mb-74 slider_grid">
         <slot name="carousel" />
         <div class="column text-body1">
-          <div class="text-grey q-mb-lg">{{ $t('characteristics') }}</div>
-
-          <div class="text-grey q-mb-sm">{{ $t('variety') }}</div>
-          <div class="text-white q-mb-lg">
-            <span>{{ $t('hybrid') }}</span>
-            <span>{{ $t('sativa') }}</span>
-            <span>{{ $t('indica') }}</span>
+          <div class="text-grey q-mb-lg text-h5">
+            {{ $t('characteristics') }}
           </div>
 
-          <div class="text-grey q-mb-sm">{{ $t('taste') }}</div>
+          <div class="text-grey mb-14">{{ $t('variety') }}</div>
           <div class="text-white q-mb-lg">
-            <span>{{ $t('fruity') }}</span>
-            <span>{{ $t('fresh') }}</span>
+            <span>{{ $t('hybrid') }}</span> &#183;
+            <span>{{ $t('sativa') }}</span> &#183;
+            <span>{{ $t('indica') }}</span> &#183;
+            <span>{{ $t('indica') }}</span> &#183;
+            <span>{{ $t('indica') }}</span> &#183;
+          </div>
+
+          <div class="text-grey mb-14">{{ $t('taste') }}</div>
+          <div class="text-white q-mb-lg">
+            <span>{{ $t('fruity') }}</span> &#183;
+            <span>{{ $t('fresh') }}</span> &#183;
             <span>{{ $t('mint') }}</span>
           </div>
 
-          <div class="text-grey q-mb-sm">{{ $t('effects') }}</div>
+          <div class="text-grey mb-14">{{ $t('effects') }}</div>
           <div class=" text-white q-mb-lg">
-            <span>{{ $t('relaxation') }}</span>
+            <span>{{ $t('relaxation') }}</span> &#183;
             <span>{{ $t('calm') }}</span>
           </div>
 
-          <div class="text-grey q-mb-sm">{{ $t('technical_specifications') }}</div>
+          <div class="text-grey mb-14">{{ $t('technical_specifications') }}</div>
           <div class=" text-white">
-            <span>{{ $t('relaxation') }}</span>
+            <span>{{ $t('relaxation') }}</span> &#183;
             <span>{{ $t('calm') }}</span>
           </div>
         </div>
+        <slot name="slider-navigation" />
       </div>
+
+      <!-- description -->
       <div class="text-grey text-h5 q-mb-lg">
         {{ $t('description') }}
       </div>
@@ -163,16 +170,22 @@ const addGoodToCart = (good: Good) => {
 <style lang="scss">
 
   .dialog_container {
-    width: 40vw;
+    width: 45vw;
     max-width: 50vw;
     height: max-content;
+    @media (max-width: 1500px) {
+      width: 85vw;
+      max-width: 95vw;
+    }
   }
-
-  .dialog_img {
+  .slider_grid {
+    display: grid;
+    grid-template-columns: 1fr 0.7fr;
+    grid-template-rows: 30rem max-content;
+    column-gap: var(--px20);
+    row-gap: var(--px20);
     width: 100%;
-    border: thin solid var(--q-accent);
   }
-
   .close_button {
     width: var(--px54);
     top: var(--px20);
