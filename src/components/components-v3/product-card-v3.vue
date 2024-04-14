@@ -1,57 +1,49 @@
 <script setup lang="ts">
-  import { evaMinusOutline, evaPlusOutline } from '@quasar/extras/eva-icons';
-import { ionEllipse } from '@quasar/extras/ionicons-v6';
-import { t } from 'i18next';
+  import { t } from 'i18next';
 import { useQuasar } from 'quasar';
 import { computed, ref } from 'vue';
 import { useAppStore } from '../../stores/app';
 import { useCartStore } from '../../stores/cart';
 import { Good, useGoodsStore } from '../../stores/goods';
 import IconButton from '../buttons/icon-button.vue';
-import ProductModal from './product-modal.vue';
+import Carousel from '../carousel/carousel.vue';
+import Slide from '../carousel/slide.vue';
 import AttentionIcon from '../icons/attention-icon.vue';
 import BinIconV3 from '../icons/bin-icon-v3.vue';
 import BinButton from './buttons/bin-button.vue';
-import Carousel from '../carousel/carousel.vue';
-import Slide from '../carousel/slide.vue';
+import ProductModal from './product-modal.vue';
 
   const $q = useQuasar();
   const slide = ref(0);
 
   const cartStore = useCartStore();
-  const goodsStore = useGoodsStore();
   const app = useAppStore();
   const openDialog = ref(false)
 
   const props = defineProps({
     good: {
       type: Object,
+      default: {
+        id: String,
+        title: String,
+        description: String,
+        price: Number,
+        stock: Number,
+        images: Array as () => {
+          id: String,
+          image?: String,
+        }[],
+        code: String,
+      },
       required: true,
     },
   })
-
-  const showNotify = () => {
-    $q.notify({
-      timeout: 1000,
-      multiLine: true,
-      color: 'primary',
-      classes: 'full-width notification_styles',
-      actions: [
-        {
-          label: t('placing_an_order'),
-          color: 'white',
-          'aria-label': 'Move to cart',
-          handler: () => app.openDrawerCart(true)
-        },
-      ]
-    })
-  }
 
   const goodInCart = computed(() => cartStore.cart.find((item) => item.id === props.good.id))
 
   const addGoodToCart = (good: Good) => {
     cartStore.increaseItemsCount(good);
-    showNotify();
+    // cartStore.ctaShow();
   }
 
   const decrease = (good: Good) => {
@@ -60,7 +52,6 @@ import Slide from '../carousel/slide.vue';
 
   const increase = (good: Good) => {
     cartStore.increaseItemsCount(good);
-    showNotify();
   }
 </script>
 
@@ -96,12 +87,12 @@ import Slide from '../carousel/slide.vue';
           </div>
         </template>
       </q-img>
-      <div class="absolute-top-left img_angle_top" />
-      <div class="absolute-bottom-right img_angle_bottom" />
+      <div class="absolute-top-right img_angle_top" />
+      <div class="absolute-bottom-left img_angle_bottom" />
     </div>
     <div class="row no-wrap justify-between items-center">
       <div>
-        <div class="q-mb-xs ellipsis text-capitalize text-h5 text-left text-green">
+        <div class="mb-14 ellipsis text-capitalize text-h5 text-left text-green">
           {{ t(props.good?.title) }}
         </div>
 
@@ -124,8 +115,21 @@ import Slide from '../carousel/slide.vue';
     <ProductModal :good="props.good" :isOpen="openDialog" @click="openDialog = false">
       <template #carousel>
         <Carousel>
-          <Slide v-for="(image, index) in props.good.images" :key="index"  />
+          <template #slides>
+            <Slide v-for="(image, index) in props.good.images" :key="index" :image="image"  />
+          </template>
         </Carousel>
+      </template>
+      <template #slider-navigation>
+        <div class="slider_navigation_container">
+          <Slide
+            v-for="(image, index) in props.good.images"
+            :key="index" :image="image"
+            angleTop="slide_img_angle_top"
+            angleBottom="slide_img_angle_bottom"
+            @click="console.log('123')"
+          />
+        </div>
       </template>
     </ProductModal>
   </template>
@@ -136,7 +140,15 @@ import Slide from '../carousel/slide.vue';
   $calc_width: calc(15em + 6vmax);
   $calc_width_alt: calc(12em + 4.5vmax);
 
-
+  .slider_navigation_container {
+    overflow: hidden;
+    height: auto;
+    display: grid;
+    grid-row: 2 / 3;
+    grid-column: 1 / 3;
+    grid-template-columns: repeat(auto-fit, minmax(5%, 1fr));
+    column-gap: 1.5rem;
+  }
   .card_setting_v3 {
     border-radius: var(--border-xxs);
     width: 100%;
@@ -162,17 +174,9 @@ import Slide from '../carousel/slide.vue';
     aspect-ratio: 1;
     display: flex;
   }
-  .img_angle_top {
-    border-top: thin solid white;
-    border-left: thin solid white;
-    width: 3rem;
-    height: 3rem;
-  }
-  .img_angle_bottom {
-    border-right: thin solid white;
-    border-bottom: thin solid white;
-    width: 3rem;
-    height: 3rem;
+  .img_style {
+    border-radius: 0 !important;
+    scale: 0.9;
   }
   .bin_button_style {
     border-radius: var(--px54);
