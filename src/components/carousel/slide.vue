@@ -6,12 +6,6 @@ const props = defineProps({
   addedSlide: {
     type: String,
   },
-  angleTop: {
-    type: String,
-  },
-  angleBottom: {
-    type: String,
-  },
 })
 
 const emit = defineEmits(['click']);
@@ -26,6 +20,7 @@ const emit = defineEmits(['click']);
         height="100%"
         :ratio="1"
         class="slide_img"
+        v-show="props.image"
       >
         <template #loading>
           <div class="text-subtitle1 text-black">
@@ -34,8 +29,7 @@ const emit = defineEmits(['click']);
         </template>
       </q-img>
     </transition>
-    <div class="absolute-top-right img_angle_top" :class="props.angleTop" />
-    <div class="absolute-bottom-left img_angle_bottom" :class="props.angleBottom" />
+    <slot name="angles" />
   </div>
 </template>
 

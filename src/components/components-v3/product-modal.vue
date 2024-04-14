@@ -9,11 +9,6 @@ import { Good } from '../../stores/goods';
 import IconButton from '../buttons/icon-button.vue';
 import Modal from '../overlay/modal.vue';
 
-
-  const $q = useQuasar();
-  const slide = ref(0);
-  const openDialog = ref(false);
-
   const cartStore = useCartStore();
   const app = useAppStore();
 
@@ -40,28 +35,11 @@ import Modal from '../overlay/modal.vue';
     }
   })
 
-  const showNotify = () => {
-    $q.notify({
-      timeout: 1000,
-      multiLine: true,
-      color: 'primary',
-      classes: 'full-width notification_styles',
-      actions: [
-        {
-          label: t('placing_an_order'),
-          color: 'white',
-          'aria-label': 'Move to cart',
-          handler: () => app.openDrawerCart(true)
-        },
-      ]
-    })
-  }
 
   const goodInCart = computed(() => cartStore.cart.find((item) => item.id === props.good.id))
 
 const addGoodToCart = (good: Good) => {
   cartStore.increaseItemsCount(good);
-  showNotify();
 };
 
   const decrease = (good: Good) => {
@@ -70,7 +48,6 @@ const addGoodToCart = (good: Good) => {
 
   const increase = (good: Good) => {
     cartStore.increaseItemsCount(good);
-    showNotify();
   }
   const emit = defineEmits(['click']);
 </script>
@@ -86,7 +63,7 @@ const addGoodToCart = (good: Good) => {
         :flat="true"
         size="xl"
         class="close_button absolute-top-right"
-        @click="openDialog = false"
+        @click="emit('click')"
       />
       <div class="text-h3 text-green mb-74">
         {{ props.good.name }}

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 const props = defineProps({
   isOpen: {
     type: Boolean,
@@ -9,6 +9,11 @@ const props = defineProps({
     type: String,
     required: false,
     default: "#modal"
+  },
+  isOpen: {
+    type: Boolean,
+    required: true,
+    default:false,
   }
 })
 
@@ -19,7 +24,7 @@ const emit = defineEmits(['click']);
 <template>
   <teleport :to="props.to">
     <transition name="modal-animation">
-      <div class="modal_bg" v-if="props.isOpen" @click="emit('click')">
+      <div class="flex items-center justify-center window-width full-height" v-show="props.isOpen">
         <div
           class="dialog_style overflow-hidden q-pa-md-xl q-pa-xs-md"
           role="dialog"
@@ -28,6 +33,8 @@ const emit = defineEmits(['click']);
         >
           <slot></slot>
         </div>
+        <div class="modal_bg" v-if="props.isOpen" @click="emit('click')">
+        </div>
       </div>
     </transition>
   </teleport>
@@ -35,7 +42,7 @@ const emit = defineEmits(['click']);
 
 <style>
 .modal_bg {
-  z-index: 9999;
+  z-index: 9998;
   position: fixed;
   top: 0;
   left: 0;
@@ -49,6 +56,8 @@ const emit = defineEmits(['click']);
 
 .dialog_style {
   border-radius: 2rem;
+  position: absolute;
+  z-index: 9999;
 }
 
 .modal-animation-enter-active,

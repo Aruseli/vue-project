@@ -112,11 +112,20 @@ import ProductModal from './product-modal.vue';
 
 
   <template>
-    <ProductModal :good="props.good" :isOpen="openDialog" @click="openDialog = false">
+    <ProductModal
+      :good="props.good"
+      :isOpen="openDialog"
+      @click="openDialog = false"
+    >
       <template #carousel>
         <Carousel>
           <template #slides>
-            <Slide v-for="(image, index) in props.good.images" :key="index" :image="image"  />
+            <div class="relative-position full-width full-height">
+              <div class="full-width full-height" />
+              <Slide v-for="(image, index) in props.good.images" :key="index" :image="image" addedSlide="absolute-top-left" />
+              <div class="absolute-top-right img_angle_top" />
+              <div class="absolute-bottom-left img_angle_bottom" />
+            </div>
           </template>
         </Carousel>
       </template>
@@ -125,10 +134,13 @@ import ProductModal from './product-modal.vue';
           <Slide
             v-for="(image, index) in props.good.images"
             :key="index" :image="image"
-            angleTop="slide_img_angle_top"
-            angleBottom="slide_img_angle_bottom"
             @click="console.log('123')"
-          />
+          >
+            <template #angles>
+              <div class="absolute-top-right slide_img_angle_top" />
+              <div class="absolute-bottom-left slide_img_angle_bottom" />
+            </template>
+          </Slide>
         </div>
       </template>
     </ProductModal>
