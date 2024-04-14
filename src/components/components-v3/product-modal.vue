@@ -1,16 +1,15 @@
-<script setup>
+<script setup lang="ts">
   import { evaMinusOutline, evaPlusOutline } from '@quasar/extras/eva-icons';
-  import { ionEllipse } from '@quasar/extras/ionicons-v6';
-  import { t } from 'i18next';
-  import { useQuasar } from 'quasar';
-  import { computed, nextTick, onMounted, ref } from 'vue';
-  import { useAppStore } from '../../stores/app';
-  import { useCartStore } from '../../stores/cart';
-  import { useGoodsStore } from '../../stores/goods';
-  import IconButton from '../buttons/icon-button.vue';
-  import Modal from '../overlay/modal.vue';
-  import Carousel from '../carousel/carousel.vue';
-  import Slide from '../carousel/slide.vue';
+import { t } from 'i18next';
+import { useQuasar } from 'quasar';
+import { computed, ref } from 'vue';
+import { useAppStore } from '../../stores/app';
+import { useCartStore } from '../../stores/cart';
+import { Good } from '../../stores/goods';
+import IconButton from '../buttons/icon-button.vue';
+import Carousel from '../carousel/carousel.vue';
+import Slide from '../carousel/slide.vue';
+import Modal from '../overlay/modal.vue';
 
 
   const $q = useQuasar();
@@ -18,13 +17,23 @@
   const openDialog = ref(false);
 
   const cartStore = useCartStore();
-  const goodsStore = useGoodsStore();
   const app = useAppStore();
 
   const props = defineProps({
     good: {
       type: Object,
-      default: function () { return {} }
+      default: {
+        id: String,
+        title: String,
+        description: String,
+        price: Number,
+        stock: Number,
+        images: Array as () => {
+          id: String,
+          image?: String,
+        }[],
+        code: String,
+      }
     },
     isOpen: {
       type: Boolean,
@@ -52,16 +61,16 @@
 
   const goodInCart = computed(() => cartStore.cart.find((item) => item.id === props.good.id))
 
-  const addGoodToCart = (good) => {
-    cartStore.increaseItemsCount(good);
-    showNotify();
-  }
+const addGoodToCart = (good: Good) => {
+  cartStore.increaseItemsCount(good);
+  showNotify();
+};
 
-  const decrease = (good) => {
+  const decrease = (good: Good) => {
     cartStore.decreaseItemsCount(good);
   }
 
-  const increase = (good) => {
+  const increase = (good: Good) => {
     cartStore.increaseItemsCount(good);
     showNotify();
   }
@@ -77,7 +86,6 @@
         :rounded="false"
         :round="true"
         :flat="true"
-        iconStyle="icon_style"
         size="xl"
         class="close_button absolute-top-right"
         @click="openDialog = false"
@@ -86,9 +94,7 @@
         {{ props.good.name }}
       </div>
       <div class="row q-mb-lg">
-        <Carousel>
-          <Slide v-for="(image, index) in props.good.images" :key="index" />
-        </Carousel>
+        <slot name="carousel" />
         <div class="column text-body1">
           <div class="text-grey q-mb-lg">{{ $t('characteristics') }}</div>
 
@@ -130,8 +136,8 @@
           unelevated
           no-caps
           color="white"
-          @click="addGoodToCart(good)"
-          >
+          @click="addGoodToCart(props.good  as Good)"
+        >
           <div class="text-h4 text-center text-black q-py-lg-sm q-py-sm-xs">
             {{ $t('add_to_cart') }}
           </div>
@@ -139,13 +145,13 @@
         <div class="row justify-between items-center" v-else>
           <IconButton
             :icon="evaMinusOutline"
-            @click="decrease(good)"
+            @click="decrease(props.good  as Good)"
             class="q-pa-lg-sm q-pa-sm-xs"
           />
           <div class="text-h4 no-margin">{{ goodInCart.quant }}</div>
           <IconButton
             :icon="evaPlusOutline"
-            @click="increase(good)"
+            @click="increase(props.good  as Good)"
             class="q-pa-lg-sm q-pa-sm-xs"
           />
         </div>
@@ -154,7 +160,7 @@
   </Modal>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 
   .dialog_container {
     width: 40vw;
@@ -165,10 +171,6 @@
   .dialog_img {
     width: 100%;
     border: thin solid var(--q-accent);
-  }
-
-  .icon_style {
-    font-size: 2rem !important;
   }
 
   .close_button {
