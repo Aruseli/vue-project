@@ -88,7 +88,7 @@ import ProductModal from './product-modal.vue';
               class="q-mb-xs ellipsis first_letter"
               :class="[!app.kioskState.settings?.alt_ui ? 'text-h4 ellipsis' : 'text-h5 text-center']"
             >
-              {{ $t(props.good?.title) }}
+              {{ props.good?.title }}
             </div>
 
             <div v-if="!app.kioskState.settings?.alt_ui">
@@ -99,7 +99,7 @@ import ProductModal from './product-modal.vue';
         </div>
 
         <div v-if="!app.kioskState.settings?.alt_ui" class="block_description" @click="openDialog = true">
-          <div class="text-body1" v-html="$t(sliceDescription)"/>
+          <div class="text-body1" v-html="sliceDescription" />
         </div>
 
       </div>
