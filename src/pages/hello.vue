@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
   import Logo from 'src/components/logo/logo.vue';
   import { useRouter } from 'vue-router';
   import { onMounted, onUnmounted, ref } from 'vue';

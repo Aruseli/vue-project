@@ -1,5 +1,7 @@
 <script setup lang="ts">
+  import { useAppStore } from '../../../stores/app';
 
+  const app = useAppStore();
   const props = defineProps({
     src: {
       type: String,
@@ -7,7 +9,7 @@
     },
     alt: {
       type: String,
-      default: 'English',
+      default: 'english'
     },
     language: {
       type: String,
@@ -16,29 +18,38 @@
   })
 
   const emit = defineEmits(['click']);
+
 </script>
 
 <template>
-  <div @click="emit('click')" class="lang_container column justify-center items-center">
+  <div
+    @click="emit('click')"
+    class="lang_container_new justify-center items-center row"
+  >
     <q-img
       :src="props.src"
       :alt="props.alt"
       ratio="16/9"
-      class="img_style"
+      class="img_style q-mb-xs"
       fit='fill'
     />
-    <div class="text-left text-white text-uppercase text-h5 lang_style">{{ props.language }}</div>
+    <div
+      class="text-left text-uppercase lang_style text-white text-h2 q-ml-sm"
+    >{{ props.language }}</div>
   </div>
 </template>
 
 <style scoped lang="scss">
 $width: calc(6.5em + 1.7262vmin);
 .img_style {
-  height: calc(100% - 3em);
+  height: $width;
   width: $width;
+  border-radius: 50%;
+  box-shadow: var(--border-shadow);
+  margin-top: 0.125em;
+  margin-inline: 0.125em;
 }
-.lang_container {
-  height: 100%;
+.lang_container_new {
   width: 100%;
 }
 

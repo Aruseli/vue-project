@@ -1,9 +1,9 @@
-<script setup>
+<script setup lang="ts">
 
 const props = defineProps({
   quantity: {
-    type: Number,
-    default: 0
+    type: Boolean,
+    default: false
   }
 })
 

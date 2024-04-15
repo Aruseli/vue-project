@@ -1,6 +1,6 @@
 <script setup>
   import Logo from '../components/logo/logo.vue';
-  import language from 'src/components/language.vue';
+  import language from '../components/language.vue';
   import LogoSvg from '../components/logo/logo-svg.vue';
   import { useRouter } from 'vue-router';
   import { useAppStore } from 'src/stores/app';
@@ -18,7 +18,6 @@
     if (app.kioskState.settings?.alt_ui == 'design_v3') {
       document.body.className = 'v3_body_style'
     }
-    console.log('FUCKING_FONTS', app.kioskState.settings?.alt_ui)
   }
 
 </script>
