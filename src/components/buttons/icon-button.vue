@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
   const props = defineProps({
     icon: {
       type: String,
@@ -38,8 +38,8 @@
       default: false,
     },
     iconStyle: {
-      type: Array,
-      default: [],
+      type: String,
+      default: '',
     }
   })
 
@@ -59,6 +59,6 @@
     @click="emit('click')"
   >
     <slot></slot>
-    <q-icon flat :color="props.textColor" :size="props.size" :name="props.icon" v-if="!customIcon" :class="props.iconStyle"></q-icon>
+    <q-icon flat :color="props.textColor" :size="props.size" :name="props.icon" v-if="!props.customIcon" :class="props.iconStyle"></q-icon>
    </q-btn>
 </template>

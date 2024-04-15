@@ -67,10 +67,14 @@ import Modal from '../overlay/modal.vue';
 </script>
 
 <template>
-  <Modal :isOpen="props.isOpen" @click="emit('click')">
+  <Modal
+    :isOpen="props.isOpen"
+    @click="emit('click')"
+    class="modal_styles"
+  >
     <div class="dialog_container">
       <q-card class="dialog_card">
-        <q-btn round color="primary" icon="close" class="close_button text-white" @click="goodsStore.openDialog = false" />
+        <q-btn round color="primary" icon="close" class="close_button text-white" @click="emit('click')" />
 
         <q-card-section class="q-mb-xs-xs">
           <q-carousel
@@ -159,8 +163,12 @@ import Modal from '../overlay/modal.vue';
   </Modal>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 $close_size: calc(3em + 2.7262vmin);
+
+  .modal_styles {
+    padding: 100px;
+  }
   .img_container_dialog {
     width: 100%;
     height: 100%;
