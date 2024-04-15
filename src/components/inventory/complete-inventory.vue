@@ -1,94 +1,106 @@
 <script setup>
-import i18next, { t } from "i18next";
-import moment from "moment";
-import { useQuasar } from "quasar";
-import { useGoodsStore } from "src/stores/goods";
-import { useInventoryStore } from "src/stores/inventory";
-import { computed, onMounted, ref } from "vue";
-import { useRouter, useRoute } from "vue-router";
-import RectangularButton from "../buttons/rectangular-button.vue";
-import DividerBold from "../dividers/divider-bold.vue";
-import ListItem from "./list-item.vue";
-import { useAppStore } from "src/stores/app";
-import {
-  apiReportsGetView,
-  printDocument,
-  printInventory,
-  wsSendMessage,
-} from "src/services";
-import RedirectDialog from "src/components/dialog/redirect-dialog.vue";
+  import i18next, { t } from "i18next";
+  import moment from "moment";
+  import { useQuasar } from "quasar";
+  import { useGoodsStore } from "src/stores/goods";
+  import { useInventoryStore } from "src/stores/inventory";
+  import { computed, onMounted, ref } from "vue";
+  import { useRouter, useRoute } from "vue-router";
+  import RectangularButton from "../buttons/rectangular-button.vue";
+  import DividerBold from "../dividers/divider-bold.vue";
+  import ListItem from "./list-item.vue";
+  import { useAppStore } from "src/stores/app";
+  import {
+    apiReportsGetView,
+    printDocument,
+    printInventory,
+    wsSendMessage,
+  } from "src/services";
+  import RedirectDialog from "src/components/dialog/redirect-dialog.vue";
 
-const goodsStore = useGoodsStore();
-const inventoryStore = useInventoryStore();
-const app = useAppStore();
+  const goodsStore = useGoodsStore();
+  const inventoryStore = useInventoryStore();
+  const app = useAppStore();
 
-const router = useRouter();
-const route = useRoute();
+  const router = useRouter();
+  const route = useRoute();
 
-const $q = useQuasar();
+  const $q = useQuasar();
 
-const documentId = ref(undefined);
-const isPrintConfirmationDialogVisible = ref(false);
+  const documentId = ref(undefined);
+  const isPrintConfirmationDialogVisible = ref(false);
 
-const allowConfirm = computed(() => {
-  return inventoryStore.inventory?.every((i) => i.stock == i.quant);
-});
+  const allowConfirm = computed(() => {
+    return inventoryStore.inventory?.every((i) => i.stock == i.quant);
+  });
 
-async function showPrintConfirmationDialog() {
+  async function showPrintConfirmationDialog() {
 
-  isPrintConfirmationDialogVisible.value = true;
-}
-
-function hidePrintConfirmationDialog() {
-  isPrintConfirmationDialogVisible.value = false;
-}
-
-async function handlePrintConfirmation(printConfirmed) {
-  $q.loading.show();
-  try {
-    if (printConfirmed) {
-      await printInventory({ documentId: documentId.value, $q, appStore: app });
-    }
-    hidePrintConfirmationDialog();
-    if (route.path === "/open-shift/complete-inventory") {
-      await app.openTerminalShift();
-      router.push(app.shiftIsGood() ? "/hello" : "/employee-actions");
-    } else if (route.path === "/close-shift/complete-inventory") {
-      await app.closeTerminalShift();
-      router.push("/employee-actions");
-    } else {
-      router.push("/employee-actions");
-    }
-  } catch (error) {
-    console.error("inventoryStore.submitInventory print error:", error);
-    $q.notify({
-      color: "warning",
-      icon: "warning",
-      position: "center",
-      message: t("unable_to_print_submit_inventory"),
-      timeout: 6000,
-    });
-  } finally {
-    $q.loading.hide();
+    isPrintConfirmationDialogVisible.value = true;
   }
-}
 
-async function submitInventory() {
-  try {
+  function hidePrintConfirmationDialog() {
+    isPrintConfirmationDialogVisible.value = false;
+  }
+
+  async function handlePrintConfirmation(printConfirmed) {
     $q.loading.show();
     try {
-      if (route.path === "/open-shift/complete-inventory") {
-        const { documentId: docId } = await inventoryStore.submitInventory();
-        documentId.value = docId;
-      } else if (route.path == "/close-shift/complete-inventory") {
-        const { documentId: docId } = await inventoryStore.submitInventory();
-        documentId.value = docId;
-      } else {
-        const { documentId: docId } = await inventoryStore.submitInventory();
-        documentId.value = docId;
+      if (printConfirmed) {
+        await printInventory({ documentId: documentId.value, $q, appStore: app });
       }
-      await showPrintConfirmationDialog();
-    } catch (e) {
+      hidePrintConfirmationDialog();
+      if (route.path === "/open-shift/complete-inventory") {
+        await app.openTerminalShift();
+        router.push(app.shiftIsGood() ? "/hello" : "/employee-actions");
+      } else if (route.path === "/close-shift/complete-inventory") {
+        await app.closeTerminalShift();
+        router.push("/employee-actions");
+      } else {
+        router.push("/employee-actions");
+      }
+    } catch (error) {
+      console.error("inventoryStore.submitInventory print error:", error);
+      $q.notify({
+        color: "warning",
+        icon: "warning",
+        position: "center",
+        message: t("unable_to_print_submit_inventory"),
+        timeout: 6000,
+      });
+    } finally {
+      $q.loading.hide();
+    }
+  }
+
+  async function submitInventory() {
+    try {
+      $q.loading.show();
+      try {
+        if (route.path === "/open-shift/complete-inventory") {
+          const { documentId: docId } = await inventoryStore.submitInventory();
+          documentId.value = docId;
+        } else if (route.path == "/close-shift/complete-inventory") {
+          const { documentId: docId } = await inventoryStore.submitInventory();
+          documentId.value = docId;
+        } else {
+          const { documentId: docId } = await inventoryStore.submitInventory();
+          documentId.value = docId;
+        }
+        await showPrintConfirmationDialog();
+      } catch (e) {
+        console.error("inventoryStore.submitInventory error:", err);
+        $q.notify({
+          color: "warning",
+          icon: "warning",
+          position: "center",
+          message: t("unable_to_submit_inventory"),
+          timeout: 6000,
+        });
+      } finally {
+        $q.loading.hide();
+      }
+    } catch (err) {
       console.error("inventoryStore.submitInventory error:", err);
       $q.notify({
         color: "warning",
@@ -97,43 +109,31 @@ async function submitInventory() {
         message: t("unable_to_submit_inventory"),
         timeout: 6000,
       });
-    } finally {
-      $q.loading.hide();
     }
-  } catch (err) {
-    console.error("inventoryStore.submitInventory error:", err);
-    $q.notify({
-      color: "warning",
-      icon: "warning",
-      position: "center",
-      message: t("unable_to_submit_inventory"),
-      timeout: 6000,
-    });
   }
-}
 
-const date = new Date();
-// Format the date using Moment.js
-const formattedDate = moment(date).format("DD.MM.YY");
-const time = date.getTime();
-const formattedTime = moment(time).format("LT").slice(0, -3);
+  const date = new Date();
+  // Format the date using Moment.js
+  const formattedDate = moment(date).format("DD.MM.YY");
+  const time = date.getTime();
+  const formattedTime = moment(time).format("LT").slice(0, -3);
 
-onMounted(async () => {
-  try {
-    await goodsStore.updateGoods(i18next.language);
-    await inventoryStore.updateInventory();
-  } catch (err) {
-    console.error("inventoryStore.updateInventories error:", err);
-    $q.notify({
-      color: "warning",
-      icon: "warning",
-      position: "center",
-      message: t("unable_to_load_inventory"),
-      timeout: 6000,
-    });
-    router.push("/employee-actions");
-  }
-});
+  onMounted(async () => {
+    try {
+      await goodsStore.updateGoods(i18next.language);
+      await inventoryStore.updateInventory();
+    } catch (err) {
+      console.error("inventoryStore.updateInventories error:", err);
+      $q.notify({
+        color: "warning",
+        icon: "warning",
+        position: "center",
+        message: t("unable_to_load_inventory"),
+        timeout: 6000,
+      });
+      router.push("/employee-actions");
+    }
+  });
 </script>
 
 <template>
