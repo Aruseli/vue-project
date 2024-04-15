@@ -102,4 +102,5 @@ export default {
   positions_one: 'position',
   positions_other: 'positions',
   view_order: 'view order',
+  order_was_successfully_confirmed: 'The order was successfully confirmed!',
 };

@@ -15,7 +15,7 @@
   import BinIcon from './icons/bin-icon.vue';
   import Modal from '../overlay/modal.vue';
   import { useIntersectionObserver } from '@vueuse/core';
-  import CartDrawer from './cart-drawer.vue';
+  import CartDrawer from './cart/cart-drawer.vue';
   import Cta from './cta.vue';
 
   const target = ref(null);
@@ -176,7 +176,7 @@
   <div class="catalog_container relative-position">
 
     <!-- header -->
-    <header class="row justify-between q-pa-xl header_style bg-grey-2">
+    <header class="row justify-between q-pa-xl header_style_v3 bg-grey-2">
       <LogoSimple text_style="text-green">
         <LogoSvg
           fill="#88D863"
@@ -309,7 +309,7 @@
   </template>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .cart_positioning {
   position: absolute;
   grid-area: catalog / catalog / cta / cta;
@@ -329,17 +329,10 @@
   color: var(--body-text);
 }
 
-.header_style {
+.header_style_v3 {
   grid-area: header;
   border: var(--border);
   height: max-content;
-}
-
-.header_style_v2 {
-  color: var(--q-text);
-  background-color: white;
-  border-radius: 1rem;
-  box-shadow: var(--border-shadow);
 }
 
 .scrollable_container {
@@ -404,6 +397,7 @@ li > div {
 }
 li > div.active {
   color: var(--body-text);
+  transform-origin: left;
 }
 
 .redirect_dialog_style {

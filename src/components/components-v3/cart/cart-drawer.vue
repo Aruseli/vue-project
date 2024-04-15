@@ -4,12 +4,12 @@ import { t } from 'i18next';
 import { useQuasar } from 'quasar';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAppStore } from '../../stores/app';
-import { useCartStore } from '../../stores/cart';
-import IconButton from '../buttons/icon-button.vue';
-import RectangularButton from '../buttons/rectangular-button.vue';
-import OrderCheck from '../catalog/cart/order-check.vue';
-import DividerThin from '../dividers/divider-thin.vue';
+import { useAppStore } from '../../../stores/app';
+import { useCartStore } from '../../../stores/cart';
+import IconButton from '../../buttons/icon-button.vue';
+import RectangularButton from '../../buttons/rectangular-button.vue';
+import OrderCheck from './order-check.vue';
+import DividerThin from '../../dividers/divider-thin.vue';
 
   const $q = useQuasar();
   const router = useRouter();
