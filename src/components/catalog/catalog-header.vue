@@ -6,7 +6,7 @@ import BinIcon from '../icons/bin-icon.vue';
 import LogoSimple from '../logo/logo-simple.vue';
 import LogoSvg from '../logo/logo-svg.vue';
 import IconButton from '../buttons/icon-button.vue';
-import BinButton from '../components-v3/buttons/bin-button.vue';
+import BinButton from '../buttons/bin-button.vue';
 import Language from '../language.vue';
 import Modal from '../overlay/modal.vue';
 import LanguagesFrame from './languages/languages-frame.vue';
@@ -21,10 +21,10 @@ import { onMounted, watch, computed } from 'vue';
   const openDrawer = () => {
     app.openDrawerCart(true);
   }
-  const changeLanguage = async (newLocale) => {
-    await app.setLocale(newLocale);
-    await goodsStore.updateGoods(newLocale);
-  }
+const changeLanguage = async (newLocale: string) => {
+  await app.setLocale(newLocale);
+  await goodsStore.updateGoods(newLocale);
+};
 </script>
 
 
@@ -40,7 +40,11 @@ import { onMounted, watch, computed } from 'vue';
     >
 
       <LogoSimple>
-        <LogoSvg fill="#FAFAFA" />
+        <LogoSvg
+          fill="#272727"
+          width="6em"
+          height="6em"
+        />
       </LogoSimple>
 
       <div class="row items-center">
@@ -50,11 +54,9 @@ import { onMounted, watch, computed } from 'vue';
             @click="app.openLangDialog(true)"
             color='transparent'
             textColor="black"
+            iconStyle="translate_style"
             class="q-mr-xl-xl q-mr-xs-xs"
           />
-          <LangDrawer @click="app.openLangDialog(false)" :isOpen="app.langDialog" v-if="app.kioskState.settings?.alt_ui">
-            <LanguagesFrame />
-          </LangDrawer>
         </div>
         <BinButton @click="openDrawer" :quantity="cart.totalQuantity">
           <BinIcon :quantity="cart.totalQuantity > 0" />
@@ -62,7 +64,7 @@ import { onMounted, watch, computed } from 'vue';
       </div>
     </q-toolbar>
 
-    <div class="relative-position" v-if="!app.kioskState.settings?.alt_ui">
+    <div class="relative-position">
       <q-tabs
 
         v-model="app.tab"
@@ -78,7 +80,7 @@ import { onMounted, watch, computed } from 'vue';
   </q-header>
 
   <template>
-    <Modal :isOpen="app.langDialog" @click="app.openLangDialog(false)" v-if="!app.kioskState.settings?.alt_ui">
+    <Modal :isOpen="app.langDialog" @click="app.openLangDialog(false)">
       <div class="bg-primary container_languages" >
         <Language v-for="lang in app.kioskState.catalogLocales"
           :key="lang.lang_code"
@@ -106,15 +108,7 @@ $height: calc(8em + 1.7262vmin);
 .q-tabs__content > *:not(:last-of-type) {
   margin-right: 1.5rem;
 }
-
-.logo_style {
-  width: 7em;
-  @media (max-width: 1500px) {
-    width: 5rem !important;
-  }
-  @media (max-width: 700px) {
-    width: 2.5rem !important;
-  }
+.translate_style {
+  font-size: 5rem !important;
 }
-
 </style>

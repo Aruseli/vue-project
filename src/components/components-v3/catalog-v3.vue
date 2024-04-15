@@ -1,27 +1,24 @@
 <script setup lang="ts">
   import gsap from 'gsap';
-import { useQuasar, IntersectionValue } from 'quasar';
-import { onMounted, onUnmounted, ref, onBeforeUnmount } from 'vue';
-import { useRouter } from 'vue-router';
-import { useAppStore } from '../../stores/app';
-import { useCartStore } from '../../stores/cart';
-import { useGoodsStore } from '../../stores/goods';
-import RedirectDialog from '../dialog/redirect-dialog.vue';
-import ProductCardV3 from './product-card-v3.vue';
-import ProductCard from '../catalog/product-card.vue';
-import RectangularButton from '../buttons/rectangular-button.vue';
-import LogoSimple from '../logo/logo-simple.vue';
-import LogoSvg from '../logo/logo-svg.vue';
-import BinButton from './buttons/bin-button.vue';
-import BinIcon from '../icons/bin-icon.vue';
-import BinIconV3 from '../icons/bin-icon-v3.vue';
-import Modal from '../overlay/modal.vue';
-import LanguageNew from '../catalog/languages/language-new.vue';
-import { useIntersectionObserver } from '@vueuse/core';
-import Cta from './cta.vue';
+  import { onMounted, onUnmounted, ref, onBeforeUnmount } from 'vue';
+  import { useRouter } from 'vue-router';
+  import { useAppStore } from '../../stores/app';
+  import { useCartStore } from '../../stores/cart';
+  import { useGoodsStore } from '../../stores/goods';
+  import RedirectDialog from '../dialog/redirect-dialog.vue';
+  import ProductCard from './product/product-card.vue';
+  import RectangularButton from '../buttons/rectangular-button.vue';
+  import LogoSimple from '../logo/logo-simple.vue';
+  import LogoSvg from '../logo/logo-svg.vue';
+  import Language from './languages/language.vue';
+  import BinButton from '../buttons/bin-button.vue';
+  import BinIcon from './icons/bin-icon.vue';
+  import Modal from '../overlay/modal.vue';
+  import { useIntersectionObserver } from '@vueuse/core';
+  import CartDrawer from './cart-drawer.vue';
+  import Cta from './cta.vue';
 
   const target = ref(null);
-  const $q = useQuasar();
   const goodsStore = useGoodsStore();
   const app = useAppStore();
   const cartStore = useCartStore();
@@ -34,7 +31,7 @@ import Cta from './cta.vue';
     rootMargin: "0% 0% -70% 0%",
   }
 
-  const observer = useIntersectionObserver(
+  const { stop } = useIntersectionObserver(
     target,
     ([ isIntersecting ], observerElement) => {
       selectedIndex.value = isIntersecting.target.id;
@@ -59,43 +56,20 @@ import Cta from './cta.vue';
     });
   };
 
-    const enterCardShakeAlt = () => {
-      gsap.to('.card_setting_v2', {
-        duration: 0.5,
-        // delay: 28,
-        scale: 1.02,
-        boxShadow: "0 -12px 20px 2px rgba(35, 65, 65, 1), 0 12px 20px 2px rgba(35, 65, 65, 1)",
-        ease: "none",
-        stagger: {
-          repeat: 1,
-          yoyo: true,
-          each: 0.25,
-        }
-      })
-    }
-
-    const enterCardShake = () => {
-      gsap.to('.card_setting_v3', {
-        duration: 0.5,
-        // delay: 28,
-        scale: 1.02,
-        boxShadow: "0 -12px 20px 2px rgba(136, 216, 99, 1), 0 12px 20px 2px rgba(136, 216, 99, 1)",
-        ease: "none",
-        stagger: {
-          repeat: 1,
-          yoyo: true,
-          each: 0.25,
-        }
-      })
-    }
-
-  const animation = (ui: string) => {
-    if (ui === "design_v2") {
-      return enterCardShake();
-    } else {
-      return enterCardShakeAlt();
-    }
-  };
+  const animation = () => {
+    gsap.to('.card_setting_v3', {
+      duration: 0.5,
+      // delay: 28,
+      scale: 1.02,
+      boxShadow: "0 0 6px 2px rgba(136, 216, 99, 1), 0 0 6px 2px rgba(136, 216, 99, 1)",
+      ease: "none",
+      stagger: {
+        repeat: 1,
+        yoyo: true,
+        each: 0.25,
+      }
+    })
+  }
 
   const redirectAt = ref(0);
   const countdown = ref(0);
@@ -105,6 +79,7 @@ import Cta from './cta.vue';
   // Функция-обработчик, которая переведет на новую страницу
   const redirect = () => {
     app.drawerCartState = false;
+    dialogState.value = false;
     router.push('hello');
     cartStore.clearCart();
     redirectAt.value = 0;
@@ -113,8 +88,7 @@ import Cta from './cta.vue';
   const tick = () => {
     if (Date.now() - redirectAt.value > 60 * 1000) {
       redirectAt.value =
-        Date.now() +
-        (app.kioskState.settings?.customer_inactivity_before_redirect ?? 37000);
+        Date.now() + app.kioskState.settings?.customer_inactivity_before_redirect! ?? 37000;
     }
 
     const timeBeforeRedirect = redirectAt.value - Date.now();
@@ -124,10 +98,7 @@ import Cta from './cta.vue';
       return;
     }
 
-    if (
-      timeBeforeRedirect <
-      (app.kioskState.settings?.customer_inactivity_countdown_duration ?? 7000)
-    ) {
+    if ( timeBeforeRedirect < app.kioskState.settings?.customer_inactivity_countdown_duration! ?? 7000) {
       // countdown phase
       countdown.value = Math.floor(timeBeforeRedirect / 1000);
       app.openLangDialog(false);
@@ -136,9 +107,7 @@ import Cta from './cta.vue';
     }
     dialogState.value = false;
 
-    const animationStartBeforeRedirect =
-      app.kioskState.settings
-        ?.customer_inactivity_animation_start_before_redirect ?? 0;
+    const animationStartBeforeRedirect = app.kioskState.settings?.customer_inactivity_animation_start_before_redirect ?? 0;
     if (timeBeforeRedirect < animationStartBeforeRedirect) {
       // animation phase
       const timeSinceLastAnimationStart =
@@ -148,7 +117,7 @@ import Cta from './cta.vue';
       }
       console.log("Entering animation", timeBeforeRedirect);
       lastAnimationStartedAt.value = Date.now();
-      animation("design_v2"); // Pass a string argument to the animation function
+      animation(); // Pass a string argument to the animation function
       return;
     }
     // boring phase
@@ -156,9 +125,10 @@ import Cta from './cta.vue';
   };
 
   function closeDialog() {
+    console.log('click')
+    dialogState.value = false;
     redirectAt.value =
-      Date.now() +
-      (app.kioskState.settings?.customer_inactivity_before_redirect ?? 37000);
+      Date.now() + app.kioskState.settings?.customer_inactivity_before_redirect! ?? 37000;
   }
 
   function resetRedirectTimer() {
@@ -166,18 +136,15 @@ import Cta from './cta.vue';
       return;
     }
     redirectAt.value =
-      Date.now() +
-      (app.kioskState.settings?.customer_inactivity_before_redirect ?? 37000);
+      Date.now() + app.kioskState.settings?.customer_inactivity_before_redirect! ?? 37000;
   }
 
-  const redirectTimer = ref(null);
+  const redirectTimer = ref<NodeJS.Timeout | null>(null);
   const boundResetTimer = resetRedirectTimer.bind(this);
   onMounted(() => {
     // Запускаем таймер
-    redirectAt.value =
-      Date.now() +
-      (app.kioskState.settings?.customer_inactivity_before_redirect ?? 37000);
-    redirectTimer.value = setInterval(() => tick(), 100) as unknown as null;
+    redirectAt.value = Date.now() + app.kioskState.settings?.customer_inactivity_before_redirect! ?? 37000;
+    redirectTimer.value = setInterval(() => tick(), 100);
     // Обрабатываем события
     [
       "mousemove",
@@ -200,24 +167,19 @@ import Cta from './cta.vue';
       "touchmove",
       "touchstart",
     ].forEach((e) => document.removeEventListener(e, boundResetTimer));
+    // stop();
   });
 
 </script>
 
 <template>
-    <div
-    class="catalog_container"
-    :class="[app.kioskState.settings?.alt_ui == 'design_v2' ? 'catalog_container_v2 q-pa-md' : '']"
-  >
-    <header
-      class="row justify-between q-pa-xl header_style bg-grey-2"
-      :class="[app.kioskState.settings?.alt_ui == 'design_v2' ? 'header_style_v2' : '']"
-    >
-      <LogoSimple
-        :text_style="app.kioskState.settings?.alt_ui == 'design_v3' ? 'text-green' : 'text-primary'"
-      >
+  <div class="catalog_container relative-position">
+
+    <!-- header -->
+    <header class="row justify-between q-pa-xl header_style bg-grey-2">
+      <LogoSimple text_style="text-green">
         <LogoSvg
-          :fill="app.kioskState.settings?.alt_ui == 'design_v3' ? '#88D863' : '#1f1f1f'"
+          fill="#88D863"
           width="6em"
           height="6em"
         />
@@ -225,19 +187,17 @@ import Cta from './cta.vue';
       <BinButton
         @click="openDrawer"
         :quantity="cartStore.totalQuantity"
-        :badgeStyleAlt="app.kioskState.settings?.alt_ui == 'design_v3' ? 'bg-red' : ''"
+        badgeStyleAlt="bg-red"
       >
-        <component :quantity="cartStore.totalQuantity" :is="app.kioskState.settings?.alt_ui == 'design_v3' ? BinIconV3 : BinIcon">
-        </component>
+        <BinIcon :quantity="cartStore.totalQuantity" />
       </BinButton>
     </header>
-    <aside
-      class="q-py-xl q-px-lg category_container bg-grey-2"
-      :class="[app.kioskState.settings?.alt_ui == 'design_v2' ? 'category_container_v2' : '']"
-    >
+
+    <!-- list of categories -->
+    <aside class="q-py-xl q-px-lg category_container bg-grey-2">
       <div class="scrollable_container column justify-between full-height">
         <section class="column">
-          <div class="categories_style mb-60" v-if="app.kioskState.settings?.alt_ui == 'design_v3'">
+          <div class="categories_style mb-60">
             <div class="text-h4 text-uppercase text-white mb-20">
               {{ $t('categories') }}
             </div>
@@ -254,9 +214,9 @@ import Cta from './cta.vue';
             </li>
           </ul>
         </section>
-        <div class="column" v-if="app.kioskState.settings?.alt_ui == 'design_v3'">
+        <div class="column">
           <div class="row">
-            <LanguageNew
+            <Language
               :language="selectedLang"
               :src="`/flags/${selectedLang}.webp`"
               @click="app.openLangDialog(true)"
@@ -272,7 +232,8 @@ import Cta from './cta.vue';
       </div>
     </aside>
 
-    <q-scroll-area class="q-px-xs-none goods_container q-mt-lg relative-position">
+    <!-- catalog -->
+    <q-scroll-area class="goods_container q-px-lg q-pt-lg full-width relative-position full-height">
       <article
         v-for="goodCategory in goodsStore.goods"
         :key="goodCategory.id"
@@ -280,45 +241,63 @@ import Cta from './cta.vue';
         ref="target"
         class="mb-90"
       >
-        <div
-          class="text-h4 q-mb-lg text-uppercase"
-          :class="[app.kioskState.settings?.alt_ui == 'design_v3' ? 'text-white' : 'text-black']"
-        >
+        <div class="text-h4 q-mb-lg text-uppercase text-white">
           {{ goodCategory.title }}
         </div>
         <div
           v-if="goodCategory.goods.length == 0"
-          class="text-body1"
-          :class="[app.kioskState.settings?.alt_ui == 'design_v3' ? 'text-white' : 'text-black']"
+          class="text-body1 text-white"
         >{{$t('category_empty')}}</div>
-        <transition appear @enter="animation(app.kioskState.settings?.alt_ui ?? '')">
+        <transition appear @enter="animation">
           <div class="row image_grid">
-            <component
+            <ProductCard
               v-for="(good, index) in goodCategory.goods"
               :good="good"
               :key="index"
-              :class="[app.kioskState.settings?.alt_ui == 'design_v3' ? 'card_setting' : 'card_setting_v2']"
-              :is="app.kioskState.settings?.alt_ui == 'design_v3' ? ProductCardV3 : ProductCard"
-            ></component>
+              class="card_setting_v3"
+            />
           </div>
         </transition>
       </article>
     </q-scroll-area>
-    <Cta @click="openDrawer" />
-    <RedirectDialog :modelValue="dialogState">
+
+    <!-- cart information -->
+    <Cta @click="openDrawer" class="cta_style" />
+
+    <CartDrawer :isOpen="app.drawerCartState" @click="openDrawer" class="cart_positioning" />
+
+    <!-- redirect dialog when user is inactive-->
+    <RedirectDialog
+      :modelValue="dialogState"
+      additionalCartStyle="redirect_dialog_style q-py-lg"
+      titleClass="text-white"
+    >
       <template #content>
-        <div class="text-h5 text-center">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}</div>
+        <div class="text-h5 text-center text-white">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}</div>
       </template>
       <template #actions>
-        <RectangularButton :name="$t('complete')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="redirect" textColor="primary" />
-        <RectangularButton :name="$t('continue')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="closeDialog" />
+        <RectangularButton
+          :name="$t('complete')"
+          color="white"
+          class="q-px-md-sm q-px-xs-sm q-py-xs-xs"
+          @click="redirect"
+          textColor="primary"
+        />
+        <RectangularButton
+          :name="$t('continue')"
+          color="green"
+          class="q-px-md-sm q-px-xs-sm q-py-xs-xs"
+          @click="closeDialog"
+        />
       </template>
     </RedirectDialog>
   </div>
+
+  <!-- languages dialog -->
   <template>
     <Modal :isOpen="app.langDialog" @click="app.openLangDialog(false)">
       <div class="bg-grey-3 container_languages_v3" >
-        <LanguageNew v-for="lang in app.kioskState.catalogLocales"
+        <Language v-for="lang in app.kioskState.catalogLocales"
           :key="lang.lang_code"
           :src="lang.flag_src"
           :alt="lang.name"
@@ -330,7 +309,11 @@ import Cta from './cta.vue';
   </template>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.cart_positioning {
+  position: absolute;
+  grid-area: catalog / catalog / cta / cta;
+}
 .catalog_container {
   background-color: #181818;
   display: grid;
@@ -344,14 +327,6 @@ import Cta from './cta.vue';
   width: 100%;
   height: 100vh;
   color: var(--body-text);
-}
-
-.catalog_container_v2 {
-  background-image: url(/bg.svg);
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  row-gap: 2rem;
 }
 
 .header_style {
@@ -380,11 +355,6 @@ import Cta from './cta.vue';
   min-width: 20vw;
   height: 100%;
 }
-.category_container_v2 {
-  box-shadow: var(--border-shadow);
-  background-color: white;
-  border-radius: 1rem;
-}
 .categories_style {
   width: max-content;
 }
@@ -392,15 +362,12 @@ import Cta from './cta.vue';
   width: 100%;
   height: 0.3em;
 }
+.cta_style {
+  grid-area: cta;
+}
 
 .help_button {
   text-transform: none;
-}
-
-.goods_container {
-  width: 100%;
-  padding-right: var(--px30);
-  padding-left: var(--px30);
 }
 
 .image_grid {
@@ -413,6 +380,9 @@ import Cta from './cta.vue';
   @media(max-width: 900px) {
     grid-template-columns: repeat(2,  1fr);
   }
+}
+.goods_container {
+  grid-area: catalog;
 }
 .goods_container > div > div > *:nth-last-child(-n + 1) {
   height: 100vh;
@@ -434,5 +404,10 @@ li > div {
 }
 li > div.active {
   color: var(--body-text);
+}
+
+.redirect_dialog_style {
+  background-color: grey;
+  border-radius: var(--border-xxs) !important;
 }
 </style>

@@ -10,11 +10,6 @@ const props = defineProps({
     required: false,
     default: "#modal"
   },
-  isOpen: {
-    type: Boolean,
-    required: true,
-    default:false,
-  }
 })
 
 const emit = defineEmits(['click']);
@@ -23,8 +18,8 @@ const emit = defineEmits(['click']);
 
 <template>
   <teleport :to="props.to">
-    <transition name="modal-animation">
-      <div class="flex items-center justify-center window-width full-height" v-show="props.isOpen">
+    <transition name="teleport-modal-animation">
+      <div class="flex items-center justify-center window-width full-height" v-if="props.isOpen">
         <div
           class="dialog_style overflow-hidden q-pa-md-xl q-pa-xs-md"
           role="dialog"
@@ -33,14 +28,14 @@ const emit = defineEmits(['click']);
         >
           <slot></slot>
         </div>
-        <div class="modal_bg" v-if="props.isOpen" @click="emit('click')">
+        <div class="modal_bg" @click="emit('click')">
         </div>
       </div>
     </transition>
   </teleport>
 </template>
 
-<style>
+<style scoped>
 .modal_bg {
   z-index: 9998;
   position: fixed;
@@ -60,13 +55,13 @@ const emit = defineEmits(['click']);
   z-index: 9999;
 }
 
-.modal-animation-enter-active,
-.modal-animation-leave-active {
+.teleport-modal-animation-enter-active,
+.teleport-modal-animation-leave-active {
   transition: all 0.5s cubic-bezier(0.215, 0.610, 0.355, 1);
 }
 
-.modal-animation-leave-to,
-.modal-animation-enter-from {
+.teleport-modal-animation-leave-to,
+.teleport-modal-animation-enter-from {
   opacity: 0;
   transform: scale(1.1);
 }

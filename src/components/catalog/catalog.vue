@@ -114,7 +114,7 @@ import RectangularButton from '../buttons/rectangular-button.vue';
 </script>
 
 <template>
-  <q-tab-panels v-model="app.tab" animated swipeable class="window-height window-width">
+  <q-tab-panels v-model="app.tab" animated swipeable class="full-height window-width">
     <q-tab-panel v-for="goodCategory in goodsStore.goods" :name="goodCategory.id" :key="goodCategory.id">
       <transition appear @enter="enterCardShake">
         <div class="image_grid">
@@ -147,7 +147,7 @@ import RectangularButton from '../buttons/rectangular-button.vue';
   width: 100%;
   height: auto;
   padding: 0 4rem;
-  margin-top: 2rem;
+  margin-top: 25rem;
 
   @media(max-width: 1300px) {
     padding: 0 2rem;

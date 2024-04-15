@@ -24,8 +24,7 @@
 <template>
   <div
     @click="emit('click')"
-    class="lang_container_new justify-center items-center"
-    :class="[app.kioskState.settings?.alt_ui == 'design_v3' ? 'row' : 'column']"
+    class="lang_container_new justify-center items-center column"
   >
     <q-img
       :src="props.src"
@@ -35,8 +34,7 @@
       fit='fill'
     />
     <div
-      class="text-left text-uppercase lang_style"
-      :class="[app.kioskState.settings?.alt_ui == 'design_v3' ? 'text-white text-h2 q-ml-sm' : 'text-black text-h5']"
+      class="text-left text-uppercase lang_style text-black text-h5"
     >{{ props.language }}</div>
   </div>
 </template>
