@@ -1,10 +1,15 @@
-<script setup>
+<script setup lang="ts">
 const props = defineProps({
   isOpen: {
     type: Boolean,
     required: true,
     default:false,
-  }
+  },
+  addedDrawerStyles: {
+    type: Array,
+    required: false,
+    default: [],
+  },
 })
 
 const emit = defineEmits(['click']);
@@ -14,7 +19,7 @@ const emit = defineEmits(['click']);
   <teleport to="#drawer">
 
     <transition name="drawer_animation">
-      <div class="drawer_container bg-white" v-if="props.isOpen">
+      <div class="drawer_container bg-white" :class="props.addedDrawerStyles" v-if="props.isOpen">
         <slot></slot>
       </div>
     </transition>

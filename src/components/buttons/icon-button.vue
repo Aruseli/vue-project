@@ -38,8 +38,8 @@
       default: false,
     },
     iconStyle: {
-      type: String,
-      default: '',
+      type: Array,
+      default: [],
     }
   })
 
