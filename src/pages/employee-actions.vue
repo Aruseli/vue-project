@@ -20,10 +20,6 @@
   const dialogState = ref(false);
   const inventoryRequests = ref(0);
 
-  console.log(`!app.shiftIsGood`, !app.shiftIsGood)
-  console.log(`!app.hasRight(app.kioskState.settings?.rights__kiosk_print_stock)`, !app.hasRight(app.kioskState.settings?.rights__kiosk_print_stock))
-  
-
   const route = (path) => {
     router.push(path);
   }

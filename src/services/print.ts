@@ -17,7 +17,6 @@ import { useAppStore } from "src/stores/app";
  * ```
  */
 export async function printDocument({documentId, $q, viewId, langCode = i18next.language}: PrintDocumentOptions) {
-  console.log({documentId})
   $q.loading.show();
     try {
       const viewData = await apiReportsGetView(viewId, [
@@ -32,11 +31,9 @@ export async function printDocument({documentId, $q, viewId, langCode = i18next.
           "expression": langCode
         }
       ]);
-      console.log({viewData});
       wsSendMessage('check-print', viewData);
     }
     catch(e) {
-      console.log(e);
       $q.notify({
         message: 'Print Error occured',
         icon: 'warning',
@@ -63,12 +60,10 @@ type PrintOrderDocumentOptions = Omit<PrintDocumentOptions, 'viewId'|'langCode'>
 
 
 export async function printCheck({$q, documentId, langCode = i18next.language, appStore}: PrintSpecificDocumentOptions) {
-  console.log(`appStore.kioskState.settings!.view_check`, appStore.kioskState.settings!.view_check)
   return await printDocument({documentId, $q, viewId: appStore.kioskState.settings!.view_check, langCode});
 }
 
 export async function printOrder({$q, documentId, localLangCode = i18next.language, appStore,viewId = appStore.kioskState.settings!.view_ord,systemLangCode}: PrintOrderDocumentOptions) {
-  console.log({documentId})
   $q.loading.show();
     try {
       const viewData = await apiReportsGetView(viewId, [
@@ -88,11 +83,9 @@ export async function printOrder({$q, documentId, localLangCode = i18next.langua
           "expression": localLangCode
         }
       ]);
-      console.log({viewData});
       wsSendMessage('check-print', viewData);
     }
     catch(e) {
-      console.log(e);
       $q.notify({
         message: 'Print Error occured',
         icon: 'warning',
@@ -150,11 +143,9 @@ export async function printLeftovers({$q,appStore, viewId = appStore.kioskState.
         }
       ]
       );
-      console.log({viewData});
       wsSendMessage('check-print', viewData);
     }
     catch(e) {
-      console.log(e);
       $q.notify({
         message: 'Print Error occured',
         icon: 'warning',
