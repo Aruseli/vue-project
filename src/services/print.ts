@@ -31,7 +31,8 @@ export async function printDocument({documentId, $q, viewId, langCode = i18next.
           "expression": langCode
         }
       ]);
-      wsSendMessage('check-print', viewData);
+      const rawBase64 = viewData.split('base64,')[1].split('"')[0].replaceAll('&#x3D;','=');
+      wsSendMessage('check-print', { printerType: "usb", template: `<raster>${rawBase64}</raster><feed>4</feed><cut/>`});
     }
     catch(e) {
       $q.notify({
@@ -83,7 +84,8 @@ export async function printOrder({$q, documentId, localLangCode = i18next.langua
           "expression": localLangCode
         }
       ]);
-      wsSendMessage('check-print', viewData);
+      const rawBase64 = viewData.split('base64,')[1].split('"')[0].replaceAll('&#x3D;','=');
+      wsSendMessage('check-print', { printerType: "usb", template: `<raster>${rawBase64}</raster><feed>4</feed><cut/>`});
     }
     catch(e) {
       $q.notify({
@@ -143,7 +145,8 @@ export async function printLeftovers({$q,appStore, viewId = appStore.kioskState.
         }
       ]
       );
-      wsSendMessage('check-print', viewData);
+      const rawBase64 = viewData.split('base64,')[1].split('"')[0].replaceAll('&#x3D;','=');
+      wsSendMessage('check-print', { printerType: "usb", template: `<raster>${rawBase64}</raster><feed>4</feed><cut/>`});
     }
     catch(e) {
       $q.notify({
