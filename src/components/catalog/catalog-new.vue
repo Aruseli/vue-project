@@ -158,7 +158,7 @@ import RectangularButton from '../buttons/rectangular-button.vue';
         <div v-if="goodCategory.goods.length == 0" class="text-body1">{{$t('category_empty')}}</div>
         <transition appear @enter="enterCardShake">
           <div class="row image_grid_alt">
-            <ProductCard :itemId="good.id" v-for="(good, index) in goodCategory.goods" :key="index" />
+            <ProductCard :good="good" v-for="(good, index) in goodCategory.goods" :key="index" />
           </div>
         </transition>
       </article>
