@@ -145,7 +145,7 @@
         @click="button.click"
       >
         <div v-if="button.badge == true" class="badge_style bg-positive flex items-center justify-center">
-          <div class="text-white text-h5">{{ inventoryRequests }}</div>
+          <div class="text-white text-h3">{{ inventoryRequests }}</div>
         </div>
       </RectangularButton>
 
@@ -185,6 +185,7 @@
 .button_style {
   width: 60vw;
   padding: 2.5rem;
+  font-size: 2.25rem;
   @media (max-width: 1300px) {
     padding: 1.5rem;
 

@@ -78,10 +78,10 @@ const goodsStore = useGoodsStore();
           q-mb-xs-sm
         "
       >
-        <div class="text-h5 text-capitalize">
+        <div class="text-h3 text-capitalize">
           {{ $t('received_goods') }}
         </div>
-        <div class="text-h5 row q-gutter-x-sm">
+        <div class="text-h3 row q-gutter-x-sm">
           <span>{{ formattedDate }}</span>
           <span>{{ formattedTime }}</span>
           <span>№{{ arrivalsStore.arrival?.arrivalNumStr }}</span>
@@ -121,14 +121,14 @@ const goodsStore = useGoodsStore();
           q-mb-xs-sm
         "
       >
-        <div class="text-h5 row">
+        <div class="text-h3 row">
           <span class="q-mr-xs-xs">{{$t('total')}}</span>
           <span class="q-mr-xs-xs">{{arrivalsStore.arrival?.items.length}}</span>
           <span class="q-mr-xs-xs">{{ $t('product') }}</span>
           <span>{{ $t('units', {count: arrivalsStore.arrival?.items.length}) }}</span>
         </div>
 
-        <div class="text-h5 text-weight-regular row">
+        <div class="text-h3 text-weight-regular row">
           <div class="q-mr-xs-xs">{{$t('estimated_quantity')}}</div>
           <div class="q-mr-xs-xs">{{arrivalsStore.arrival?.totalCount}}</div>
           <div class="q-mr-xs-xs">{{ $t('pc', {count: arrivalsStore.arrival?.totalCount}) }}</div>

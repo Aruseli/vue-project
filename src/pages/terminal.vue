@@ -74,11 +74,11 @@
       <div v-if="statusIsUnboundTerminal">
         <q-card dark class="flex column items-center">
           <q-card-section>
-            <div class="text-h5 q-ma-sm text-center">
+            <div class="text-h3 q-ma-sm text-center">
               {{ $t('waiting_terminal_registration') }}
             </div>
             <div>
-              <div class="text-h5 text-center q-mb-md text-weight-bold">
+              <div class="text-h3 text-center q-mb-md text-weight-bold">
                 Код терминала <code style="font-family: 'Courier New', monospace">{{ appStore.kioskState.code }}</code>
               </div>
               <div

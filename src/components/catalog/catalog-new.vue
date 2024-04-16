@@ -184,7 +184,7 @@
       <ul class='tabs__header'>
         <li v-for='(goodCategory, index) in goodsStore.goods'
           :key='goodCategory.id'
-          class="text-h5"
+          class="text-h3"
         >
           <div @click="selectCategory(index)" :class='{active : index == selectedIndex}'>
             {{ goodCategory.title }}
@@ -206,7 +206,7 @@
     </q-scroll-area>
     <RedirectDialog :modelValue="dialogState">
       <template #content>
-        <div class="text-h5 text-center">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}</div>
+        <div class="text-h3 text-center">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}</div>
       </template>
       <template #actions>
         <RectangularButton :name="$t('complete')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="redirect" textColor="primary" />
@@ -216,7 +216,7 @@
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .catalog_container_style {
   display: grid;
   grid-template-areas:

@@ -27,7 +27,7 @@
       class="img_style"
       fit='fill'
     />
-    <div class="text-left text-white text-uppercase text-h5 lang_style">{{ props.language }}</div>
+    <div class="text-left text-white text-uppercase text-h3 lang_style">{{ props.language }}</div>
   </div>
 </template>
 

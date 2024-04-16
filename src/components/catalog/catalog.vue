@@ -129,7 +129,7 @@ import RectangularButton from '../buttons/rectangular-button.vue';
   </q-tab-panels>
   <RedirectDialog :modelValue="dialogState">
     <template #content>
-      <div class="text-h5 text-center">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}</div>
+      <div class="text-h3 text-center">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}</div>
     </template>
     <template #actions>
       <RectangularButton :name="$t('complete')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="redirect" textColor="primary" />

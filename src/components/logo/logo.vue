@@ -15,7 +15,7 @@ const props = defineProps({
     </div>
     <div class="text-h1 text-center text-white text-uppercase">
       <div>high case</div>
-      <div class="text-body1 text-weight-thin">find your experience</div>
+      <div class="text-h3 text-weight-thin">find your experience</div>
     </div>
   </div>
 </template>

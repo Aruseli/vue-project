@@ -276,8 +276,8 @@
     title="you_are_inactive"
   >
     <template #content>
-      <div class="text-h5 text-center">
-        <div class="text-h5">{{$t('the_session_will_end_in')}}</div>
+      <div class="text-h3 text-center">
+        <div class="text-h3">{{$t('the_session_will_end_in')}}</div>
         <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}
       </div>
     </template>

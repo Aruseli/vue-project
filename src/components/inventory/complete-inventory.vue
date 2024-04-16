@@ -102,10 +102,10 @@
           q-mb-xs-sm
         "
       >
-        <div class="text-capitalize text-h5">
+        <div class="text-capitalize text-h3">
           {{ $t('remaining_goods') }}
         </div>
-        <div class="row date_style text-h5">
+        <div class="row date_style text-h3">
           <span>{{ formattedDate }}</span>
           <span>{{ formattedTime }}</span>
           <span>№ {{ inventoryStore.docNumStr }}</span>
@@ -148,14 +148,14 @@
           q-mb-xs-sm
         "
       >
-        <div class="row text-h5">
+        <div class="row text-h3">
           <span class="q-mr-xs-xs">{{$t('total')}}</span>
           <span class="q-mr-xs-xs">{{inventoryStore.inventory.length}}</span>
           <span class="q-mr-xs-xs">{{ $t('product') }}</span>
           <span>{{ $t('units', {count: inventoryStore.inventory.length}) }}</span>
         </div>
 
-        <div class="text-h5 text-weight-regular row">
+        <div class="text-h3 text-weight-regular row">
           <div class="q-mr-xs-xs">{{$t('estimated_quantity')}}</div>
           <div class="q-mr-xs-xs">{{inventoryStore.totalQuantity}}</div>
           <div class="q-mr-xs-xs">{{ $t('pc', {count: inventoryStore.totalQuantity}) }}</div>

@@ -163,7 +163,7 @@ import Modal from '../overlay/modal.vue';
   </Modal>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 $close_size: calc(3em + 2.7262vmin);
 
   .modal_styles {

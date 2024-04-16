@@ -87,13 +87,13 @@
         <div class="column no-wrap items-left text-black">
           <div
             class="q-mb-xs ellipsis first_letter"
-            :class="[app.kioskState.settings?.alt_ui == 'design_v2'? 'text-h5 text-center' : 'text-h4 ellipsis']"
+            :class="[app.kioskState.settings?.alt_ui == 'design_v2'? 'text-h3 text-center' : 'text-h4 ellipsis']"
           >
             {{ $t(props.good?.title) }}
           </div>
 
           <div v-if="app.kioskState.settings?.alt_ui == 'design_1'">
-            <span class="text-h5" v-if="props.good && props.good.stock <= 0">{{ $t('out_of_stock') }}</span>
+            <span class="text-h3" v-if="props.good && props.good.stock <= 0">{{ $t('out_of_stock') }}</span>
             <span class="text-h3" v-else>&#3647&ensp;{{ props.good?.price }}</span>
           </div>
         </div>
@@ -114,7 +114,7 @@
           text-color="white"
           @click="addGoodToCart(props.good)"
           >
-          <div class="text-h5 text-center q-py-xs text-uppercase">
+          <div class="text-h3 text-center q-py-xs text-uppercase">
             <span v-if="props.good && props.good.stock <= 0">{{ $t('out_of_stock') }}</span>
             <span v-else>&#3647&ensp;{{ props.good?.price }}</span>
           </div>
@@ -125,7 +125,7 @@
             @click="decrease(props.good)"
             class="q-pa-xs"
           />
-          <div class="text-h5 no-margin">{{ goodInCart.quant }}</div>
+          <div class="text-h3 no-margin">{{ goodInCart.quant }}</div>
           <IconButton
             :icon="evaPlusOutline"
             :disabled="goodInCart?.quant >= props.good?.stock"
@@ -145,7 +145,7 @@
           text-color="white"
           @click="addGoodToCart(props.good)"
           >
-          <div class="text-h5 text-center q-py-xs text-uppercase">
+          <div class="text-h3 text-center q-py-xs text-uppercase">
             {{ $t('buy') }}
           </div>
         </q-btn>

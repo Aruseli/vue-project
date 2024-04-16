@@ -128,7 +128,7 @@ import OrderCheck from './order-check.vue';
                       &#3647&ensp;{{ item.price * item.quant }}
                     </span>
                     <span class="text-h4 q-mr-xs">/</span>
-                    <span class="text-h5 text-grey-3">
+                    <span class="text-h3 text-grey-3">
                       &#3647&ensp;{{ item.price }}
                     </span>
                   </div>

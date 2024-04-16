@@ -17,6 +17,6 @@ const props = defineProps({
     <div class="q-mr-sm">
       <slot></slot>
     </div>
-    <div class="text-h3 text-center text-secondary text-uppercase text-weight-bold q-mr-sm" :class="props.text_style">high case</div>
+    <div class="text-h2 text-center text-secondary text-uppercase text-weight-bold q-mr-sm" :class="props.text_style">high case</div>
   </div>
 </template>

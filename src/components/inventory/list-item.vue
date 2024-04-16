@@ -45,7 +45,7 @@
 <template>
   <li class="list_style relative-position row justify-between items-center q-py-sm">
     <div class="row justify-between items-center fit q-py-xs content_block" v-bind="$attrs">
-      <div class="text-h5 col-md-3">{{ props.good_name }}</div>
+      <div class="text-h3 col-md-3">{{ props.good_name }}</div>
       <div class="text-body1 col-md-3">
         <span class="text-body1">{{$t('estimated_quantity')}}</span>&ensp;
         {{ props.estimated_quantity }}&ensp;{{ $t('pc', {count: props.estimated_quantity}) }}
@@ -55,7 +55,7 @@
         <div class="quant_style q-mr-sm-sm q-mr-xs-xs">
           <div
             class="
-              text-h5
+              text-h3
               q-px-lg-md
               q-px-md-sm
               q-px-sm-xs

@@ -27,7 +27,7 @@
     },
     classTitle: {
       type: String,
-      default: 'text-subtitle1',
+      default: 'text-h3',
     },
     rounded: {
       type: Boolean,

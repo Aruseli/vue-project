@@ -19,7 +19,7 @@ const props = defineProps({
       v-if="props.quantity > 0"
       class="badge_style bg-positive flex items-center justify-center" :class="props.badgeStyleAlt"
     >
-      <div class="text-h5 text-white">{{ props.quantity }}</div>
+      <div class="text-h3 text-white">{{ props.quantity }}</div>
     </div>
   </q-btn>
 </template>

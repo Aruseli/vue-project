@@ -60,10 +60,9 @@ const addGoodToCart = (good: Good) => {
         :round="true"
         :flat="true"
         size="xl"
-        class="close_button absolute-top-right"
         @click="emit('click')"
       />
-      <div class="text-h3 text-green mb-74">
+      <div class="text-h2 text-green mb-74">
         {{ props.good.name }}
       </div>
 
@@ -71,7 +70,7 @@ const addGoodToCart = (good: Good) => {
       <div class="mb-74 slider_grid">
         <slot name="carousel" />
         <div class="column text-body1">
-          <div class="text-grey q-mb-lg text-h5">
+          <div class="text-grey q-mb-lg text-h3">
             {{ $t('characteristics') }}
           </div>
 
@@ -107,12 +106,12 @@ const addGoodToCart = (good: Good) => {
       </div>
 
       <!-- description -->
-      <div class="text-grey text-h5 q-mb-lg">
+      <div class="text-grey text-h3 q-mb-lg">
         {{ $t('description') }}
       </div>
 
       <!-- add to cart -->
-      <div class="text-body1 text-white q-mb-lg" v-html="props.good.description"/>
+      <div class="text-h4 text-white q-mb-lg text-weight-regular" v-html="props.good.description"/>
       <div class="full-width">
         <q-btn
           v-if="!goodInCart"
@@ -122,7 +121,7 @@ const addGoodToCart = (good: Good) => {
           color="white"
           @click="addGoodToCart(props.good  as Good)"
         >
-          <div class="text-h4 text-center text-black q-py-sm-xs">
+          <div class="text-h2 text-center text-black q-py-sm-xs">
             {{ $t('add_to_cart') }}
           </div>
         </q-btn>
@@ -135,7 +134,7 @@ const addGoodToCart = (good: Good) => {
             @click="decrease(props.good  as Good)"
             class="pa-21"
           />
-          <div class="text-h4 no-margin text-grey">{{ goodInCart.quant }}</div>
+          <div class="text-h2 no-margin text-grey">{{ goodInCart.quant }}</div>
           <IconButton
             :rounded="false"
             color="white"
@@ -150,7 +149,7 @@ const addGoodToCart = (good: Good) => {
   </Modal>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
   .dialog_container {
     width: 50vw;
@@ -170,8 +169,6 @@ const addGoodToCart = (good: Good) => {
     width: 100%;
   }
   .close_button {
-    width: var(--px54);
-    top: var(--px20);
     right: var(--px20);
   }
 </style>

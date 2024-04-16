@@ -55,7 +55,7 @@
         color="secondary"
         icon="arrow_back_ios_new"
         class="q-pr-sm"
-        classTitle="text-subtitle2"
+        classTitle="text-subtitle1"
         @click="router.push('/employee-actions')"
       />
       <div
@@ -76,10 +76,10 @@
           q-mb-xs-sm
         "
       >
-        <div class="text-h5 text-capitalize">
+        <div class="text-h3 text-capitalize">
           {{ $t('remaining_goods') }}
         </div>
-        <div class="row date_style text-h5">
+        <div class="row date_style text-h3">
           <span>{{ formattedDate }}</span>
           <span>№{{ selectiveInventoryStore.selectedInventory?.inventoryNumStr }}</span>
         </div>
@@ -121,14 +121,14 @@
           q-mb-xs-sm
         "
       >
-        <div class="row text-h5">
+        <div class="row text-h3">
           <span class="q-mr-xs-xs">{{$t('total')}}</span>
           <span class="q-mr-xs-xs">{{selectiveInventoryStore.selectedInventory?.items.length}}</span>
           <span class="q-mr-xs-xs">{{ $t('product') }}</span>
           <span>{{ $t('units', {count: selectiveInventoryStore.selectedInventory?.items.length}) }}</span>
         </div>
 
-        <div class="text-h5 text-weight-regular row q-gutter-x-sm">
+        <div class="text-h3 text-weight-regular row q-gutter-x-sm">
           <div class="q-mr-xs-xs">{{$t('estimated_quantity')}}</div>
           <div class="q-mr-xs-xs">{{selectiveInventoryStore.selectedInventory?.totalStock}}</div>
           <div class="q-mr-xs-xs">{{ $t('pc', {count: selectiveInventoryStore.selectedInventory?.totalStock}) }}</div>

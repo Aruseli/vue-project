@@ -198,7 +198,7 @@
       <div class="scrollable_container column justify-between full-height">
         <section class="column">
           <div class="categories_style mb-60">
-            <div class="text-h4 text-uppercase text-white mb-20">
+            <div class="text-h2 text-uppercase text-white mb-20">
               {{ $t('categories') }}
             </div>
             <div class="bg-white categories_line" />
@@ -206,7 +206,7 @@
           <ul class='tabs__header'>
             <li v-for='(goodCategory, index) in goodsStore.goods'
               :key='goodCategory.id'
-              class="text-h5 text-weight-bold"
+              class="text-h3 text-weight-bold"
             >
               <div @click="selectCategory(goodCategory.id, $event)" :class='{active : goodCategory.id == selectedIndex}'>
                 {{ goodCategory.title }}
@@ -241,12 +241,12 @@
         ref="target"
         class="mb-90"
       >
-        <div class="text-h4 q-mb-lg text-uppercase text-white">
+        <div class="text-h2 q-mb-lg text-uppercase text-white">
           {{ goodCategory.title }}
         </div>
         <div
           v-if="goodCategory.goods.length == 0"
-          class="text-body1 text-white"
+          class="text-h3 text-white"
         >{{$t('category_empty')}}</div>
         <transition appear @enter="animation">
           <div class="row image_grid">
@@ -264,7 +264,7 @@
     <!-- cart information -->
     <Cta @click="openDrawer" class="cta_style" />
 
-    <CartDrawer :isOpen="app.drawerCartState" @click="openDrawer" class="cart_positioning" />
+    <CartDrawer :isOpen="app.drawerCartState" @click="app.openDrawerCart(false);" additionalCartClass="cart_positioning" />
 
     <!-- redirect dialog when user is inactive-->
     <RedirectDialog
@@ -273,7 +273,7 @@
       titleClass="text-white"
     >
       <template #content>
-        <div class="text-h5 text-center text-white">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}</div>
+        <div class="text-h3 text-center text-white">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}</div>
       </template>
       <template #actions>
         <RectangularButton
@@ -309,7 +309,7 @@
   </template>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .cart_positioning {
   position: absolute;
   grid-area: catalog / catalog / cta / cta;
@@ -396,7 +396,7 @@ li > div {
   color: #5D5D5D;
 }
 li > div.active {
-  color: var(--body-text);
+  color: white;
   transform-origin: left;
 }
 

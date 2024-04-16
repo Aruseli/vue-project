@@ -34,7 +34,7 @@
       fit='fill'
     />
     <div
-      class="text-left text-uppercase lang_style text-black text-h5"
+      class="text-left text-uppercase lang_style text-black text-h3"
     >{{ props.language }}</div>
   </div>
 </template>
