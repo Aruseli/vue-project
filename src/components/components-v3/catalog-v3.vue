@@ -225,7 +225,7 @@
           <q-btn
             flat
             color="grey"
-            class="text-body1 text-center help_button"
+            class="text-h4 text-center help_button"
             :label="$t('do_you_need_some_help')"
           />
         </div>
