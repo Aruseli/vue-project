@@ -48,6 +48,13 @@
   const increase = (good: Good) => {
     cartStore.increaseItemsCount(good);
   }
+
+  const currentSlide = ref(0);
+  const setCurrentSlide = (index) => {
+    console.log('123Slide');
+    console.log('123Slide', index);
+    currentSlide.value = index;
+  };
 </script>
 
 
@@ -136,7 +143,65 @@
       :good="props.good"
       :isOpen="openDialog"
       @click="openDialog = false"
-    />
+    >
+      <template #carousel>
+        <Carousel>
+          <div class="relative-position full-width full-height">
+            <div class="full-width full-height" />
+            <Slide v-for="(images, index) in props.good.images" :key="index" class="absolute-top-left">
+              <template #slide>
+                <q-img
+                  :src="images.image"
+                  width="100%"
+                  height="100%"
+                  :ratio="1"
+                  class="slide_img"
+                  v-show="currentSlide === index"
+                >
+                  <template #loading>
+                    <div class="text-subtitle1 text-black">
+                      Loading...
+                    </div>
+                  </template>
+                </q-img>
+              </template>
+            </Slide>
+            <div class="absolute-top-right img_angle_top" />
+            <div class="absolute-bottom-left img_angle_bottom" />
+          </div>
+        </Carousel>
+      </template>
+      <template #slider-navigation>
+        <div class="slider_navigation_container">
+          <Slide
+            v-for="(images, index) in props.good.images"
+            :key="index"
+            @click="setCurrentSlide(index)"
+            class="relative-position"
+          >
+            <template #slide>
+              <q-img
+                :src="images.image"
+                width="100%"
+                height="100%"
+                :ratio="1"
+                class="slide_img"
+              >
+                <template #loading>
+                  <div class="text-subtitle1 text-black">
+                    Loading...
+                  </div>
+                </template>
+              </q-img>
+            </template>
+            <template #angles>
+              <div class="absolute-top-right slide_img_angle_top" />
+              <div class="absolute-bottom-left slide_img_angle_bottom" />
+            </template>
+          </Slide>
+        </div>
+      </template>
+    </ProductModal>
   </template>
 
 </template>
@@ -145,6 +210,12 @@
   $calc_width: calc(15em + 6vmax);
   $calc_width_alt: calc(12em + 4.5vmax);
 
+  .active {
+    opacity: 1
+  }
+  .non_active {
+    opacity: 0
+  }
   .slider_navigation_container {
     overflow: hidden;
     height: auto;
@@ -153,6 +224,11 @@
     grid-column: 1 / 3;
     grid-template-columns: repeat(auto-fit, minmax(5%, 1fr));
     column-gap: 1.5rem;
+  }
+
+  .slide_img {
+    border-radius: 0 !important;
+    scale: 0.9;
   }
   .card_setting_v3 {
     border-radius: var(--border-xxs);
@@ -206,5 +282,4 @@
     opacity: 0;
     transform: translateY(100%);
   }
-
 </style>

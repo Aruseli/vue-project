@@ -1,5 +1,9 @@
 <script setup lang="ts">
 const props = defineProps({
+  currentSlide: {
+    type: Number,
+    default: 0
+  },
   navCarousel: {
     type: String,
     default: 'column',
@@ -9,13 +13,13 @@ const props = defineProps({
 
 <template>
   <div class="carousel" :class="props.navCarousel">
-    <slot name="slides" />
+    <slot />
   </div>
 </template>
 
 <style scoped>
 .carousel {
-  display: flex;
+  position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;

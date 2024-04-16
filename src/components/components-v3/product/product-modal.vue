@@ -61,6 +61,7 @@ const addGoodToCart = (good: Good) => {
         :flat="true"
         size="xl"
         @click="emit('click')"
+        class="absolute-top-right text-h3"
       />
       <div class="text-h2 text-green mb-74">
         {{ props.good.name }}
@@ -68,7 +69,11 @@ const addGoodToCart = (good: Good) => {
 
       <!-- carousel + characteristics -->
       <div class="mb-74 slider_grid">
+
+        <!-- carousel -->
         <slot name="carousel" />
+
+        <!-- characteristics -->
         <div class="column text-body1">
           <div class="text-grey q-mb-lg text-h3">
             {{ $t('characteristics') }}
@@ -121,8 +126,13 @@ const addGoodToCart = (good: Good) => {
           color="white"
           @click="addGoodToCart(props.good  as Good)"
         >
-          <div class="text-h2 text-center text-black q-py-sm-xs">
-            {{ $t('add_to_cart') }}
+          <div class="text-h2 text-center text-black q-py-sm row justify-between items-center full-width">
+            <div>
+              &#3647&ensp;{{ props.good.price }}
+            </div>
+            <div>
+              {{ $t('add_to_cart') }}
+            </div>
           </div>
         </q-btn>
         <div class="row justify-between items-center" v-else>

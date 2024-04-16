@@ -6,28 +6,18 @@ const props = defineProps({
   addedSlide: {
     type: String,
   },
+  currentImage: {
+    type: Object,
+  }
 })
 
 const emit = defineEmits(['click']);
 </script>
 
 <template>
-  <div class="slide_container relative-position" :class="props.addedSlide" @click="emit('click')">
-    <transition name="slide">
-      <q-img
-        :src="props.image?.image"
-        width="100%"
-        height="100%"
-        :ratio="1"
-        class="slide_img"
-        v-show="props.image"
-      >
-        <template #loading>
-          <div class="text-subtitle1 text-black">
-            Loading...
-          </div>
-        </template>
-      </q-img>
+  <div class="slide_container" @click="emit('click')" v-bind="$attrs">
+    <transition name="slide_animation">
+      <slot name="slide" />
     </transition>
     <slot name="angles" />
   </div>
@@ -38,8 +28,15 @@ const emit = defineEmits(['click']);
   width: 100%;
   height: 100%;
 }
-.slide_img {
-  border-radius: 0 !important;
-  scale: 0.9;
+.slide_animation-enter-active,
+.slide_animation-leave-active {
+  transition: all 0.3s cubic-bezier(0.215, 0.610, 0.355, 1);
 }
+.slide_animation-leave-to,
+.slide_animation-enter-from {
+  opacity: 0;
+  transform: translateY(100%);
+}
+
+
 </style>
