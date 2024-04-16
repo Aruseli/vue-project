@@ -59,7 +59,7 @@
       <IconButton color="bg-white" class="q-pa-none" :customIcon="true" @click="openDialog = true">
         <AttentionIcon />
       </IconButton>
-      <div class="text-body1 row">
+      <div class="text-subtitle1 row">
         <div class="mr-14">99% THC</div>
         <div class="row items-center intensity_icons_container">
           <div class="intensity_icon bg-red" />
@@ -68,6 +68,8 @@
         </div>
       </div>
     </div>
+
+    <!-- gallery -->
     <div class="img_container mb-14 relative-position">
       <q-img
         :src="props.good?.images[0]?.image"
@@ -84,19 +86,23 @@
       <div class="absolute-top-right img_angle_top" />
       <div class="absolute-bottom-left img_angle_bottom" />
     </div>
+
+
     <div class="row no-wrap justify-between items-center relative-position">
       <div>
-        <div class="mb-14 ellipsis text-capitalize text-h5 text-left text-green">
+        <div class="mb-14 ellipsis text-capitalize text-h4 text-left text-green">
           {{ t(props.good?.title) }}
         </div>
 
         <div class="column">
-          <div class="text-h5" v-if="props.good && props.good.stock <= 0">{{ t('out_of_stock') }}</div>
-          <div class="text-h4" v-else>&#3647&ensp;{{ props.good?.price }}</div>
+          <div class="text-h3" v-if="props.good && props.good.stock <= 0">{{ t('out_of_stock') }}</div>
+          <div class="text-h3" v-else>&#3647&ensp;{{ props.good?.price }}</div>
         </div>
       </div>
+
       <BinButton @click="addGoodToCart(props.good as Good)" class="bin_button_style">
-        <BinIcon :quantity="cartStore.totalQuantity" class="bin_alt_style" />
+        <BinIcon :quantity="cartStore.totalQuantity" class="bin_alt_style" v-if="!goodInCart" />
+        <div v-else class="text-h2 no-margin text-white">{{ goodInCart.quant }}</div>
       </BinButton>
 
       <transition name="slide-fade">
@@ -190,6 +196,9 @@
     border-radius: var(--px54);
     border: thin solid green;
     padding: 0.8em;
+    min-width: 5rem;
+    width: max-content;
+    height: 5rem;
   }
   .bin_alt_style {
     width: 3rem !important;
