@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import { evaMinusOutline, evaPlusOutline } from '@quasar/extras/eva-icons';
   import { t } from 'i18next';
   import { computed, ref } from 'vue';
   import { useCartStore } from '../../../stores/cart';
@@ -87,7 +88,7 @@
       <div class="absolute-bottom-left img_angle_bottom" />
     </div>
 
-
+    <!-- title + price + buttons -->
     <div class="row no-wrap justify-between items-center relative-position">
       <div>
         <div class="mb-14 ellipsis text-capitalize text-h4 text-left text-green">
@@ -104,12 +105,29 @@
         <BinIcon :quantity="cartStore.totalQuantity" class="bin_alt_style" v-if="!goodInCart" />
         <div v-else class="text-h2 no-margin text-white">{{ goodInCart.quant }}</div>
       </BinButton>
-
       <transition name="slide-fade">
-
+        <div class="bg-grey-2 row justify-between items-center absolute-top full-height" v-if="goodInCart">
+          <IconButton
+            round
+            iconStyle="text-grey-1"
+            :icon="evaPlusOutline"
+            @click="increase(props.good)"
+            class="q-pa-xs bg-white"
+          />
+          <div
+            class='text-h2 text-white q-mx-lg-md q-mx-xs-sm q-my-none'
+          >{{ goodInCart.quant }}</div>
+          <IconButton
+            round
+            class="bg-white q-pa-xs"
+            iconStyle="text-grey-1"
+            :icon="evaMinusOutline"
+            @click="decrease(props.good)"
+          />
+        </div>
       </transition>
-
     </div>
+
   </div>
 
   <!-- product modal card with description -->
@@ -118,34 +136,7 @@
       :good="props.good"
       :isOpen="openDialog"
       @click="openDialog = false"
-    >
-      <template #carousel>
-        <Carousel>
-          <template #slides>
-            <div class="relative-position full-width full-height">
-              <div class="full-width full-height" />
-              <Slide v-for="(image, index) in props.good.images" :key="index" :image="image" addedSlide="absolute-top-left" />
-              <div class="absolute-top-right img_angle_top" />
-              <div class="absolute-bottom-left img_angle_bottom" />
-            </div>
-          </template>
-        </Carousel>
-      </template>
-      <template #slider-navigation>
-        <div class="slider_navigation_container">
-          <Slide
-            v-for="(image, index) in props.good.images"
-            :key="index" :image="image"
-            @click="console.log('123')"
-          >
-            <template #angles>
-              <div class="absolute-top-right slide_img_angle_top" />
-              <div class="absolute-bottom-left slide_img_angle_bottom" />
-            </template>
-          </Slide>
-        </div>
-      </template>
-    </ProductModal>
+    />
   </template>
 
 </template>
@@ -170,6 +161,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    overflow: hidden;
     box-shadow: var(--box-shadow--product_cart_v3);
   }
   .intensity_icons_container > *:not(:last-child) {
@@ -203,6 +195,16 @@
   .bin_alt_style {
     width: 3rem !important;
     align-self: stretch;
+  }
+
+  .slide-fade-enter-active,
+  .slide-fade-leave-active {
+    transition: all 0.3s cubic-bezier(0.215, 0.610, 0.355, 1);
+  }
+  .slide-fade-leave-to,
+  .slide-fade-enter-from {
+    opacity: 0;
+    transform: translateY(100%);
   }
 
 </style>
