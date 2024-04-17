@@ -79,32 +79,35 @@ const addGoodToCart = (good: Good) => {
             {{ $t('characteristics') }}
           </div>
 
-          <div class="text-grey mb-14">{{ $t('variety') }}</div>
-          <div class="text-white q-mb-lg">
-            <span>{{ $t('hybrid') }}</span> &#183;
-            <span>{{ $t('sativa') }}</span> &#183;
-            <span>{{ $t('indica') }}</span> &#183;
-            <span>{{ $t('indica') }}</span> &#183;
-            <span>{{ $t('indica') }}</span> &#183;
-          </div>
+          <!-- characteristics for cannabis bud -->
+          <div>
+            <div class="text-grey mb-14">{{ $t('variety') }}</div>
+            <div class="text-white q-mb-lg">
+              <span>{{ $t('hybrid') }}</span> &#183;
+              <span>{{ $t('sativa') }}</span> &#183;
+              <span>{{ $t('indica') }}</span> &#183;
+              <span>{{ $t('indica') }}</span> &#183;
+              <span>{{ $t('indica') }}</span> &#183;
+            </div>
 
-          <div class="text-grey mb-14">{{ $t('taste') }}</div>
-          <div class="text-white q-mb-lg">
-            <span>{{ $t('fruity') }}</span> &#183;
-            <span>{{ $t('fresh') }}</span> &#183;
-            <span>{{ $t('mint') }}</span>
-          </div>
+            <div class="text-grey mb-14">{{ $t('taste') }}</div>
+            <div class="text-white q-mb-lg">
+              <span>{{ $t('fruity') }}</span> &#183;
+              <span>{{ $t('fresh') }}</span> &#183;
+              <span>{{ $t('mint') }}</span>
+            </div>
 
-          <div class="text-grey mb-14">{{ $t('effects') }}</div>
-          <div class=" text-white q-mb-lg">
-            <span>{{ $t('relaxation') }}</span> &#183;
-            <span>{{ $t('calm') }}</span>
-          </div>
+            <div class="text-grey mb-14">{{ $t('effects') }}</div>
+            <div class=" text-white q-mb-lg">
+              <span>{{ $t('relaxation') }}</span> &#183;
+              <span>{{ $t('calm') }}</span>
+            </div>
 
-          <div class="text-grey mb-14">{{ $t('technical_specifications') }}</div>
-          <div class=" text-white">
-            <span>{{ $t('relaxation') }}</span> &#183;
-            <span>{{ $t('calm') }}</span>
+            <div class="text-grey mb-14">{{ $t('technical_specifications') }}</div>
+            <div class=" text-white">
+              <span>{{ $t('relaxation') }}</span> &#183;
+              <span>{{ $t('calm') }}</span>
+            </div>
           </div>
         </div>
         <slot name="slider-navigation" />
@@ -162,7 +165,8 @@ const addGoodToCart = (good: Good) => {
 <style lang="scss" scoped>
 
   .dialog_container {
-    width: 50vw;
+    width: 55vw;
+    min-width: 50vw;
     max-width: 60vw;
     height: max-content;
     @media (max-width: 1500px) {
