@@ -43,10 +43,11 @@ export default {
     "cache__inventories_ttl_ms": 120*1000,
     "user_info_update_interval": (process.env.DEV) ? 60_000 : 600_000,
 
-    "customer_inactivity_before_redirect": 3700000,
+    "customer_inactivity_before_redirect": 97_000,
     "customer_inactivity_countdown_duration": 7000,
     "customer_inactivity_animation_start_before_redirect": 9000,
     "customer_successful_order_notify_duration_ms": 7000,
+
 
     "employee_menu_inactivity_before_action": 150_000,
     "employee_menu_inactivity_countdown_duration": 30_000,
