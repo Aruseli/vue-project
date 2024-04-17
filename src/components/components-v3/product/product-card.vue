@@ -50,9 +50,7 @@
   }
 
   const currentSlide = ref(0);
-  const setCurrentSlide = (index) => {
-    console.log('123Slide');
-    console.log('123Slide', index);
+  const setCurrentSlide = (index: number) => {
     currentSlide.value = index;
   };
 </script>
@@ -77,7 +75,7 @@
       </div>
     </div>
 
-    <!-- gallery -->
+    <!-- main image -->
     <div class="img_container mb-14 relative-position">
       <q-img
         :src="props.good?.images[0]?.image"
@@ -86,7 +84,7 @@
         class="img_style"
       >
         <template #loading>
-          <div class="text-subtitle1 text-black">
+          <div class="text-subtitle1 text-white">
             Loading...
           </div>
         </template>
@@ -116,20 +114,20 @@
         <div class="bg-grey-2 row justify-between items-center absolute-top full-height" v-if="goodInCart">
           <IconButton
             round
-            iconStyle="text-grey-1"
+            iconStyle="text-white"
             :icon="evaPlusOutline"
-            @click="increase(props.good)"
-            class="q-pa-xs bg-white"
+            @click="increase(props.good as Good)"
+            class="q-pa-xs bg-transparent"
           />
           <div
             class='text-h2 text-white q-mx-lg-md q-mx-xs-sm q-my-none'
           >{{ goodInCart.quant }}</div>
           <IconButton
             round
-            class="bg-white q-pa-xs"
-            iconStyle="text-grey-1"
+            class="bg-transparent q-pa-xs"
+            iconStyle="text-white"
             :icon="evaMinusOutline"
-            @click="decrease(props.good)"
+            @click="decrease(props.good as Good)"
           />
         </div>
       </transition>
@@ -159,7 +157,7 @@
                   v-show="currentSlide === index"
                 >
                   <template #loading>
-                    <div class="text-subtitle1 text-black">
+                    <div class="text-subtitle1 text-white">
                       Loading...
                     </div>
                   </template>
@@ -188,7 +186,7 @@
                 class="slide_img"
               >
                 <template #loading>
-                  <div class="text-subtitle1 text-black">
+                  <div class="text-subtitle1 text-white">
                     Loading...
                   </div>
                 </template>
