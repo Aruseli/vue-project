@@ -1,18 +1,12 @@
 // https://quasar.dev/style/sass-scss-variables#variables-list
 
 // text
-$h1: (size: clamp(1.5rem, 0.4167rem + 5.4167vmax, 6rem), line-height: 1.5, letter-spacing: -.01562em, weight: 900) !default;
-$h2: (size: clamp(1.5rem, 1.0352rem + 2.3239vmax, 2.25rem), line-height: 1.5, letter-spacing: -.00833em, weight: 900) !default;
+$h1: (size: clamp(1.5rem, 0.4167rem + 5.4167vmax, 6rem), line-height: 1.5, letter-spacing: -.01562em, weight: 700) !default;
+$h2: (size: clamp(1.5rem, 1.0352rem + 2.3239vmax, 2.25rem), line-height: 1.5, letter-spacing: -.00833em, weight: 700) !default;
 $h3: (size: clamp(1rem, 0.5352rem + 2.3239vmax, 2rem), line-height: 1.3, letter-spacing: normal, weight: 600) !default;
 $h4: (size: clamp(1.375rem, 1.1136rem + 1.3072vmax, 1.5rem), line-height: 1.5, letter-spacing: .00735em, weight: 600) !default;
 $subtitle1: (size: clamp(0.75rem, 0.5176rem + 1.1619vmax, 1rem), line-height: 1.1, letter-spacing: .00937em, weight: 400) !default;
 $body1: (size: clamp(0.8125rem, 0.6527rem + 0.7988vmax, 1.125rem), line-height: 1.5, letter-spacing: .03125em, weight: 400) !default;
-// $h1: (size: clamp(1.5rem, 0.4167rem + 5.4167vmax, 8rem), line-height: 1.3, letter-spacing: -.01562em, weight: 700) !default;
-// $h2: (size: clamp(1.5rem, 1.0352rem + 2.3239vmax, 3.5rem), line-height: 1.3, letter-spacing: -.00833em, weight: 700) !default;
-// $h3: (size: clamp(1rem, 0.5352rem + 2.3239vmax, 3rem), line-height: 1.3, letter-spacing: normal, weight: 600) !default;
-// $h4: (size: clamp(1.375rem, 1.1136rem + 1.3072vmax, 2.5rem), line-height: 1.3, letter-spacing: .00735em, weight: 600) !default;
-// $subtitle1: (size: clamp(0.75rem, 0.5176rem + 1.1619vmax, 1.75rem), line-height: 1.1, letter-spacing: .00937em, weight: 400) !default;
-// $body1: (size: clamp(0.8125rem, 0.6527rem + 0.7988vmax, 1.5rem), line-height: 1.5, letter-spacing: .03125em, weight: 400) !default;
 
 // sizes for define margins/paddings
 $space-base: 16px !default;
