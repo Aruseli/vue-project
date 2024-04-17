@@ -44,7 +44,6 @@
     await app.setLocale(newLocale);
     await goodsStore.updateGoods(newLocale);
     selectedLang.value = newLocale;
-    console.log("selectedLang.value", selectedLang.value);
   };
 
   const selectCategory = (id: string, event: Event) => {
@@ -357,6 +356,7 @@
 }
 .cta_style {
   grid-area: cta;
+  z-index: 2;
 }
 
 .help_button {
