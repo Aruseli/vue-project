@@ -13,36 +13,44 @@
       type: String,
       default: 'English'
     },
+    imgClasses: {
+      type: String,
+      default: '',
+    }
   })
 
   const emit = defineEmits(['click']);
 </script>
 
 <template>
-  <div @click="emit('click')" class="lang_container column justify-center items-center">
+  <div @click="emit('click')" class="lang_container justify-center items-center" v-bind="$attrs">
     <q-img
       :src="props.src"
       :alt="props.alt"
       ratio="16/9"
-      class="img_style"
+      class="lang_img_style"
+      :class="props.imgClasses"
       fit='fill'
     />
-    <div class="text-left text-white text-uppercase text-h3 lang_style">{{ props.language }}</div>
+    <div class="text-left text-white text-uppercase text-h3 lang_title_style">{{ props.language }}</div>
   </div>
 </template>
 
 <style scoped lang="scss">
-$width: calc(6.5em + 1.7262vmin);
-.img_style {
-  height: calc(100% - 3em);
+$width: calc(8.5em + 1.7262vmin);
+$height: calc(5.5em + 1.7262vmin);
+.lang_img_style {
+  height: $height;
   width: $width;
 }
 .lang_container {
   height: 100%;
   width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-.lang_style {
+.lang_title_style {
   @media (max-width: 1200px) and (orientation: landscape) {
     font-size: 1rem;
   }
