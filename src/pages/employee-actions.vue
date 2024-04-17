@@ -9,8 +9,11 @@
   import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
   import Logo from 'src/components/logo/logo.vue';
   import LogoSvg from 'src/components/logo/logo-svg.vue';
+  import LogoSimple from 'src/components/logo/logo-simple.vue';
   import { delay, eventEmitter } from 'src/services';
   import { useGoodsStore } from 'src/stores/goods';
+  import EmployeeActions from '../components/components-v3/employee-actions.vue';
+  import {default as EmployeeActionsOld} from '../components/catalog/employee-actions.vue';
 
   const $q = useQuasar();
   const router = useRouter();
@@ -131,10 +134,28 @@
 
 <template>
   <q-page class="flex flex-center bg-secondary relative-position">
-    <div class="column justify-center items-center full-height full-width container">
-      <Logo class="logo_column" classes="q-mb-md-sm q-mb-xs-xs">
+    <EmployeeActions
+      :buttons="buttons"
+      :inventoryRequests="inventoryRequests"
+      v-if="app.kioskState.settings?.alt_ui === 'design_v3'"
+    />
+    <EmployeeActionsOld
+      :buttons="buttons"
+      :inventoryRequests="inventoryRequests"
+      v-if="app.kioskState.settings?.alt_ui !== 'design_v3'"
+    />
+
+    <!-- <div class="column justify-center items-center full-height full-width container">
+      <Logo class="logo_column" classes="q-mb-md-sm q-mb-xs-xs" v-if="app.kioskState.settings?.alt_ui !== 'design_v3'">
         <LogoSvg fill="#FAFAFA" />
       </Logo>
+      <LogoSimple text_style="text-green" v-if="app.kioskState.settings?.alt_ui === 'design_v3'">
+        <LogoSvg
+          fill="#88D863"
+          width="6em"
+          height="6em"
+        />
+      </LogoSimple>
       <RectangularButton
         v-for="(button, index) in buttons"
         :key="index"
@@ -149,7 +170,7 @@
         </div>
       </RectangularButton>
 
-    </div>
+    </div> -->
     <RedirectDialog
       :modelValue="dialogState"
       title="there_are_documents_for_inventory"
@@ -161,53 +182,3 @@
     </RedirectDialog>
   </q-page>
 </template>
-
-<style scoped lang="scss">
-.container {
-  padding: 4rem;
-  @media (max-width: 899px) {
-    padding: 2rem;
-  }
-}
-.container > *:not(:last-child) {
-  margin-bottom: 2rem;
-}
-.container > *:first-child {
-  margin-bottom: 7rem;
-  @media (max-width: 1300px) {
-    margin-bottom: 3rem;
-  }
-}
-.blocked {
-  filter: brightness(0.3);
-}
-
-.button_style {
-  width: 60vw;
-  padding: 2.5rem;
-  font-size: 2.25rem;
-  @media (max-width: 1300px) {
-    padding: 1.5rem;
-
-  }
-  @media (max-width: 899px) {
-    width: 100%;
-    padding: 1rem;
-  }
-}
-
-.badge_style {
-  position: absolute;
-  top: -1rem;
-  right: -1rem;
-  border-radius: 2.5rem;
-  min-width: 4.5rem;
-  width: max-content;
-  height: 4.5rem;
-  @media (max-width: 1300px) {
-    min-width: 2.5rem;
-    height: 2.5rem;
-  }
-}
-</style>
-
