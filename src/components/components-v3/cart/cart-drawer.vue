@@ -325,13 +325,4 @@
   .backdrop_animation-enter-from {
     opacity: 0;
   }
-
-  .slide-cart-enter-active,
-  .slide-cart-leave-active {
-    transition: opacity 0.5s;
-  }
-  .slide-cart-enter-from,
-  .slide-cart-leave-to {
-    opacity: 0;
-  }
 </style>
