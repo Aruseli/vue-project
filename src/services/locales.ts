@@ -11,7 +11,7 @@ export async function updateCatalogLocales(kioskState: KioskState) {
         .then(r => r?.map(l => ({
           lang_code: l?.lang_code,
           name: l?.name,
-          flag_src: `/flags/${l.flag_code}.webp`,
+          flag_src: `/flags/4x3/${l?.flag_code}.svg`,
           flag_code: l?.flag_code
         })))
           console.log({locales})
