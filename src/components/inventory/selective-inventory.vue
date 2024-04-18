@@ -62,15 +62,6 @@ async function handlePrintConfirmation(printConfirmed) {
       await printInventory({ documentId: documentId.value, $q, appStore: app });
     }
     hidePrintConfirmationDialog();
-    if (route.path === "/open-shift/complete-inventory") {
-      await app.openTerminalShift();
-      router.push(app.shiftIsGood() ? "/hello" : "/employee-actions");
-    } else if (route.path === "/close-shift/complete-inventory") {
-      await app.closeTerminalShift();
-      router.push("/employee-actions");
-    } else {
-      router.push("/employee-actions");
-    }
   } catch (error) {
     console.error("inventoryStore.submitInventory print error:", error);
     $q.notify({

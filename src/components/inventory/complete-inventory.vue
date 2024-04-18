@@ -147,7 +147,22 @@
         @click="router.push('/employee-actions')"
       />
       <div
-        class="text-h2 text-uppercase text-center q-mb-lg-lg q-mb-xs-sm q-pt-sm-sm q-pt-xs-sm"
+        class="
+          text-h2
+          text-uppercase text-center
+          q-mb-lg-lg
+          q-mb-xs-sm
+          q-pt-sm-sm
+          q-pt-xs-sm
+        "
+      >{{ $t('complete_inventory') }}</div>
+
+      <div
+        class="
+          row justify-between
+          q-mb-md-sm
+          q-mb-xs-sm
+        "
       >
         <div class="text-capitalize text-h3">
           {{ $t('remaining_goods') }}
@@ -171,7 +186,7 @@
             :good_name="good.title"
             :estimated_quantity="good.stock"
             :not_equal="good.stock !== good.quant"
-            :class="{ highlighted: good.confirmed }"
+            :class="{ 'highlighted': good.confirmed }"
             @itemConfirm="good.confirmed = !good.confirmed"
             @resetActualQuantity="good.quant = 0"
             :id="good.id"
