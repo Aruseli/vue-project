@@ -39,7 +39,7 @@
     // кнопка будет недоступна для повторного клика
     isDisabled.value = true;
     try {
-      await cartStore.submitOrder()
+      await cartStore.submitOrder({$q})
       app.openOrderDialog(true);
       setTimeout(() => {
         app.openOrderDialog(false);
