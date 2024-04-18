@@ -71,7 +71,7 @@ import { useAppStore } from 'src/stores/app';
         color="secondary"
         icon="arrow_back_ios_new"
         class="q-pr-sm"
-        classTitle="text-subtitle2"
+        classTitle="text-subtitle1"
         @click="router.push('/issuing-order')"
       />
 

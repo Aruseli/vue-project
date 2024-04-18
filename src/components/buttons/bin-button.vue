@@ -1,47 +1,38 @@
-<script setup>
+<script setup lang="ts">
+const emit = defineEmits(['click'])
+const props = defineProps({
+  quantity: {
+    type: Number,
+    default: 0
+  },
+  badgeStyleAlt: {
+    type: String,
+  },
+})
 
 </script>
 
 <template>
-  <div class='r-hex'>
-    <div class="r-hex-inner">
-      <!-- <q-icon >
-        <BinIcon />
-      </q-icon> -->
-      111
+  <q-btn unelevated round class="relative-position" @click="emit('click')">
+    <slot></slot>
+    <div
+      v-if="props.quantity > 0"
+      class="badge_style bg-positive flex items-center justify-center" :class="props.badgeStyleAlt"
+    >
+      <div class="text-h3 text-white">{{ props.quantity }}</div>
     </div>
-  </div>
+  </q-btn>
 </template>
 
 
 <style scoped>
-.r-hex {
-  overflow: hidden;
-  display: inline-block;
-  margin: 2em 0;
-  width: 6.05em; height: 5.35em;
-  transform: rotate(-30deg) skewX(30deg);
-  border-radius: .3em;
+.badge_style {
+  position: absolute;
+  bottom: 0rem;
+  left: 0rem;
+  border-radius: 2.5rem;
+  min-width: 2.5rem;
+  width: max-content;
+  height: 2.5rem;
 }
-.r-hex > *, .r-hex > *:before {
-  display: block;
-  overflow: hidden;
-  width: inherit; height: inherit;
-  border-radius: inherit;
-}
-.r-hex-inner {
-  transform: skewX(-30deg) rotate(60deg) skewX(30deg);
-  /* opacity: .15;
-  transition: opacity .75s; */
-  opacity: 1;
-  /* transition: opacity .75s; */
-  cursor: pointer;
-  background: var(--q-primary);
-}
-.r-hex:first-child .r-hex-inner:before {
-  transform: skewX(-30deg) rotate(60deg) skewX(30deg);
-  background: var(--q-primary);
-  content: '';
-}
-/* .r-hex-inner:hover { opacity: 1; } */
 </style>

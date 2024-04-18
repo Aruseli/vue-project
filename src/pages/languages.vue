@@ -1,7 +1,7 @@
-<script setup>
-  import Logo from 'src/components/logo/logo.vue';
-  import language from 'src/components/language.vue';
-  import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
+<script setup lang="ts">
+  import Logo from '../components/logo/logo.vue';
+  import language from '../components/language.vue';
+  import LogoSvg from '../components/logo/logo-svg.vue';
   import { useRouter } from 'vue-router';
   import { useAppStore } from 'src/stores/app';
   import { useGoodsStore } from 'src/stores/goods';
@@ -10,28 +10,37 @@
   const goodsStore = useGoodsStore();
 
   const router = useRouter();
-  const changeLanguage = async (newLocale) => {
+  const changeLanguage = async (newLocale: string) => {
     await goodsStore.updateGoods(newLocale);
     app.setLocale(newLocale);
-    router.push('catalog');
+    router.push("catalog");
+    localStorage.setItem("lang", newLocale);
+    if (app.kioskState.settings?.alt_ui == "design_v3") {
+      document.body.className = "v3_body_style";
+    }
   }
 
 </script>
 
 <template>
-  <q-page class="column justify-center items-center relative hello_bg window-height">
-    <Logo class="logo_row logo" classes="q-mr-sm">
-      <LogoSvgWhite />
+  <q-page
+    class="column justify-center items-center relative window-height"
+    :class="[app.kioskState.settings?.alt_ui === 'design_v3' ? 'flame_hello_bg' : 'hello_bg']"
+  >
+    <Logo class="logo_row logo" classes="q-mr-sm" v-if="app.kioskState.settings?.alt_ui !== 'design_v3'">
+      <LogoSvg fill="#FAFAFA" />
     </Logo>
-    <div class="bg-primary container_languages">
+    <div class="bg-grey-3 container_languages_firs_setting mb-60 pa-80">
       <language v-for="lang in app.kioskState.catalogLocales"
         :key="lang.lang_code"
         :src="lang.flag_src"
         :alt="lang.name"
         :language="lang.lang_code"
         @click="changeLanguage(lang.lang_code)"
+        class="additional_lang_container_styles"
       />
     </div>
+    <div class="text-white text-h1 text-uppercase title_styles">{{ $t('find_your_experience') }}</div>
   </q-page>
 </template>
 
@@ -56,10 +65,27 @@
     transform: translateX(-50%);
   }
 }
+
+.additional_lang_container_styles {
+  flex-direction: column;
+  justify-content: center;
+}
+
 .hello_bg {
   background-image: url('/start.jpg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 }
+.flame_hello_bg {
+  background-image: url('/grey-flame.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.title_styles {
+  text-align: center;
+  width: 40vw;
+}
+
 </style>

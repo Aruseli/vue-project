@@ -39,13 +39,13 @@
 
 <template>
   <div class="container_style row justify-between items-center" v-bind="$attrs">
-    <div class="text-h5 col-3">{{ props.good_name }}</div>
+    <div class="text-h3 col-3">{{ props.good_name }}</div>
     <div class="quat_container flex row items-center">
       <div class="text-body1 text-secondary q-mr-sm-sm q-mr-xs-xs">{{$t('actual_quantity')}}</div>
       <div class="quant_style q-mr-sm-sm q-mr-xs-xs">
         <div
           class="
-            text-h5
+            text-h3
             q-px-lg-md
             q-px-md-sm
             q-px-sm-xs

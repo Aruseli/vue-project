@@ -15,6 +15,16 @@ const props = defineProps({
     required: false,
     default: 'are_you_here',
   },
+  additionalCartStyle: {
+    type: String,
+    required: false,
+    default: '',
+  },
+  titleClass: {
+    type: String,
+    required: false,
+    default: '',
+  }
 })
 
 </script>
@@ -22,10 +32,9 @@ const props = defineProps({
 <template>
   <Modal :isOpen="props.modelValue" to="#redirect-dialog">
     <div class="card_container">
-      <q-card class="q-pa-sm fit card_style">
-        <q-card-section class="row items-center justify-end" />
+      <q-card class="q-pa-sm fit card_style" :class="props.additionalCartStyle">
         <q-card-section class="column items-center q-mb-xs-sm">
-          <div class="text-h3 q-mb-sm-sm q-mb-xs-xs text-center title_style">{{ $t(props.title) }}</div>
+          <div class="text-h3 q-mb-sm-sm q-mb-xs-xs text-center title_style" :class="props.titleClass">{{ $t(props.title) }}</div>
           <slot name="content"></slot>
         </q-card-section>
 
@@ -38,7 +47,7 @@ const props = defineProps({
   </Modal>
 </template>
 
-<style>
+<style scoped>
 .card_container {
   width: 50vw;
   height: max-content;

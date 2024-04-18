@@ -1,17 +1,18 @@
-<script setup>
+<script setup lang="ts">
   import { useAppStore } from '../../stores/app';
-import { useCartStore } from '../../stores/cart';
-import { useGoodsStore } from '../../stores/goods';
-import BinIconNew from '../buttons/bin-icon-new.vue';
-import LogoSimple from '../logo/logo-simple.vue';
-import LogoSvgGradient from '../logo/logo-svg-gradient.vue';
-import IconButton from '../buttons/icon-button.vue';
-import Language from '../language.vue';
-import Modal from '../overlay/modal.vue';
-import LanguagesFrame from './languages/languages-frame.vue';
-import LangDrawer from '../overlay/lang-drawer.vue';
-import { onUpdated } from 'vue';
-import { onMounted, watch, computed } from 'vue';
+  import { useCartStore } from '../../stores/cart';
+  import { useGoodsStore } from '../../stores/goods';
+  import BinIcon from '../icons/bin-icon.vue';
+  import LogoSimple from '../logo/logo-simple.vue';
+  import LogoSvg from '../logo/logo-svg.vue';
+  import IconButton from '../buttons/icon-button.vue';
+  import BinButton from '../buttons/bin-button.vue';
+  import Language from '../language.vue';
+  import Modal from '../overlay/modal.vue';
+  import LanguagesFrame from './languages/languages-frame.vue';
+  import LangDrawer from '../overlay/lang-drawer.vue';
+  import { onUpdated } from 'vue';
+  import { onMounted, watch, computed } from 'vue';
 
   const cart = useCartStore();
   const goodsStore = useGoodsStore();
@@ -20,26 +21,30 @@ import { onMounted, watch, computed } from 'vue';
   const openDrawer = () => {
     app.openDrawerCart(true);
   }
-  const changeLanguage = async (newLocale) => {
+  const changeLanguage = async (newLocale: string) => {
     await app.setLocale(newLocale);
     await goodsStore.updateGoods(newLocale);
-  }
+  };
 </script>
 
 
 <template>
   <q-header
-    :reveal="!app.kioskState.settings?.alt_ui"
+    reveal
     :reveal-offset="100"
-    :class="[!app.kioskState.settings?.alt_ui ? 'header' : 'header_alt']"
+    class="header"
   >
     <q-toolbar
       class="justify-between q-py-lg-xs"
-      :class="[app.lang_dir == 'rtl' ? 'row-reverse' : 'row', !app.kioskState.settings?.alt_ui ? 'q-mb-lg-lg q-mb-xs-xs' : 'q-mb-none']"
+      :class="[app.lang_dir == 'rtl' ? 'row-reverse' : 'row', 'q-mb-lg-lg q-mb-xs-xs']"
     >
 
       <LogoSimple>
-        <LogoSvgGradient class="logo_style" />
+        <LogoSvg
+          fill="#272727"
+          width="6em"
+          height="6em"
+        />
       </LogoSimple>
 
       <div class="row items-center">
@@ -49,24 +54,17 @@ import { onMounted, watch, computed } from 'vue';
             @click="app.openLangDialog(true)"
             color='transparent'
             textColor="black"
+            iconStyle="translate_style"
             class="q-mr-xl-xl q-mr-xs-xs"
           />
-          <LangDrawer @click="app.openLangDialog(false)" :isOpen="app.langDialog" v-if="app.kioskState.settings?.alt_ui">
-            <LanguagesFrame />
-          </LangDrawer>
         </div>
-        <q-btn unelevated round class="relative-position" @click="openDrawer">
-          <BinIconNew>
-            <path v-show="cart.totalQuantity > 0" d="M23.2899 99.4944C49.461 103 73.5796 103 97.2395 99.4944C102.698 74.689 108.441 46.9768 108.441 46.9768C105.441 53.2274 94.0429 62.2554 64.2143 50.7154C34.3857 39.1754 19.7312 46.7492 14.5884 53C14.5884 53 19.6068 79.6892 23.2899 99.4944Z" fill="#0eb60b" fill-rule="nonzero" opacity="1" stroke="none"/>
-          </BinIconNew>
-          <div v-if="cart.totalQuantity > 0" class="badge_style bg-positive flex items-center justify-center">
-            <div class="text-h5 text-white">{{ cart.totalQuantity }}</div>
-          </div>
-        </q-btn>
+        <BinButton @click="openDrawer" :quantity="cart.totalQuantity">
+          <BinIcon :quantity="cart.totalQuantity > 0" />
+        </BinButton>
       </div>
     </q-toolbar>
 
-    <div class="relative-position" v-if="!app.kioskState.settings?.alt_ui">
+    <div class="relative-position">
       <q-tabs
         v-model="app.tab"
         dense
@@ -81,7 +79,7 @@ import { onMounted, watch, computed } from 'vue';
   </q-header>
 
   <template>
-    <Modal :isOpen="app.langDialog" @click="app.openLangDialog(false)" v-if="!app.kioskState.settings?.alt_ui">
+    <Modal :isOpen="app.langDialog" @click="app.openLangDialog(false)">
       <div class="bg-primary container_languages" >
         <Language v-for="lang in app.kioskState.catalogLocales"
           :key="lang.lang_code"
@@ -106,47 +104,10 @@ $height: calc(8em + 1.7262vmin);
     padding: 1.5rem;
   }
 }
-
-.header_alt {
-  color: var(--q-text);
-  background-color: white;
-  padding: 0 1rem;
-  border-radius: 1.5rem;
-  margin: 2rem;
-  box-shadow: var(--border-shadow);
-  @media (max-width: 1300px) {
-    margin: 1rem;
-    padding: 0;
-  }
-}
-
-.badge_style {
-  position: absolute;
-  bottom: -1rem;
-  left: -1rem;
-  border-radius: 2.5rem;
-  min-width: 4.5rem;
-  width: max-content;
-  height: 4.5rem;
-  @media (max-width: 1300px) {
-    min-width: 2.5rem;
-    height: 2.5rem;
-    bottom: 1rem;
-    left: 1rem;
-  }
-}
 .q-tabs__content > *:not(:last-of-type) {
   margin-right: 1.5rem;
 }
-
-.logo_style {
-  width: 7em;
-  @media (max-width: 1500px) {
-    width: 5rem !important;
-  }
-  @media (max-width: 700px) {
-    width: 2.5rem !important;
-  }
+.translate_style {
+  font-size: 5rem !important;
 }
-
 </style>

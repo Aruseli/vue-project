@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
   const props = defineProps({
     name: {
       type: String,
@@ -27,15 +27,26 @@
     },
     classTitle: {
       type: String,
-      default: 'text-subtitle1',
-    }
+      default: 'text-h3',
+    },
+    rounded: {
+      type: Boolean,
+      default: true,
+    },
   })
 
   const emit = defineEmits(['click']);
 </script>
 
 <template>
-   <q-btn :size="props.size" unelevated rounded :color="props.color" :text-color="props.textColor" @click="emit('click')" v-bind="$attrs" :disable="props.disable">
+  <q-btn :size="props.size" unelevated
+    :rounded="props.rounded"
+    :color="props.color"
+    :text-color="props.textColor"
+    @click="emit('click')"
+    v-bind="$attrs"
+    :disable="props.disable"
+  >
     <div :class="props.classTitle">{{ props.name }}</div>
     <slot></slot>
    </q-btn>

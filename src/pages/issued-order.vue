@@ -88,7 +88,7 @@
   }
 }
 .divider_bold_style {
-  margin-bottom: var(--px64);
+  margin-bottom: var(--px60);
   @media(max-width: 1300px) {
     margin-bottom: var(--px30);
   }

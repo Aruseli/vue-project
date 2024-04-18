@@ -1,14 +1,22 @@
+<!-- не подключать ts !!! -->
 <script setup>
   import gsap from 'gsap';
-import { useQuasar } from 'quasar';
-import { onMounted, onUnmounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useAppStore } from '../../stores/app';
-import { useCartStore } from '../../stores/cart';
-import { useGoodsStore } from '../../stores/goods';
-import RedirectDialog from '../dialog/redirect-dialog.vue';
-import ProductCard from './product-card.vue';
-import RectangularButton from '../buttons/rectangular-button.vue';
+  import { useQuasar } from 'quasar';
+  import { onMounted, onUnmounted, ref } from 'vue';
+  import { useRouter } from 'vue-router';
+  import { useAppStore } from '../../stores/app';
+  import { useCartStore } from '../../stores/cart';
+  import { useGoodsStore } from '../../stores/goods';
+  import RedirectDialog from '../dialog/redirect-dialog.vue';
+  import ProductCard from './product-card.vue';
+  import RectangularButton from '../buttons/rectangular-button.vue';
+  import LogoSimple from '../logo/logo-simple.vue';
+  import LogoSvg from '../logo/logo-svg.vue';
+  import IconButton from '../buttons/icon-button.vue';
+  import LangDrawer from '../overlay/lang-drawer.vue';
+  import LanguagesFrame from './languages/languages-frame.vue';
+  import BinButton from '../buttons/bin-button.vue';
+  import BinIcon from '../icons/bin-icon.vue';
 
   const $q = useQuasar();
   const goodsStore = useGoodsStore();
@@ -16,6 +24,10 @@ import RectangularButton from '../buttons/rectangular-button.vue';
   const cartStore = useCartStore();
   const router = useRouter();
   const selectedIndex = ref(0);
+
+  const openDrawer = () => {
+    app.openDrawerCart(true);
+  }
 
   const observer = {
     handler (entry) {
@@ -138,12 +150,41 @@ import RectangularButton from '../buttons/rectangular-button.vue';
 </script>
 
 <template>
-  <div class="catalog_container">
+  <div class="catalog_container_style pa-20">
+    <!-- header -->
+    <header class="row justify-between q-pa-md header_style bg-white">
+      <LogoSimple text_style="text-black">
+        <LogoSvg
+          fill="#272727"
+          width="6em"
+          height="6em"
+        />
+      </LogoSimple>
+
+      <div class="row items-center">
+        <div class="relative-position full-height">
+          <IconButton
+            icon="translate"
+            @click="app.openLangDialog(true)"
+            color='transparent'
+            textColor="black"
+            iconStyle="translate_style"
+            class="q-mr-xl-xl q-mr-xs-xs"
+          />
+          <LangDrawer @click="app.openLangDialog(false)" :isOpen="app.langDialog">
+            <LanguagesFrame />
+          </LangDrawer>
+        </div>
+        <BinButton @click="openDrawer" :quantity="cartStore.totalQuantity">
+          <BinIcon :quantity="cartStore.totalQuantity > 0" />
+        </BinButton>
+      </div>
+    </header>
     <div class="column tabs_style">
       <ul class='tabs__header'>
         <li v-for='(goodCategory, index) in goodsStore.goods'
           :key='goodCategory.id'
-          class="text-h5"
+          class="text-h3"
         >
           <div @click="selectCategory(index)" :class='{active : index == selectedIndex}'>
             {{ goodCategory.title }}
@@ -152,20 +193,20 @@ import RectangularButton from '../buttons/rectangular-button.vue';
       </ul>
     </div>
 
-    <q-scroll-area class="q-px-xs-none goods_container">
-      <article v-for="(goodCategory, index) in goodsStore.goods" :key="goodCategory.id" class="q-mb-md catalog" :id="index" v-intersection="observer">
-        <div class="text-h4 q-mb-sm catalog_header">{{ goodCategory.title }}</div>
-        <div v-if="goodCategory.goods.length == 0" class="text-body1">{{$t('category_empty')}}</div>
+    <q-scroll-area class="goods_container q-px-lg q-pt-lg full-width full-height">
+      <article v-for="(goodCategory, index) in goodsStore.goods" :key="goodCategory.id" class="q-mb-md" :id="index" v-intersection="observer">
+        <div class="text-h4 q-mb-sm text-black">{{ goodCategory.title }}</div>
+        <div v-if="goodCategory.goods.length == 0" class="text-body1 text-black">{{$t('category_empty')}}</div>
         <transition appear @enter="enterCardShake">
           <div class="row image_grid_alt">
-            <ProductCard :itemId="good.id" v-for="(good, index) in goodCategory.goods" :key="index" />
+            <ProductCard :good="good" v-for="(good, index) in goodCategory.goods" :key="index" class="card_setting_alt" />
           </div>
         </transition>
       </article>
     </q-scroll-area>
     <RedirectDialog :modelValue="dialogState">
       <template #content>
-        <div class="text-h5 text-center">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}</div>
+        <div class="text-h3 text-center">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}</div>
       </template>
       <template #actions>
         <RectangularButton :name="$t('complete')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="redirect" textColor="primary" />
@@ -176,22 +217,28 @@ import RectangularButton from '../buttons/rectangular-button.vue';
 </template>
 
 <style lang="scss" scoped>
-.catalog_container {
+.catalog_container_style {
   display: grid;
-  grid-template-columns: 0.3fr 1fr;
+  grid-template-areas:
+                      "header header"
+                      "category catalog";
+  grid-template-rows: max-content 1fr;
+  grid-template-columns: max-content 1fr;
+  row-gap: var(--px20);
   width: 100%;
-  padding: 0 2rem;
-  column-gap: 2rem;
-  margin-top: 4rem;
-  @media (max-width: 1300px) {
-    margin-top: 2.125rem;
-    padding: 0 1rem;
-    column-gap: 1rem;
-  }
+  height: 100vh;
+  color: var(--body-text);
 }
-
-.goods_container {
-  width: 100%;
+.header_style {
+  grid-area: header;
+  border: var(--border);
+  height: max-content;
+  color: var(--q-text);
+  border-radius: 1rem;
+  box-shadow: var(--border-shadow);
+}
+.translate_style {
+  font-size: 5rem !important;
 }
 .image_grid_alt {
   display: grid;
@@ -210,18 +257,21 @@ import RectangularButton from '../buttons/rectangular-button.vue';
     grid-template-columns: 1fr;
   }
 }
-
+.goods_container {
+  grid-area: catalog;
+}
 .goods_container > div > div > *:nth-last-child(-n + 1) {
   height: 100vh;
 }
 
 .tabs_style {
+  grid-area: category;
   box-shadow: var(--border-shadow);
   background-color: white;
   // width: 20vw;
   width: min-content !important;
   min-width: 20vw;
-  height: calc(100% - 2rem);
+  height: 100%;
   border-radius: 1.5rem;
 }
 

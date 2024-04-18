@@ -44,10 +44,11 @@ export default {
     "cache__inventories_ttl_ms": 120*1000,
     "user_info_update_interval": (process.env.DEV) ? 60_000 : 600_000,
 
-    "customer_inactivity_before_redirect": 37000,
+    "customer_inactivity_before_redirect": 97_000,
     "customer_inactivity_countdown_duration": 7000,
     "customer_inactivity_animation_start_before_redirect": 9000,
     "customer_successful_order_notify_duration_ms": 7000,
+
 
     "employee_menu_inactivity_before_action": 150_000,
     "employee_menu_inactivity_countdown_duration": 30_000,
@@ -69,7 +70,13 @@ export default {
     "shifts__state_closing": 5,
     "shifts__state_closed": 0,
 
-    "alt_ui": false,
+    "alt_ui": 'design_v2',
+
+    "payment_type_id_cash": "8f404e9c-e42f-4251-8520-13961924c5e6",
+    "payment_type_id_card": "df828bbb-05f7-4f64-bb36-3c20b0e37393",
+
+    "check_ext_source": "d69b1a29-ed49-4b57-b335-f719abce640d",
+    "check_content_type": "продажа товара"
   },
 
   // These three lines are outside of settings because they are used

@@ -1,21 +1,21 @@
-<script setup>
-  import i18next, { t } from "i18next";
-  import moment from "moment";
-  import { useQuasar } from "quasar";
-  import { useGoodsStore } from "src/stores/goods";
-  import { useInventoryStore } from "src/stores/inventory";
-  import { computed, onMounted, ref } from "vue";
-  import { useRouter, useRoute } from "vue-router";
-  import RectangularButton from "../buttons/rectangular-button.vue";
-  import DividerBold from "../dividers/divider-bold.vue";
-  import ListItem from "./list-item.vue";
-  import { useAppStore } from "src/stores/app";
+<script setup lang="ts">
+  import i18next, { t } from 'i18next';
+  import moment from 'moment';
+  import { useQuasar } from 'quasar';
+  import { useGoodsStore } from 'src/stores/goods';
+  import { useInventoryStore } from 'src/stores/inventory';
+  import { computed, onMounted, ref } from 'vue';
+  import { useRouter, useRoute } from 'vue-router';
+  import RectangularButton from '../buttons/rectangular-button.vue';
+  import DividerBold from '../dividers/divider-bold.vue';
+  import ListItem from './list-item.vue';
+  import { useAppStore } from 'src/stores/app';
   import {
     apiReportsGetView,
     printDocument,
     printInventory,
     wsSendMessage,
-  } from "src/services";
+  } from 'src/services';
   import RedirectDialog from "src/components/dialog/redirect-dialog.vue";
 
   const goodsStore = useGoodsStore();
@@ -149,14 +149,10 @@
       <div
         class="text-h2 text-uppercase text-center q-mb-lg-lg q-mb-xs-sm q-pt-sm-sm q-pt-xs-sm"
       >
-        {{ $t("complete_inventory") }}
-      </div>
-
-      <div class="row justify-between q-mb-md-sm q-mb-xs-sm">
-        <div class="text-capitalize text-h5">
-          {{ $t("remaining_goods") }}
+        <div class="text-capitalize text-h3">
+          {{ $t('remaining_goods') }}
         </div>
-        <div class="row date_style text-h5">
+        <div class="row date_style text-h3">
           <span>{{ formattedDate }}</span>
           <span>{{ formattedTime }}</span>
           <span>№ {{ inventoryStore.docNumStr }}</span>
@@ -188,28 +184,19 @@
       <div
         class="row justify-between items-center q-mb-lg-xl q-mb-md-md q-mb-xs-sm"
       >
-        <div class="row text-h5">
-          <span class="q-mr-xs-xs">{{ $t("total") }}</span>
-          <span class="q-mr-xs-xs">{{ inventoryStore.inventory.length }}</span>
-          <span class="q-mr-xs-xs">{{ $t("product") }}</span>
-          <span>{{
-            $t("units", { count: inventoryStore.inventory.length })
-          }}</span>
+        <div class="row text-h3">
+          <span class="q-mr-xs-xs">{{$t('total')}}</span>
+          <span class="q-mr-xs-xs">{{inventoryStore.inventory.length}}</span>
+          <span class="q-mr-xs-xs">{{ $t('product') }}</span>
+          <span>{{ $t('units', {count: inventoryStore.inventory.length}) }}</span>
         </div>
 
-        <div class="text-h5 text-weight-regular row">
-          <div class="q-mr-xs-xs">{{ $t("estimated_quantity") }}</div>
-          <div class="q-mr-xs-xs">{{ inventoryStore.totalQuantity }}</div>
-          <div class="q-mr-xs-xs">
-            {{ $t("pc", { count: inventoryStore.totalQuantity }) }}
-          </div>
-          <q-separator
-            color="secondary"
-            vertical
-            class="q-mr-xs-xs"
-            size="0.2rem"
-          />
-          <div class="q-mr-xs-xs">{{ $t("actual_quantity") }}</div>
+        <div class="text-h3 text-weight-regular row">
+          <div class="q-mr-xs-xs">{{$t('estimated_quantity')}}</div>
+          <div class="q-mr-xs-xs">{{inventoryStore.totalQuantity}}</div>
+          <div class="q-mr-xs-xs">{{ $t('pc', {count: inventoryStore.totalQuantity}) }}</div>
+          <q-separator color="secondary" vertical class="q-mr-xs-xs" size="0.2rem" />
+          <div class="q-mr-xs-xs">{{$t('actual_quantity')}}</div>
           <div class="q-mr-xs-xs">{{ inventoryStore.totalActualQuant }}</div>
           <div>{{ $t("pc", { count: inventoryStore.totalActualQuant }) }}</div>
         </div>

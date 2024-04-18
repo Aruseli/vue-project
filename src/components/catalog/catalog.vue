@@ -21,7 +21,7 @@ import RectangularButton from '../buttons/rectangular-button.vue';
       duration: 0.5,
       // delay: 28,
       scale: 1.02,
-      boxShadow: "0 -12px 20px -12px rgba(35, 65, 65, 1), 0 12px 20px -12px rgba(35, 65, 65, 1)",
+      boxShadow: "0 -12px 20px 2px rgba(35, 65, 65, 1), 0 12px 20px 2px rgba(35, 65, 65, 1)",
       ease: "none",
       stagger: {
         repeat: 1,
@@ -114,13 +114,14 @@ import RectangularButton from '../buttons/rectangular-button.vue';
 </script>
 
 <template>
-  <q-tab-panels v-model="app.tab" animated swipeable class="window-height window-width">
+  <q-tab-panels v-model="app.tab" animated swipeable class="full-height window-width">
     <q-tab-panel v-for="goodCategory in goodsStore.goods" :name="goodCategory.id" :key="goodCategory.id">
       <transition appear @enter="enterCardShake">
         <div class="image_grid">
           <ProductCard v-for="(good, index) in goodCategory.goods"
             :good="good"
             :key="index"
+            class="card_setting"
           />
         </div>
       </transition>
@@ -128,7 +129,7 @@ import RectangularButton from '../buttons/rectangular-button.vue';
   </q-tab-panels>
   <RedirectDialog :modelValue="dialogState">
     <template #content>
-      <div class="text-h5 text-center">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}</div>
+      <div class="text-h3 text-center">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}</div>
     </template>
     <template #actions>
       <RectangularButton :name="$t('complete')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="redirect" textColor="primary" />
@@ -146,7 +147,7 @@ import RectangularButton from '../buttons/rectangular-button.vue';
   width: 100%;
   height: auto;
   padding: 0 4rem;
-  margin-top: 2rem;
+  margin-top: 25rem;
 
   @media(max-width: 1300px) {
     padding: 0 2rem;

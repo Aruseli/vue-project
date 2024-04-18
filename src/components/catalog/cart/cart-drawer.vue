@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
   import { evaArrowBack, evaMinusOutline, evaPlusOutline } from '@quasar/extras/eva-icons';
 import { t } from 'i18next';
 import { useAppStore } from 'src/stores/app';
@@ -53,24 +53,34 @@ import OrderCheck from './order-check.vue';
 </script>
 
 <template>
-  <Drawer @click="closeDrawerCart" :isOpen="app.drawerCartState">
-    <div class="relative-position full-height">
+  <Drawer
+    @click="closeDrawerCart"
+    :isOpen="app.drawerCartState"
+  >
+    <div class="full-height">
 
       <div class="q-mb-lg-md q-mb-xs-sm">
         <div class="row items-center justify-between q-mb-lg-md q-mb-xs-xs">
 
+          <!-- design_v2 -->
           <IconButton
             round
             :icon="evaArrowBack"
             @click="closeDrawerCart"
             class="q-pa-xs back_button col-1"
           />
+          <!-- end  -->
+
           <div class="text-h2 text-center text-text text-uppercase col-10">
             {{ $t('order') }}
           </div>
-          <q-btn unelevated round @click="cartStore.clearCart()">
-            <q-icon name="img:/bin.svg" size="2.5rem" />
-          </q-btn>
+
+          <!-- close + bin -->
+          <div class="row cart_buttons">
+            <q-btn flat round @click="cartStore.clearCart()" class="q-mr-sm">
+              <q-icon name="img:/bin.svg" size="2.5rem" class="text-black" />
+            </q-btn>
+          </div>
         </div>
         <div class="bg-negative full-width" style="height: 0.1rem" />
       </div>
@@ -81,13 +91,20 @@ import OrderCheck from './order-check.vue';
 
       <q-scroll-area class="fit">
         <div class="row container_settings">
-          <div class="cart_product_item row" v-for="(item, index) in cartStore.cartExtended" :key="index">
-            <div class="col-3 q-pr-sm">
+
+          <!-- flex row container -->
+          <div
+            v-for="(item, index) in cartStore.cartExtended" :key="index"
+            class="cart_product_item row"
+          >
+
+            <!-- image -->
+            <div class="col-3 q-mr-xl">
               <q-img
                 :src="item.image"
-                ration="16/9"
+                :ration="1"
                 height="150px"
-                fit="unset"
+                fit="none"
               >
                 <template #loading>
                   <div class="text-subtitle1 text-black">
@@ -97,25 +114,33 @@ import OrderCheck from './order-check.vue';
               </q-img>
             </div>
 
-            <div class="column justify-between col-9">
-              <div class="row justify-between items-center">
-                <div class="text-h3 text-weight-regular">
-                  {{ item.title }}
-                </div>
-                <q-btn unelevated round @click="cartStore.removeFromCart(item.id)">
-                  <q-icon name="img:/bin.svg" size="2.5rem" />
-                </q-btn>
+            <!-- container for title + price + buttons -->
+            <div class="row justify-between full-width">
+              <!-- title + price -->
+              <div class="column justify-evenly">
+                  <!-- title -->
+                  <div class="text-h4 text-weight-regular">
+                    {{ item.title }}
+                  </div>
+                  <!-- price -->
+                  <div class="row items-baseline">
+                    <span class="text-h3 q-mr-xs">
+                      &#3647&ensp;{{ item.price * item.quant }}
+                    </span>
+                    <span class="text-h4 q-mr-xs">/</span>
+                    <span class="text-h3 text-grey-3">
+                      &#3647&ensp;{{ item.price }}
+                    </span>
+                  </div>
               </div>
 
-              <div class="row justify-between items-center">
-                <div class="row items-baseline">
-                  <span class="text-h3 q-mr-xs">
-                    &#3647&ensp;{{ item.price * item.quant }}
-                  </span> <span class="text-h3 q-mr-xs">/</span>
-                  <span class="text-h5 text-blue-grey-4">
-                    &#3647&ensp;{{ item.price }}
-                  </span>
-                </div>
+
+              <!-- buttons -->
+              <div class="column justify-between items-end">
+                <q-btn flat round @click="cartStore.removeFromCart(item.id)">
+                  <q-icon name="img:/bin.svg" size="2.5rem" />
+                </q-btn>
+
                 <div class="row justify-between items-center">
                   <IconButton
                     round
@@ -133,27 +158,46 @@ import OrderCheck from './order-check.vue';
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </q-scroll-area>
 
-      <div class="full-width total_style" v-if="cartStore.cart.length">
-        <DividerBold class="q-mb-lg-md q-mb-xs-sm" />
-        <div :class="[cartStore.cart.length > 0 ? 'q-mb-lg-md q-mb-xs-sm' : 'q-mb-none row justify-between items-center' ]">
-          <div class="q-mb-lg-md q-mb-xs-sm row justify-between fit">
-            <div class="text-h3">{{ $t('total') }}</div>
-            <div class="text-h3">
+      <div class="full-width total_style pa-20" v-if="cartStore.cart.length">
+
+        <!-- desing_v2 -->
+        <DividerBold class="q-mb-lg-md q-mb-xs-sm"  />
+        <!-- end -->
+
+        <div :class="[cartStore.cart.length > 0 ? 'q-mb-lg-md q-mb-xs-sm' : 'q-mb-none row justify-between items-center']">
+
+          <div class="q-mb-lg-lg q-mb-xs-sm row justify-between fit text-h3">
+            <div>{{ $t('total') }}</div>
+            <div>
               {{ cartStore.totalPrice }} &ensp;&#3647
             </div>
           </div>
+
+          <!-- desing_v2 -->
           <DividerThin class="bg-negative q-mb-sm" />
-          <div class="text-h4 row q-gutter-x-sm text-weight-regular">
+          <!-- end -->
+
+          <!-- design_v2 -->
+          <div
+            class="text-h4 row q-gutter-x-sm text-weight-regular"
+            v-if="app.kioskState.settings?.alt_ui == 'design_v2'"
+          >
             <span>{{ $t('order') }}</span>
             <span>{{ cartStore.totalQuantity }}</span>
             <span>{{ $t('pieces', { count: cartStore.totalQuantity }) }}</span>
           </div>
+          <!-- end -->
+
         </div>
-        <div class="full-width" v-show="cartStore.cart.length">
+        <div
+          class="full-width"
+          v-show="cartStore.cart.length"
+        >
           <RectangularButton
             class="fit q-py-xs-sm"
             :name="$t('checkout')"
@@ -170,7 +214,15 @@ import OrderCheck from './order-check.vue';
   </template>
 </template>
 
-<style scoped>
+<style>
+
+.cart_buttons {
+    top: var(--px14);
+    right: var(--px14);
+  }
+  .cart_close_button {
+    /* font-size: 66px; */
+  }
   .container_settings {
     padding: 0.3rem;
   }
@@ -194,14 +246,19 @@ import OrderCheck from './order-check.vue';
     height: max-content;
     display: flex;
     flex-flow: row nowrap;
-    justify-content: space-between;
+    justify-content: flex-start;
     border-radius: var(--border-sm);
     box-shadow: var(--box-shadow--product_cart);
     padding: var(--px20);
   }
+
+  .cart_product_item_v3 {
+    box-shadow: none;
+    border-radius: var(--border-xxs);
+  }
   .back_button {
-    width: 5rem;
-    height: 5rem;
+    width: 5rem !important;
+    height: 5rem !important;
     @media (max-width: 1300px) {
       width: 3rem;
       height: 3rem;

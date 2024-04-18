@@ -4,7 +4,7 @@
   import { t } from 'i18next';
   import { useQuasar } from 'quasar';
   import Logo from '../components/logo/logo.vue';
-  import LogoSvgWhite from 'src/components/logo/logo-svg-white.vue';
+  import LogoSvg from '../components/logo/logo-svg.vue';
   import { useAppStore } from 'src/stores/app';
   import { computed } from 'vue';
   import Rectangular from 'src/components/buttons/rectangular-button.vue';
@@ -74,11 +74,11 @@
       <div v-if="statusIsUnboundTerminal">
         <q-card dark class="flex column items-center">
           <q-card-section>
-            <div class="text-h5 q-ma-sm text-center">
+            <div class="text-h3 q-ma-sm text-center">
               {{ $t('waiting_terminal_registration') }}
             </div>
             <div>
-              <div class="text-h5 text-center q-mb-md text-weight-bold">
+              <div class="text-h3 text-center q-mb-md text-weight-bold">
                 Код терминала <code style="font-family: 'Courier New', monospace">{{ appStore.kioskState.code }}</code>
               </div>
               <div
@@ -102,7 +102,7 @@
       <div v-if="statusIsUnauthenticated" class="full-height row items-center justify-center container">
 
         <Logo class="logo_column">
-          <LogoSvgWhite />
+          <LogoSvg fill="#FAFAFA" />
         </Logo>
 
         <q-form

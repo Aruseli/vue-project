@@ -22,9 +22,9 @@ const changeLanguage = async (newLocale: string) => {
 <template>
   <BubbleArrow class="bubble" />
   <div class="languages_container">
-    <!-- <q-scroll-area class="q-px-xs-none full-height scrollable_container full-width"> -->
     <div class="q-px-xs-none full-height scrollable_container full-width">
-      <LanguageNew v-for="lang in app.kioskState.catalogLocales"
+      <LanguageNew
+        v-for="lang in app.kioskState.catalogLocales"
         :key="lang.lang_code"
         :src="lang.flag_src"
         :alt="lang.name"
@@ -32,7 +32,6 @@ const changeLanguage = async (newLocale: string) => {
         @click="changeLanguage(lang.lang_code)"
       />
     </div>
-    <!-- </q-scroll-area> -->
   </div>
 </template>
 
@@ -55,7 +54,4 @@ const changeLanguage = async (newLocale: string) => {
 .scrollable_container > *:not(:last-child) {
   margin-bottom: 4em;
 }
-/* .scrollable_container > div > .q-scrollarea__content :not(:last-child) {
-  margin-bottom: 4em;
-} */
 </style>

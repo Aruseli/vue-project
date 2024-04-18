@@ -25,15 +25,15 @@ import Modal from '../../overlay/modal.vue';
             {{$t('contact_seller_for_further_information')}}
           </div>
           <DividerBold class="q-mb-lg-sm q-mb-xs-xs" />
-          <div class="text-h5 text-center text-uppercase text-weight-regular">
+          <div class="text-h3 text-center text-uppercase text-weight-regular">
             {{$t('thank_you')}}
           </div>
         </div>
         <div class="q-mb-lg-md q-mb-xs-sm full-width">
           <div class="ordered_list column full-width">
             <div class="ordered_product row fit justify-between" v-for="item in cartStore.cartExtended" :key="item.id">
-              <div class="text-h5">{{ item.title }}</div>
-              <div class="text-h5">
+              <div class="text-h3">{{ item.title }}</div>
+              <div class="text-h3">
                 <span>{{ item.quant }}</span>
                 <span>{{ $t('pc', { count: item.quant }) }}</span> &#8260;
                 <span>{{ item.price * item.quant }}&ensp;&#3647</span>
@@ -44,13 +44,13 @@ import Modal from '../../overlay/modal.vue';
 
         <div class="column full-width">
           <div class="q-mb-lg-md q-mb-xs-sm row justify-between fit">
-            <div class="text-h5 text-uppercase text-weight-bold">{{ $t('total') }}</div>
-            <div class="text-h5 text-uppercase text-weight-bold">
+            <div class="text-h3 text-uppercase text-weight-bold">{{ $t('total') }}</div>
+            <div class="text-h3 text-uppercase text-weight-bold">
               {{ cartStore.totalPrice }} &ensp;&#3647
             </div>
           </div>
           <DividerThin class="bg-negative q-mb-sm" />
-          <div class="text-h5 text-uppercase row q-gutter-x-sm text-weight-regular text-left">
+          <div class="text-h3 text-uppercase row q-gutter-x-sm text-weight-regular text-left">
             <span>{{ $t('order') }}</span>
             <span>{{ cartStore.totalQuantity }}</span>
             <span>{{ $t('pc', { count: cartStore.totalQuantity }) }}</span>

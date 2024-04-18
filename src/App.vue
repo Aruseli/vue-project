@@ -186,10 +186,10 @@
 
   // Функция-обработчик, которая переведет на новую страницу
   const redirect = async () => {
+    redirectAt.value = 0;
     redirectDialogState.value = false;
     const redirectSettings = getRedirectSettings();
     if (!redirectSettings) {
-      redirectAt.value = 0;
       return;
     }
     if (redirectSettings.action == 'customer') {
@@ -249,18 +249,20 @@
   const redirectTimer = ref<NodeJS.Timeout | null>(null);
   const boundResetTimer = resetRedirectTimer.bind(this);
   onMounted(() => {
-    appStore.value = useAppStore() as any;
+    router.isReady().then(() => {
+      appStore.value = useAppStore() as any;
 
-    // Start or reset redirect timer
-    router.afterEach(() => {
-      resetRedirectTimer();
-    })
+      // Start or reset redirect timer
+      router.afterEach(() => {
+        resetRedirectTimer();
+      })
 
-    redirectTimer.value = setInterval(() => tick(), 100);
-    // Обрабатываем события
-    ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
-      document.addEventListener(e, boundResetTimer)
-    )
+      redirectTimer.value = setInterval(() => tick(), 100);
+      // Обрабатываем события
+      ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
+        document.addEventListener(e, boundResetTimer)
+      )
+    });
   })
 
 </script>
@@ -276,8 +278,8 @@
     title="you_are_inactive"
   >
     <template #content>
-      <div class="text-h5 text-center">
-        <div class="text-h5">{{$t('the_session_will_end_in')}}</div>
+      <div class="text-h3 text-center">
+        <div class="text-h3">{{$t('the_session_will_end_in')}}</div>
         <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}
       </div>
     </template>
@@ -287,4 +289,5 @@
     </template>
   </RedirectDialog>
 </template>
+
 

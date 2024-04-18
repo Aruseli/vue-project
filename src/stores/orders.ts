@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useAppStore } from "./app";
-import { KioskDocument, apiGetDocuments, apiSaveDocument } from "src/services";
+import { Check, KioskDocument, apiGetDocuments, apiSaveDocument, apiUpsertCheck, throwErr } from "src/services";
 import { useGoodsStore, type Good } from "./goods";
 import { t } from "i18next";
 import { Notify } from 'quasar';
@@ -62,6 +62,7 @@ export const useOrdersStore = defineStore("orders", () => {
     }
   };
 
+
   const confirmCurrentOrderIssue = async () => {
     const doc = currentOrderDocument.value;
     if (!doc) {
@@ -77,7 +78,61 @@ export const useOrdersStore = defineStore("orders", () => {
       }
       d.total = item?.price * d.quant;
     });
+    const totalPrice = currentOrder.value?.totalPrice ?? throwErr("Wrong state of order to issue: totalPrice");
+    let payment_type_id: string;
+    switch (currentOrder.value?.payment) {
+      case 'cash':
+        payment_type_id = appStore.kioskState.settings!.payment_type_id_cash;
+        break;
+
+      case 'card':
+        payment_type_id = appStore.kioskState.settings!.payment_type_id_card;
+        break;
+
+      default:
+        throw new Error(`Wrong state of order to issue: payment_type_id`);
+    }
+
+    const check: Check = {
+      ext_source: appStore.kioskState.settings!.check_ext_source,
+      ext_id: doc.id,
+      opened: doc.doc_date,
+      closed: new Date().toISOString(),
+      terminal_shift_id: appStore.kioskState.terminalShift?.id ?? '',
+      check_type: 'sale',
+      total: totalPrice,
+      state: 0,
+      content: docDetailsToCheckContent({ doc }),
+      payments: [
+        {
+          amount: totalPrice,
+          currency_id: doc.currency_ref,
+          payment_date: doc.doc_date,
+          payment_type_id,
+          staff_id: appStore.kioskState.user?.id ?? '',
+          state: 0,
+        }
+      ],
+    };
+
     await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '');
+    await apiUpsertCheck(check);
+  };
+
+  const docDetailsToCheckContent = ({doc} :{doc: KioskDocument}): Check['content'] => {
+    return doc.details.map((detail) => ({
+      id: detail.id,
+      type: appStore.kioskState.settings?.check_content_type ?? '',
+      good_id: detail.good_id,
+      amount: detail.quant,
+      base_price: detail.total / detail.quant,
+      final_price: detail.total / detail.quant,
+      total: detail.total,
+      munit: detail.munit_id,
+      staff_id: appStore.kioskState.user?.id ?? '',
+      currency_id: doc.currency_ref,
+      state: detail.state,
+    }));
   };
 
   const scanGood = async (good: Good) => {
