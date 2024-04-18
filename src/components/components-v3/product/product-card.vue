@@ -97,7 +97,7 @@
     <div class="row no-wrap justify-between items-center relative-position">
       <div>
         <div class="mb-14 ellipsis text-capitalize text-h4 text-left text-green">
-          {{ t(props.good?.title) }}
+          {{ props.good?.title }}
         </div>
 
         <div class="column">

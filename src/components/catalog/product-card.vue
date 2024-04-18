@@ -89,7 +89,7 @@
             class="q-mb-xs ellipsis first_letter"
             :class="[app.kioskState.settings?.alt_ui == 'design_v2'? 'text-h3 text-center' : 'text-h4 ellipsis']"
           >
-            {{ $t(props.good?.title) }}
+            {{ props.good?.title }}
           </div>
 
           <div v-if="app.kioskState.settings?.alt_ui == 'design_1'">
@@ -99,7 +99,7 @@
         </div>
 
         <div v-if="app.kioskState.settings?.alt_ui == 'design_1'" class="block_description" @click="openDialog = true">
-          <div class="text-body1" v-html="$t(sliceDescription)"/>
+          <div class="text-body1" v-html="sliceDescription"/>
         </div>
 
       </div>
@@ -158,7 +158,7 @@
           <div class="text-h4 no-margin">{{ goodInCart.quant }}</div>
           <IconButton
             :icon="evaPlusOutline"
-            :disabled="goodInCart?.quant >= good?.stock"
+            :disabled="goodInCart?.quant >= props.good?.stock"
             @click="increase(props.good)"
             class="q-pa-xs"
           />
