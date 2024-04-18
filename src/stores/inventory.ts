@@ -89,7 +89,8 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
         doc_detail_type: settings?.inventory_docdetail_type_id ?? "",
       })),
     };
-    await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '');
+    const documentId = await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '');
+    return {documentId}
   };
 
   const updateInventory = async () => {

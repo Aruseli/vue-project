@@ -10,7 +10,7 @@
   import Logo from 'src/components/logo/logo.vue';
   import LogoSvg from 'src/components/logo/logo-svg.vue';
   import LogoSimple from 'src/components/logo/logo-simple.vue';
-  import { delay, eventEmitter } from 'src/services';
+  import { delay, eventEmitter, printLeftovers } from 'src/services';
   import { useGoodsStore } from 'src/stores/goods';
   import EmployeeActions from '../components/components-v3/employee-actions.vue';
   import {default as EmployeeActionsOld} from '../components/catalog/employee-actions.vue';
@@ -108,8 +108,12 @@
       {
         name: 'print_leftovers',
         // TODO print_leftovers
-        click: () => route(''),
-        disable: true || !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_print_stock),
+        click: async () => {
+          const currentDate = new Date();
+          const dateString = `${currentDate.getDate()}.${currentDate.getMonth() + 1}.${currentDate.getFullYear()}`;
+          await printLeftovers({appStore: app, $q,dateTo: dateString, kioskCorrespondentId: app.kioskState.kioskCorr.id})
+        },
+        disable: !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_print_stock),
       },
     ];
   });

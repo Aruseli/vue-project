@@ -6,6 +6,7 @@ export type Settings = {
   view_check: string,
   view_doc_input: string,
   view_doc_invent: string,
+  view_doc_leftover: string,
   view_ord: string,
 
   client_corr_id: string,

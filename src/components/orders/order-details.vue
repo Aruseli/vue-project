@@ -7,15 +7,30 @@ import RectangularButton from '../buttons/rectangular-button.vue';
 import DividerBold from '../dividers/divider-bold.vue';
 import DividerThin from '../dividers/divider-thin.vue';
 import OrderCard from './order-card.vue';
+import i18next from 'i18next'
+import { apiReportsGetView, printCheck, printDocument, wsSendMessage } from 'src/services';
+import { useQuasar } from 'quasar';
+import { useAppStore } from 'src/stores/app';
 
+  const $q = useQuasar();
+  const appStore = useAppStore();
   const ordersStore = useOrdersStore();
   const route = useRoute();
   const router = useRouter();
   const payment = ref('cash' | 'cashless');
 
   const confirmOrder = async () => {
+    const doc = ordersStore.currentOrderDocument
+    if(!doc) {
+      return;
+    }
+
     await ordersStore.confirmCurrentOrderIssue()
+    await printCheck({documentId: doc.id, $q, appStore})
+
     router.push('/issued-order');
+
+    
   }
 
   const allowClickScan = ref(process.env.DEV);

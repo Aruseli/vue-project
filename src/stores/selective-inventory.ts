@@ -86,6 +86,7 @@ export const useSelectiveInventoryStore = defineStore("selectiveInventoryStore",
     });
 
     await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '');
+    return {documentId: doc.id};
   };
 
   const totalQuant = computed(() => {
