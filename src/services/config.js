@@ -70,12 +70,11 @@ export default {
 
     "alt_ui": false,
 
-
     "payment_type_id_cash": "8f404e9c-e42f-4251-8520-13961924c5e6",
     "payment_type_id_card": "df828bbb-05f7-4f64-bb36-3c20b0e37393",
 
-    "ext_source": "eedab594-60c9-4e9d-b987-53cadba22e03"
-
+    "check_ext_source": "d69b1a29-ed49-4b57-b335-f719abce640d",
+    "check_content_type": "продажа товара"
   },
 
   // These three lines are outside of settings because they are used

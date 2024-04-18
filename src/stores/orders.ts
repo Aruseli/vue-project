@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useAppStore } from "./app";
-import { Check, KioskDocument, apiGetDocuments, apiSaveDocument, apiUpsertCheck } from "src/services";
+import { Check, KioskDocument, apiGetDocuments, apiSaveDocument, apiUpsertCheck, throwErr } from "src/services";
 import { useGoodsStore, type Good } from "./goods";
 import { t } from "i18next";
 import { Notify } from 'quasar';
@@ -68,45 +68,61 @@ export const useOrdersStore = defineStore("orders", () => {
     if (!doc) {
       return;
     }
-    const order = currentOrder.value;
-    if(!order){
-      return;
+    doc.state = 0;
+    doc.respperson_ref = appStore.kioskState.userCorr?.id;
+    doc.details.forEach((d) => {
+      const item = currentOrder.value?.items.find((i) => i.id == d.good_id);
+      if (!item || d.quant != item.quant || item.issued != item.quant) {
+        console.log("Order line mismatch while issuing", d, item);
+        throw new Error(`Wrong state of order to issue.`);
+      }
+      d.total = item?.price * d.quant;
+    });
+    const totalPrice = currentOrder.value?.totalPrice ?? throwErr("Wrong state of order to issue: totalPrice");
+    let payment_type_id: string;
+    switch (currentOrder.value?.payment) {
+      case 'cash':
+        payment_type_id = appStore.kioskState.settings!.payment_type_id_cash;
+        break;
+
+      case 'card':
+        payment_type_id = appStore.kioskState.settings!.payment_type_id_card;
+        break;
+
+      default:
+        throw new Error(`Wrong state of order to issue: payment_type_id`);
     }
 
-
-
-  
     const check: Check = {
-      ext_source: appStore.kioskState.settings!.ext_source,
+      ext_source: appStore.kioskState.settings!.check_ext_source,
       ext_id: doc.id,
       opened: doc.doc_date,
-      closed: doc.doc_date,
+      closed: new Date().toISOString(),
       terminal_shift_id: appStore.kioskState.terminalShift?.id ?? '',
       check_type: 'sale',
-      total: order.totalPrice,
+      total: totalPrice,
       state: 0,
-      content: transformDetails({doc: doc,order}),
+      content: docDetailsToCheckContent({ doc }),
       payments: [
         {
-          amount: order.totalPrice,
+          amount: totalPrice,
           currency_id: doc.currency_ref,
           payment_date: doc.doc_date,
-          payment_type_id: order.payment === 'cash' ? appStore.kioskState.settings!.payment_type_id_cash! : appStore.kioskState.settings!.payment_type_id_card,
+          payment_type_id,
           staff_id: appStore.kioskState.user?.id ?? '',
           state: 0,
         }
       ],
     };
-  
+
+    await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '');
     await apiUpsertCheck(check);
   };
-  
 
-  
-  const transformDetails = ({order,doc} :{doc: KioskDocument, order: ReturnType<typeof documentToOrder>}): Check['content'] => {
+  const docDetailsToCheckContent = ({doc} :{doc: KioskDocument}): Check['content'] => {
     return doc.details.map((detail) => ({
       id: detail.id,
-      type: order.payment,
+      type: appStore.kioskState.settings?.check_content_type ?? '',
       good_id: detail.good_id,
       amount: detail.quant,
       base_price: detail.total / detail.quant,

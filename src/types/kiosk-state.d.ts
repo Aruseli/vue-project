@@ -42,7 +42,7 @@ export type Settings = {
   customer_inactivity_countdown_duration: number,
   customer_inactivity_animation_start_before_redirect: number,
   customer_successful_order_notify_duration_ms: number,
-  //TODO: This two lines are not stabilized and not used yet
+
   employee_menu_inactivity_before_action: number,
   employee_menu_inactivity_countdown_duration: number,
   employee_menu_inactivity_action: 'customer' | 'lock' | string,
@@ -68,7 +68,11 @@ export type Settings = {
   payment_type_id_cash: string,
   payment_type_id_card: string,
 
-  ext_source: string
+  // Чтобы добавить подключение к объету нужно в админке зайти в
+  // Objects -> выбрать Объект -> Внешние подключение -> "Добавить" -> Выбрать тип "Internal API", дать имя и сохранить.
+  // После этого в списке подключений этого объекта появиться запись, идентификатор которой и есть искомый ID.
+  check_ext_source: string,
+  check_content_type: string,
 }
 
 export type TerminalParams = {

@@ -331,8 +331,8 @@ export interface Check {
   id?: string;
   ext_source: string;
   ext_id: string;
-  opened: Date;
-  closed?: Date;
+  opened: string;
+  closed?: string;
   terminal_shift_id: string;
   check_type: 'sale' | 'return';
   total: number;
