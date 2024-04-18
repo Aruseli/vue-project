@@ -6,7 +6,7 @@ import { useAppStore } from "src/stores/app";
 
 /**
  * Prints document
- * 
+ *
  * @example
  * ```
  * <IconButton
@@ -64,7 +64,14 @@ export async function printCheck({$q, documentId, langCode = i18next.language, a
   return await printDocument({documentId, $q, viewId: appStore.kioskState.settings!.view_check, langCode});
 }
 
-export async function printOrder({$q, documentId, localLangCode = i18next.language, appStore,viewId = appStore.kioskState.settings!.view_ord,systemLangCode}: PrintOrderDocumentOptions) {
+export async function printOrder({
+  $q,
+  documentId,
+  localLangCode = i18next.language,
+  appStore,
+  viewId = appStore.kioskState.settings!.view_ord,
+  systemLangCode = appStore.kioskState.settings!.loc,
+}: PrintOrderDocumentOptions) {
   $q.loading.show();
     try {
       const viewData = await apiReportsGetView(viewId, [
@@ -109,7 +116,7 @@ export async function printInventory({$q, documentId, langCode = i18next.languag
 
 /**
  * Prints leftovers
- * 
+ *
  * @example
  * ```
  * <IconButton
