@@ -300,6 +300,56 @@ export async function apiSaveDocument(doc: SaveableDocument, terminal_shift_id: 
   return response.data.id as string;
 }
 
+export interface CheckContent {
+  id: string;
+  type: string;
+  good_id: string;
+  parent_id?: string;
+  amount: number;
+  base_price: number;
+  final_price: number;
+  total: number;
+  munit: string;
+  staff_id: string;
+  currency_id: string;
+  state: number;
+}
+
+export interface CheckPayment {
+  id?: string;
+  ext_source?: string;
+  ext_id?: string;
+  payment_type_id: string;
+  amount: number;
+  payment_date: Date;
+  staff_id: string;
+  state: number;
+  currency_id: string;
+}
+
+export interface Check {
+  id?: string;
+  ext_source: string;
+  ext_id: string;
+  opened: string;
+  closed?: string;
+  terminal_shift_id: string;
+  check_type: 'sale' | 'return';
+  total: number;
+  state: 0 | 1 | 2;
+  returned?: boolean;
+  content: CheckContent[];
+  payments: CheckPayment[];
+}
+
+export async function apiUpsertCheck(check: Check) {
+  const axiosResponse = await fetchApi('/api/v2/sales/upsertCheck', {
+    check
+  });
+
+  return axiosResponse.data;
+}
+
 export async function apiGetStockRemains(id: string) {
   const response = await fetchApi('/api/v2/kiosk/getStockRemains', { id });
   return response.data.goods as { good_id: string, remain_quant: number }[];
