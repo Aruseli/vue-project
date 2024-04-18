@@ -52,9 +52,9 @@
       </video>
     </div> -->
 
-    <div>
+    <div @click="onClick">
       <div :class="[app.kioskState.settings?.alt_ui === 'design_v3' ? 'flame_hello_bg' : 'bg_filtered']" />
-      <div class="column justify-between window-height full-width container" @click="onClick">
+      <div class="column justify-between window-height full-width container">
         <Logo class="logo_row self-start" classes="q-mr-sm img_style">
           <LogoSvg fill="#FAFAFA" />
         </Logo>
@@ -108,6 +108,11 @@
 }
 
 .flame_hello_bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   background-image: url('/grey-flame.png');
   background-position: center;
   background-repeat: no-repeat;
