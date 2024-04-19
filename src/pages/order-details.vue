@@ -1,23 +1,16 @@
 <script setup>
   import OrderDetails from 'src/components/orders/order-details.vue';
+  import {default as OrderDetailsNew} from '../components/components-v3/orders/order-details.vue';
+  import { useAppStore } from 'src/stores/app';
+
+  const app= useAppStore();
 </script>
 
 <template>
-  <q-page class="flex flex-center relative transparent">
+  <q-page class="flex flex-center relative bg-white">
     <div class="column justify-between window-height full-width container">
-      <OrderDetails />
+      <OrderDetails v-if="app.kioskState.settings?.alt_ui !== 'design_v3'" />
+      <OrderDetailsNew v-if="app.kioskState.settings?.alt_ui === 'design_v3'" />
     </div>
   </q-page>
 </template>
-
-<style scoped lang="scss">
-.container {
-  padding: 3.75rem;
-  @media (max-width: 1300px) {
-    padding: 1.5rem;
-  }
-  @media (max-width: 899px) {
-    padding: 1rem;
-  }
-}
-</style>

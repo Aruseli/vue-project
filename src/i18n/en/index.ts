@@ -103,4 +103,9 @@ export default {
   positions_other: 'positions',
   view_order: 'view order',
   order_was_successfully_confirmed: 'The order was successfully confirmed!',
+  the_order: 'the order',
+  was_issued_successfully: 'was issued successfully',
+  back_to_menu: 'back to menu',
+  delete_order: 'delete order',
+  delete_product: 'delete product',
 };
