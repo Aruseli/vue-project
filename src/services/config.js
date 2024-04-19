@@ -76,7 +76,9 @@ export default {
     "payment_type_id_card": "df828bbb-05f7-4f64-bb36-3c20b0e37393",
 
     "check_ext_source": "d69b1a29-ed49-4b57-b335-f719abce640d",
-    "check_content_type": "продажа товара"
+    "check_content_type": "продажа товара",
+
+    "printer_type": "usb"
   },
 
   // These three lines are outside of settings because they are used

@@ -74,6 +74,8 @@ export type Settings = {
   // После этого в списке подключений этого объекта появиться запись, идентификатор которой и есть искомый ID.
   check_ext_source: string,
   check_content_type: string,
+
+  printer_type: string,
 }
 
 export type TerminalParams = {
