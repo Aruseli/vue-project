@@ -89,16 +89,7 @@ $paddings: (
     }
   }
 }
-// @each $name, $size in $margins {
-//   .mb-#{$name} {
-//     margin-bottom: $size;
-//     @media (max-width: 80rem) {
-//       .mb-#{$name} {
-//         margin-bottom: calc($size/2);
-//       }
-//     }
-//   }
-// }
+
 @each $name, $size in $margins {
   .mr-#{$name} {
     margin-right: $size;
