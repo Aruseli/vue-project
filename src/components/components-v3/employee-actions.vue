@@ -129,9 +129,9 @@ const emit = defineEmits(['click'])
   min-width: 4.5rem;
   width: max-content;
   height: 4.5rem;
-  @media (max-width: 1300px) {
-    min-width: 2.5rem;
-    height: 2.5rem;
+  @media (min-width: 80rem) {
+    min-width: 3rem;
+    height: 3rem;
   }
 }
 .blocked {

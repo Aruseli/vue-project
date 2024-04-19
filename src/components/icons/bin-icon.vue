@@ -27,10 +27,10 @@ const props = defineProps({
 .bin_icon_style {
   width: 5rem !important;
   @media (max-width: 1500px) {
-    width: 2.5rem !important;
+    width: 3.5rem;
   }
   @media (max-width: 700px) {
-    width: 1.5rem !important;
+    width: 2rem;
   }
 }
 </style>

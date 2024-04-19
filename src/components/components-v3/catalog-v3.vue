@@ -44,6 +44,7 @@
     await app.setLocale(newLocale);
     await goodsStore.updateGoods(newLocale);
     selectedLang.value = newLocale;
+    app.langDialog = false;
   };
 
   const selectCategory = (id: string, event: Event) => {
@@ -176,13 +177,22 @@
 
     <!-- header -->
     <header class="row justify-between q-pa-xl header_style_v3 bg-grey-2">
-      <LogoSimple text_style="text-green">
-        <LogoSvg
-          fill="#88D863"
-          width="6em"
-          height="6em"
-        />
-      </LogoSimple>
+      <div class="row q-gutter-x-md">
+        <LogoSimple text_style="text-green">
+          <LogoSvg
+            fill="#88D863"
+            width="6em"
+            height="6em"
+          />
+        </LogoSimple>
+        <div class="row">
+          <Language
+            :src="`/flags/${selectedLang}.webp`"
+            @click="app.openLangDialog(true)"
+            newClass="additional_lang_style"
+          />
+        </div>
+      </div>
       <BinButton
         @click="openDrawer"
         :quantity="cartStore.totalQuantity"
@@ -214,13 +224,13 @@
           </ul>
         </section>
         <div class="column">
-          <div class="row">
+          <!-- <div class="row">
             <Language
               :language="selectedLang"
               :src="`/flags/${selectedLang}.webp`"
               @click="app.openLangDialog(true)"
             />
-          </div>
+          </div> -->
           <q-btn
             flat
             color="grey"
@@ -309,6 +319,8 @@
 </template>
 
 <style lang="scss">
+  $width: calc(2.5em + 1.7262vmin);
+  $height: calc(1em + 1.7262vmin);
 .cart_positioning {
   position: absolute;
   grid-area: catalog / catalog / cta / cta;
@@ -370,7 +382,7 @@
   width: 100%;
   height: auto;
   padding: 0 0.2em;
-  @media(max-width: 900px) {
+  @media(max-width: 80rem) {
     grid-template-columns: repeat(2,  1fr);
   }
 }
@@ -403,5 +415,10 @@ li > div.active {
 .redirect_dialog_style {
   background-color: grey;
   border-radius: var(--border-xxs) !important;
+}
+
+.additional_lang_style {
+  width: $width !important;
+  height: $height !important;
 }
 </style>

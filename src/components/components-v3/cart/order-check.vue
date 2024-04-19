@@ -7,8 +7,9 @@
   import IconButton from '../../buttons/icon-button.vue';
   import LogoSvg from '../../logo/logo-svg.vue';
 
-  const app = useAppStore();
   const cartStore = useCartStore();
+
+  const emit = defineEmits(['click']);
 </script>
 
 <template>
@@ -21,13 +22,13 @@
       :flat="true"
       size="xl"
       class="cart_close_button absolute-top-right"
-      @click="closeDrawerCart"
+      @click="emit('click')"
     />
     <div class="text-h2 text-white text-uppercase text-center pt-140 px-200 mb-200">
       {{$t('order_was_successfully_confirmed')}}
     </div>
     <div class="items-center column">
-      <div class="text-green text-h1 text-center first_letter px-140 mb-100">
+      <div class="text-green text-h1 text-center first_letter px-140 mb-100 contact_style">
         {{$t('contact_seller_for_further_information')}}
       </div>
       <LogoSvg
@@ -102,4 +103,7 @@
   .dotted_border {
     border-bottom: 5px dotted white;
   }
+  /* .contact_style {
+    width: max-content;
+  } */
 </style>

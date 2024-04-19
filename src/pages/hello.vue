@@ -46,14 +46,21 @@
 
 <template>
   <q-page class="flex flex-center relative relative-position">
-    <!-- <div class="video-wrapper" v-if="app.kioskState.settings?.alt_ui === 'design_v3'">
+
+    <div class="video_wrapper" v-if="app.kioskState.settings?.alt_ui === 'design_v3'">
       <video playsinline autoplay muted loop>
         <source src="flame.mp4" type="video/mp4">
       </video>
-    </div> -->
+      <div class="hello_text" @click="onClick">
+        <div class="column justify-center items-center text-center container_text mb-120">
+          <q-icon color="white" name="img:/cta.svg" class="handIconStyle" />
+          <div class="text-white text-h1 text-uppercase title_styles">{{ $t('find_your_experience') }}</div>
+        </div>
+      </div>
+    </div>
 
-    <div>
-      <div :class="[app.kioskState.settings?.alt_ui === 'design_v3' ? 'flame_hello_bg' : 'bg_filtered']" />
+    <div v-if="app.kioskState.settings?.alt_ui !== 'design_v3'">
+      <div class="bg_filtered" />
       <div class="column justify-between window-height full-width container" @click="onClick">
         <Logo class="logo_row self-start" classes="q-mr-sm img_style">
           <LogoSvg fill="#FAFAFA" />
@@ -90,39 +97,22 @@
 .container {
   padding: 5rem;
   z-index: 2;
+  position: absolute;
+  top: 0;
+  left: 0;
   @media (max-width: 899px) {
     padding: 1.5rem;
   }
 }
 
-.slide-fade-leave-active {
-  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
-}
-.slide-fade-enter-active {
-  transition: all 3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
-}
-.slide-fade-enter, .slide-fade-leave-to
-/* .slide-fade-leave-active до версии 2.1.8 */ {
-  transform: translateX(30px);
-  opacity: 0;
-}
-
-.flame_hello_bg {
-  background-image: url('/grey-flame.png');
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
-/**
-.video-wrapper {
+.video_wrapper {
   position: relative;
   width: 100%;
   height: 100vh;
   overflow: hidden;
 }
 
-.video-wrapper video {
+.video_wrapper video {
   position: absolute;
   top: 0;
   left: 0;
@@ -130,5 +120,22 @@
   height: 100%;
   object-fit: cover;
 }
-**/
+.hello_text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+.container_text {
+  width: min-content;
+}
+.handIconStyle {
+  font-size: clamp(7rem, 7vw + 1rem, 13rem);
+}
 </style>

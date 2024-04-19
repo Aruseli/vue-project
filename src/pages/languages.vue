@@ -30,7 +30,7 @@ const changeLanguage = async (newLocale: string) => {
     <Logo class="logo_row logo" classes="q-mr-sm" v-if="app.kioskState.settings?.alt_ui !== 'design_v3'">
       <LogoSvg fill="#FAFAFA" />
     </Logo>
-    <div class="bg-grey-3 container_languages_firs_setting mb-60 pa-80">
+    <div class="bg-grey-3 mb-60 pa-80 container_languages_firs_setting">
       <language v-for="lang in app.kioskState.catalogLocales"
         :key="lang.lang_code"
         :src="lang.flag_src"

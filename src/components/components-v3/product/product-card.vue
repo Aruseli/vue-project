@@ -11,6 +11,8 @@
   import AttentionIcon from '../icons/attention-icon.vue';
   import BinIcon from '../icons/bin-icon.vue';
   import ProductModal from './product-modal.vue';
+  import OperatorButton from '../buttons/operator-button.vue'
+import ProductBinButton from '../buttons/product-bin-button.vue';
 
   const cartStore = useCartStore();
   const openDialog = ref(false)
@@ -106,26 +108,26 @@
         </div>
       </div>
 
-      <BinButton @click="addGoodToCart(props.good as Good)" class="bin_button_style">
+      <ProductBinButton @click="addGoodToCart(props.good as Good)" class="bin_button_style">
         <BinIcon :quantity="cartStore.totalQuantity" class="bin_alt_style" v-if="!goodInCart" />
         <div v-else class="text-h2 no-margin text-white">{{ goodInCart.quant }}</div>
-      </BinButton>
+      </ProductBinButton>
       <transition name="slide-fade">
         <div class="bg-grey-2 row justify-between items-center absolute-top full-height" v-if="goodInCart">
-          <IconButton
+          <OperatorButton
             round
-            iconStyle="text-white"
+            textColor="text-white"
             :icon="evaPlusOutline"
             @click="increase(props.good as Good)"
-            class="q-pa-xs bg-transparent"
+            class="bg-transparent"
           />
           <div
             class='text-h2 text-white q-mx-lg-md q-mx-xs-sm q-my-none'
           >{{ goodInCart.quant }}</div>
-          <IconButton
+          <OperatorButton
             round
-            class="bg-transparent q-pa-xs"
-            iconStyle="text-white"
+            class="bg-transparent"
+            textColor="text-white"
             :icon="evaMinusOutline"
             @click="decrease(props.good as Good)"
           />
@@ -258,16 +260,8 @@
     border-radius: 0 !important;
     scale: 0.9;
   }
-  .bin_button_style {
-    border-radius: var(--px54);
-    border: thin solid green;
-    padding: 0.8em;
-    min-width: 5rem;
-    width: max-content;
-    height: 5rem;
-  }
   .bin_alt_style {
-    width: 3rem !important;
+    width: clamp(1.5rem, 1.5vw + 1rem, 3rem) !important;
     align-self: stretch;
   }
 

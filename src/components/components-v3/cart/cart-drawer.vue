@@ -10,6 +10,7 @@
   import RectangularButton from '../../buttons/rectangular-button.vue';
   import OrderCheck from './order-check.vue';
   import DividerThin from '../../dividers/divider-thin.vue';
+  import OperatorButton from '../buttons/operator-button.vue';
 
   const $q = useQuasar();
   const router = useRouter();
@@ -158,20 +159,14 @@
                       </q-btn>
 
                       <div class="row justify-between items-center">
-                        <IconButton
-                          round
-                          iconStyle="text-grey-1"
+                        <OperatorButton
                           :icon="evaPlusOutline"
                           @click="() => cartStore.increaseItemsCount(item)"
-                          class="q-pa-xs bg-white"
                         />
                         <div
                           class='text-h2 text-white q-mx-lg-md q-mx-xs-sm q-my-none'
                         >{{ item.quant }}</div>
-                        <IconButton
-                          round
-                          class="bg-white q-pa-xs"
-                          iconStyle="text-grey-1"
+                        <OperatorButton
                           :icon="evaMinusOutline"
                           @click="() => cartStore.decreaseItemsCount(item)"
                         />
@@ -228,7 +223,7 @@
             </div>
           </div>
         </div>
-        <OrderCheck v-else-if="app.orderDialog == true" />
+        <OrderCheck @click="closeDrawerCart" v-else-if="app.orderDialog == true" />
       </transition>
     </div>
   </transition>
@@ -256,9 +251,6 @@
     top: var(--px14);
     right: var(--px14);
   }
-  .cart_close_button {
-    /* font-size: 66px; */
-  }
   .img_style_v3 {
     border-radius: 0 !important;
   }
@@ -269,8 +261,11 @@
     box-sizing: border-box;
     max-width: 70vw;
     min-width: 30vw;
-    width: 50vw;
+    width: 65vw;
     height: 100%;
+    @media (max-width: 80rem) {
+      width: 75vw;
+    }
   }
   .container_settings {
     padding: 0.3rem;

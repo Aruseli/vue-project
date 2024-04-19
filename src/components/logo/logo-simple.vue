@@ -1,4 +1,7 @@
-<script setup>
+<script setup lang="ts">
+import { useAppStore } from 'src/stores/app';
+
+const app = useAppStore();
 const props = defineProps({
   imgContainer: {
     type: String,
@@ -17,6 +20,12 @@ const props = defineProps({
     <div class="q-mr-sm">
       <slot></slot>
     </div>
-    <div class="text-h2 text-center text-secondary text-uppercase text-weight-bold q-mr-sm" :class="props.text_style">high case</div>
+    <div class="text-h2 text-center text-secondary text-uppercase text-weight-bold q-mr-sm" :class="[app.lang_dir == 'rtl' ? 'direction' : '', props.text_style]">high case</div>
   </div>
 </template>
+
+<style scoped>
+.direction {
+  transform: rotateY(180deg);
+}
+</style>
