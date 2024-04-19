@@ -221,7 +221,7 @@ export type KioskDocument = {
   currency_name: any,
   curr_rate: any,
   comment: any,
-  barcode_prefix: any,
+  barcode: string,
   // fields: { payment_type: string },
   details: {
     id: any,

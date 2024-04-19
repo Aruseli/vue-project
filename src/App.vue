@@ -87,7 +87,7 @@
             // }
             ordersStore.ordersDocuments.forEach(d => {
               // TODO: Check also docType
-              if (uuidToBarcodeDocId(d.id) == barcode.docId) {
+              if (d.barcode == barcode.barcode) {
                 router.push(`/issuing-order/order/${d.id}`)
               }
             });
