@@ -214,7 +214,7 @@ export async function printLeftovers({
       .split('"')[0]
       .replaceAll("&#x3D;", "=");
     wsSendMessage("check-print", {
-      printerType: "usb",
+      printerType: appStore.kioskState.settings?.printer_type || "usb",
       template: `<raster>${rawBase64}</raster><feed>4</feed><cut/>`,
     });
   } catch (e) {

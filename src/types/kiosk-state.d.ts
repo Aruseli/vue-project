@@ -1,3 +1,5 @@
+import { PrinterType } from "src/services";
+
 // See also config.json
 export type Settings = {
   loc: string,
@@ -75,7 +77,7 @@ export type Settings = {
   check_ext_source: string,
   check_content_type: string,
 
-  printer_type: string,
+  printer_type: PrinterType
 }
 
 export type TerminalParams = {
