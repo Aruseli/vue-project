@@ -17,7 +17,7 @@ async function startLocalDeviceWsService(address: string) {
   setTimeout(connect, 0, address);
 }
 
-export function wsSendMessage(command: string, data?: { printerType: 'network' | 'usb', template: string}) {
+export function wsSendMessage(command: string, data?: { printerType: 'network' | 'usb', template: string,   networkHost?: string; networkPort?: number;}) {
   ws?.send(JSON.stringify({ cmd: command, data }))
 }
 
