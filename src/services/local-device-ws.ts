@@ -1,5 +1,6 @@
 import { RawLocalDeviceWsMessage } from '../types';
-import { eventEmitter, isPlainObject, isString } from '../services';
+import { apiReportsGetView, eventEmitter, isPlainObject, isString } from '../services';
+import i18next from 'i18next';
 
 let serviceLaunched = false;
 export let ws: WebSocket | null = null;
@@ -16,7 +17,7 @@ async function startLocalDeviceWsService(address: string) {
   setTimeout(connect, 0, address);
 }
 
-export function wsSendMessage(command: string, data?: string) {
+export function wsSendMessage(command: string, data?: { printerType: 'network' | 'usb', template: string}) {
   ws?.send(JSON.stringify({ cmd: command, data }))
 }
 

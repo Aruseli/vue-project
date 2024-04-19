@@ -4,17 +4,25 @@
   import { useQuasar } from 'quasar';
   import { useGoodsStore } from 'src/stores/goods';
   import { useSelectiveInventoryStore } from 'src/stores/selective-inventory';
-  import { onMounted } from 'vue';
-  import { useRouter } from 'vue-router';
+  import { onMounted , ref} from 'vue';
+  import { useRoute, useRouter } from 'vue-router';
   import RectangularButton from '../buttons/rectangular-button.vue';
   import DividerBold from '../dividers/divider-bold.vue';
   import ListItem from './list-item.vue';
+  import { useAppStore } from "src/stores/app";
+  import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
+import { printInventory } from 'src/services';
 
   const $q = useQuasar();
 
   const router = useRouter();
+  const route = useRoute();
   const selectiveInventoryStore = useSelectiveInventoryStore();
   const goodsStore = useGoodsStore();
+
+  const app = useAppStore();
+  const documentId = ref(undefined);
+  const isPrintConfirmationDialogVisible = ref(false);
 
   onMounted(async () => {
     try {
@@ -38,11 +46,44 @@
   // Format the date using Moment.js
   const formattedDate = moment(date).format('DD.MM.YY HH:mm');
 
+async function showPrintConfirmationDialog() {
 
-  const confirmInventory = async () => {
-    await selectiveInventoryStore.confirmSelectedInventory()
+  isPrintConfirmationDialogVisible.value = true;
+}
+
+function hidePrintConfirmationDialog() {
+  isPrintConfirmationDialogVisible.value = false;
+}
+
+async function handlePrintConfirmation(printConfirmed) {
+  $q.loading.show();
+  try {
+    if (printConfirmed) {
+      await printInventory({ documentId: documentId.value, $q, appStore: app });
+    }
+    hidePrintConfirmationDialog();
+  } catch (error) {
+    console.error("inventoryStore.submitInventory print error:", error);
+    $q.notify({
+      color: "warning",
+      icon: "warning",
+      position: "center",
+      message: t("unable_to_print_submit_inventory"),
+      timeout: 6000,
+    });
+  } finally {
+    $q.loading.hide();
     router.push('/employee-actions');
     // TODO возможно стоит добавить диалоговое окно, перед редиректом, с информацией что товар добавлен
+  }
+}
+
+  const confirmInventory = async () => {
+    const {documentId: docId} = await selectiveInventoryStore.confirmSelectedInventory()
+    if(docId) {
+      documentId.value = docId;
+      await showPrintConfirmationDialog();
+    }
   }
 
 </script>
@@ -153,6 +194,27 @@
       </div>
     </div>
   </div>
+  <RedirectDialog :modelValue="isPrintConfirmationDialogVisible" title="print?">
+    <template #content>
+      <div class="text-h5 text-center">
+        <div class="text-h5">{{ $t("print") }}</div>
+      </div>
+    </template>
+    <template #actions>
+      <RectangularButton
+        :name="$t('do_not') + ' ' + $t('print')"
+        color="transparent"
+        class="q-px-md-sm q-px-xs-sm q-py-xs-xs"
+        @click="handlePrintConfirmation(false)"
+        textColor="primary"
+      />
+      <RectangularButton
+        :name="$t('print')"
+        class="q-px-md-sm q-px-xs-sm q-py-xs-xs"
+        @click="handlePrintConfirmation(true)"
+      />
+    </template>
+  </RedirectDialog>
 </template>
 
 <style scoped>

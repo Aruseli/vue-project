@@ -10,6 +10,13 @@
   import DividerBold from '../dividers/divider-bold.vue';
   import ListItem from './list-item.vue';
   import { useAppStore } from 'src/stores/app';
+  import {
+    apiReportsGetView,
+    printDocument,
+    printInventory,
+    wsSendMessage,
+  } from 'src/services';
+  import RedirectDialog from "src/components/dialog/redirect-dialog.vue";
 
   const goodsStore = useGoodsStore();
   const inventoryStore = useInventoryStore();
@@ -20,58 +27,113 @@
 
   const $q = useQuasar();
 
+  const documentId = ref(undefined);
+  const isPrintConfirmationDialogVisible = ref(false);
+
   const allowConfirm = computed(() => {
-    return inventoryStore.inventory?.every(i => i.stock == i.quant)
+    return inventoryStore.inventory?.every((i) => i.stock == i.quant);
   });
+
+  async function showPrintConfirmationDialog() {
+
+    isPrintConfirmationDialogVisible.value = true;
+  }
+
+  function hidePrintConfirmationDialog() {
+    isPrintConfirmationDialogVisible.value = false;
+  }
+
+  async function handlePrintConfirmation(printConfirmed) {
+    $q.loading.show();
+    try {
+      if (printConfirmed) {
+        await printInventory({ documentId: documentId.value, $q, appStore: app });
+      }
+      hidePrintConfirmationDialog();
+      if (route.path === "/open-shift/complete-inventory") {
+        await app.openTerminalShift();
+        router.push(app.shiftIsGood() ? "/hello" : "/employee-actions");
+      } else if (route.path === "/close-shift/complete-inventory") {
+        await app.closeTerminalShift();
+        router.push("/employee-actions");
+      } else {
+        router.push("/employee-actions");
+      }
+    } catch (error) {
+      console.error("inventoryStore.submitInventory print error:", error);
+      $q.notify({
+        color: "warning",
+        icon: "warning",
+        position: "center",
+        message: t("unable_to_print_submit_inventory"),
+        timeout: 6000,
+      });
+    } finally {
+      $q.loading.hide();
+    }
+  }
 
   async function submitInventory() {
     try {
-      if (route.path === '/open-shift/complete-inventory') {
-        await inventoryStore.submitInventory();
-        await app.openTerminalShift();
-        router.push(app.shiftIsGood ? '/hello' : '/employee-actions' );
-      } else if (route.path == '/close-shift/complete-inventory') {
-        await inventoryStore.submitInventory();
-        await app.closeTerminalShift();
-        router.push('/employee-actions');
-      } else {
-        await inventoryStore.submitInventory();
-        router.push('/employee-actions');
+      $q.loading.show();
+      try {
+        if (route.path === "/open-shift/complete-inventory") {
+          const { documentId: docId } = await inventoryStore.submitInventory();
+          documentId.value = docId;
+        } else if (route.path == "/close-shift/complete-inventory") {
+          const { documentId: docId } = await inventoryStore.submitInventory();
+          documentId.value = docId;
+        } else {
+          const { documentId: docId } = await inventoryStore.submitInventory();
+          documentId.value = docId;
+        }
+        await showPrintConfirmationDialog();
+      } catch (e) {
+        console.error("inventoryStore.submitInventory error:", err);
+        $q.notify({
+          color: "warning",
+          icon: "warning",
+          position: "center",
+          message: t("unable_to_submit_inventory"),
+          timeout: 6000,
+        });
+      } finally {
+        $q.loading.hide();
       }
     } catch (err) {
-      console.error('inventoryStore.submitInventory error:', err)
+      console.error("inventoryStore.submitInventory error:", err);
       $q.notify({
-        color: 'warning',
-        icon: 'warning',
-        position: 'center',
-        message: t('unable_to_submit_inventory'),
+        color: "warning",
+        icon: "warning",
+        position: "center",
+        message: t("unable_to_submit_inventory"),
         timeout: 6000,
-      })
+      });
     }
   }
 
   const date = new Date();
   // Format the date using Moment.js
-  const formattedDate = moment(date).format('DD.MM.YY');
+  const formattedDate = moment(date).format("DD.MM.YY");
   const time = date.getTime();
-  const formattedTime = moment(time).format('LT').slice(0, -3);
+  const formattedTime = moment(time).format("LT").slice(0, -3);
 
   onMounted(async () => {
     try {
-      await goodsStore.updateGoods(i18next.language)
+      await goodsStore.updateGoods(i18next.language);
       await inventoryStore.updateInventory();
     } catch (err) {
-      console.error('inventoryStore.updateInventories error:', err)
+      console.error("inventoryStore.updateInventories error:", err);
       $q.notify({
-        color: 'warning',
-        icon: 'warning',
-        position: 'center',
-        message: t('unable_to_load_inventory'),
+        color: "warning",
+        icon: "warning",
+        position: "center",
+        message: t("unable_to_load_inventory"),
         timeout: 6000,
-      })
-      router.push('/employee-actions')
+      });
+      router.push("/employee-actions");
     }
-  })
+  });
 </script>
 
 <template>
@@ -133,20 +195,9 @@
       </div>
     </div>
     <div>
-      <DividerBold
-        class="
-          q-mb-lg-lg
-          q-mb-md-sm
-          q-mb-xs-sm
-        "
-      />
+      <DividerBold class="q-mb-lg-lg q-mb-md-sm q-mb-xs-sm" />
       <div
-        class="
-          row justify-between items-center
-          q-mb-lg-xl
-          q-mb-md-md
-          q-mb-xs-sm
-        "
+        class="row justify-between items-center q-mb-lg-xl q-mb-md-md q-mb-xs-sm"
       >
         <div class="row text-h3">
           <span class="q-mr-xs-xs">{{$t('total')}}</span>
@@ -162,7 +213,7 @@
           <q-separator color="secondary" vertical class="q-mr-xs-xs" size="0.2rem" />
           <div class="q-mr-xs-xs">{{$t('actual_quantity')}}</div>
           <div class="q-mr-xs-xs">{{ inventoryStore.totalActualQuant }}</div>
-          <div>{{ $t('pc', {count: inventoryStore.totalActualQuant}) }}</div>
+          <div>{{ $t("pc", { count: inventoryStore.totalActualQuant }) }}</div>
         </div>
       </div>
       <div class="row justify-evenly">
@@ -180,6 +231,27 @@
       </div>
     </div>
   </div>
+  <RedirectDialog :modelValue="isPrintConfirmationDialogVisible" title="print?">
+    <template #content>
+      <div class="text-h5 text-center">
+        <div class="text-h5">{{ $t("print") }}</div>
+      </div>
+    </template>
+    <template #actions>
+      <RectangularButton
+        :name="$t('do_not') + ' ' + $t('print')"
+        color="transparent"
+        class="q-px-md-sm q-px-xs-sm q-py-xs-xs"
+        @click="handlePrintConfirmation(false)"
+        textColor="primary"
+      />
+      <RectangularButton
+        :name="$t('print')"
+        class="q-px-md-sm q-px-xs-sm q-py-xs-xs"
+        @click="handlePrintConfirmation(true)"
+      />
+    </template>
+  </RedirectDialog>
 </template>
 
 <style scoped>

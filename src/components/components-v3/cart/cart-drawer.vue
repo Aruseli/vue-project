@@ -40,14 +40,14 @@
     // кнопка будет недоступна для повторного клика
     isDisabled.value = true;
     try {
-      await cartStore.submitOrder()
+      await cartStore.submitOrder({$q})
       app.openOrderDialog(true);
       setTimeout(() => {
         app.openOrderDialog(false);
         closeDrawerCart();
         cartStore.clearCart();
         router.push('hello');
-      },  700000);
+      }, app.kioskState.settings?.customer_successful_order_notify_duration_ms ?? 7000);
     } catch (err) {
       console.error('ordersStore.selectOrder error:', err)
       $q.notify({

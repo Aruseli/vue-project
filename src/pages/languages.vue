@@ -10,15 +10,15 @@
   const goodsStore = useGoodsStore();
 
   const router = useRouter();
-const changeLanguage = async (newLocale: string) => {
-  await goodsStore.updateGoods(newLocale);
-  app.setLocale(newLocale);
-  router.push("catalog");
-  localStorage.setItem("lang", newLocale);
-  if (app.kioskState.settings?.alt_ui == "design_v3") {
-    document.body.className = "v3_body_style";
+  const changeLanguage = async (newLocale: string) => {
+    await goodsStore.updateGoods(newLocale);
+    app.setLocale(newLocale);
+    router.push("catalog");
+    localStorage.setItem("lang", newLocale);
+    if (app.kioskState.settings?.alt_ui == "design_v3") {
+      document.body.className = "v3_body_style";
+    }
   }
-}
 
 </script>
 

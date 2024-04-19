@@ -2,8 +2,9 @@ import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { Good, useGoodsStore } from './goods';
 import { useAppStore } from './app';
-import { apiSaveDocument } from 'src/services';
+import { apiSaveDocument, printOrder } from 'src/services';
 import { getNextInvoiceNumber } from 'src/services/documents';
+import { QVueGlobals } from 'quasar';
 
 export type CartItem = {
   id: string,
@@ -53,7 +54,7 @@ export const useCartStore = defineStore('cartStore',
       cart.value = [];
     }
 
-    const submitOrder = async () => {
+    const submitOrder = async ({$q} :{$q: QVueGlobals}) => {
       const settings = appStore.kioskState.settings
       const doc = {
         id: undefined,
@@ -81,8 +82,10 @@ export const useCartStore = defineStore('cartStore',
           doc_detail_type: settings?.invoice_docdetail_type_id ?? '',
         })),
       }
-      await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '')
+      const documentId = await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '')
+      await printOrder({documentId, $q,appStore})
       // clearCart()
+      return {documentId};
     }
 
     const cartExtended = computed(() => {

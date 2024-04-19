@@ -1,18 +1,18 @@
 <script setup lang="ts">
   import { useAppStore } from '../../stores/app';
-import { useCartStore } from '../../stores/cart';
-import { useGoodsStore } from '../../stores/goods';
-import BinIcon from '../icons/bin-icon.vue';
-import LogoSimple from '../logo/logo-simple.vue';
-import LogoSvg from '../logo/logo-svg.vue';
-import IconButton from '../buttons/icon-button.vue';
-import BinButton from '../buttons/bin-button.vue';
-import Language from '../language.vue';
-import Modal from '../overlay/modal.vue';
-import LanguagesFrame from './languages/languages-frame.vue';
-import LangDrawer from '../overlay/lang-drawer.vue';
-import { onUpdated } from 'vue';
-import { onMounted, watch, computed } from 'vue';
+  import { useCartStore } from '../../stores/cart';
+  import { useGoodsStore } from '../../stores/goods';
+  import BinIcon from '../icons/bin-icon.vue';
+  import LogoSimple from '../logo/logo-simple.vue';
+  import LogoSvg from '../logo/logo-svg.vue';
+  import IconButton from '../buttons/icon-button.vue';
+  import BinButton from '../buttons/bin-button.vue';
+  import Language from '../language.vue';
+  import Modal from '../overlay/modal.vue';
+  import LanguagesFrame from './languages/languages-frame.vue';
+  import LangDrawer from '../overlay/lang-drawer.vue';
+  import { onUpdated } from 'vue';
+  import { onMounted, watch, computed } from 'vue';
 
   const cart = useCartStore();
   const goodsStore = useGoodsStore();
@@ -21,10 +21,10 @@ import { onMounted, watch, computed } from 'vue';
   const openDrawer = () => {
     app.openDrawerCart(true);
   }
-const changeLanguage = async (newLocale: string) => {
-  await app.setLocale(newLocale);
-  await goodsStore.updateGoods(newLocale);
-};
+  const changeLanguage = async (newLocale: string) => {
+    await app.setLocale(newLocale);
+    await goodsStore.updateGoods(newLocale);
+  };
 </script>
 
 
@@ -66,7 +66,6 @@ const changeLanguage = async (newLocale: string) => {
 
     <div class="relative-position">
       <q-tabs
-
         v-model="app.tab"
         dense
         no-caps

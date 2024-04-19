@@ -8,10 +8,11 @@ export default {
     "loc": "en",
     "tdp": "ws://127.0.0.1:3010",
 
-    "view_ord": "f9fdf826-384d-40ac-a1f3-6551cee8ef98",
-    "view_check": "1d7f3262-a073-4ea4-9f2c-7da03aa752a2",
-    "view_doc_input": "4d027811-d085-43c2-844f-8c2199d133d8",
-    "view_doc_invent": "df812dd8-4f36-412a-ac1e-7c8411d53ee1",
+    "view_ord": "a59a2a47-7ebb-497d-80ff-5b9386726871",
+    "view_check": "ff7ce8d1-989f-4fc6-9ad4-4aacf65da9f8",
+    "view_doc_input": "f8e0f371-87e6-460a-8010-011eabef8757",
+    "view_doc_invent": "3d8779b5-2705-4668-a7fd-fd51e480890c",
+    "view_doc_leftover": "827dea44-c354-4b5a-aaee-6aff45c01369",
 
     "client_corr_id": "4b4d99df-3e1a-4e49-853b-2ae324a954ae",
     "user_corr_type": "staff",
@@ -70,6 +71,12 @@ export default {
     "shifts__state_closed": 0,
 
     "alt_ui": 'design_v2',
+
+    "payment_type_id_cash": "8f404e9c-e42f-4251-8520-13961924c5e6",
+    "payment_type_id_card": "df828bbb-05f7-4f64-bb36-3c20b0e37393",
+
+    "check_ext_source": "d69b1a29-ed49-4b57-b335-f719abce640d",
+    "check_content_type": "продажа товара"
   },
 
   // These three lines are outside of settings because they are used
