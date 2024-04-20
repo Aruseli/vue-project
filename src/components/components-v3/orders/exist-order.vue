@@ -26,32 +26,6 @@
     openDialog.value = true;
     console.log('123')
   }
-
-  // async function deleteOrder() {
-  //   // кнопка будет недоступна для повторного клика
-  //   isDisabled.value = true;
-  //   try {
-  //     await cartStore.deleteOrder({$q})
-  //     app.openOrderDialog(true);
-  //     setTimeout(() => {
-  //       app.openOrderDialog(false);
-  //       closeDrawerCart();
-  //       cartStore.clearCart();
-  //       router.push('hello');
-  //     }, app.kioskState.settings?.customer_successful_order_notify_duration_ms ?? 7000);
-  //   } catch (err) {
-  //     console.error('ordersStore.selectOrder error:', err)
-  //     $q.notify({
-  //       color: 'warning',
-  //       icon: 'warning',
-  //       position: 'center',
-  //       message: t('unable_to_submit_order'),
-  //       timeout: 6000,
-  //     })
-  //   } finally {
-  //     isDisabled.value = false
-  //   }
-  // }
 </script>
 
 <template>
