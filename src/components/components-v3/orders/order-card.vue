@@ -15,7 +15,7 @@
   const open = () => {
     openDialog.value = true;
   }
-  const emit = defineEmits(['click']);
+  const emit = defineEmits(['click', 'deleteProduct']);
 </script>
 
 <template>
@@ -67,7 +67,7 @@
         />
         <RectangularButton
         :name="$t('yes')"
-        @click="console.log('yes')"
+        @click="emit('deleteProduct')"
         />
     </template>
   </DialogDelete>

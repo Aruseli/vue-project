@@ -53,7 +53,7 @@ import ExistOrder from './exist-order.vue';
     <DividerThin class="mb-60 bg-grey-1"/>
     <div class="exist_orders_container px-40">
       <transition-group name="list" tag="div">
-        <div v-for="order in ordersStore.orders" :key="order.id" class="panel">
+        <div v-for="order in ordersStore.orders" :key="order.id" class="ghost">
           <ExistOrder
             :order="order"
             @click="goToOrder(order.id)"
@@ -74,7 +74,7 @@ import ExistOrder from './exist-order.vue';
   background-color: white;
 }
 
-.panel {
+.ghost {
   transition: all 1s;
 }
 
@@ -93,5 +93,6 @@ import ExistOrder from './exist-order.vue';
 
 .list-leave-active {
   position: absolute;
+  width: 100%;
 }
 </style>

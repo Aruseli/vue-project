@@ -55,6 +55,13 @@ import OrderCard from './order-card.vue';
       ordersStore.currentOrder.payment = option;
     }
   }
+
+  const deleteProduct = (id: string) => {
+    const productIndex = ordersStore.currentOrder?.items.findIndex((order) => order.id === id);
+    if (productIndex !== -1 && ordersStore.currentOrder?.items) {
+      ordersStore.currentOrder.items = ordersStore.currentOrder.items.filter((_, index) => index !== productIndex);
+    }
+  }
 </script>
 
 <template>
@@ -68,11 +75,14 @@ import OrderCard from './order-card.vue';
     <DividerThin class="mb-60 bg-grey-1" />
     <div class="scroll_area px-40">
       <div class="orders_container">
-        <OrderCard
-          v-for="order in ordersStore.currentOrder?.items"
-          :key="order.id"
-          :good="order"
-        />
+        <transition-group name="list" tag="div">
+          <div v-for="order in ordersStore.currentOrder?.items" :key="order.id" class="ghost">
+            <OrderCard
+              :good="order"
+              @deleteProduct="deleteProduct(order.id)"
+            />
+          </div>
+        </transition-group>
       </div>
     </div>
     <DividerBold class="mb-30" />
@@ -145,8 +155,6 @@ import OrderCard from './order-card.vue';
 .confirm_class {
   grid-area: confirm;
 }
-.payButton {
-}
 
 .selected {
   background-color: var(--q-primary);
@@ -165,5 +173,27 @@ import OrderCard from './order-card.vue';
 }
 .bounce-leave-active {
   transition: opacity 3s cubic-bezier(0.215, 0.610, 0.355, 1);
+}
+
+.ghost {
+  transition: all 1s;
+}
+
+.list-enter,
+.list-leave-to {
+  opacity: 0;
+}
+
+.list-enter {
+  transform: translateY(30%);
+}
+
+.list-leave-to {
+  transform: translateX(300%);
+}
+
+.list-leave-active {
+  position: absolute;
+  width: 100%;
 }
 </style>
