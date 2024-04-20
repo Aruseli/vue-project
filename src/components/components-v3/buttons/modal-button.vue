@@ -36,7 +36,7 @@
     @click="emit('click')"
     v-bind="$attrs"
     :disable="props.disable"
-    class="pa-40 full-width"
+    class="pa-20 full-width"
   >
     <div :class="props.classTitle">{{ props.name }}</div>
     <slot></slot>

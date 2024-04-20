@@ -1,16 +1,19 @@
-<script setup>
+<script setup lang="ts">
   import i18next from 'i18next';
+  import { t } from 'i18next';
 import moment from 'moment';
 import { useQuasar } from 'quasar';
-import { useArrivalsStore } from 'src/stores/arrivals';
-import { useGoodsStore } from 'src/stores/goods';
 import { computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import RectangularButton from '../buttons/rectangular-button.vue';
-import DividerBold from '../dividers/divider-bold.vue';
-import ArrivalItem from './arrival-item.vue';
-import { apiReportsGetView, printGoodsArrival, wsSendMessage } from 'src/services';
+import { useArrivalsStore } from 'src/stores/arrivals';
+import { useGoodsStore } from 'src/stores/goods';
 import { useAppStore } from 'src/stores/app';
+import { apiReportsGetView, printGoodsArrival, wsSendMessage } from 'src/services';
+import RectangularButton from '../buttons/rectangular-button.vue';
+import BackButton from '../buttons/back-button.vue';
+import DividerBold from '../../dividers/divider-bold.vue';
+import ArrivalItem from './arrival-item.vue';
+import DividerThin from 'src/components/dividers/divider-thin.vue';
 
 const goodsStore = useGoodsStore();
 
@@ -42,7 +45,7 @@ const goodsStore = useGoodsStore();
     try {
       await goodsStore.updateGoods(i18next.language);
       await arrivalsStore.updateArrivals();
-      await arrivalsStore.selectArrival(route.params.id);
+      await arrivalsStore.selectArrival(typeof route.params.id === 'string' ? route.params.id : route.params.id[0]);
     } catch (err) {
       console.error('arrivalsStore.selectArrival error:', err)
       $q.notify({
@@ -59,90 +62,65 @@ const goodsStore = useGoodsStore();
 </script>
 
 <template>
-  <div class="main_container full-height full-width pa-60">
-    <div class="relative-position q-mb-lg-xl q-mb-xs-sm">
-      <RectangularButton :name="$t('back_to_employee_actions')" color="secondary" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/employee-actions')" />
-      <RectangularButton :name="$t('print')" :color="'secondary'" size="xl" class="q-pr-sm" @click="printGoodsArrival({documentId: arrivalsStore.arrivalDocument.id, $q, appStore})" />
+  <div class="main_container full-height full-width">
+    <div class="column justify-center relative-position q-mb-xl px-40 pt-40">
+      <BackButton @click="router.push('/employee-actions')" class="absolute-top-left" />
+      <div class="text-h2 text-uppercase text-center mb-100">
+        {{ $t('arrival_goods') }}
+      </div>
 
-      <div
-        class="
-          text-h2
-          text-uppercase text-center
-          q-mb-lg-lg
-          q-mb-xs-sm
-          q-pt-sm-sm
-          q-pt-xs-sm
-        "
-      >{{ $t('arrival_goods') }}</div>
-
-      <div
-        class="
-          row justify-between
-          q-mb-md-sm
-          q-mb-xs-sm
-        "
-      >
-        <div class="text-h3 text-capitalize">
+      <div class="row justify-between">
+        <div class="text-h3 first_letter">
           {{ $t('received_goods') }}
         </div>
-        <div class="text-h3 row q-gutter-x-sm">
+        <div class="text-h4 row q-gutter-x-sm text-weight-regular">
           <span>{{ formattedDate }}</span>
           <span>{{ formattedTime }}</span>
           <span>№{{ arrivalsStore.arrival?.arrivalNumStr }}</span>
         </div>
       </div>
-      <DividerBold />
     </div>
+    <DividerThin />
+      <div class="row px-40">
 
-    <div class="scroll_area">
+      </div>
+    <DividerThin />
+
+    <div class="scroll_area px-40">
       <div class="arrivals_container">
         <ArrivalItem v-for="arrival in arrivalsStore.arrival?.items"
           :key="arrival.id"
-          :good_name="arrival.title"
-          :actual_quantity="arrival.issued"
+          :good="arrival"
           :confirmed="arrivalsStore.blockScan  === arrival.id"
           :not_equal="arrival.issued !== arrival.quant"
           :class="{ 'highlighted': arrival.confirmed }"
           @itemConfirm="arrival.confirmed = !arrival.confirmed"
           @resetActualQuantity="arrival.issued = 0"
-          :id="arrival.id"
         />
       </div>
     </div>
-    <div>
-      <DividerBold
-        class="
-          q-mb-lg-lg
-          q-mb-md-sm
-          q-mb-xs-sm
-        "
-      />
-      <div
-        class="
-          row justify-between items-center
-          q-mb-lg-xl
-          q-mb-md-md
-          q-mb-xs-sm
-        "
-      >
+    <DividerBold class="mb-40" />
+    <div class="column pa-40">
+      <div class="row justify-between items-center mb-40">
         <div class="text-h3 row">
-          <span class="q-mr-xs-xs">{{$t('total')}}</span>
-          <span class="q-mr-xs-xs">{{arrivalsStore.arrival?.items.length}}</span>
-          <span class="q-mr-xs-xs">{{ $t('product') }}</span>
+          <span class="mr-10">{{$t('total')}}</span>
+          <span class="mr-10">{{arrivalsStore.arrival?.items.length}}</span>
+          <span class="mr-10">{{ $t('product') }}</span>
           <span>{{ $t('units', {count: arrivalsStore.arrival?.items.length}) }}</span>
         </div>
 
         <div class="text-h3 text-weight-regular row">
-          <div class="q-mr-xs-xs">{{$t('estimated_quantity')}}</div>
-          <div class="q-mr-xs-xs">{{arrivalsStore.arrival?.totalCount}}</div>
-          <div class="q-mr-xs-xs">{{ $t('pc', {count: arrivalsStore.arrival?.totalCount}) }}</div>
-          <q-separator color="secondary" vertical class="q-mr-xs-xs" size="0.2rem" />
-          <div class="q-mr-xs-xs">{{$t('actual_quantity')}}</div>
-          <div class="q-mr-xs-xs">{{ arrivalsStore.totalQuant }}</div>
+          <div class="mr-10">{{$t('estimated_quantity')}}</div>
+          <div class="mr-10">{{arrivalsStore.arrival?.totalCount}}</div>
+          <div class="mr-10">{{ $t('pc', {count: arrivalsStore.arrival?.totalCount}) }}</div>
+          <q-separator color="secondary" vertical class="mr-10" size="0.2rem" />
+          <div class="mr-10">{{$t('actual_quantity')}}</div>
+          <div class="mr-10">{{ arrivalsStore.totalQuant }}</div>
           <div>{{ $t('pc', {count: arrivalsStore.totalQuant}) }}</div>
         </div>
       </div>
-      <div class="full-width">
+      <div class="full-width buttons_container">
+        <RectangularButton :name="$t('print')" :color="'secondary'" size="xl" class="q-pr-sm" @click="printGoodsArrival({documentId: arrivalsStore.arrivalDocument?.id ?? '', $q, appStore})" />
         <RectangularButton
           :name="$t('confirm')"
           class="fit button_style_confirm"
@@ -161,6 +139,12 @@ const goodsStore = useGoodsStore();
 }
 .arrivals_container {
   padding: 0.5rem;
+}
+
+.buttons_container {
+  display: grid;
+  grid-template-columns: 0.3fr 1fr;
+  column-gap: var(--px60);
 }
 
 </style>

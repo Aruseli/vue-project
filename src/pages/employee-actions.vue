@@ -148,33 +148,6 @@
       :inventoryRequests="inventoryRequests"
       v-if="app.kioskState.settings?.alt_ui !== 'design_v3'"
     />
-
-    <!-- <div class="column justify-center items-center full-height full-width container">
-      <Logo class="logo_column" classes="q-mb-md-sm q-mb-xs-xs" v-if="app.kioskState.settings?.alt_ui !== 'design_v3'">
-        <LogoSvg fill="#FAFAFA" />
-      </Logo>
-      <LogoSimple text_style="text-green" v-if="app.kioskState.settings?.alt_ui === 'design_v3'">
-        <LogoSvg
-          fill="#88D863"
-          width="6em"
-          height="6em"
-        />
-      </LogoSimple>
-      <RectangularButton
-        v-for="(button, index) in buttons"
-        :key="index"
-        :name='$t(button.name)'
-        :disable='button.disable'
-        class="button_style"
-        :class="{ 'blocked': button.disable }"
-        @click="button.click"
-      >
-        <div v-if="button.badge == true" class="badge_style bg-positive flex items-center justify-center">
-          <div class="text-white text-h3">{{ inventoryRequests }}</div>
-        </div>
-      </RectangularButton>
-
-    </div> -->
     <RedirectDialog
       :modelValue="dialogState"
       title="there_are_documents_for_inventory"

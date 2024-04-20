@@ -19,6 +19,8 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
   const arrivalDocument = ref<KioskDocument | null>(null);
   const arrivalGoodsLoading = ref(true);
 
+  const blockScan = ref('');
+
   const updateArrivals = async () => {
     arrivalsLoading.value = true;
     try {
@@ -130,6 +132,7 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
     arrivalGoodsLoading,
 
     totalQuant,
+    blockScan,
 
     updateArrivals,
     selectArrival,
