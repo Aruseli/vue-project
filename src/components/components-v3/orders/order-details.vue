@@ -71,13 +71,7 @@ import OrderCard from './order-card.vue';
         <OrderCard
           v-for="order in ordersStore.currentOrder?.items"
           :key="order.id"
-          :good_title="order.title"
-          :good_price="order.price"
-          :good_quant="order.quant"
-          :good_src="order.image"
-          :good_issued="order.issued"
-          :id="order.id"
-
+          :good="order"
         />
       </div>
     </div>

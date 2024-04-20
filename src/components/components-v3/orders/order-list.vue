@@ -1,10 +1,10 @@
 <script setup lang="ts">
   import i18next, { t } from 'i18next';
 import { useQuasar } from 'quasar';
-import DividerBold from 'src/components/dividers/divider-bold.vue';
+import DividerThin from 'src/components/dividers/divider-thin.vue';
 import { useGoodsStore } from 'src/stores/goods';
 import { useOrdersStore } from 'src/stores/orders';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import BackButton from '../buttons/back-button.vue';
 import ExistOrder from './exist-order.vue';
@@ -13,10 +13,16 @@ import ExistOrder from './exist-order.vue';
   const router = useRouter();
   const goodsStore = useGoodsStore();
   const ordersStore = useOrdersStore();
+  const deleteOrder = (id: string) => {
+    const orderIndex = ordersStore.orders.findIndex((order) => order.id === id)
+    if (orderIndex !== -1) {
+      ordersStore.orders.splice(orderIndex, 1)
+    }
+  }
 
-const goToOrder = (id: string) => {
-  router.push({ path: "/issuing-order/order/" + id });
-};
+  const goToOrder = (id: string) => {
+    router.push({ path: "/issuing-order/order/" + id });
+  };
 
   onMounted(async () => {
     try {
@@ -38,22 +44,23 @@ const goToOrder = (id: string) => {
 
 <template>
   <div class="main_container full-height">
-    <div class="row justify-center relative-position px-40 pt-40">
+    <div class="row justify-center relative-position px-40 pt-40 mb-50">
       <BackButton @click="router.push('/employee-actions')" class="absolute-top-left" />
       <div
         class="text-h2 text-uppercase text-center"
       >{{ $t('open_orders') }}</div>
     </div>
-    <DividerBold class="mb-60"/>
+    <DividerThin class="mb-60 bg-grey-1"/>
     <div class="exist_orders_container px-40">
-      <ExistOrder
-        v-for="order in ordersStore.orders"
-        :key="order.id"
-        :good_title="order.allTitles"
-        :good_price="order.totalPrice"
-        :order_number="order.orderNumStr"
-        @click="goToOrder(order.id)"
-      />
+      <transition-group name="list" tag="div">
+        <div v-for="order in ordersStore.orders" :key="order.id" class="panel">
+          <ExistOrder
+            :order="order"
+            @click="goToOrder(order.id)"
+            @deleteOrder="deleteOrder(order.id)"
+          />
+        </div>
+      </transition-group>
     </div>
   </div>
 </template>
@@ -63,12 +70,28 @@ const goToOrder = (id: string) => {
   display: grid;
   grid-template-rows: max-content max-content 1fr;
   overflow-y: scroll;
-
   scrollbar-width: none;
   background-color: white;
 }
 
-.exist_orders_container > *:not(:last-of-type) {
-  margin-bottom: var(--px30);
+.panel {
+  transition: all 1s;
+}
+
+.list-enter,
+.list-leave-to {
+  opacity: 0;
+}
+
+.list-enter {
+  transform: translateY(30%);
+}
+
+.list-leave-to {
+  transform: translateX(300%);
+}
+
+.list-leave-active {
+  position: absolute;
 }
 </style>

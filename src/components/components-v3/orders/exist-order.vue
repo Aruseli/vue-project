@@ -10,20 +10,12 @@
   const cartStore = useCartStore();
   const $q = useQuasar();
 
-  const emit = defineEmits(['click']);
+  const emit = defineEmits(['click', 'deleteOrder']);
 
   const props = defineProps({
-    good_price: {
-      type: Number,
+    order: {
+      type: Object,
       required: true,
-    },
-    good_title: {
-      type: String,
-      required: false,
-    },
-    order_number: {
-      type: String,
-      required: false
     },
   })
 
@@ -63,26 +55,26 @@
 </script>
 
 <template>
-  <div class="order_item column justify-between bg-white pa-20" @click="emit('click')">
+  <div class="order_item column justify-between bg-white pa-20 mb-40" v-bind="$attrs" @click="emit('click')">
     <div class="row justify-between items-center mb-10">
       <div class="text-h3">
-        № {{ props.order_number }}
+        № {{ props.order.orderNumStr }}
       </div>
       <div class="text-h2">
-        &#3647&ensp;{{ props.good_price }}
+        &#3647&ensp;{{ props.order.totalPrice }}
       </div>
     </div>
     <DividerThin class="bg-grey-1 mb-10" />
     <div class="row justify-between items-center">
       <div class="text-h4 text-weight-regular">
-        {{ props.good_title }}
+        {{ props.order.allTitles }}
       </div>
       <Bin @click="open" :disable="isDisabled" />
     </div>
   </div>
   <DialogDelete :modelValue="openDialog" title="delete_order">
     <template #content>
-      <div class="text-center text-uppercase text-h3 mb-20">№ {{ props.order_number }}</div>
+      <div class="text-center text-uppercase text-h3 mb-20">№ {{ props.order.orderNumStr }}</div>
     </template>
     <template #actions>
       <RectangularButton
@@ -91,7 +83,7 @@
         />
         <RectangularButton
         :name="$t('yes')"
-        @click="console.log('yes')"
+        @click="emit('deleteOrder')"
         />
     </template>
   </DialogDelete>
