@@ -121,19 +121,19 @@ const goodsStore = useGoodsStore();
     <div class="column pa-40">
       <div class="row justify-between items-center mb-40">
         <div class="text-h3 row">
-          <span class="mr-10">{{$t('total')}}</span>
-          <span class="mr-10">{{arrivalsStore.arrival?.items.length}}</span>
-          <span class="mr-10">{{ $t('product') }}</span>
+          <span class="mr-16">{{$t('total')}}</span>
+          <span class="mr-16">{{arrivalsStore.arrival?.items.length}}</span>
+          <span class="mr-16">{{ $t('product') }}</span>
           <span>{{ $t('units', {count: arrivalsStore.arrival?.items.length}) }}</span>
         </div>
 
         <div class="text-h3 text-weight-regular row">
-          <div class="mr-10">{{$t('estimated_quantity')}}</div>
-          <div class="mr-10">{{arrivalsStore.arrival?.totalCount}}</div>
-          <div class="mr-10">{{ $t('pc', {count: arrivalsStore.arrival?.totalCount}) }}</div>
-          <q-separator color="secondary" vertical class="mr-10" size="0.2rem" />
-          <div class="mr-10">{{$t('actual_quantity')}}</div>
-          <div class="mr-10">{{ arrivalsStore.totalQuant }}</div>
+          <div class="mr-16">{{$t('estimated_quantity')}}</div>
+          <div class="mr-16">{{arrivalsStore.arrival?.totalCount}}</div>
+          <div class="mr-16">{{ $t('pc', {count: arrivalsStore.arrival?.totalCount}) }}</div>
+          <q-separator color="secondary" vertical class="mr-16" size="0.2rem" />
+          <div class="mr-16">{{$t('actual_quantity')}}</div>
+          <div class="mr-16">{{ arrivalsStore.totalQuant }}</div>
           <div>{{ $t('pc', {count: arrivalsStore.totalQuant}) }}</div>
         </div>
       </div>
@@ -174,7 +174,5 @@ const goodsStore = useGoodsStore();
   grid-template-columns: 0.3fr 1fr;
   column-gap: var(--px60);
 }
-ul {
-  list-style: none;
-}
+
 </style>

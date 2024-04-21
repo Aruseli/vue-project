@@ -7,8 +7,10 @@
   import { computed, onMounted, ref } from 'vue';
   import { useRouter, useRoute } from 'vue-router';
   import RectangularButton from '../buttons/rectangular-button.vue';
-  import DividerBold from '../dividers/divider-bold.vue';
+  import DividerBold from '../../dividers/divider-bold.vue';
   import ListItem from './list-item.vue';
+  import BackButton from '../buttons/back-button.vue';
+  import InventoryTable from './inventory-table.vue';
   import { useAppStore } from 'src/stores/app';
   import {
     apiReportsGetView,
@@ -142,47 +144,27 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
 </script>
 
 <template>
-  <div class="main_container full-height full-width px-40">
-    <div class="relative-position">
-      <RectangularButton
-        :name="$t('back_to_employee_actions')"
-        color="secondary"
-        icon="arrow_back_ios_new"
-        class="q-pr-sm"
-        @click="router.push('/employee-actions')"
-      />
-      <div
-        class="
-          text-h2
-          text-uppercase text-center
-          q-mb-lg-lg
-          q-mb-xs-sm
-          q-pt-sm-sm
-          q-pt-xs-sm
-        "
-      >{{ $t('complete_inventory') }}</div>
+  <div class="main_container full-height full-width">
+    <div class="column justify-center relative-position q-mb-xl px-40 pt-40">
+      <BackButton @click="router.push('/employee-actions')" class="absolute-top-left" />
+      <div class="text-h2 text-uppercase text-center mb-100">
+        {{ $t('complete_inventory') }}
+      </div>
 
-      <div
-        class="
-          row justify-between
-          q-mb-md-sm
-          q-mb-xs-sm
-        "
-      >
-        <div class="text-capitalize text-h3">
-          {{ $t('remaining_goods') }}
+      <div class="row justify-between">
+        <div class="text-h3 first_letter">
+          {{ $t('received_goods') }}
         </div>
-        <div class="row date_style text-h3">
+        <div class="text-h4 row q-gutter-x-sm text-weight-regular">
           <span>{{ formattedDate }}</span>
           <span>{{ formattedTime }}</span>
-          <span>№ {{ inventoryStore.docNumStr }}</span>
+          <span>№{{ inventoryStore.docNumStr  }}</span>
         </div>
       </div>
-      <DividerBold />
     </div>
 
     <div class="scroll_area">
-      <div>
+      <!-- <div>
         <ol class="bg-white text-black relative-position ol_style">
           <ListItem
             v-for="good in inventoryStore.inventory"
@@ -197,31 +179,32 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
             :id="good.id"
           />
         </ol>
-      </div>
+      </div> -->
+      <InventoryTable :good="inventoryStore.inventory" />
     </div>
     <div>
-      <DividerBold class="q-mb-lg-lg q-mb-md-sm q-mb-xs-sm" />
+      <DividerBold class="mb-30" />
       <div
-        class="row justify-between items-center q-mb-lg-xl q-mb-md-md q-mb-xs-sm"
+        class="row justify-between items-center px-40 mb-40"
       >
         <div class="row text-h3">
-          <span class="q-mr-xs-xs">{{$t('total')}}</span>
-          <span class="q-mr-xs-xs">{{inventoryStore.inventory.length}}</span>
-          <span class="q-mr-xs-xs">{{ $t('product') }}</span>
+          <span class="mr-16">{{$t('total')}}</span>
+          <span class="mr-16">{{inventoryStore.inventory.length}}</span>
+          <span class="mr-16">{{ $t('product') }}</span>
           <span>{{ $t('units', {count: inventoryStore.inventory.length}) }}</span>
         </div>
 
         <div class="text-h3 text-weight-regular row">
-          <div class="q-mr-xs-xs">{{$t('estimated_quantity')}}</div>
-          <div class="q-mr-xs-xs">{{inventoryStore.totalQuantity}}</div>
-          <div class="q-mr-xs-xs">{{ $t('pc', {count: inventoryStore.totalQuantity}) }}</div>
-          <q-separator color="secondary" vertical class="q-mr-xs-xs" size="0.2rem" />
-          <div class="q-mr-xs-xs">{{$t('actual_quantity')}}</div>
-          <div class="q-mr-xs-xs">{{ inventoryStore.totalActualQuant }}</div>
+          <div class="mr-16">{{$t('estimated_quantity')}}</div>
+          <div class="mr-16">{{inventoryStore.totalQuantity}}</div>
+          <div class="mr-16">{{ $t('pc', {count: inventoryStore.totalQuantity}) }}</div>
+          <q-separator color="secondary" vertical class="mr-16" size="0.2rem" />
+          <div class="mr-16">{{$t('actual_quantity')}}</div>
+          <div class="mr-16">{{ inventoryStore.totalActualQuant }}</div>
           <div>{{ $t("pc", { count: inventoryStore.totalActualQuant }) }}</div>
         </div>
       </div>
-      <div class="row justify-evenly">
+      <div class="full-width buttons_container px-100 pb-40">
         <RectangularButton
           :name="$t('confirm')"
           class="col-5 button_style_confirm"
@@ -262,7 +245,7 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
 <style scoped>
 .main_container {
   display: grid;
-  grid-template-rows: max-content 1fr 0.1fr;
+  grid-template-rows: max-content 1fr max-content;
 }
 
 .router_link_style {
@@ -275,5 +258,11 @@ ol li {
 
 ol {
   padding: 0 3px;
+}
+
+.buttons_container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: var(--px60);
 }
 </style>
