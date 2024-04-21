@@ -16,7 +16,8 @@
   const emit = defineEmits(['itemConfirm', 'resetActualQuantity']);
 
   const resetQuant = () => {
-    emit('resetActualQuantity');
+    // emit('resetActualQuantity');
+    props.good.quant = 0
     switchModal.value = false;
   };
 </script>
@@ -44,8 +45,8 @@
             </div>
           </td>
           <td>{{ good.title }}</td>
-          <td>{{ good.quant }}</td>
-          <td>{{ good.issued }}</td>
+          <td class="pcs">{{ good.stock ?? 0 }}</td>
+          <td class="pcs">{{ good.quant }}</td>
           <td>
             <div class="flex no-wrap justify-end items-center">
               <q-img src="/state.svg" v-show="good.issued !== good.quant" class="mr-10 icon_notequal_style" />
@@ -129,13 +130,18 @@ thead {
 }
 thead > tr > th {
   border-right: 2px solid rgb(38, 38, 38);
-
 }
 
 td {
   font-size: clamp(1.15rem, 1.3vw + 0.5rem, 1.5rem);
   text-align: center;
   padding: 1rem;
+}
+td:nth-child(2) {
+  text-align: left;
+}
+td:nth-child(n+3) {
+  text-align: right;
 }
 
 </style>
