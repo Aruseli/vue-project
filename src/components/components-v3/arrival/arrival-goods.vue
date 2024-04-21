@@ -1,19 +1,18 @@
 <script setup lang="ts">
-  import i18next from 'i18next';
-  import { t } from 'i18next';
+  import i18next, { t } from 'i18next';
 import moment from 'moment';
 import { useQuasar } from 'quasar';
-import { computed, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { printGoodsArrival } from 'src/services';
+import { useAppStore } from 'src/stores/app';
 import { useArrivalsStore } from 'src/stores/arrivals';
 import { useGoodsStore } from 'src/stores/goods';
-import { useAppStore } from 'src/stores/app';
-import { apiReportsGetView, printGoodsArrival, wsSendMessage } from 'src/services';
-import RectangularButton from '../buttons/rectangular-button.vue';
-import BackButton from '../buttons/back-button.vue';
+import { computed, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import DividerBold from '../../dividers/divider-bold.vue';
+import BackButton from '../buttons/back-button.vue';
+import RectangularButton from '../buttons/rectangular-button.vue';
 import ArrivalItem from './arrival-item.vue';
-import DividerThin from 'src/components/dividers/divider-thin.vue';
+
 
 const goodsStore = useGoodsStore();
 
@@ -80,17 +79,36 @@ const goodsStore = useGoodsStore();
         </div>
       </div>
     </div>
-    <DividerThin />
-      <div class="row px-40">
 
+    <!-- header -->
+    <div class="full-width px-40 justify-between header_class items-center">
+      <div class="text-h4 text-weight-bold text-center">
+        <div>
+          #
+        </div>
       </div>
-    <DividerThin />
+      <div class="text-h4 text-weight-bold">
+          {{ $t('product_name') }}
+      </div>
+      <div class="text-h4 text-weight-bold column">
+        <span>{{ $t('estimated_quantity') }}</span>
+        <span>({{$t('pcs')}})</span>
+      </div>
+      <div class="text-h4 text-weight-bold column">
+        <span>{{ $t('actual_quantity') }}</span>
+        <span>({{$t('pcs')}})</span>
+      </div>
+      <div class="text-h4 text-weight-bold opacity_header">
+        buttons
+      </div>
+    </div>
 
     <div class="scroll_area px-40">
       <div class="arrivals_container">
-        <ArrivalItem v-for="arrival in arrivalsStore.arrival?.items"
+        <ArrivalItem v-for="(arrival, index) in arrivalsStore.arrival?.items"
           :key="arrival.id"
           :good="arrival"
+          :number="index + 1"
           :confirmed="arrivalsStore.blockScan  === arrival.id"
           :not_equal="arrival.issued !== arrival.quant"
           :class="{ 'highlighted': arrival.confirmed }"
@@ -135,7 +153,17 @@ const goodsStore = useGoodsStore();
 <style scoped>
 .main_container {
   display: grid;
-  grid-template-rows: max-content 1fr 0.1fr;
+  grid-template-rows: repeat(2, max-content) 1fr max-content 0.1fr;
+}
+.opacity_header {
+  opacity: 0;
+}
+.header_class {
+  display: grid;
+  grid-template-columns: 15fr 50fr 25fr 25fr 15fr;
+  column-gap: 3rem;
+  border-bottom: 3px solid black;
+  border-top: 3px solid black;
 }
 .arrivals_container {
   padding: 0.5rem;
@@ -146,5 +174,7 @@ const goodsStore = useGoodsStore();
   grid-template-columns: 0.3fr 1fr;
   column-gap: var(--px60);
 }
-
+ul {
+  list-style: none;
+}
 </style>

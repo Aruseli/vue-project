@@ -11,6 +11,9 @@
       type: Object,
       required: true,
     },
+    number: {
+      type: Number,
+    },
     not_equal: {
       type: Boolean,
       required: false,
@@ -27,33 +30,24 @@
 </script>
 
 <template>
-  <div class="container_style row justify-between items-center" v-bind="$attrs">
-    <Bin @click="switchModal = true" />
-    <div class="text-h3 col-3">{{ props.good.title }}</div>
+  <div class="container_style row justify-between items-center pa-20" v-bind="$attrs">
+    <div class="row items-center">
+      <Bin @click="switchModal = true" />
+      <div class="text-h4 text-weight-regular">{{ props.number }}.</div>
+    </div>
+    <div class="text-h4 col-3 text-weight-regular">{{ props.good.title }}</div>
 
     <!-- estimated quantity -->
-    <div class="quat_container flex row items-center">
-      <div class="text-body1 text-secondary mr-10">{{$t('estimated_quantity')}}</div>
-      <div class="quant_style mr-10">
-        <div class="text-h3 px-40">
-          {{props.good.quant}}
-        </div>
-      </div>
-      <div class="text-body1">{{ $t('pc', {count: props.good.quant}) }}</div>
+    <div class="text-h4 px-40 text-weight-regular">
+      {{props.good.quant}}
     </div>
 
     <!-- actual quantity -->
-    <div class="quat_container flex row items-center">
-      <div class="text-body1 text-secondary mr-10">{{$t('actual_quantity')}}</div>
-      <div class="quant_style mr-10">
-        <div class="text-h3 px-40">
-          {{props.good.issued}}
-        </div>
-      </div>
-      <div class="text-body1">{{ $t('pc', {count: props.good.issued}) }}</div>
+    <div class="text-h4 px-40 text-weight-regular">
+      {{props.good.issued}}
     </div>
 
-    <div class="row justify-end items-center">
+    <div class="flex no-wrap justify-end items-center">
       <q-img src="/state.svg" v-show="props.not_equal" class="mr-10 icon_notequal_style" />
       <ConfirmButton @click="emit('itemConfirm')" />
     </div>
@@ -70,22 +64,12 @@
 
 <style scoped>
 .container_style {
-  box-shadow: var(--box-shadow--product_cart);
-  border-radius: var(--border-sm);
-  padding: var(--px30);
+  box-shadow: var(--border-shadow);
+  border-radius: var(--border-xxs);
   transition: all 0.5s ease-in-out;
   margin-bottom: 1.5rem;
-  @media (max-width: 1300px) {
-    padding: 1rem;
-  }
 }
-.quant_style {
-  width: max-content;
-  box-shadow: inset 0 0 2px 3px rgba(0,0,0,0.25);
-  height: max-content;
-  font-size: 2.5rem;
-  border-radius: 1.5rem
-}
+
 .icon_notequal_style {
   width: 3rem;
   @media (max-width: 1300px) {

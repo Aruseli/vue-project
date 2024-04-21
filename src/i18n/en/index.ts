@@ -108,4 +108,5 @@ export default {
   back_to_menu: 'back to menu',
   delete_order: 'delete order',
   delete_product: 'delete product',
+  product_name: 'product name',
 };
