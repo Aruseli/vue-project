@@ -1,24 +1,22 @@
 <script setup lang="ts">
   import i18next, { t } from 'i18next';
-  import moment from 'moment';
-  import { useQuasar } from 'quasar';
-  import { useGoodsStore } from 'src/stores/goods';
-  import { useInventoryStore } from 'src/stores/inventory';
-  import { computed, onMounted, ref } from 'vue';
-  import { useRouter, useRoute } from 'vue-router';
-  import RectangularButton from '../buttons/rectangular-button.vue';
-  import DividerBold from '../../dividers/divider-bold.vue';
-  import ListItem from './list-item.vue';
-  import BackButton from '../buttons/back-button.vue';
-  import InventoryTable from './inventory-table.vue';
-  import { useAppStore } from 'src/stores/app';
-  import {
-    apiReportsGetView,
-    printDocument,
-    printInventory,
-    wsSendMessage,
-  } from 'src/services';
-  import RedirectDialog from "src/components/dialog/redirect-dialog.vue";
+import moment from 'moment';
+import { useQuasar } from 'quasar';
+import {
+printInventory
+} from 'src/services';
+import { useAppStore } from 'src/stores/app';
+import { useGoodsStore } from 'src/stores/goods';
+import { useInventoryStore } from 'src/stores/inventory';
+import { computed, onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import DividerBold from '../../dividers/divider-bold.vue';
+import Modal from '../../overlay/modal.vue';
+import BackButton from '../buttons/back-button.vue';
+import ModalButton from '../buttons/modal-button.vue';
+import RectangularButton from '../buttons/rectangular-button.vue';
+import InventoryTableBody from './table/inventory-table-body.vue';
+import InventoryTable from './table/inventory-table.vue';
 
   const goodsStore = useGoodsStore();
   const inventoryStore = useInventoryStore();
@@ -145,7 +143,7 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
 
 <template>
   <div class="main_container full-height full-width">
-    <div class="column justify-center relative-position q-mb-xl px-40 pt-40">
+    <div class="column justify-center relative-position mb-20 px-40 pt-40">
       <BackButton @click="router.push('/employee-actions')" class="absolute-top-left" />
       <div class="text-h2 text-uppercase text-center mb-100">
         {{ $t('complete_inventory') }}
@@ -164,23 +162,19 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
     </div>
 
     <div class="scroll_area">
-      <!-- <div>
-        <ol class="bg-white text-black relative-position ol_style">
-          <ListItem
-            v-for="good in inventoryStore.inventory"
-            :key="good.id"
-            :actual_quantity="good.quant"
-            :good_name="good.title"
-            :estimated_quantity="good.stock ?? 0"
-            :not_equal="good.stock !== good.quant"
-            :class="{ 'highlighted': good.confirmed }"
-            @itemConfirm="good.confirmed = !good.confirmed"
-            @resetActualQuantity="good.quant = 0"
-            :id="good.id"
-          />
-        </ol>
-      </div> -->
-      <InventoryTable :good="inventoryStore.inventory" />
+      <InventoryTable>
+        <InventoryTableBody
+          v-for="(good, index) in inventoryStore.inventory"
+          :key="good.id"
+          :good_quant="good.quant"
+          :good_title="good.title"
+          :good_stock="good.stock ?? 0"
+          :good_number="index + 1"
+          :class="{ 'highlighted': good.confirmed }"
+          @itemConfirm="good.confirmed = !good.confirmed"
+          @resetActualQuantity="good.quant = 0"
+        />
+      </InventoryTable>
     </div>
     <div>
       <DividerBold class="mb-30" />
@@ -219,27 +213,21 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
       </div>
     </div>
   </div>
-  <RedirectDialog :modelValue="isPrintConfirmationDialogVisible" title="print?">
-    <template #content>
-      <div class="text-h5 text-center">
-        <div class="text-h5">{{ $t("print") }}</div>
-      </div>
-    </template>
-    <template #actions>
-      <RectangularButton
-        :name="$t('do_not') + ' ' + $t('print')"
+  <Modal :isOpen="isPrintConfirmationDialogVisible" class="bg-white">
+    <div class="text-h2 mb-30 text-center first_letter">{{ $t('print') }}?</div>
+    <div class="buttons_container">
+      <ModalButton
+        :name="$t('not_print')"
         color="transparent"
-        class="q-px-md-sm q-px-xs-sm q-py-xs-xs"
+        textColor="black"
         @click="handlePrintConfirmation(false)"
-        textColor="primary"
       />
-      <RectangularButton
+      <ModalButton
         :name="$t('print')"
-        class="q-px-md-sm q-px-xs-sm q-py-xs-xs"
         @click="handlePrintConfirmation(true)"
       />
-    </template>
-  </RedirectDialog>
+    </div>
+  </Modal>
 </template>
 
 <style scoped>

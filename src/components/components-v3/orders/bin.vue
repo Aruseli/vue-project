@@ -13,6 +13,7 @@ const emit = defineEmits(['click']);
   <q-btn
     flat round
     :disable="props.disable"
+    v-bind="$attrs"
     @click.stop="emit('click')"
   >
     <q-icon name="img:/bin.svg" class="text-grey-1 bin_size" />

@@ -109,4 +109,5 @@ export default {
   delete_order: 'delete order',
   delete_product: 'delete product',
   product_name: 'product name',
+  not_print: "don't print",
 };
