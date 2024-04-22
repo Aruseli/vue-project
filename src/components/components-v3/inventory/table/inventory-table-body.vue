@@ -37,7 +37,7 @@
 <template>
   <tr v-bind="$attrs">
     <td>
-      <div class="row">
+      <div class="row items-center">
         <Bin @click="binSwitch(true)" />
         <div class="text-h4">{{ props.good_number }}</div>
       </div>

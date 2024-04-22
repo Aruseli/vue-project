@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
   import i18next, { t } from 'i18next';
   import moment from 'moment';
   import { useQuasar } from 'quasar';
@@ -7,11 +7,14 @@
   import { onMounted , ref} from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import RectangularButton from '../buttons/rectangular-button.vue';
-  import DividerBold from '../dividers/divider-bold.vue';
-  import ListItem from './list-item.vue';
+  import DividerBold from '../../dividers/divider-bold.vue';
+  import BackButton from '../buttons/back-button.vue';
+  import ModalButton from '../buttons/modal-button.vue';
+  import Modal from '../../overlay/modal.vue';
+  import InventoryTableBody from './table/inventory-table-body.vue';
+  import InventoryTable from './table/inventory-table.vue';
   import { useAppStore } from "src/stores/app";
-  import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
-import { printInventory } from 'src/services';
+  import { printInventory } from 'src/services';
 
   const $q = useQuasar();
 
@@ -90,144 +93,97 @@ async function handlePrintConfirmation(printConfirmed) {
 
 <template>
   <div class="main_container full-height full-width">
-    <div class="relative-position">
-      <RectangularButton
-        :name="$t('back_to_employee_actions')"
-        color="secondary"
-        icon="arrow_back_ios_new"
-        class="q-pr-sm"
-        classTitle="text-subtitle1"
-        @click="router.push('/employee-actions')"
-      />
-      <div
-        class="
-          text-h2 text-uppercase text-center
-          q-mb-xl
-          q-mb-lg-lg
-          q-mb-xs-sm
-          q-pt-sm-sm
-          q-pt-xs-sm
-        "
-      >{{ $t('selective_inventory') }}</div>
+    <div class="column justify-center relative-position mb-20 px-40 pt-40">
+      <BackButton @click="router.push('/employee-actions')" class="absolute-top-left" />
+      <div class="text-h2 text-uppercase text-center mb-100">
+        {{ $t('selective_inventory') }}
+      </div>
 
-      <div
-        class="
-          row justify-between
-          q-mb-md-sm
-          q-mb-xs-sm
-        "
-      >
-        <div class="text-h3 text-capitalize">
-          {{ $t('remaining_goods') }}
+      <div class="row justify-between">
+        <div class="text-h3 first_letter">
+          {{ $t('received_goods') }}
         </div>
-        <div class="row date_style text-h3">
+        <div class="text-h4 row q-gutter-x-sm text-weight-regular">
           <span>{{ formattedDate }}</span>
-          <span>№{{ selectiveInventoryStore.selectedInventory?.inventoryNumStr }}</span>
+          <span>№{{ selectiveInventoryStore.selectedInventory?.inventoryNumStr  }}</span>
         </div>
       </div>
-      <DividerBold />
     </div>
 
     <div class="scroll_area">
-      <div>
-        <ol class="bg-white text-black relative-position q-pl-none">
-          <ListItem
-            v-for="inv in selectiveInventoryStore.selectedInventory?.items"
-            :key="inv.id"
-            :actual_quantity="inv.quant"
-            :good_name="inv.title"
-            :estimated_quantity="inv.stock"
-            :not_equal="inv.stock !== inv.quant"
-            :class="{ 'highlighted': inv.confirmed }"
-            @itemConfirm="inv.confirmed = !inv.confirmed"
-            @resetActualQuantity="inv.quant = 0"
-            :id="inv.id"
-          />
-        </ol>
-      </div>
+      <InventoryTable>
+        <InventoryTableBody
+          v-for="(inv, index) in selectiveInventoryStore.selectedInventory?.items"
+          :key="inv.id"
+          :good_quant="inv.quant"
+          :good_title="inv.title"
+          :good_stock="inv.stock ?? 0"
+          :good_number="index + 1"
+          :class="{ 'highlighted': inv.confirmed }"
+          @itemConfirm="inv.confirmed = !inv.confirmed"
+          @resetActualQuantity="inv.quant = 0"
+        />
+      </InventoryTable>
     </div>
+
     <div>
-      <DividerBold
-        class="
-          q-mb-lg-lg
-          q-mb-md-sm
-          q-mb-xs-sm
-        "
-      />
-      <div
-        class="
-          row justify-between items-center
-          q-mb-lg-xl
-          q-mb-md-md
-          q-mb-xs-sm
-        "
-      >
+      <DividerBold class="mb-30" />
+      <div class="row justify-between items-center items-center px-40 mb-40">
         <div class="row text-h3">
-          <span class="q-mr-xs-xs">{{$t('total')}}</span>
-          <span class="q-mr-xs-xs">{{selectiveInventoryStore.selectedInventory?.items.length}}</span>
-          <span class="q-mr-xs-xs">{{ $t('product') }}</span>
+          <span class="mr-16">{{$t('total')}}</span>
+          <span class="mr-16">{{selectiveInventoryStore.selectedInventory?.items.length}}</span>
+          <span class="mr-16">{{ $t('product') }}</span>
           <span>{{ $t('units', {count: selectiveInventoryStore.selectedInventory?.items.length}) }}</span>
         </div>
 
-        <div class="text-h3 text-weight-regular row q-gutter-x-sm">
-          <div class="q-mr-xs-xs">{{$t('estimated_quantity')}}</div>
-          <div class="q-mr-xs-xs">{{selectiveInventoryStore.selectedInventory?.totalStock}}</div>
-          <div class="q-mr-xs-xs">{{ $t('pc', {count: selectiveInventoryStore.selectedInventory?.totalStock}) }}</div>
-          <q-separator color="secondary" vertical class="q-mr-xs-xs" size="0.2rem" />
-          <div class="q-mr-xs-xs">{{$t('actual_quantity')}}</div>
-          <div class="q-mr-xs-xs">{{ selectiveInventoryStore.totalQuant }}</div>
+        <div class="text-h3 text-weight-regular row">
+          <div class="mr-16">{{$t('estimated_quantity')}}</div>
+          <div class="mr-16">{{selectiveInventoryStore.selectedInventory?.totalStock}}</div>
+          <div class="mr-16">{{ $t('pc', {count: selectiveInventoryStore.selectedInventory?.totalStock}) }}</div>
+          <q-separator color="secondary" vertical class="mr-16" size="0.2rem" />
+          <div class="mr-16">{{$t('actual_quantity')}}</div>
+          <div class="mr-16">{{ selectiveInventoryStore.totalQuant }}</div>
           <div>{{ $t('pc', {count: selectiveInventoryStore.totalQuant}) }}</div>
         </div>
       </div>
-      <div class="row justify-evenly">
+      <div class="full-width buttons_container px-100 pb-40">
         <RectangularButton
           name="confirm"
-          class="col-5 button_style_confirm"
           @click="confirmInventory"
         />
         <RectangularButton
           color="warning"
           :name="$t('declare_discrepancy')"
-          class="col-5 button_style_confirm"
           @click="confirmInventory"
         />
       </div>
     </div>
   </div>
-  <RedirectDialog :modelValue="isPrintConfirmationDialogVisible" title="print?">
-    <template #content>
-      <div class="text-h5 text-center">
-        <div class="text-h5">{{ $t("print") }}</div>
-      </div>
-    </template>
-    <template #actions>
-      <RectangularButton
-        :name="$t('do_not') + ' ' + $t('print')"
+  <Modal :isOpen="isPrintConfirmationDialogVisible" class="bg-white">
+    <div class="text-h2 mb-30 text-center first_letter">{{ $t('print') }}?</div>
+    <div class="buttons_container">
+      <ModalButton
+        :name="$t('not_print')"
         color="transparent"
-        class="q-px-md-sm q-px-xs-sm q-py-xs-xs"
+        textColor="black"
         @click="handlePrintConfirmation(false)"
-        textColor="primary"
       />
-      <RectangularButton
+      <ModalButton
         :name="$t('print')"
-        class="q-px-md-sm q-px-xs-sm q-py-xs-xs"
         @click="handlePrintConfirmation(true)"
       />
-    </template>
-  </RedirectDialog>
+    </div>
+  </Modal>
 </template>
 
 <style scoped>
 .main_container {
   display: grid;
-  grid-template-rows: max-content 1fr 0.1fr;
+  grid-template-rows: max-content 1fr max-content;
 }
-.router_link_style {
-  font-size: 3rem;
-  text-decoration: none;
+.buttons_container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: var(--px60);
 }
-ol li {
-  margin-bottom: 2.5rem;
-}
-
 </style>

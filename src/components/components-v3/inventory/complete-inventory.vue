@@ -178,9 +178,7 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
     </div>
     <div>
       <DividerBold class="mb-30" />
-      <div
-        class="row justify-between items-center px-40 mb-40"
-      >
+      <div class="row justify-between items-center px-40 mb-40">
         <div class="row text-h3">
           <span class="mr-16">{{$t('total')}}</span>
           <span class="mr-16">{{inventoryStore.inventory.length}}</span>
@@ -201,13 +199,11 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
       <div class="full-width buttons_container px-100 pb-40">
         <RectangularButton
           :name="$t('confirm')"
-          class="col-5 button_style_confirm"
           @click="submitInventory"
         />
         <RectangularButton
           color="warning"
           :name="$t('declare_discrepancy')"
-          class="col-5 button_style_confirm"
           @click="submitInventory"
         />
       </div>
@@ -235,19 +231,6 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
   display: grid;
   grid-template-rows: max-content 1fr max-content;
 }
-
-.router_link_style {
-  font-size: 3rem;
-  text-decoration: none;
-}
-ol li {
-  margin-bottom: 2.5rem;
-}
-
-ol {
-  padding: 0 3px;
-}
-
 .buttons_container {
   display: grid;
   grid-template-columns: 1fr 1fr;
