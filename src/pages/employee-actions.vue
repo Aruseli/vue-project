@@ -14,6 +14,7 @@
   import { useGoodsStore } from 'src/stores/goods';
   import EmployeeActions from '../components/components-v3/employee-actions.vue';
   import {default as EmployeeActionsOld} from '../components/catalog/employee-actions.vue';
+  import TestZone from 'src/components/components-v3/test-zone.vue';
 
   const $q = useQuasar();
   const router = useRouter();
@@ -148,6 +149,7 @@
       :inventoryRequests="inventoryRequests"
       v-if="app.kioskState.settings?.alt_ui !== 'design_v3'"
     />
+    <TestZone />
     <RedirectDialog
       :modelValue="dialogState"
       title="there_are_documents_for_inventory"
