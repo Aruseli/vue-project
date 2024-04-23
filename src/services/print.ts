@@ -42,7 +42,7 @@ export async function printDocument({
       .split('"')[0]
       .replaceAll("&#x3D;", "=");
     wsSendMessage("check-print", {
-      printerType: "usb",
+      printerType: appStore.kioskState.settings?.printer_type ?? 'usb',
       template: `<raster>${rawBase64}</raster><feed>4</feed><cut/>`,
       networkHost: appStore.kioskState.settings?.networkHost,
       networkPort: appStore.kioskState.settings?.networkPort,
@@ -127,7 +127,7 @@ export async function printOrder({
       .split('"')[0]
       .replaceAll("&#x3D;", "=");
     wsSendMessage("check-print", {
-      printerType: "usb",
+      printerType: appStore.kioskState.settings?.printer_type ?? 'usb',
       template: `<raster>${rawBase64}</raster><feed>4</feed><cut/>`,
       networkHost: appStore.kioskState.settings?.networkHost,
       networkPort: appStore.kioskState.settings?.networkPort,
