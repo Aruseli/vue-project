@@ -42,6 +42,20 @@ export const useOrdersStore = defineStore("orders", () => {
     }
   };
 
+  const deleteOrder = async (id: string) => {
+    ordersLoading.value = true;
+    try {
+      const doc = ordersDocuments.value.find(doc => doc.id == id);
+      if (doc) {
+        doc.state = 1;
+        await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '')
+      }
+    } finally {
+      ordersLoading.value = false;
+    }
+    await updateOrders();
+  }
+
   const selectOrder = async (id: string) => {
     currentOrderLoading.value = true;
     try {
@@ -76,6 +90,7 @@ export const useOrdersStore = defineStore("orders", () => {
         console.log("Order line mismatch while issuing", d, item);
         throw new Error(`Wrong state of order to issue.`);
       }
+      d.state = item.deleted ? 1 : 0;
       d.total = item?.price * d.quant;
     });
     const totalPrice = currentOrder.value?.totalPrice ?? throwErr("Wrong state of order to issue: totalPrice");
@@ -157,12 +172,22 @@ export const useOrdersStore = defineStore("orders", () => {
     currentOrderItem.issued += 1;
   };
 
+  const deleteGoodInCurrentOrder = async (id: string) => {
+    const item = currentOrder.value?.items.find(i => i.id == id);
+    if (item) {
+      item.deleted = true;
+      recalculateTotals(currentOrder.value!);
+    }
+  }
+
   return {
     currentOrder,
     currentOrderDocument,
     currentOrderLoading,
     selectOrder,
     confirmCurrentOrderIssue,
+    deleteOrder,
+    deleteGoodInCurrentOrder,
 
     orders,
     ordersDocuments,
@@ -191,6 +216,7 @@ function documentToOrder(od: KioskDocument, goodsStore: ReturnType<typeof useGoo
         title: good?.title,
         image: good?.images[0]?.image,
         issued: 0,
+        deleted: false,
       };
     })
   };
@@ -203,3 +229,7 @@ function documentToOrder(od: KioskDocument, goodsStore: ReturnType<typeof useGoo
   };
 }
 
+function recalculateTotals(order: ReturnType<typeof documentToOrder>) {
+  order.totalCount = order.items.reduce((acc, item) => acc + (!item.deleted ? item.quant : 0), 0);
+  order.totalPrice = order.items.reduce((acc, item) => acc + (!item.deleted ? item.quant * item.price : 0), 0);
+}

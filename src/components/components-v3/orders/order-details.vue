@@ -56,11 +56,8 @@ import OrderCard from './order-card.vue';
     }
   }
 
-  const deleteProduct = (id: string) => {
-    const productIndex = ordersStore.currentOrder?.items.findIndex((order) => order.id === id);
-    if (productIndex !== -1 && ordersStore.currentOrder?.items) {
-      ordersStore.currentOrder.items = ordersStore.currentOrder.items.filter((_, index) => index !== productIndex);
-    }
+  const deleteProduct = async (id: string) => {
+    await ordersStore.deleteGoodInCurrentOrder(id);
   }
 </script>
 
@@ -76,7 +73,7 @@ import OrderCard from './order-card.vue';
     <div class="scroll_area px-40">
       <div class="orders_container">
         <transition-group name="list" tag="div">
-          <div v-for="order in ordersStore.currentOrder?.items" :key="order.id" class="ghost">
+          <div v-for="order in ordersStore.currentOrder?.items.filter(i => !i.deleted)" :key="order.id" class="ghost">
             <OrderCard
               :good="order"
               @deleteProduct="deleteProduct(order.id)"

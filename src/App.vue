@@ -2,6 +2,7 @@
   import { eventEmitter, throwErr } from "src/services";
   import RectangularButton from 'components/buttons/rectangular-button.vue';
   import RedirectDialog from 'components/dialog/redirect-dialog.vue';
+  import Dialogs from "./components/overlay/dialogs.vue";
   import { parseBarcode, uuidToBarcodeDocId } from "src/services/barcodes";
   import { useAppStore } from "src/stores/app";
   import { useOrdersStore } from "src/stores/orders";
@@ -273,6 +274,7 @@
   <div id="modal" />
   <div id="redirect-dialog" />
   <div id="drawer" />
+  <Dialogs />
   <RedirectDialog
     :modelValue="redirectDialogState"
     title="you_are_inactive"

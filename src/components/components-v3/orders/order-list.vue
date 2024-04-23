@@ -13,11 +13,8 @@ import ExistOrder from './exist-order.vue';
   const router = useRouter();
   const goodsStore = useGoodsStore();
   const ordersStore = useOrdersStore();
-  const deleteOrder = (id: string) => {
-    const orderIndex = ordersStore.orders.findIndex((order) => order.id === id)
-    if (orderIndex !== -1) {
-      ordersStore.orders.splice(orderIndex, 1)
-    }
+  const deleteOrder = async (id: string) => {
+    await ordersStore.deleteOrder(id);
   }
 
   const goToOrder = (id: string) => {
