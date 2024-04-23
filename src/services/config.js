@@ -78,7 +78,9 @@ export default {
     "check_ext_source": "d69b1a29-ed49-4b57-b335-f719abce640d",
     "check_content_type": "продажа товара",
 
-    "printer_type": "usb"
+    "printer_type": "usb",
+    networkHost: undefined,
+    networkPort: undefined,
   },
 
   // These three lines are outside of settings because they are used

@@ -21,6 +21,7 @@ export async function printDocument({
   $q,
   viewId,
   langCode = i18next.language,
+  appStore
 }: PrintDocumentOptions) {
   $q.loading.show();
   try {
@@ -43,6 +44,8 @@ export async function printDocument({
     wsSendMessage("check-print", {
       printerType: "usb",
       template: `<raster>${rawBase64}</raster><feed>4</feed><cut/>`,
+      networkHost: appStore.kioskState.settings?.networkHost,
+      networkPort: appStore.kioskState.settings?.networkPort,
     });
   } catch (e) {
     $q.notify({
@@ -60,6 +63,7 @@ type PrintDocumentOptions = {
   $q: QVueGlobals;
   viewId: string;
   langCode?: string;
+  appStore: ReturnType<typeof useAppStore>
 };
 type PrintSpecificDocumentOptions = Omit<PrintDocumentOptions, "viewId"> & {
   viewId?: string;
@@ -87,6 +91,7 @@ export async function printCheck({
     $q,
     viewId: appStore.kioskState.settings!.view_check,
     langCode,
+    appStore
   });
 }
 
@@ -124,6 +129,8 @@ export async function printOrder({
     wsSendMessage("check-print", {
       printerType: "usb",
       template: `<raster>${rawBase64}</raster><feed>4</feed><cut/>`,
+      networkHost: appStore.kioskState.settings?.networkHost,
+      networkPort: appStore.kioskState.settings?.networkPort,
     });
   } catch (e) {
     $q.notify({
@@ -143,7 +150,7 @@ export async function printGoodsArrival({
   appStore,
   viewId = appStore.kioskState.settings!.view_doc_input,
 }: PrintSpecificDocumentOptions) {
-  return await printDocument({ documentId, $q, viewId, langCode });
+  return await printDocument({ documentId, $q, viewId, langCode, appStore });
 }
 
 export async function printInventory({
@@ -153,7 +160,7 @@ export async function printInventory({
   appStore,
   viewId = appStore.kioskState.settings!.view_doc_invent,
 }: PrintSpecificDocumentOptions) {
-  return await printDocument({ documentId, $q, viewId, langCode });
+  return await printDocument({ documentId, $q, viewId, langCode, appStore });
 }
 
 /**
@@ -216,6 +223,8 @@ export async function printLeftovers({
     wsSendMessage("check-print", {
       printerType: appStore.kioskState.settings?.printer_type || "usb",
       template: `<raster>${rawBase64}</raster><feed>4</feed><cut/>`,
+      networkHost: appStore.kioskState.settings?.networkHost,
+      networkPort: appStore.kioskState.settings?.networkPort,
     });
   } catch (e) {
     $q.notify({

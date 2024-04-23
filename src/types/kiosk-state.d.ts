@@ -77,7 +77,9 @@ export type Settings = {
   check_ext_source: string,
   check_content_type: string,
 
-  printer_type: PrinterType
+  printer_type: PrinterType,
+  networkHost?: string,
+  networkPort?: number,
 }
 
 export type TerminalParams = {
