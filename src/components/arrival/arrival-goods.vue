@@ -100,7 +100,6 @@ const goodsStore = useGoodsStore();
           :key="arrival.id"
           :good_name="arrival.title"
           :actual_quantity="arrival.issued"
-          :confirmed="arrivalsStore.blockScan  === arrival.id"
           :not_equal="arrival.issued !== arrival.quant"
           :class="{ 'highlighted': arrival.confirmed }"
           @itemConfirm="arrival.confirmed = !arrival.confirmed"

@@ -13,6 +13,7 @@
   import { useSelectiveInventoryStore } from "./stores/selective-inventory";
   import { forceNewVisit } from "./services/tracking";
   import { onMounted, ref } from "vue";
+  import { debugGenerateArrival } from "src/services/documents/documents";
 
   const route = useRoute()
   const router = useRouter()
@@ -27,47 +28,39 @@
     const arrivalsStore = useArrivalsStore();
     const inventoryStore = useInventoryStore();
     const selectiveInventoryStore = useSelectiveInventoryStore();
+    if (evt.cmd == 'barcode' && process.env.DEV && evt.data == 'debugGenerateArrival') {
+      await debugGenerateArrival();
+    }
+    const uuidRegExp = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi
+    if (evt.cmd == 'barcode' && uuidRegExp.test(evt.data)) {
+      const uuids = evt.data.match(uuidRegExp);
+      if (uuids.length != 1) {
+        console.error("What's with uuids? Why not one?", uuids);
+        return;
+      }
+      // GoodBarcode
+      if (route.path == `/issuing-order/order/${route.params.id}`) {
+        await ordersStore.scanGood(uuids[0]);
+      }
+      if (route.path == `/arrival-goods/${route.params.id}`) {
+        await arrivalsStore.scanArrivalGood(uuids[0]);
+      }
+      if (route.path == '/complete-inventory' ||
+          route.path == '/open-shift/complete-inventory' ||
+          route.path == '/close-shift/complete-inventory'
+      ) {
+        await inventoryStore.scanInventoryGood(uuids[0]);
+      }
+      if (route.path == '/selective-inventory') {
+        await selectiveInventoryStore.scanInventoryGood(uuids[0]);
+      }
+    }
     if (evt.cmd == 'barcode' && evt.data.length == 13) {
       const barcode = parseBarcode(evt.data)
       switch (barcode.prefix) {
-        case '210':
-          // GoodBarcode
-          if (route.path == `/issuing-order/order/${route.params.id}`) {
-            const good = goodsStore.getGoodByCode(barcode.code);
-            if (!good) {
-              console.error(`Good for barcode ${barcode.barcode} not found`);
-              return;
-            }
-            await ordersStore.scanGood(good);
-          }
-          if (route.path == `/arrival-goods/${route.params.id}`) {
-            const good = goodsStore.getGoodByCode(barcode.code);
-            if (!good) {
-              console.error(`Good for barcode ${barcode.barcode} not found`);
-              return;
-            }
-            await arrivalsStore.scanArrivalGood(good);
-          }
-          if (route.path == '/complete-inventory' ||
-              route.path == '/open-shift/complete-inventory' ||
-              route.path == '/close-shift/complete-inventory'
-          ) {
-            const good = goodsStore.getGoodByCode(barcode.code);
-            if (!good) {
-              console.error(`Good for barcode ${barcode.barcode} not found`);
-              return;
-            }
-            await inventoryStore.scanInventoryGood(good);
-          }
-          if (route.path == '/selective-inventory') {
-            const good = goodsStore.getGoodByCode(barcode.code);
-            if (!good) {
-              console.error(`Good for barcode ${barcode.barcode} not found`);
-              return;
-            }
-            await selectiveInventoryStore.scanInventoryGood(good);
-          }
-          break;
+        // case '210':
+        //   // GoodBarcode
+        //   break;
         case '220': // Employee
           // TODO populate disallowed paths
           if (route.path in []) {

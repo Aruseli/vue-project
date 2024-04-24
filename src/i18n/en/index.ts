@@ -21,6 +21,13 @@ export default {
   find_your_experience: 'find your experience',
   tap_on_screen: 'Tap anywhere on the screen',
 
+  // Documents
+  unknown_good_marking: "This good is not registered on this selling point",
+  scanned_good_is_not_in_order: "Scanned good is not present in current order",
+  scanned_good_not_in_arrival: "Scanned good is not present in current arrival",
+  scanned_good_is_not_in_inventory: "Scanned good is not present in current inventory",
+  repeated_good_scan: "Cannot scan the same QR-code more than once",
+
   // Unsorted
   actual_quantity: 'actual quantity',
   are_you_still_here: 'Too much time without user actions. Will reset soon.',
@@ -110,4 +117,5 @@ export default {
   delete_product: 'delete product',
   product_name: 'product name',
   not_print: "don't print",
+  dismiss: "Dismiss",
 };
