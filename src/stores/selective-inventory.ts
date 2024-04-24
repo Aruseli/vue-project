@@ -54,7 +54,7 @@ export const useSelectiveInventoryStore = defineStore("selectiveInventoryStore",
         ? documentToInventory(inventoryDoc, goodsStore)
         : null;
       selectedInventoryDocument.value = inventoryDoc;
-      const debugGoodItemIds = selectedInventory.value?.items.flatMap(i => goodsStore.getGoodById(i.id).itemIds);
+      const debugGoodItemIds = selectedInventory.value?.items.flatMap(i => goodsStore.getGoodById(i.id).items.map(item => item.mark));
       console.log("Inventory expected good individual IDs", debugGoodItemIds);
       console.log(debugGoodItemIds?.map(s => `curl --location 'http://127.0.0.1:3010/api/system/emulate/barcode?code=${s}'`).join('\n'));
     } catch {

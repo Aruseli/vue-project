@@ -87,7 +87,7 @@ export const useOrdersStore = defineStore("orders", () => {
         ? documentToOrder(orderDoc, goodsStore)
         : null;
       currentOrderDocument.value = orderDoc;
-      const debugGoodItemIds = currentOrder.value?.items.flatMap(i => goodsStore.getGoodById(i.id).itemIds);
+      const debugGoodItemIds = currentOrder.value?.items.flatMap(i => goodsStore.getGoodById(i.id).items.map(item => item.mark));
       console.log("Order expected good individual IDs", debugGoodItemIds);
       console.log(debugGoodItemIds?.map(s => `curl --location 'http://127.0.0.1:3010/api/system/emulate/barcode?code=${s}'`).join('\n'));
     } catch {

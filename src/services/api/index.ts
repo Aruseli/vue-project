@@ -368,7 +368,7 @@ export async function apiUpsertCheck(check: Check) {
 
 export async function apiGetStockRemains(id: string) {
   const response = await fetchApi('/api/v2/kiosk/getStockRemains', { id });
-  return response.data.goods as { good_id: string, good_individal_ids: string[] }[];
+  return response.data.goods as { good_id: string, items: { mark: string, code: string}[] }[];
 }
 
 // Unused now:

@@ -47,7 +47,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
       curr_rate: 1,
       comment: undefined,
       details: goodsStore.goods.flatMap(gs =>
-        gs.goods.flatMap((good, index) => good.itemIds.map((itemId, index2) => ({
+        gs.goods.flatMap((good, index) => good.items.map((item, index2) => ({
           id: undefined,
           state: 0,
           rec_order: index * 100 + index2 + 1,
@@ -55,7 +55,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
           munit_id: settings?.munit_id ?? "", // default
           quant: 1,
           total: good.price,
-          doc_detail_link: itemId,
+          doc_detail_link: item.mark,
           doc_detail_type: settings?.docdetail_type__inventory ?? "",
         })),
       ))
@@ -96,7 +96,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
       const documentId = await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '');
       inventoryDocument.value = await apiGetDocument(documentId);
       inventory.value = documentToInventory(inventoryDocument.value, goodsStore).items;
-      const debugGoodItemIds = inventory.value?.flatMap(i => goodsStore.getGoodById(i.id).itemIds);
+      const debugGoodItemIds = inventory.value?.flatMap(i => goodsStore.getGoodById(i.id).items.map(item => item.mark));
       console.log("Order expected good individual IDs", debugGoodItemIds);
       console.log(debugGoodItemIds.map(s => `curl --location 'http://127.0.0.1:3010/api/system/emulate/barcode?code=${s}'`).join('\n'))
     } finally {

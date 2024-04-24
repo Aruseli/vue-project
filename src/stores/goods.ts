@@ -10,7 +10,12 @@ export type Good = {
   description: string,
   price: number,
   stock: number,
-  itemIds: string[], // UUID[]
+  items: {
+    /** UUID */
+    mark: string,
+    /** Human-readable */
+    code: string,
+  }[],
   images: {
     id: string,
     image?: string, // base64
@@ -115,13 +120,13 @@ export const useGoodsStore = defineStore('goodsStore', () => {
           apiGetGoods(location_id, locale),
           apiGetStockRemains(appStore.kioskState.kioskCorr?.id ?? ''),
         ]);
-        const stockRemainsMap = Object.fromEntries(stockRemains.map(v => [v.good_id, v.good_individal_ids]));
+        const stockRemainsMap = Object.fromEntries(stockRemains.map(v => [v.good_id, v.items]));
         goods.value = fetchedGoods.map(gc => ({
           ...gc,
           goods: gc.goods.filter(g => !!g).map(g => ({
             ...g,
             stock: stockRemainsMap[g.id]?.length ?? 0,
-            itemIds: stockRemainsMap[g.id] ?? [],
+            items: stockRemainsMap[g.id] ?? [],
             images: g.images_ids.map(id => ({
               id,
               image: imagesCache.get(id),
@@ -130,7 +135,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
         }));
         const goodsArray = goods.value.flatMap(gc => gc.goods);
         goodsByGoodId.value = Object.fromEntries(goodsArray.map(g => [g.id, g]));
-        goodsByItemId.value = Object.fromEntries(goodsArray.flatMap(g => g.itemIds.map(id => [id, g])));
+        goodsByItemId.value = Object.fromEntries(goodsArray.flatMap(g => g.items.map(item => [item.mark, g])));
         setTimeout(() => updateImages(), 0);
         appStore.tab = fetchedGoods[0].id
         goodsLoading.value = false
