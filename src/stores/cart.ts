@@ -3,7 +3,7 @@ import { ref, computed } from 'vue';
 import { Good, useGoodsStore } from './goods';
 import { useAppStore } from './app';
 import { apiSaveDocument, printOrder } from 'src/services';
-import { getNextInvoiceNumber } from 'src/services/documents';
+import { getNextInvoiceNumber } from 'src/services/documents/counters';
 import { QVueGlobals } from 'quasar';
 
 export type CartItem = {
@@ -59,7 +59,7 @@ export const useCartStore = defineStore('cartStore',
       const doc = {
         id: undefined,
         state: 2,
-        doc_type: settings?.invoice_doc_type_id ?? '',
+        doc_type: settings?.doc_type__invoice ?? '',
         abbr_text: undefined,
         abbr_num: getNextInvoiceNumber(),
         doc_date: new Date().toISOString(),
@@ -79,7 +79,7 @@ export const useCartStore = defineStore('cartStore',
           quant: item.quant,
           total: item.quant * item.price,
           doc_detail_link: undefined,
-          doc_detail_type: settings?.invoice_docdetail_type_id ?? '',
+          doc_detail_type: settings?.docdetail_type__invoice_placing ?? '',
         })),
       }
       const documentId = await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '')

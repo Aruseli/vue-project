@@ -1,3 +1,4 @@
+import { t } from "i18next";
 import { reactive } from "vue";
 
 export const dialogs = reactive<Dialog[]>([]);
@@ -29,10 +30,11 @@ export function showDialog(params: DialogParams) {
   };
 
   dialog.buttons.forEach(b => {
+    const handler = b.handler;
     b.handler = async () => {
       dialog.loading = true;
       try {
-        await b.handler();
+        await handler();
       } finally {
         dialog.loading = false;
         const index = dialogs.indexOf(dialog);
@@ -45,4 +47,13 @@ export function showDialog(params: DialogParams) {
 
   dialogs.push(dialog);
   dialogs.sort((a, b) => b.priority - a.priority); // descending
+}
+
+export function showSimpleNotification(text: string) {
+  showDialog({
+    text,
+    buttons: [
+      { name: t('dismiss'), handler: async () => {}, type: "primary" },
+    ]
+  })
 }

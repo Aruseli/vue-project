@@ -1,11 +1,13 @@
 import { t } from "i18next";
 import { defineStore } from "pinia";
-import { KioskDocument, apiGetDocuments, apiSaveDocument } from "src/services";
-import { getNextInventoryNumber } from "src/services/documents";
+import { KioskDocument, SaveableDocument, apiGetDocument, apiGetDocuments, apiSaveDocument, throwErr } from "src/services";
+import { getNextInventoryNumber } from "src/services/documents/counters";
 import { computed, ref } from "vue";
 import { useAppStore } from "./app";
 import { useGoodsStore, type Good } from "./goods";
 import { Notify } from 'quasar';
+import { journalErroneousAction } from "src/services/documents/documents";
+import { showSimpleNotification } from "src/services/dialogs";
 
 export type InventoryItem = {
   id: string,
@@ -14,6 +16,7 @@ export type InventoryItem = {
   title: string,
   stock: number | null,
   confirmed?: boolean,
+  scannedItems: string[],
 }
 
 export const useInventoryStore = defineStore("inventoryStore", () => {
@@ -28,11 +31,11 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
   // This will be useful when we apply DRI to code and merge document stores
   const initFullInventoryDoc = async () => {
     const settings = appStore.kioskState.settings;
-    const kioskCorrId = appStore.kioskState.kioskCorr?.id ?? '';
+    const kioskCorrId = appStore.kioskState.kioskCorr?.id ?? throwErr("Missing kioskCorr");
     const doc = {
       id: undefined,
-      state: 0,
-      doc_type: settings?.inventory_doc_type_id ?? "",
+      state: 2,
+      doc_type: settings?.doc_type__inventory ?? "",
       abbr_text: undefined,
       abbr_num: getNextInventoryNumber(),
       doc_date: new Date().toISOString(),
@@ -44,71 +47,58 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
       curr_rate: 1,
       comment: undefined,
       details: goodsStore.goods.flatMap(gs =>
-        gs.goods.map((good, index) => ({
+        gs.goods.flatMap((good, index) => good.items.map((item, index2) => ({
           id: undefined,
           state: 0,
-          rec_order: index + 1,
+          rec_order: index * 100 + index2 + 1,
           good_id: good.id,
           munit_id: settings?.munit_id ?? "", // default
-          quant: 0,
-          total: good.stock * good.price,
-          doc_detail_link: undefined,
-          doc_detail_type: settings?.inventory_docdetail_type_id ?? "",
-        }),
+          quant: 1,
+          total: good.price,
+          doc_detail_link: item.mark,
+          doc_detail_type: settings?.docdetail_type__inventory ?? "",
+        })),
       ))
     }
     return doc;
   }
 
   const submitInventory = async () => {
-    const settings = appStore.kioskState.settings;
-    const kioskCorrId = appStore.kioskState.kioskCorr?.id ?? '';
-    const doc = {
-      id: undefined,
-      state: 0,
-      doc_type: settings?.inventory_doc_type_id ?? "",
-      abbr_text: undefined,
-      abbr_num: getNextInventoryNumber(),
-      doc_date: new Date().toISOString(),
-      doc_order: 0,
-      corr_from_ref: kioskCorrId,
-      corr_to_ref: kioskCorrId,
-      respperson_ref: appStore.kioskState.userCorr?.id ?? "",
-      currency_ref: settings?.currency_id ?? "",
-      curr_rate: 1,
-      comment: undefined,
-      details: inventory.value.map((item, index) => ({
+    const doc: SaveableDocument | null = inventoryDocument.value;
+    if (!doc) {
+      throw new Error('Missing inventory document');
+    }
+
+    doc.state = 0;
+    doc.respperson_ref = appStore.kioskState.userCorr?.id ?? throwErr("Missing userCorr");
+
+    doc.details = inventory.value?.flatMap((item, goodIndex) =>
+      item.scannedItems.map((itemId, index) => ({
         id: undefined,
         state: 0,
-        rec_order: index + 1,
+        rec_order: goodIndex * 100 + index,
         good_id: item.id,
-        munit_id: settings?.munit_id ?? "", // default
-        quant: item.quant,
-        total: item.quant * item.price,
-        doc_detail_link: undefined,
-        doc_detail_type: settings?.inventory_docdetail_type_id ?? "",
-      })),
-    };
+        munit_id: appStore.kioskState.settings?.munit_id ?? '',
+        quant: 1,
+        total: item.price,
+        doc_detail_link: itemId,
+        doc_detail_type: appStore.kioskState.settings?.docdetail_type__inventory ?? '',
+      }))) ?? [];
+
     const documentId = await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '');
-    return {documentId}
+    return { documentId }
   };
 
   const updateInventory = async () => {
     inventoryLoading.value = true;
     try {
-      inventory.value = goodsStore.goods
-        .map((g) =>
-          g.goods.map((good) => ({
-            id: good.id,
-            quant: 0,
-            confirmed: false,
-            price: good.price,
-            title: good.title,
-            stock: good.stock,
-          }))
-        )
-        .flat();
-      docNum.value = getNextInventoryNumber();
+      const doc = await initFullInventoryDoc();
+      const documentId = await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '');
+      inventoryDocument.value = await apiGetDocument(documentId);
+      inventory.value = documentToInventory(inventoryDocument.value, goodsStore).items;
+      const debugGoodItemIds = inventory.value?.flatMap(i => goodsStore.getGoodById(i.id).items.map(item => item.mark));
+      console.log("Order expected good individual IDs", debugGoodItemIds);
+      console.log(debugGoodItemIds.map(s => `curl --location 'http://127.0.0.1:3010/api/system/emulate/barcode?code=${s}'`).join('\n'))
     } finally {
       inventoryLoading.value = false;
     }
@@ -121,24 +111,28 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     ) ?? 0;
   });
 
-  const scanInventoryGood = async (good: Good) => {
+  const scanInventoryGood = async (itemId: string) => {
+    const docId = inventoryDocument.value?.id ?? throwErr("Missing selectedInventory.value?.id");
+    const good = goodsStore.getGoodByItemId(itemId);
+    if (!good) {
+      await journalErroneousAction(docId, { event_type: 'unknown_good_marking', marking: itemId });
+      showSimpleNotification(t('unknown_good_marking'));
+      return;
+    }
     const inventoryItem = inventory.value?.find((i) => i.id == good.id);
     if (!inventoryItem) {
+      await journalErroneousAction(docId, { event_type: 'scanned_good_is_not_in_inventory', marking: itemId });
+      showSimpleNotification(t('scanned_good_is_not_in_inventory'));
       return;
     }
-    if (inventoryItem?.confirmed == true) {
-        console.error("Stop scan");
-        Notify.create({
-          color: "warning",
-          position: "center",
-          classes: "text-h3 text-center text-uppercase",
-          timeout: 3000,
-          textColor: "white",
-          message: t("you_are_scanning_an_item_whose_quantity_has_been_confirmed"),
-        });
+    if (inventoryItem.scannedItems.includes(itemId)) {
+      await journalErroneousAction(docId, { event_type: 'repeated_good_scan', marking: itemId });
+      showSimpleNotification(t('repeated_good_scan'));
       return;
     }
-    inventoryItem.quant += 1;
+    inventoryItem.quant = inventoryItem.scannedItems.push(itemId)
+
+    // you_are_scanning_an_item_whose_quantity_has_been_confirmed now unused because of individual barcodes
   };
 
   return {
@@ -156,3 +150,34 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     docNumStr: computed(() => docNum.value?.toString().padStart(4, "0") ?? t("Unknown")),
   };
 });
+
+function documentToInventory(
+  inv: SaveableDocument,
+  goodsStore: ReturnType<typeof useGoodsStore>
+) {
+  const goodIds = [...new Set(inv.details.map(d => d.good_id as string))]
+  const inventory = {
+    id: inv.id,
+    inventoryNumStr: inv.abbr_num?.toString().padStart(4, "0") ?? t("Unknown"),
+    inventoryDate: inv.doc_date,
+    items: goodIds.map(goodId => {
+      const good = goodsStore.getGoodById(goodId);
+      return {
+        id: goodId,
+        stock: good?.stock ?? 0,
+        title: good?.title,
+        price: good?.price,
+        quant: 0,
+        scannedItems: [] as string[],
+        confirmed: false,
+      };
+    }),
+  };
+  return {
+    ...inventory,
+    totalStock: inventory.items.reduce(
+      (acc, item) => acc + (item.stock ?? 0),
+      0
+    ),
+  };
+}

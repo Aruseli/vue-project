@@ -20,12 +20,14 @@ export default {
     "munit_id": "f749a8e4-aa0e-42ad-9768-888c8ef5629b",
     "currency_id": "54a23c08-4fb8-4952-bf17-7ee9528cdfca",
 
-    "invoice_doc_type_id": "3631602d-ef2e-41fe-8aaf-0c063eacb5e1",
-    "invoice_docdetail_type_id": "f15e302a-b60e-4a7d-bbba-64d29548355c",
-    "goods_arrival_doc_type_id": "c50c9265-6874-4ecc-950f-588145ff3b65",
-    "goods_arrival_docdetail_type_id": "bd91b47e-e905-46c5-bbe8-736757f03b87",
-    "inventory_doc_type_id": "9f358a54-742e-49f7-bbe6-2cf906d534c3",
-    "inventory_docdetail_type_id": "23e85f54-cf45-417e-bd57-afd89a2a93de",
+    "doc_type__goods_arrival": "c50c9265-6874-4ecc-950f-588145ff3b65",
+    "doc_type__inventory": "9f358a54-742e-49f7-bbe6-2cf906d534c3",
+    "doc_type__invoice": "3631602d-ef2e-41fe-8aaf-0c063eacb5e1",
+    "docdetail_type__inventory": "23e85f54-cf45-417e-bd57-afd89a2a93de",
+    "docdetail_type__invoice_issue": "f15e302a-b60e-4a7d-bbba-64d29548355c",
+    "docdetail_type__invoice_placing": "23e85f54-cf45-417e-bd57-afd89a2a93de",
+
+    "docoperation_type__erroneous_action": "850180e3-837f-436f-8d92-2a6ff4a8de97",
 
     "rights__kiosk_open_shift": "a2bd93d9-c7a3-4a53-ace9-0a655ac4dff1",
     "rights__kiosk_close_own_shift": "05dcfdba-1b5c-477c-a2f4-e2ac341f5e72",
