@@ -1,3 +1,5 @@
+import { PrinterType } from "src/services";
+
 // See also config.json
 export type Settings = {
   loc: string,
@@ -74,6 +76,10 @@ export type Settings = {
   // После этого в списке подключений этого объекта появиться запись, идентификатор которой и есть искомый ID.
   check_ext_source: string,
   check_content_type: string,
+
+  printer_type: PrinterType,
+  networkHost?: string,
+  networkPort?: number,
 }
 
 export type TerminalParams = {
