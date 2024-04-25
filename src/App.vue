@@ -3,7 +3,7 @@
   import RectangularButton from 'components/buttons/rectangular-button.vue';
   import RedirectDialog from 'components/dialog/redirect-dialog.vue';
   import Dialogs from "./components/overlay/dialogs.vue";
-  import { parseBarcode, uuidToBarcodeDocId } from "src/services/barcodes";
+  import { parseBarcode } from "src/services/barcodes";
   import { useAppStore } from "src/stores/app";
   import { useOrdersStore } from "src/stores/orders";
   import { useRoute, useRouter } from "vue-router";
@@ -76,12 +76,10 @@
           if (appStore.orderIssueIsAllowed && route.path == '/employee-actions') {
             await ordersStore.updateOrders()
             // if (process.env.DEV) {
-            console.log('Order barcodes', ordersStore.ordersDocuments.map(d =>
-              `2300${uuidToBarcodeDocId(d.id).toString().padStart(8, "0")}0`))
+            console.log('Order barcodes', ordersStore.ordersDocuments.map(d => d.barcode));
             // }
             ordersStore.ordersDocuments.forEach(d => {
-              // TODO: Check also docType
-              if (uuidToBarcodeDocId(d.id) == barcode.docId) {
+              if (d.barcode == barcode.barcode) {
                 router.push(`/issuing-order/order/${d.id}`)
               }
             });
@@ -89,12 +87,11 @@
           if (appStore.arrivalsAreAllowed && route.path == '/employee-actions') {
             await arrivalsStore.updateArrivals();
             // if (process.env.DEV) {
-            console.log('Arrival barcodes', arrivalsStore.arrivalsDocuments.map(d =>
-              `2300${uuidToBarcodeDocId(d.id).toString().padStart(8, "0")}0`))
+            console.log('Arrival barcodes', arrivalsStore.arrivalsDocuments.map(d => d.barcode));
             // }
             arrivalsStore.arrivalsDocuments.forEach(d => {
               // TODO: Check also docType
-              if (uuidToBarcodeDocId(d.id) == barcode.docId) {
+              if (d.barcode == barcode.barcode) {
                 router.push(`/arrival-goods/${d.id}`)
               }
             });
