@@ -1,13 +1,4 @@
 
-export function uuidToBarcodeDocId(uuid: string) {
-  if (uuid.indexOf('-') != 8) {
-    throw new Error(`Wrong UUID ${uuid}`)
-  }
-
-  const hexDigits = uuid.slice(2, 8)
-  return parseInt(hexDigits, 16)
-}
-
 export type GoodBarcode = {
   prefix: "210",
   barcode: string,
