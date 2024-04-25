@@ -83,7 +83,7 @@ export async function apiGetLocalesList(objectId: string, locationId: string) {
     locationId,
   });
   console.log('apiGetLocalesList', response)
-  return response.data.locales as {id: string, lang_code: string, name: string}[];
+  return response.data.locales as {id: string, lang_code: string, name: string, flag_code: string}[];
 }
 
 export async function apiGetLocale(lang: string) {
