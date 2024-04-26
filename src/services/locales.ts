@@ -30,32 +30,32 @@ export async function updateCatalogLocales(kioskState: KioskState) {
 // export const KNOWN_LOCALES: LocaleInfo[] = [
 //   {
 //     lang_code: 'en',
-//     flag_src: 'src/assets/flags/gb-eng.svg',
+//     flag_src: 'src/assets/flags/4x3/gb-eng.svg',
 //     name: 'English',
 //   },
 //   {
 //     lang_code: 'th',
-//     flag_src: 'src/assets/flags/th.svg',
+//     flag_src: 'src/assets/flags/4x3/th.svg',
 //     name: 'Thai',
 //   },
 //   {
 //     lang_code: 'ru',
-//     flag_src: 'src/assets/flags/ru.svg',
+//     flag_src: 'src/assets/flags/4x3/ru.svg',
 //     name: 'Russian',
 //   },
 //   {
 //     lang_code: 'km',
-//     flag_src: 'src/assets/flags/de.svg',
+//     flag_src: 'src/assets/flags/4x3/de.svg',
 //     name: "Cambodia",
 //   },
 //   {
 //     lang_code: 'es',
-//     flag_src: 'src/assets/flags/es.svg',
+//     flag_src: 'src/assets/flags/4x3/es.svg',
 //     name: 'Spanish',
 //   },
 //   {
 //     lang_code: 'uk',
-//     flag_src: 'src/assets/flags/ua.svg',
+//     flag_src: 'src/assets/flags/4x3/ua.svg',
 //     name: 'Ukrainian',
 //   },
 // ];

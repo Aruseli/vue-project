@@ -187,7 +187,7 @@
         </LogoSimple>
         <div class="row">
           <Language
-            :src="`/flags/${selectedLang}.svg`"
+            :src="`/flags/4x3/${selectedLang}.svg`"
             @click="app.openLangDialog(true)"
             newClass="additional_lang_style"
           />
@@ -227,7 +227,7 @@
           <!-- <div class="row">
             <Language
               :language="selectedLang"
-              :src="`/flags/${selectedLang}.svg`"
+              :src="`/flags/4x3/${selectedLang}.svg`"
               @click="app.openLangDialog(true)"
             />
           </div> -->
