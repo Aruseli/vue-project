@@ -3,7 +3,7 @@
   const props = defineProps({
     src: {
       type: String,
-      default: 'src/assets/flags/gb.svg'
+      default: 'src/assets/flags/gb-eng.svg'
     },
     alt: {
       type: String,

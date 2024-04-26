@@ -27,7 +27,7 @@ export async function updateCatalogLocales(kioskState: KioskState) {
 // export const KNOWN_LOCALES: LocaleInfo[] = [
 //   {
 //     lang_code: 'en',
-//     flag_src: 'src/assets/flags/gb.svg',
+//     flag_src: 'src/assets/flags/gb-eng.svg',
 //     name: 'English',
 //   },
 //   {
