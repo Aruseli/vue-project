@@ -27,7 +27,7 @@
 
   const $q = useQuasar();
 
-  const documentId = ref(undefined);
+  const documentId = ref<string | undefined>(undefined);
   const isPrintConfirmationDialogVisible = ref(false);
 
   const allowConfirm = computed(() => {
@@ -43,35 +43,40 @@
     isPrintConfirmationDialogVisible.value = false;
   }
 
-  async function handlePrintConfirmation(printConfirmed) {
-    $q.loading.show();
-    try {
-      if (printConfirmed) {
+async function handlePrintConfirmation(printConfirmed: boolean) {
+  $q.loading.show();
+  try {
+    if (printConfirmed) {
+      if (documentId.value !== undefined) {
         await printInventory({ documentId: documentId.value, $q, appStore: app });
-      }
-      hidePrintConfirmationDialog();
-      if (route.path === "/open-shift/complete-inventory") {
-        await app.openTerminalShift();
-        router.push(app.shiftIsGood() ? "/hello" : "/employee-actions");
-      } else if (route.path === "/close-shift/complete-inventory") {
-        await app.closeTerminalShift();
-        router.push("/employee-actions");
       } else {
-        router.push("/employee-actions");
+        // Handle the case where documentId.value is undefined
+        console.error("documentId is undefined");
       }
-    } catch (error) {
-      console.error("inventoryStore.submitInventory print error:", error);
-      $q.notify({
-        color: "warning",
-        icon: "warning",
-        position: "center",
-        message: t("unable_to_print_submit_inventory"),
-        timeout: 6000,
-      });
-    } finally {
-      $q.loading.hide();
     }
+    hidePrintConfirmationDialog();
+    if (route.path === "/open-shift/complete-inventory") {
+      await app.openTerminalShift();
+      router.push(app.shiftIsGood ? "/hello" : "/employee-actions");
+    } else if (route.path === "/close-shift/complete-inventory") {
+      await app.closeTerminalShift();
+      router.push("/employee-actions");
+    } else {
+      router.push("/employee-actions");
+    }
+  } catch (error) {
+    console.error("inventoryStore.submitInventory print error:", error);
+    $q.notify({
+      color: "warning",
+      icon: "warning",
+      position: "center",
+      message: t("unable_to_print_submit_inventory"),
+      timeout: 6000,
+    });
+  } finally {
+    $q.loading.hide();
   }
+}
 
   async function submitInventory() {
     try {
@@ -88,7 +93,7 @@
           documentId.value = docId;
         }
         await showPrintConfirmationDialog();
-      } catch (e) {
+      } catch (err) {
         console.error("inventoryStore.submitInventory error:", err);
         $q.notify({
           color: "warning",
@@ -137,7 +142,7 @@
 </script>
 
 <template>
-  <div class="main_container full-height full-width">
+  <div class="main_container full-height full-width px-40">
     <div class="relative-position">
       <RectangularButton
         :name="$t('back_to_employee_actions')"
@@ -184,7 +189,7 @@
             :key="good.id"
             :actual_quantity="good.quant"
             :good_name="good.title"
-            :estimated_quantity="good.stock"
+            :estimated_quantity="good.stock ?? 0"
             :not_equal="good.stock !== good.quant"
             :class="{ 'highlighted': good.confirmed }"
             @itemConfirm="good.confirmed = !good.confirmed"

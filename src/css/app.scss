@@ -45,15 +45,16 @@ $height: calc(8em + 1.7262vmin);
 }
 
 $margins: (
+  "5": 0.3125rem, "10": 0.625rem, "20": 1.5rem, "40": 2.5rem,
     "14": 0.875rem,
+
+    "15": 0.9375rem, "30": 1.875rem, "60": 3.75rem, "90": 5.5rem,
+
     "16": 1rem,
-    "20": 1.5rem,
     "50": 3.125rem,
     "54": 3.375rem,
-    "60": 3.75rem,
     "70": 4.375rem,
     "74": 4.625rem,
-    "90": 5.5rem,
     "100": 6.25rem,
     "120": 7.5rem,
     "140": 8.75rem,
@@ -61,63 +62,96 @@ $margins: (
   );
 
 $paddings: (
+  "5": 0.3125rem, "10": 0.625rem, "20": 1.5rem, "40": 2.5rem,
   "14": 0.875rem,
-  "20": 1.5rem,
+
   "21": 1.3125rem,
+
+  "15": 0.9375rem, "30": 1.875rem, "60": 3.75rem, "90": 5.5rem, "180": 11.25rem,
+
   "54": 3.375rem,
-  "60": 3.75rem,
   "70": 4.375rem,
   "80": 5rem,
-  "90": 5.5rem,
   "100": 6.25rem,
   "120": 7.5rem,
   "140": 8.75rem,
   "200": 12.5rem
 );
 
-@mixin margin-b($size) {
+@mixin marginB($size) {
   margin-bottom: $size;
+}
+@mixin marginR($size) {
+  margin-right: $size;
+}
+@mixin marginT($size) {
+  margin-top: $size;
 }
 
 @each $name, $size in $margins {
   .mb-#{$name} {
-    @include margin-b($size);
+    @include marginB($size);
+  }
+  .mr-#{$name} {
+    @include marginR($size);
+  }
+  .mt-#{$name} {
+    @include marginT($size);
   }
   @media (max-width: 80rem) {
     .mb-#{$name} {
-      @include margin-b(calc($size / 2));
+      @include marginB(calc($size / 2));
+    }
+    .mr-#{$name} {
+      @include marginR(calc($size / 2));
+    }
+    .mt-#{$name} {
+      @include marginT(calc($size / 2));
     }
   }
 }
 
-@each $name, $size in $margins {
-  .mr-#{$name} {
-    margin-right: $size;
-  }
-}
-@each $name, $size in $paddings {
-  .pa-#{$name} {
-    padding: $size;
-  }
-}
-@each $name, $size in $paddings {
-  .pt-#{$name} {
-    padding-top: $size;
-  }
-}
-@mixin padding($size) {
+
+@mixin paddingX($size) {
   padding-left: $size;
   padding-right: $size;
+}
+@mixin padding($size) {
+  padding: $size;
+}
+@mixin paddingT($size) {
+  padding-top: $size;
+}
+@mixin paddingB($size) {
+  padding-bottom: $size;
 }
 
 @each $name, $size in $paddings {
   .px-#{$name} {
+    @include paddingX($size);
+  }
+  .pa-#{$name} {
     @include padding($size);
+  }
+  .pt-#{$name} {
+    @include paddingT($size);
+  }
+  .pb-#{$name} {
+    @include paddingB($size);
   }
 
   @media (max-width: 80rem) {
     .px-#{$name} {
+      @include paddingX(calc($size / 2));
+    }
+    .pa-#{$name} {
       @include padding(calc($size / 2));
+    }
+    .pt-#{$name} {
+      @include paddingT(calc($size / 2));
+    }
+    .pb-#{$name} {
+      @include paddingB(calc($size / 2));
     }
   }
 }
@@ -396,6 +430,7 @@ padding: 0;
 .scroll_area {
   overflow-y: scroll;
   scrollbar-width: none;
+  padding-top: 0.1rem;
 }
 
 .back_to_menu_button {

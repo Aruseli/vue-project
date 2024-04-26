@@ -16,7 +16,6 @@ export const useAppStore = defineStore('app', () => {
   const orderDialog = ref(false);
   const langDialog = ref(false);
   const tab = ref('');
-  const tabCharacteristics = ref('description');
   const shiftLoading = ref(true);
   const lang_dir = ref('ltr');
 
@@ -218,7 +217,6 @@ export const useAppStore = defineStore('app', () => {
   return {
     drawerCartState,
     tab,
-    tabCharacteristics,
     openDrawerCart,
     orderDialog,
     langDialog,

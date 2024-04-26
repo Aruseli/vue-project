@@ -59,10 +59,10 @@ const goodsStore = useGoodsStore();
 </script>
 
 <template>
-  <div class="main_container full-height full-width">
+  <div class="main_container full-height full-width pa-60">
     <div class="relative-position q-mb-lg-xl q-mb-xs-sm">
       <RectangularButton :name="$t('back_to_employee_actions')" color="secondary" icon="arrow_back_ios_new" class="q-pr-sm" @click="router.push('/employee-actions')" />
-      <RectangularButton :name="$t('print')" :color="'secondary'" size="xl" class="q-pr-sm" @click="printGoodsArrival({documentId: arrivalsStore.arrivalDocument.id, $q, appStore})" /> 
+      <RectangularButton :name="$t('print')" :color="'secondary'" size="xl" class="q-pr-sm" @click="printGoodsArrival({documentId: arrivalsStore.arrivalDocument.id, $q, appStore})" />
 
       <div
         class="
@@ -100,7 +100,6 @@ const goodsStore = useGoodsStore();
           :key="arrival.id"
           :good_name="arrival.title"
           :actual_quantity="arrival.issued"
-          :confirmed="arrivalsStore.blockScan  === arrival.id"
           :not_equal="arrival.issued !== arrival.quant"
           :class="{ 'highlighted': arrival.confirmed }"
           @itemConfirm="arrival.confirmed = !arrival.confirmed"

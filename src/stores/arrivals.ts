@@ -1,10 +1,12 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import { useAppStore } from "./app";
-import { KioskDocument, apiGetDocuments, apiSaveDocument } from "src/services";
+import { KioskDocument, apiGetDocuments, apiSaveDocument, throwErr } from "src/services";
 import { useGoodsStore, type Good } from "./goods";
 import { t } from "i18next";
 import { Notify } from 'quasar';
+import { journalErroneousAction } from "src/services/documents/documents";
+import { showSimpleNotification } from "src/services/dialogs";
 
 export const useArrivalsStore = defineStore("arrivalsStore", () => {
   const appStore = useAppStore();
@@ -24,12 +26,10 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
     try {
       const settings = appStore.kioskState.settings;
       arrivalsDocuments.value = await apiGetDocuments(
-        [settings!.goods_arrival_doc_type_id!],
+        [settings!.doc_type__goods_arrival!],
         [2],
-        [appStore.kioskState.kioskCorr?.id ?? ''],
+        [appStore.kioskState.kioskCorr?.id ?? throwErr("Missing kioskCorr")],
       );
-      arrivalsDocuments.value = arrivalsDocuments.value.filter(d =>
-        d.corr_to_ref == appStore.kioskState.kioskCorr?.id)
       arrivals.value = arrivalsDocuments.value.map((ag) =>
         documentGoodsArrival(ag, goodsStore)
       );
@@ -51,6 +51,9 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
         ? documentGoodsArrival(arrivalDoc, goodsStore)
         : null;
       arrivalDocument.value = arrivalDoc;
+      const debugGoodItemIds = arrival.value?.items.flatMap(i => i.itemsToScan);
+      console.log("Arrival expected good individual IDs", debugGoodItemIds);
+      console.log(debugGoodItemIds?.map(s => `curl --location 'http://127.0.0.1:3010/api/system/emulate/barcode?code=${s}'`).join('\n'))
     } catch {
       arrival.value = null;
       arrivalDocument.value = null;
@@ -68,7 +71,7 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
     doc.respperson_ref = appStore.kioskState.userCorr?.id;
     doc.details.forEach((d) => {
       const item = arrival.value?.items.find((i) => i.id == d.good_id);
-      if (!item || d.quant != item.quant || item.issued != item.quant) {
+      if (!item || d.quant != 1 || item.issued != item.quant || !item.itemsToScan.includes(d.doc_detail_link)) {
         throw new Error(`Wrong state of arrival to issue.`);
       }
       d.total = item.price * d.quant;
@@ -86,21 +89,17 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
     return 0;
   });
 
-  const scanArrivalGood = async (good: Good) => {
-    const arrivalItem = arrival.value?.items.find((i) => i.id == good.id);
+  const scanArrivalGood = async (itemId: string) => {
+    const docId = arrival.value?.id ?? throwErr("Missing currentOrder.value?.id");
+    const arrivalItem = arrival.value?.items.find((i) => i.itemsToScan.includes(itemId));
     if (!arrivalItem) {
+      await journalErroneousAction(docId, { event_type: 'scanned_good_not_in_arrival', marking: itemId });
+      showSimpleNotification(t('scanned_good_not_in_arrival'));
       return;
     }
-    if (arrivalItem.issued >= arrivalItem.quant) {
-      console.error("Stop scan");
-      Notify.create({
-        color: "warning",
-        position: "center",
-        classes: "text-h3 text-center text-uppercase",
-        timeout: 30000,
-        textColor: "white",
-        message: t("product_has_already_been_scanned"),
-      });
+    if (arrivalItem.issuedItems.includes(itemId)) {
+      await journalErroneousAction(docId, { event_type: 'repeated_good_scan', marking: itemId });
+      showSimpleNotification(t('repeated_good_scan'));
       return;
     }
     if (arrivalItem.confirmed == true) {
@@ -113,10 +112,9 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
         textColor: "white",
         message: t("you_are_scanning_an_item_whose_quantity_has_been_confirmed"),
       });
-    return;
+      return;
     }
-    arrivalItem.issued += 1;
-    totalQuant;
+    arrivalItem.issued = arrivalItem.issuedItems.push(itemId);
   };
 
 
@@ -140,21 +138,27 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
 
 function documentGoodsArrival(ad: KioskDocument, goodsStore: ReturnType<typeof useGoodsStore>) {
   let hasAllGoods = true;
+  const goodIds = [...new Set(ad.details.map(d => d.good_id as string))]
   const arrival = {
     id: ad.id,
     arrivalNumStr: (ad.abbr_num?.toString().padStart(4, "0") || t('Unknown')),
-    items: ad.details.map(d => {
-      const good = goodsStore.getGoodById(d.good_id);
+    items: goodIds.map(goodId => {
+      const good = goodsStore.getGoodById(goodId);
       if (!good) {
         hasAllGoods = false;
       }
+      const goodDetails = ad.details.filter(d => d.good_id == goodId);
+      const quant = goodDetails.reduce((acc, d) => acc + d.quant, 0);
+      const total = goodDetails.reduce((acc, d) => acc + d.total, 0);
       return {
-        id: d.good_id,
-        quant: d.quant,
-        price: d.total / d.quant,
+        id: goodId,
+        quant,
+        price: total / quant,
         title: good?.title,
         image: good?.images[0]?.image,
+        itemsToScan: goodDetails.map(d => d.doc_detail_link),
         issued: 0,
+        issuedItems: [] as string[],
         confirmed: false,
       };
     })

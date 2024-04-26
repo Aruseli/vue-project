@@ -1,10 +1,11 @@
 import { t } from "i18next";
 import { defineStore } from "pinia";
-import { KioskDocument, apiGetDocuments, apiSaveDocument } from "src/services";
+import { KioskDocument, SaveableDocument, apiGetDocuments, apiSaveDocument, throwErr } from "src/services";
 import { computed, ref } from "vue";
 import { useAppStore } from "./app";
-import { useGoodsStore, type Good } from "./goods";
-import { Notify } from 'quasar';
+import { useGoodsStore } from "./goods";
+import { journalErroneousAction } from "src/services/documents/documents";
+import { showSimpleNotification } from "src/services/dialogs";
 
 export const useSelectiveInventoryStore = defineStore("selectiveInventoryStore", () => {
   const appStore = useAppStore();
@@ -24,13 +25,11 @@ export const useSelectiveInventoryStore = defineStore("selectiveInventoryStore",
     try {
       const settings = appStore.kioskState.settings;
       inventoriesDocuments.value = await apiGetDocuments(
-        [settings!.inventory_doc_type_id!],
+        [settings!.doc_type__inventory!],
         [2],
-        [appStore.kioskState.kioskCorr?.id ?? ''],
+        [appStore.kioskState.kioskCorr?.id ?? throwErr("Missing kioskCorr")],
       )
 
-      inventoriesDocuments.value = inventoriesDocuments.value.filter(d =>
-        d.corr_from_ref == appStore.kioskState.kioskCorr?.id)
       inventoriesDocuments.value.sort(
         (a, b) => (a.doc_date != b.doc_date) ? a.doc_date - b.doc_date : a.doc_order - b.doc_order
       );
@@ -55,6 +54,9 @@ export const useSelectiveInventoryStore = defineStore("selectiveInventoryStore",
         ? documentToInventory(inventoryDoc, goodsStore)
         : null;
       selectedInventoryDocument.value = inventoryDoc;
+      const debugGoodItemIds = selectedInventory.value?.items.flatMap(i => goodsStore.getGoodById(i.id).items.map(item => item.mark));
+      console.log("Inventory expected good individual IDs", debugGoodItemIds);
+      console.log(debugGoodItemIds?.map(s => `curl --location 'http://127.0.0.1:3010/api/system/emulate/barcode?code=${s}'`).join('\n'));
     } catch {
       selectedInventory.value = null;
       selectedInventoryDocument.value = null;
@@ -65,25 +67,26 @@ export const useSelectiveInventoryStore = defineStore("selectiveInventoryStore",
 
 
   const confirmSelectedInventory = async () => {
-    const doc = selectedInventoryDocument.value;
+    const doc: SaveableDocument | null = selectedInventoryDocument.value;
     if (!doc) {
       return;
     }
 
     doc.state = 0;
-    doc.respperson_ref = appStore.kioskState.userCorr?.id;
+    doc.respperson_ref = appStore.kioskState.userCorr?.id ?? throwErr("Missing userCorr");
 
-    doc.details.forEach((d) => {
-      const item = selectedInventory.value?.items.find(
-        (i) => i.id == d.good_id
-      );
-
-      if (!item) {
-        throw new Error(`Wrong state of selectedInventory to issue.`);
-      }
-      d.quant = item?.quant;
-      d.total = item?.price ?? 0 * d.quant;
-    });
+    doc.details = selectedInventory.value?.items.flatMap((item, goodIndex) =>
+      item.scannedItems.map((itemId, index) => ({
+        id: undefined,
+        state: 0,
+        rec_order: goodIndex * 100 + index,
+        good_id: item.id,
+        munit_id: appStore.kioskState.settings?.munit_id ?? '',
+        quant: 1,
+        total: item.price,
+        doc_detail_link: itemId,
+        doc_detail_type: appStore.kioskState.settings?.docdetail_type__inventory ?? '',
+      }))) ?? [];
 
     await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '');
     return {documentId: doc.id};
@@ -96,28 +99,26 @@ export const useSelectiveInventoryStore = defineStore("selectiveInventoryStore",
     ) ?? 0;
   });
 
-  const scanInventoryGood = async (good: Good) => {
-    const selectedInventoryItem = selectedInventory.value?.items.find((i) => i.id == good.id);
-
-    if (!selectedInventoryItem) {
+  const scanInventoryGood = async (itemId: string) => {
+    const docId = selectedInventory.value?.id ?? throwErr("Missing selectedInventory.value?.id");
+    const good = goodsStore.getGoodByItemId(itemId);
+    if (!good) {
+      await journalErroneousAction(docId, { event_type: 'unknown_good_marking', marking: itemId });
+      showSimpleNotification(t('unknown_good_marking'));
       return;
     }
-    if (selectedInventoryItem?.confirmed == true) {
-      if (selectedInventoryItem.quant >= selectedInventoryItem.stock) {
-        console.error("Stop scan");
-        Notify.create({
-          color: "warning",
-          position: "center",
-          classes: "text-h3 text-center text-uppercase",
-          timeout: 3000,
-          textColor: "white",
-          message: t("you_are_scanning_an_item_whose_quantity_has_been_confirmed"),
-        });
-        return;
-      }
+    const inventoryItem = selectedInventory.value?.items.find((i) => i.id == good.id);
+    if (!inventoryItem) {
+      await journalErroneousAction(docId, { event_type: 'scanned_good_is_not_in_inventory', marking: itemId });
+      showSimpleNotification(t('scanned_good_is_not_in_inventory'));
       return;
     }
-    selectedInventoryItem.quant += 1;
+    if (inventoryItem.scannedItems.includes(itemId)) {
+      await journalErroneousAction(docId, { event_type: 'repeated_good_scan', marking: itemId });
+      showSimpleNotification(t('repeated_good_scan'));
+      return;
+    }
+    inventoryItem.quant = inventoryItem.scannedItems.push(itemId)
   };
 
   return {
@@ -137,23 +138,23 @@ export const useSelectiveInventoryStore = defineStore("selectiveInventoryStore",
 });
 
 function documentToInventory(
-  inv: KioskDocument,
+  inv: SaveableDocument,
   goodsStore: ReturnType<typeof useGoodsStore>
 ) {
+  const goodIds = [...new Set(inv.details.map(d => d.good_id as string))]
   const inventory = {
     id: inv.id,
     inventoryNumStr: inv.abbr_num?.toString().padStart(4, "0") ?? t("Unknown"),
     inventoryDate: inv.doc_date,
-    items: inv.details.map((d) => {
-      const good = goodsStore.getGoodById(d.good_id);
-      if (!good) {
-      }
+    items: goodIds.map(goodId => {
+      const good = goodsStore.getGoodById(goodId);
       return {
-        id: d.good_id,
+        id: goodId,
         stock: good?.stock ?? 0,
         title: good?.title,
         price: good?.price,
         quant: 0,
+        scannedItems: [] as string[],
         confirmed: false,
       };
     }),

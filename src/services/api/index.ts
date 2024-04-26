@@ -159,7 +159,6 @@ export type ApiGood = {
   title: string,
   description: string,
   price: number,
-  stock: number,
   images_ids: string[],
   code: string,
 }
@@ -221,6 +220,7 @@ export type KioskDocument = {
   currency_name: any,
   curr_rate: any,
   comment: any,
+  barcode: string,
   // fields: { payment_type: string },
   details: {
     id: any,
@@ -300,6 +300,23 @@ export async function apiSaveDocument(doc: SaveableDocument, terminal_shift_id: 
   return response.data.id as string;
 }
 
+export async function apiSaveOperation(
+  operation_type_id: string,
+  doc_id: string,
+  respperson_ref: string,
+  terminal_shift_id: string,
+  data?: object,
+) {
+  const response = await fetchApi('/api/v2/kiosk/saveOperation', {
+    type: operation_type_id,
+    doc_id,
+    respperson_ref,
+    terminal_shift_id,
+    data,
+  });
+  return response.data.success as boolean;
+}
+
 export interface CheckContent {
   id: string;
   type: string;
@@ -321,7 +338,7 @@ export interface CheckPayment {
   ext_id?: string;
   payment_type_id: string;
   amount: number;
-  payment_date: Date;
+  payment_date: string;
   staff_id: string;
   state: number;
   currency_id: string;
@@ -352,7 +369,7 @@ export async function apiUpsertCheck(check: Check) {
 
 export async function apiGetStockRemains(id: string) {
   const response = await fetchApi('/api/v2/kiosk/getStockRemains', { id });
-  return response.data.goods as { good_id: string, remain_quant: number }[];
+  return response.data.goods as { good_id: string, items: { mark: string, code: string}[] }[];
 }
 
 // Unused now:

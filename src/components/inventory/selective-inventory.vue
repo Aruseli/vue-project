@@ -89,7 +89,7 @@ async function handlePrintConfirmation(printConfirmed) {
 </script>
 
 <template>
-  <div class="main_container full-height full-width">
+  <div class="main_container full-height full-width pa-40">
     <div class="relative-position">
       <RectangularButton
         :name="$t('back_to_employee_actions')"

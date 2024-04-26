@@ -14,6 +14,7 @@
   import { useGoodsStore } from 'src/stores/goods';
   import EmployeeActions from '../components/components-v3/employee-actions.vue';
   import {default as EmployeeActionsOld} from '../components/catalog/employee-actions.vue';
+  import TestZone from 'src/components/components-v3/test-zone.vue';
 
   const $q = useQuasar();
   const router = useRouter();
@@ -148,33 +149,7 @@
       :inventoryRequests="inventoryRequests"
       v-if="app.kioskState.settings?.alt_ui !== 'design_v3'"
     />
-
-    <!-- <div class="column justify-center items-center full-height full-width container">
-      <Logo class="logo_column" classes="q-mb-md-sm q-mb-xs-xs" v-if="app.kioskState.settings?.alt_ui !== 'design_v3'">
-        <LogoSvg fill="#FAFAFA" />
-      </Logo>
-      <LogoSimple text_style="text-green" v-if="app.kioskState.settings?.alt_ui === 'design_v3'">
-        <LogoSvg
-          fill="#88D863"
-          width="6em"
-          height="6em"
-        />
-      </LogoSimple>
-      <RectangularButton
-        v-for="(button, index) in buttons"
-        :key="index"
-        :name='$t(button.name)'
-        :disable='button.disable'
-        class="button_style"
-        :class="{ 'blocked': button.disable }"
-        @click="button.click"
-      >
-        <div v-if="button.badge == true" class="badge_style bg-positive flex items-center justify-center">
-          <div class="text-white text-h3">{{ inventoryRequests }}</div>
-        </div>
-      </RectangularButton>
-
-    </div> -->
+    <TestZone />
     <RedirectDialog
       :modelValue="dialogState"
       title="there_are_documents_for_inventory"

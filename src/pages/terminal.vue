@@ -8,6 +8,7 @@
   import { useAppStore } from 'src/stores/app';
   import { computed } from 'vue';
   import Rectangular from 'src/components/buttons/rectangular-button.vue';
+  import TestZone from '../components/components-v3/test-zone.vue';
 
   const $q = useQuasar();
   const appStore = useAppStore();
@@ -159,6 +160,7 @@
             <!-- <q-btn label="authorization" unelevated type="submit" color="primary" class="fit" /> -->
           </div>
         </q-form>
+        <TestZone class="mt-90" />
       </div>
     </div>
   </q-page>

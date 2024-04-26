@@ -1,3 +1,5 @@
+import { PrinterType } from "src/services";
+
 // See also config.json
 export type Settings = {
   loc: string,
@@ -15,12 +17,13 @@ export type Settings = {
   currency_id: string,
   munit_id: string,
 
-  invoice_doc_type_id: string,
-  invoice_docdetail_type_id: string,
-  goods_arrival_doc_type_id: string,
-  goods_arrival_docdetail_type_id: string,
-  inventory_doc_type_id: string,
-  inventory_docdetail_type_id: string,
+  doc_type__invoice: string,
+  docdetail_type__invoice_placing: string,
+  docdetail_type__invoice_issue: string,
+  doc_type__goods_arrival: string,
+  doc_type__inventory: string,
+  docdetail_type__inventory: string,
+  docoperation_type__erroneous_action: string,
 
   rights__kiosk_open_shift: string,
   rights__kiosk_close_own_shift: string,
@@ -74,6 +77,10 @@ export type Settings = {
   // После этого в списке подключений этого объекта появиться запись, идентификатор которой и есть искомый ID.
   check_ext_source: string,
   check_content_type: string,
+
+  printer_type: PrinterType,
+  networkHost?: string,
+  networkPort?: number,
 }
 
 export type TerminalParams = {

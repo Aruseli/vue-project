@@ -79,8 +79,15 @@
   display: grid;
   grid-template-rows: max-content 1fr;
   overflow-y: scroll;
-  padding: 0.5rem;
+
   scrollbar-width: none;
+  padding: 3.75rem;
+  @media (max-width: 1300px) {
+    padding: 1.5rem;
+  }
+  @media (max-width: 899px) {
+    padding: 1rem;
+  }
 }
 
 .orders_container > *:not(:last-child) {

@@ -30,7 +30,7 @@ import { useAppStore } from 'src/stores/app';
 
     router.push('/issued-order');
 
-    
+
   }
 
   const allowClickScan = ref(process.env.DEV);
@@ -151,6 +151,13 @@ import { useAppStore } from 'src/stores/app';
 .main_container {
   display: grid;
   grid-template-rows: max-content 1fr 0.1fr;
+  padding: 3.75rem;
+  @media (max-width: 1300px) {
+    padding: 1.5rem;
+  }
+  @media (max-width: 899px) {
+    padding: 1rem;
+  }
 }
 .orders_container > *:not(:last-of-type) {
   margin-bottom: var(--px30);
