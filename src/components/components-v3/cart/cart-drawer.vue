@@ -259,13 +259,8 @@
     position: absolute;
     right: 0; top: 0;
     box-sizing: border-box;
-    max-width: 70vw;
-    min-width: 30vw;
-    width: 65vw;
+    width: 100%;
     height: 100%;
-    @media (max-width: 80rem) {
-      width: 75vw;
-    }
   }
   .container_settings {
     padding: 0.3rem;
