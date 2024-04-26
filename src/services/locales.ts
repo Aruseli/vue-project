@@ -11,7 +11,7 @@ export async function updateCatalogLocales(kioskState: KioskState) {
         .then(r => r?.map(l => ({
           lang_code: l?.lang_code,
           name: l?.name,
-          flag_src: `/flags/${l.lang_code}.webp` })))
+          flag_src: `/flags/${l.lang_code}.svg` })))
       kioskState.catalogLocales = locales;
       await Promise.all(locales.map(async (lc) => {
         const locale = await apiGetLocale(lc.lang_code)
@@ -27,32 +27,32 @@ export async function updateCatalogLocales(kioskState: KioskState) {
 // export const KNOWN_LOCALES: LocaleInfo[] = [
 //   {
 //     lang_code: 'en',
-//     flag_src: 'src/assets/flags/gb.webp',
+//     flag_src: 'src/assets/flags/gb.svg',
 //     name: 'English',
 //   },
 //   {
 //     lang_code: 'th',
-//     flag_src: 'src/assets/flags/th.webp',
+//     flag_src: 'src/assets/flags/th.svg',
 //     name: 'Thai',
 //   },
 //   {
 //     lang_code: 'ru',
-//     flag_src: 'src/assets/flags/ru.webp',
+//     flag_src: 'src/assets/flags/ru.svg',
 //     name: 'Russian',
 //   },
 //   {
 //     lang_code: 'km',
-//     flag_src: 'src/assets/flags/de.webp',
+//     flag_src: 'src/assets/flags/de.svg',
 //     name: "Cambodia",
 //   },
 //   {
 //     lang_code: 'es',
-//     flag_src: 'src/assets/flags/es.webp',
+//     flag_src: 'src/assets/flags/es.svg',
 //     name: 'Spanish',
 //   },
 //   {
 //     lang_code: 'uk',
-//     flag_src: 'src/assets/flags/ua.webp',
+//     flag_src: 'src/assets/flags/ua.svg',
 //     name: 'Ukrainian',
 //   },
 // ];
