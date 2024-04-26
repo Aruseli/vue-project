@@ -55,7 +55,7 @@ export function showSimpleNotification(text: string) {
   showDialog({
     text,
     buttons: [
-      { name: t('dismiss'), handler: async () => {}, type: "primary" },
+      { name: 'dismiss', handler: async () => {}, type: "primary" },
     ]
   })
 }

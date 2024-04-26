@@ -29,7 +29,7 @@ const clickBackground = async () => {
           aria-modal="true"
         >
           <div class="text-h3 text-center pa-60 text_container first-letter">
-            {{ $t(dialog.text) }}
+            {{ dialog.text }}
           </div>
           <div class="buttons_container px-30 mb-30">
             <template v-for="button in dialog.buttons">
