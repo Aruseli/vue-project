@@ -54,7 +54,7 @@
 
 <template>
   <q-page class="flex flex-center relative bg-secondary" style="height: 100%; width: 100%">
-    <div class="q-pa-lg-lg q-pa-xs-sm items-center row full-height">
+    <div class="pa-40 items-center row full-height">
       <div v-if="statusIsUnrecoverableError">
         <q-card class='bg-secondary no-box-shadow'>
           <q-card-section>

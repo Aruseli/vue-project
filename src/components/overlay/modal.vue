@@ -41,12 +41,13 @@ const emit = defineEmits(['click']);
   position: fixed;
   top: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, .65);
+  background-color: rgba(24, 24, 24, .30);
   width: 100vw;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  backdrop-filter: blur(7px);
 }
 
 .dialog_style {

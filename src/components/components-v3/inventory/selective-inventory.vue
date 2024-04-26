@@ -9,12 +9,11 @@
   import RectangularButton from '../buttons/rectangular-button.vue';
   import DividerBold from '../../dividers/divider-bold.vue';
   import BackButton from '../buttons/back-button.vue';
-  import ModalButton from '../buttons/modal-button.vue';
-  import Modal from '../../overlay/modal.vue';
   import InventoryTableBody from './table/inventory-table-body.vue';
   import InventoryTable from './table/inventory-table.vue';
   import { useAppStore } from "src/stores/app";
   import { printInventory } from 'src/services';
+import { showDialog } from 'src/services/dialogs';
 
   const $q = useQuasar();
 
@@ -25,7 +24,6 @@
 
   const app = useAppStore();
   const documentId = ref(undefined);
-  const isPrintConfirmationDialogVisible = ref(false);
 
   onMounted(async () => {
     try {
@@ -49,22 +47,17 @@
   // Format the date using Moment.js
   const formattedDate = moment(date).format('DD.MM.YY HH:mm');
 
-async function showPrintConfirmationDialog() {
-
-  isPrintConfirmationDialogVisible.value = true;
-}
-
-function hidePrintConfirmationDialog() {
-  isPrintConfirmationDialogVisible.value = false;
-}
-
-async function handlePrintConfirmation(printConfirmed) {
+async function handlePrintConfirmation(printConfirmed: boolean) {
   $q.loading.show();
   try {
     if (printConfirmed) {
-      await printInventory({ documentId: documentId.value, $q, appStore: app });
+      if (documentId.value !== undefined) {
+        await printInventory({ documentId: documentId.value, $q, appStore: app });
+      } else {
+        // Handle the case where documentId.value is undefined
+        console.error("documentId is undefined");
+      }
     }
-    hidePrintConfirmationDialog();
   } catch (error) {
     console.error("inventoryStore.submitInventory print error:", error);
     $q.notify({
@@ -76,16 +69,27 @@ async function handlePrintConfirmation(printConfirmed) {
     });
   } finally {
     $q.loading.hide();
-    router.push('/employee-actions');
+    router.push("/employee-actions");
     // TODO возможно стоит добавить диалоговое окно, перед редиректом, с информацией что товар добавлен
   }
 }
 
   const confirmInventory = async () => {
-    const {documentId: docId} = await selectiveInventoryStore.confirmSelectedInventory()
-    if(docId) {
-      documentId.value = docId;
-      await showPrintConfirmationDialog();
+    const result = await selectiveInventoryStore.confirmSelectedInventory();
+    if (result) {
+      const { documentId: docId } = result;
+      if (docId) {
+        documentId.value = docId;
+        // await showPrintConfirmationDialog();
+        await showDialog({
+          text: "print_inventory_results",
+          buttons: [{
+            name: "not_print", type: "equal", handler: async () => handlePrintConfirmation(false)
+          }, {
+            name: "print", type: "equal", handler: async () => handlePrintConfirmation(true)
+          }],
+        })
+      }
     }
   }
 
@@ -159,21 +163,6 @@ async function handlePrintConfirmation(printConfirmed) {
       </div>
     </div>
   </div>
-  <Modal :isOpen="isPrintConfirmationDialogVisible" class="bg-white">
-    <div class="text-h2 mb-30 text-center first_letter">{{ $t('print') }}?</div>
-    <div class="buttons_container">
-      <ModalButton
-        :name="$t('not_print')"
-        color="transparent"
-        textColor="black"
-        @click="handlePrintConfirmation(false)"
-      />
-      <ModalButton
-        :name="$t('print')"
-        @click="handlePrintConfirmation(true)"
-      />
-    </div>
-  </Modal>
 </template>
 
 <style scoped>

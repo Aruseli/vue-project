@@ -22,7 +22,7 @@
     },
     classTitle: {
       type: String,
-      default: 'text-h3',
+      default: 'text-h3 text-lowercase',
     },
   })
 
@@ -45,10 +45,7 @@
 
 <style scoped>
 button {
-  box-shadow: var(--border-shadow);
+  /* box-shadow: var(--border-shadow); */
   border-radius: var(--border-xxs);
 }
-/* button.disabled {
-  background-color: #5D5D5D;
-} */
 </style>

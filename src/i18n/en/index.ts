@@ -117,5 +117,6 @@ export default {
   delete_product: 'delete product',
   product_name: 'product name',
   not_print: "don't print",
+  print_inventory_results: 'print inventory results?',
   dismiss: "Dismiss",
 };

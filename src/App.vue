@@ -14,6 +14,7 @@
   import { forceNewVisit } from "./services/tracking";
   import { onMounted, ref } from "vue";
   import { debugGenerateArrival } from "src/services/documents/documents";
+  import {showDialog, showSimpleNotification} from "./services/dialogs";
 
   const route = useRoute()
   const router = useRouter()
@@ -254,6 +255,13 @@
         document.addEventListener(e, boundResetTimer)
       )
     });
+
+    // showSimpleNotification("Short")
+    // showSimpleNotification("Long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long")
+    // showDialog({
+    //   text: "Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!",
+    //   buttons: [{name: "OK", type: "equal", handler: async () => {console.log("OK")}}],
+    // })
   })
 
 </script>

@@ -3,6 +3,8 @@ import { reactive } from "vue";
 
 export const dialogs = reactive<Dialog[]>([]);
 
+export const dialogsSettings = reactive<{ mode: 'light' | 'dark' }>({ mode: 'light' });
+
 export type Dialog = DialogParams & {
   id: Symbol,
   priority: number,
@@ -13,7 +15,7 @@ export type DialogParams = {
   text: string,
   buttons: {
     name: string,
-    type: 'common' | 'primary',
+    type: 'common' | 'primary' | 'equal',
     handler: () => Promise<any>,
   }[],
   priority?: number,

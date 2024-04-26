@@ -11,12 +11,11 @@ import { useInventoryStore } from 'src/stores/inventory';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import DividerBold from '../../dividers/divider-bold.vue';
-import Modal from '../../overlay/modal.vue';
 import BackButton from '../buttons/back-button.vue';
-import ModalButton from '../buttons/modal-button.vue';
 import RectangularButton from '../buttons/rectangular-button.vue';
 import InventoryTableBody from './table/inventory-table-body.vue';
 import InventoryTable from './table/inventory-table.vue';
+import { showDialog } from 'src/services/dialogs';
 
   const goodsStore = useGoodsStore();
   const inventoryStore = useInventoryStore();
@@ -28,20 +27,10 @@ import InventoryTable from './table/inventory-table.vue';
   const $q = useQuasar();
 
   const documentId = ref<string | undefined>(undefined);
-  const isPrintConfirmationDialogVisible = ref(false);
 
   const allowConfirm = computed(() => {
     return inventoryStore.inventory?.every((i) => i.stock == i.quant);
   });
-
-  async function showPrintConfirmationDialog() {
-
-    isPrintConfirmationDialogVisible.value = true;
-  }
-
-  function hidePrintConfirmationDialog() {
-    isPrintConfirmationDialogVisible.value = false;
-  }
 
 async function handlePrintConfirmation(printConfirmed: boolean) {
   $q.loading.show();
@@ -54,7 +43,6 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
         console.error("documentId is undefined");
       }
     }
-    hidePrintConfirmationDialog();
     if (route.path === "/open-shift/complete-inventory") {
       await app.openTerminalShift();
       router.push(app.shiftIsGood ? "/hello" : "/employee-actions");
@@ -92,7 +80,15 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
           const { documentId: docId } = await inventoryStore.submitInventory();
           documentId.value = docId;
         }
-        await showPrintConfirmationDialog();
+        // await showPrintConfirmationDialog();
+        await showDialog({
+          text: "print_inventory_results",
+          buttons: [{
+            name: "not_print", type: "equal", handler: async () => handlePrintConfirmation(false)
+          }, {
+            name: "print", type: "equal", handler: async () => handlePrintConfirmation(true)
+          }],
+        })
       } catch (err) {
         console.error("inventoryStore.submitInventory error:", err);
         $q.notify({
@@ -139,6 +135,21 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
       router.push("/employee-actions");
     }
   });
+
+  const reset = (id: string) => {
+    const item = inventoryStore.inventory.find((i) => i.id === id);
+    if(item?.id == id) {
+      console.log(item.title, item.id)
+      showDialog({
+        text: `$t(are_you_sure_you_want_to_rescan_the_product) ${item.title}`,
+        buttons: [{
+          name: "defer", type: "common", handler: async () => {console.log("close")}
+        }, {
+          name: "execute", type: "primary", handler: async () => item.quant = 0
+        }],
+      })
+    }
+  }
 </script>
 
 <template>
@@ -172,7 +183,7 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
           :good_number="index + 1"
           :class="{ 'highlighted': good.confirmed }"
           @itemConfirm="good.confirmed = !good.confirmed"
-          @resetActualQuantity="good.quant = 0"
+          @resetActualQuantity="reset(good.id)"
         />
       </InventoryTable>
     </div>
@@ -209,21 +220,6 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
       </div>
     </div>
   </div>
-  <Modal :isOpen="isPrintConfirmationDialogVisible" class="bg-white">
-    <div class="text-h2 mb-30 text-center first_letter">{{ $t('print') }}?</div>
-    <div class="buttons_container">
-      <ModalButton
-        :name="$t('not_print')"
-        color="transparent"
-        textColor="black"
-        @click="handlePrintConfirmation(false)"
-      />
-      <ModalButton
-        :name="$t('print')"
-        @click="handlePrintConfirmation(true)"
-      />
-    </div>
-  </Modal>
 </template>
 
 <style scoped>

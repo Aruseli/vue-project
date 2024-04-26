@@ -6,7 +6,6 @@
   import i18next, { t } from 'i18next';
   import { useAppStore } from 'src/stores/app';
   import { useSelectiveInventoryStore } from 'src/stores/selective-inventory';
-  import RedirectDialog from 'src/components/dialog/redirect-dialog.vue';
   import Logo from 'src/components/logo/logo.vue';
   import LogoSvg from 'src/components/logo/logo-svg.vue';
   import LogoSimple from 'src/components/logo/logo-simple.vue';
@@ -15,6 +14,7 @@
   import EmployeeActions from '../components/components-v3/employee-actions.vue';
   import {default as EmployeeActionsOld} from '../components/catalog/employee-actions.vue';
   import TestZone from 'src/components/components-v3/test-zone.vue';
+  import { showDialog } from '../services/dialogs';
 
   const $q = useQuasar();
   const router = useRouter();
@@ -130,10 +130,16 @@
     await app.updateShifts();
     await selectiveInventoryStore.updateInventories();
     inventoryRequests.value = selectiveInventoryStore.inventoriesDocuments.length;
-    if( inventoryRequests.value > 0 ) {
-      dialogState.value = true;
+    if( inventoryRequests.value > 0 && (app.shiftIsGood || app.hasRight(app.kioskState.settings?.rights__kiosk_selective_inventory)) ) {
+      await showDialog({
+        text: "there_are_documents_for_inventory",
+        buttons: [{
+          name: "defer", type: "common", handler: async () => {console.log("close")}
+        }, {
+          name: "execute", type: "primary", handler: async () => route('selective-inventory')
+        }],
+      })
     }
-
   })
 </script>
 
@@ -150,14 +156,5 @@
       v-if="app.kioskState.settings?.alt_ui !== 'design_v3'"
     />
     <TestZone />
-    <RedirectDialog
-      :modelValue="dialogState"
-      title="there_are_documents_for_inventory"
-    >
-      <template #actions>
-        <RectangularButton :name="$t('defer')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="dialogState = false" textColor="primary" />
-        <RectangularButton :name="$t('execute')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="route('selective-inventory')" />
-      </template>
-    </RedirectDialog>
   </q-page>
 </template>
