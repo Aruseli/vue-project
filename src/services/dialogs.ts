@@ -14,6 +14,7 @@ export type Dialog = DialogParams & {
 export type DialogParams = {
   text: string,
   buttons: {
+     /** Name is i18n key */
     name: string,
     type: 'common' | 'primary' | 'equal',
     handler: () => Promise<any>,

@@ -44,6 +44,8 @@
     await app.setLocale(newLocale);
     await goodsStore.updateGoods(newLocale);
     selectedLang.value = newLocale;
+    localStorage.setItem("lang", newLocale);
+    console.log("LNAGUAGE", newLocale)
     app.langDialog = false;
   };
 
@@ -187,7 +189,7 @@
         </LogoSimple>
         <div class="row">
           <Language
-            :src="`/flags/${selectedLang}.webp`"
+            :src="`/flags/4x3/${selectedLang}.svg`"
             @click="app.openLangDialog(true)"
             newClass="additional_lang_style"
           />

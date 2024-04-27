@@ -1,24 +1,23 @@
 <script setup lang="ts">
   import i18next, { t } from 'i18next';
-  import moment from 'moment';
-  import { useQuasar } from 'quasar';
-  import { useGoodsStore } from 'src/stores/goods';
-  import { useSelectiveInventoryStore } from 'src/stores/selective-inventory';
-  import { onMounted , ref} from 'vue';
-  import { useRoute, useRouter } from 'vue-router';
-  import RectangularButton from '../buttons/rectangular-button.vue';
-  import DividerBold from '../../dividers/divider-bold.vue';
-  import BackButton from '../buttons/back-button.vue';
-  import InventoryTableBody from './table/inventory-table-body.vue';
-  import InventoryTable from './table/inventory-table.vue';
-  import { useAppStore } from "src/stores/app";
-  import { printInventory } from 'src/services';
+import moment from 'moment';
+import { useQuasar } from 'quasar';
+import { printInventory } from 'src/services';
 import { showDialog } from 'src/services/dialogs';
+import { useAppStore } from "src/stores/app";
+import { useGoodsStore } from 'src/stores/goods';
+import { useSelectiveInventoryStore } from 'src/stores/selective-inventory';
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import DividerBold from '../../dividers/divider-bold.vue';
+import BackButton from '../buttons/back-button.vue';
+import RectangularButton from '../buttons/rectangular-button.vue';
+import InventoryTableBody from './table/inventory-table-body.vue';
+import InventoryTable from './table/inventory-table.vue';
 
   const $q = useQuasar();
 
   const router = useRouter();
-  const route = useRoute();
   const selectiveInventoryStore = useSelectiveInventoryStore();
   const goodsStore = useGoodsStore();
 
@@ -92,6 +91,20 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
       }
     }
   }
+  const reset = (id: string) => {
+    const item = selectiveInventoryStore.selectedInventory?.items.find((i) => i.id === id);
+    if(item?.id == id) {
+      console.log(item.title, item.id)
+      showDialog({
+        text: `$t(are_you_sure_you_want_to_rescan_the_product) ${item.title}`,
+        buttons: [{
+          name: "defer", type: "common", handler: async () => {console.log("close")}
+        }, {
+          name: "execute", type: "primary", handler: async () => item.quant = 0
+        }],
+      })
+    }
+  }
 
 </script>
 
@@ -125,7 +138,7 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
           :good_number="index + 1"
           :class="{ 'highlighted': inv.confirmed }"
           @itemConfirm="inv.confirmed = !inv.confirmed"
-          @resetActualQuantity="inv.quant = 0"
+          @resetActualQuantity="reset(inv.id)"
         />
       </InventoryTable>
     </div>

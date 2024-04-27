@@ -28,10 +28,6 @@
 
   const emit = defineEmits(['itemConfirm', 'resetActualQuantity', ]);
 
-  // const resetQuant = () => {
-  //   emit('resetActualQuantity');
-  //   binSwitch(false);
-  // };
 </script>
 
 <template>
@@ -39,7 +35,6 @@
     <td>
       <div class="row items-center">
         <Bin @click="emit('resetActualQuantity')" />
-        <!-- <Bin @click="binSwitch(true)" /> -->
         <div class="text-h4">{{ props.good_number }}</div>
       </div>
     </td>
@@ -54,14 +49,6 @@
     </td>
   </tr>
 
-  <!-- <Modal :isOpen="switchModal" class="bg-white">
-    <div class="text-h2 mb-30 text-center">{{ $t('are_you_sure_you_want_to_rescan_the_product') }} <span class="text-italic">{{ props.good_title }} ?</span></div>
-
-    <div class="buttons_container">
-      <ModalButton :name="$t('no')" color="transparent" class="pa-20" @click="binSwitch(false)" textColor="black" />
-      <ModalButton :name="$t('yes')" class="pa-20" @click="resetQuant" />
-    </div>
-  </Modal> -->
 </template>
 
 <style scoped>

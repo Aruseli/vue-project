@@ -5,17 +5,17 @@ import { useQuasar } from 'quasar';
 import {
 printInventory
 } from 'src/services';
+import { showDialog } from 'src/services/dialogs';
 import { useAppStore } from 'src/stores/app';
 import { useGoodsStore } from 'src/stores/goods';
 import { useInventoryStore } from 'src/stores/inventory';
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import DividerBold from '../../dividers/divider-bold.vue';
 import BackButton from '../buttons/back-button.vue';
 import RectangularButton from '../buttons/rectangular-button.vue';
 import InventoryTableBody from './table/inventory-table-body.vue';
 import InventoryTable from './table/inventory-table.vue';
-import { showDialog } from 'src/services/dialogs';
 
   const goodsStore = useGoodsStore();
   const inventoryStore = useInventoryStore();
@@ -27,10 +27,6 @@ import { showDialog } from 'src/services/dialogs';
   const $q = useQuasar();
 
   const documentId = ref<string | undefined>(undefined);
-
-  const allowConfirm = computed(() => {
-    return inventoryStore.inventory?.every((i) => i.stock == i.quant);
-  });
 
 async function handlePrintConfirmation(printConfirmed: boolean) {
   $q.loading.show();
