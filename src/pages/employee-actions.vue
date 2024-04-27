@@ -14,7 +14,7 @@
   import EmployeeActions from '../components/components-v3/employee-actions.vue';
   import {default as EmployeeActionsOld} from '../components/catalog/employee-actions.vue';
   import TestZone from 'src/components/components-v3/test-zone.vue';
-  import { showDialog } from '../services/dialogs';
+  import { showDialog, showSimpleNotification } from '../services/dialogs';
 
   const $q = useQuasar();
   const router = useRouter();
@@ -85,24 +85,25 @@
       {
         name: 'arrival_goods',
         click: async () => {
-          $q.notify({
-            position: "center",
-            color: "positive",
-            classes: "full-width warning_customization",
-            timeout: 1000,
-            icon: 'img:/barcode_scanner.svg',
-            iconSize: '5rem',
-            spinnerSize: '3rem',
-            actions: [
-              {
-                icon: "cancel",
-                'aria-label': 'cancel',
-                label: t("scan_the_barcode_of_the_document"),
-                color: "white",
-                round: true,
-              },
-            ],
-          });
+          await showSimpleNotification(t("scan_the_barcode_of_the_document"),'/barcode_scanner.svg')
+          // $q.notify({
+          //   position: "center",
+          //   color: "positive",
+          //   classes: "full-width warning_customization",
+          //   timeout: 1000,
+          //   icon: 'img:/barcode_scanner.svg',
+          //   iconSize: '5rem',
+          //   spinnerSize: '3rem',
+          //   actions: [
+          //     {
+          //       icon: "cancel",
+          //       'aria-label': 'cancel',
+          //       label: t("scan_the_barcode_of_the_document"),
+          //       color: "white",
+          //       round: true,
+          //     },
+          //   ],
+          // });
         },
         disable: !app.arrivalsAreAllowed,
       },
@@ -130,7 +131,7 @@
     await app.updateShifts();
     await selectiveInventoryStore.updateInventories();
     inventoryRequests.value = selectiveInventoryStore.inventoriesDocuments.length;
-    if( inventoryRequests.value > 0 && (app.shiftIsGood || app.hasRight(app.kioskState.settings?.rights__kiosk_selective_inventory)) ) {
+    if( inventoryRequests.value > 0 && app.shiftIsGood ) {
       await showDialog({
         text: t('there_are_documents_for_inventory'),
         buttons: [{

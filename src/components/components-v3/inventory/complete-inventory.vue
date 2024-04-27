@@ -138,9 +138,9 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
       showDialog({
         text: `${t('are_you_sure_you_want_to_rescan_the_product')} ${item.title}`,
         buttons: [{
-          name: "defer", type: "common", handler: async () => {console.log("close")}
+          name: "no", type: "common", handler: async () => {console.log("close")}
         }, {
-          name: "execute", type: "primary", handler: async () => item.quant = 0
+          name: "yes", type: "primary", handler: async () => item.quant = 0
         }],
       })
     }
@@ -204,12 +204,12 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
       </div>
       <div class="full-width buttons_container px-100 pb-40">
         <RectangularButton
-          :name="$t('confirm')"
+          :name="$t('declare_discrepancy')"
+          color="warning"
           @click="submitInventory"
         />
         <RectangularButton
-          color="warning"
-          :name="$t('declare_discrepancy')"
+          :name="$t('confirm')"
           @click="submitInventory"
         />
       </div>

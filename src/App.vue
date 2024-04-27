@@ -255,13 +255,6 @@
         document.addEventListener(e, boundResetTimer)
       )
     });
-
-    // showSimpleNotification("Short")
-    // showSimpleNotification("Long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long")
-    // showDialog({
-    //   text: "Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!Test!",
-    //   buttons: [{name: "OK", type: "equal", handler: async () => {console.log("OK")}}],
-    // })
   })
 
 </script>

@@ -31,22 +31,26 @@ const clickBackground = async () => {
           <div class="text-h3 text-center pa-60 text_container first-letter">
             {{ dialog.text }}
           </div>
+          <q-img v-if="dialog.icon" :src="dialog.icon" />
           <div class="buttons_container px-30 mb-30">
             <template v-for="button in dialog.buttons">
               <ModalButton v-if="button.type == 'common'"
                 :name="$t(button.name)"
+                unelevated
                 color="black"
                 @click="button.handler"
                 textColor="white"
               />
               <ModalButton v-if="button.type == 'primary'"
                 :name="$t(button.name)"
+                unelevated
                 textColor="black"
                 color="green"
                 @click="button.handler"
               />
               <ModalButton v-if="button.type == 'equal'"
                 :name="$t(button.name)"
+                unelevated
                 textColor="green"
                 color="black"
                 @click="button.handler"
@@ -81,11 +85,12 @@ const clickBackground = async () => {
   position: absolute;
   z-index: 9999;
   width: 100%;
-  max-width: 45rem;
+  max-width: 48rem;
   min-width: auto;
   min-height: 22rem;
   display: grid;
-  grid-template-rows: 1fr max-content;
+  grid-template-rows: 1fr repeat(2, max-content);
+  /* grid-template-rows: 1fr max-content; */
   align-items: center;
 }
 

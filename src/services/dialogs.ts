@@ -22,6 +22,8 @@ export type DialogParams = {
   priority?: number,
   /** Number of button to click on background click */
   bgClickButton?: number,
+  /** src for q-img */
+  icon?: string;
 }
 
 export function showDialog(params: DialogParams) {
@@ -52,9 +54,10 @@ export function showDialog(params: DialogParams) {
   dialogs.sort((a, b) => b.priority - a.priority); // descending
 }
 
-export function showSimpleNotification(text: string) {
+export function showSimpleNotification(text: string, icon: string) {
   showDialog({
     text,
+    icon,
     buttons: [
       { name: 'dismiss', handler: async () => {}, type: "primary" },
     ]

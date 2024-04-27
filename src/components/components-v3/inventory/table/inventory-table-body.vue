@@ -23,7 +23,7 @@ import Bin from '../../orders/bin.vue';
     },
   })
 
-  const emit = defineEmits(['itemConfirm', 'resetActualQuantity', ]);
+  const emit = defineEmits(['resetActualQuantity', ]);
 
 </script>
 
@@ -39,20 +39,24 @@ import Bin from '../../orders/bin.vue';
     <td class="pcs">{{ props.good_stock ?? 0 }}</td>
     <td class="pcs">{{ props.good_quant }}</td>
     <td>
-      <div class="flex no-wrap justify-end items-center">
+      <div class="flex no-wrap justify-end items-center relative-position">
         <q-img src="/state.svg" v-show="props.good_stock !== props.good_quant" class="mr-10 icon_notequal_style" />
-        <ConfirmButton @click="emit('itemConfirm')" />
+        <q-img src="/state.svg" class="mr-10 icon_notequal_style__opacity" />
       </div>
     </td>
   </tr>
 
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .icon_notequal_style {
   width: 3rem;
   @media (max-width: 1300px) {
     width: 1.5rem;
+  }
+  &__opacity {
+    opacity: 0;
+    position: absolute;
   }
 }
 .buttons_container {
