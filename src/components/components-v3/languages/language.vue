@@ -37,6 +37,7 @@
       class="img_style q-mb-xs"
       fit='fill'
       :class="props.newClass"
+      :aria-label="props.language"
     />
     <div
       class="text-left text-uppercase lang_style text-white text-h2 q-ml-sm" v-if="!!props.language"
@@ -50,9 +51,7 @@ $height: calc(3.5em + 1.7262vmin);
 .img_style {
   height: $height;
   width: $width;
-  border-radius: var(--border-xxs);
-  // border-radius: 50%;
-  // box-shadow: var(--border-shadow);
+  border-radius: var(--border-sm);
   margin-top: 0.125em;
   margin-inline: 0.125em;
 }
