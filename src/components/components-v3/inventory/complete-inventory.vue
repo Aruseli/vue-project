@@ -78,7 +78,7 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
         }
         // await showPrintConfirmationDialog();
         await showDialog({
-          text: "print_inventory_results",
+          text: t("print_inventory_results"),
           buttons: [{
             name: "not_print", type: "equal", handler: async () => handlePrintConfirmation(false)
           }, {
