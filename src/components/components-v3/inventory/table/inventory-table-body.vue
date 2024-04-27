@@ -1,12 +1,9 @@
 <script setup lang="ts">
-  import Bin from '../../orders/bin.vue';
-  import ModalButton from '../../buttons/modal-button.vue';
   import { ref } from 'vue';
-  import Modal from '../../../overlay/modal.vue';
-  import ConfirmButton from '../../buttons/confirm-button.vue';
+import ConfirmButton from '../../buttons/confirm-button.vue';
+import Bin from '../../orders/bin.vue';
 
   const switchModal = ref(false);
-  const binSwitch = (state:boolean) => switchModal.value = state
   const props = defineProps({
     good_title: {
       type: String,

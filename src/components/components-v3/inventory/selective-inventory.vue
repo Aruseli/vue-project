@@ -94,9 +94,8 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
   const reset = (id: string) => {
     const item = selectiveInventoryStore.selectedInventory?.items.find((i) => i.id === id);
     if(item?.id == id) {
-      console.log(item.title, item.id)
       showDialog({
-        text: `$t(are_you_sure_you_want_to_rescan_the_product) ${item.title}`,
+        text: `${t('are_you_sure_you_want_to_rescan_the_product')} ${item.title}`,
         buttons: [{
           name: "defer", type: "common", handler: async () => {console.log("close")}
         }, {

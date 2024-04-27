@@ -132,7 +132,7 @@
     inventoryRequests.value = selectiveInventoryStore.inventoriesDocuments.length;
     if( inventoryRequests.value > 0 && (app.shiftIsGood || app.hasRight(app.kioskState.settings?.rights__kiosk_selective_inventory)) ) {
       await showDialog({
-        text: "there_are_documents_for_inventory",
+        text: t('there_are_documents_for_inventory'),
         buttons: [{
           name: "defer", type: "common", handler: async () => {console.log("close")}
         }, {
