@@ -229,7 +229,7 @@
           <!-- <div class="row">
             <Language
               :language="selectedLang"
-              :src="`/flags/${selectedLang}.webp`"
+              :src="`/flags/4x3/${selectedLang}.svg`"
               @click="app.openLangDialog(true)"
             />
           </div> -->
