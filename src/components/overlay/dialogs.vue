@@ -20,7 +20,7 @@ const clickBackground = async () => {
 </script>
 
 <template>
-  <div style="height: 100vh; width: 100vw; position: absolute; top: 0; left: 0;" v-if="dialog">
+  <div style="height: 100vh; width: 100vw; position: absolute; top: 0; left: 0;" v-if="dialog" id="modal-window">
     <transition name="teleport-modal-animation">
       <div class="flex items-center justify-center window-width full-height">
         <div

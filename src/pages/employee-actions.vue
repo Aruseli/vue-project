@@ -14,7 +14,7 @@
   import EmployeeActions from '../components/components-v3/employee-actions.vue';
   import {default as EmployeeActionsOld} from '../components/catalog/employee-actions.vue';
   import TestZone from 'src/components/components-v3/test-zone.vue';
-  import { showDialog, showSimpleNotification } from '../services/dialogs';
+  import { showDialog, showSimpleNotification, closeDialog } from '../services/dialogs';
 
   const $q = useQuasar();
   const router = useRouter();
@@ -124,6 +124,21 @@
       })
     }
   })
+
+  // Глобальный обработчик событий для закрытия модального окна
+  const removeDialogOnRouteChange = () => {
+    closeDialog();
+  };
+
+  router.beforeEach((to, from, next) => {
+    removeDialogOnRouteChange();
+    next();
+  });
+
+  onUnmounted(() => {
+    // Удаление обработчика событий при размонтировании компонента
+    router.beforeEach(() => {});
+  });
 </script>
 
 <template>

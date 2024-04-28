@@ -63,3 +63,10 @@ export function showSimpleNotification(text: string, icon?: string) {
     ]
   })
 }
+
+export function closeDialog() {
+  const modalElement = document.getElementById('modal-window');
+  if (modalElement) {
+    modalElement.remove();
+  }
+}

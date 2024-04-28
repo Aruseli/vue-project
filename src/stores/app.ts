@@ -18,6 +18,7 @@ export const useAppStore = defineStore('app', () => {
   const tab = ref('');
   const shiftLoading = ref(true);
   const lang_dir = ref('ltr');
+  const redirectDialogState = ref(false);
 
   const openDrawerCart = (state: boolean) => {
     drawerCartState.value = state;
@@ -240,6 +241,8 @@ export const useAppStore = defineStore('app', () => {
     shiftIsUpToDate,
     shiftIsGood,
     lockTerminal,
+
+    redirectDialogState,
 
     customerModeIsAllowed: computed<boolean>(() => {
       return hasRight(kioskState.settings?.rights__kiosk_open_shift)
