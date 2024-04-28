@@ -85,7 +85,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
         doc_detail_type: appStore.kioskState.settings?.docdetail_type__inventory ?? '',
       }))) ?? [];
 
-    const documentId = await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '');
+    const documentId = await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id);
     return { documentId }
   };
 
@@ -93,7 +93,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     inventoryLoading.value = true;
     try {
       const doc = await initFullInventoryDoc();
-      const documentId = await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '');
+      const documentId = await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id);
       inventoryDocument.value = await apiGetDocument(documentId);
       inventory.value = documentToInventory(inventoryDocument.value, goodsStore).items;
       const debugGoodItemIds = inventory.value?.flatMap(i => goodsStore.getGoodById(i.id).items.map(item => item.mark));
