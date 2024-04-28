@@ -41,11 +41,10 @@
     app.openDrawerCart(true);
   }
   const changeLanguage = async (newLocale: string) => {
+    const flag = app.kioskState.catalogLocales.find(l => l.lang_code === newLocale)?.flag_src;
     await app.setLocale(newLocale);
     await goodsStore.updateGoods(newLocale);
-    selectedLang.value = newLocale;
-    localStorage.setItem("lang", newLocale);
-    console.log("LNAGUAGE", newLocale)
+    selectedLang.value = flag;
     app.langDialog = false;
   };
 
@@ -189,7 +188,7 @@
         </LogoSimple>
         <div class="row">
           <Language
-            :src="`/flags/4x3/${selectedLang}.svg`"
+            :src="selectedLang"
             @click="app.openLangDialog(true)"
             newClass="additional_lang_style"
           />

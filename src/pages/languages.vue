@@ -11,10 +11,11 @@
 
   const router = useRouter();
   const changeLanguage = async (newLocale: string) => {
+    const flag = app.kioskState.catalogLocales.find(l => l.lang_code === newLocale)?.flag_src;
     await goodsStore.updateGoods(newLocale);
     app.setLocale(newLocale);
     router.push("catalog");
-    localStorage.setItem("lang", newLocale);
+    localStorage.setItem("lang", flag);
     if (app.kioskState.settings?.alt_ui == "design_v3") {
       document.body.className = "v3_body_style";
     }
@@ -24,7 +25,7 @@
 
 <template>
   <q-page
-    class="column justify-center items-center relative window-height"
+    class="relative window-height"
     :class="[app.kioskState.settings?.alt_ui === 'design_v3' ? 'flame_hello_bg' : 'hello_bg']"
   >
     <Logo class="logo_row logo" classes="q-mr-sm" v-if="app.kioskState.settings?.alt_ui !== 'design_v3'">
@@ -78,12 +79,17 @@
   background-size: cover;
 }
 .flame_hello_bg {
+  display: grid;
+  grid-template-rows: 1fr max-content;
+  align-items: center;
+  justify-content: center;
   background-image: url('/grey-flame.png');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 }
 .title_styles {
+  justify-self: center;
   text-align: center;
   width: 40vw;
 }

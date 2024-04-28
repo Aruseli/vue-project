@@ -167,7 +167,6 @@ export const useAppStore = defineStore('app', () => {
       if(err) { console.log('i18next err', err)}
     })
     lang_dir.value = i18next.dir(lang_code);
-    console.log('LANG', lang_dir.value)
   }
 
   const resetLocale = async () => {
