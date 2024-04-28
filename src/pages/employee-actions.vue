@@ -113,7 +113,7 @@
     await app.updateShifts();
     await selectiveInventoryStore.updateInventories();
     inventoryRequests.value = selectiveInventoryStore.inventoriesDocuments.length;
-    if( inventoryRequests.value > 0 && app.shiftIsGood ) {
+    if( inventoryRequests.value > 0 && app.shiftIsGood && app.hasRight(app.kioskState.settings?.rights__kiosk_selective_inventory) ) {
       await showDialog({
         text: t('there_are_documents_for_inventory'),
         buttons: [{
@@ -153,6 +153,6 @@
       :inventoryRequests="inventoryRequests"
       v-if="app.kioskState.settings?.alt_ui !== 'design_v3'"
     />
-    <TestZone />
+    <!-- <TestZone /> -->
   </q-page>
 </template>
