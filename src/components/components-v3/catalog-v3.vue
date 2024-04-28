@@ -7,7 +7,7 @@
   import { useGoodsStore } from '../../stores/goods';
   import RedirectDialog from '../dialog/redirect-dialog.vue';
   import ProductCard from './product/product-card.vue';
-  import RectangularButton from '../buttons/rectangular-button.vue';
+  import ModalButton from '../components-v3/buttons/modal-button.vue';
   import LogoSimple from '../logo/logo-simple.vue';
   import LogoSvg from '../logo/logo-svg.vue';
   import Language from './languages/language.vue';
@@ -280,24 +280,25 @@
     <!-- redirect dialog when user is inactive-->
     <RedirectDialog
       :modelValue="dialogState"
-      additionalCartStyle="redirect_dialog_style q-py-lg"
-      titleClass="text-white"
     >
       <template #content>
-        <div class="text-h3 text-center text-white">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}</div>
+        <div class="text-h3 text-center mb-30">
+          <div class="text-h3 first-letter">{{$t('the_buying_session_will_end_in')}}</div>
+          <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}
+        </div>
       </template>
       <template #actions>
-        <RectangularButton
+        <ModalButton
           :name="$t('complete')"
-          color="white"
-          class="q-px-md-sm q-px-xs-sm q-py-xs-xs"
+          unelevated
+          color="black"
+          textColor="white"
           @click="redirect"
-          textColor="primary"
         />
-        <RectangularButton
+        <ModalButton
           :name="$t('continue')"
           color="green"
-          class="q-px-md-sm q-px-xs-sm q-py-xs-xs"
+          textColor="black"
           @click="closeDialog"
         />
       </template>

@@ -54,7 +54,7 @@ export function showDialog(params: DialogParams) {
   dialogs.sort((a, b) => b.priority - a.priority); // descending
 }
 
-export function showSimpleNotification(text: string, icon: string) {
+export function showSimpleNotification(text: string, icon?: string) {
   showDialog({
     text,
     icon,

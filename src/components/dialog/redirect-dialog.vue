@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import RectangularButton from '../buttons/rectangular-button.vue';
 import Modal from '../overlay/modal.vue';
 
@@ -24,6 +24,10 @@ const props = defineProps({
     type: String,
     required: false,
     default: '',
+  },
+  mode: {
+    type: String,
+    default: 'dark'
   }
 })
 
@@ -31,38 +35,47 @@ const props = defineProps({
 
 <template>
   <Modal :isOpen="props.modelValue" to="#redirect-dialog">
-    <div class="card_container">
-      <q-card class="q-pa-sm fit card_style" :class="props.additionalCartStyle">
-        <q-card-section class="column items-center q-mb-xs-sm">
-          <div class="text-h3 q-mb-sm-sm q-mb-xs-xs text-center title_style" :class="props.titleClass">{{ $t(props.title) }}</div>
-          <slot name="content"></slot>
-        </q-card-section>
-
-        <q-card-section class="row items-center justify-evenly">
-          <slot name="actions"></slot>
-        </q-card-section>
-
-      </q-card>
+    <div
+      class="dialog_style overflow-hidden"
+      role="dialog"
+      aria-modal="true"
+      :class="props.mode == 'dark' ?  'bg-grey-3 text-white' : 'bg-white'"
+    >
+      <div
+        class="text-h3 text-center px-60 pt-60 text_container text-uppercase"
+        :class="props.titleClass"
+      >
+        {{ $t(props.title) }}
+      </div>
+      <slot name="content"></slot>
+      <div class="buttons_container pa-30">
+        <slot name="actions"></slot>
+      </div>
     </div>
   </Modal>
 </template>
 
 <style scoped>
-.card_container {
-  width: 50vw;
-  height: max-content;
-  @media (max-width: 899px) {
-    width: 90vw;
-  }
+.dialog_style {
+  border-radius: var(--border-xxs);
+  width: 48rem;
+  min-height: 22rem;
+  display: grid;
+  grid-template-rows: 1fr repeat(2, max-content);
+  /* grid-template-rows: 1fr max-content; */
+  align-items: center;
 }
 
-.card_style {
-  border-radius: 2rem;
+.text_container {
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
-.title_style {
-  text-transform: none;
-  @media (max-width: 899px) {
-    text-transform: uppercase;
-  }
+.buttons_container {
+  display: grid;
+  align-content: center;
+  justify-content: center;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 20rem));
+  column-gap: var(--px30);
 }
+
 </style>

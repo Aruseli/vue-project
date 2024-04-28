@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { eventEmitter, throwErr } from "src/services";
-  import RectangularButton from 'components/buttons/rectangular-button.vue';
+  import ModalButton from 'components/components-v3/buttons/modal-button.vue';
   import RedirectDialog from 'components/dialog/redirect-dialog.vue';
   import Dialogs from "./components/overlay/dialogs.vue";
   import { parseBarcode } from "src/services/barcodes";
@@ -268,17 +268,27 @@
   <Dialogs />
   <RedirectDialog
     :modelValue="redirectDialogState"
-    title="you_are_inactive"
+    mode="light"
   >
     <template #content>
-      <div class="text-h3 text-center">
-        <div class="text-h3">{{$t('the_session_will_end_in')}}</div>
+      <div class="text-h3 text-center mb-30">
+        <div class="text-h3 first-letter">{{$t('the_buying_session_will_end_in')}}</div>
         <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}
       </div>
     </template>
     <template #actions>
-      <RectangularButton :name="$t('complete')" color="transparent" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="redirect" textColor="primary" />
-      <RectangularButton :name="$t('continue')" class="q-px-md-sm q-px-xs-sm q-py-xs-xs" @click="closeDialog" />
+      <ModalButton
+        :name="$t('complete')"
+        unelevated
+        color="black"
+        textColor="white"
+        @click="redirect" />
+        <ModalButton
+        :name="$t('continue')"
+        color="green"
+        textColor="black"
+        @click="closeDialog"
+      />
     </template>
   </RedirectDialog>
 </template>

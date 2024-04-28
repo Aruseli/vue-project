@@ -86,24 +86,6 @@
         name: 'arrival_goods',
         click: async () => {
           await showSimpleNotification(t("scan_the_barcode_of_the_document"),'/barcode_scanner.svg')
-          // $q.notify({
-          //   position: "center",
-          //   color: "positive",
-          //   classes: "full-width warning_customization",
-          //   timeout: 1000,
-          //   icon: 'img:/barcode_scanner.svg',
-          //   iconSize: '5rem',
-          //   spinnerSize: '3rem',
-          //   actions: [
-          //     {
-          //       icon: "cancel",
-          //       'aria-label': 'cancel',
-          //       label: t("scan_the_barcode_of_the_document"),
-          //       color: "white",
-          //       round: true,
-          //     },
-          //   ],
-          // });
         },
         disable: !app.arrivalsAreAllowed,
       },
