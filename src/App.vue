@@ -292,5 +292,3 @@
     </template>
   </RedirectDialog>
 </template>
-
-
