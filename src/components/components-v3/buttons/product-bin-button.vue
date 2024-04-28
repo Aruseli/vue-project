@@ -13,7 +13,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <q-btn unelevated class="relative-position bin_button_style" @click="emit('click')">
+  <q-btn unelevated class="relative-position bin_button_style" @click.stop="emit('click')">
     <slot></slot>
   </q-btn>
 </template>

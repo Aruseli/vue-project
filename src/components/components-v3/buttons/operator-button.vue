@@ -24,7 +24,7 @@
     :color="props.color"
     :text-color="props.textColor"
     v-bind="$attrs"
-    @click="emit('click')"
+    @click.stop="emit('click')"
   >
     <q-icon flat :color="props.textColor" :name="props.icon" class="icon_size"></q-icon>
    </q-btn>

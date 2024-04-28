@@ -3,6 +3,7 @@
   import { t } from 'i18next';
   import { computed, ref } from 'vue';
   import { useCartStore } from '../../../stores/cart';
+  import { useAppStore } from '../../../stores/app';
   import { Good } from '../../../stores/goods';
   import BinButton from '../../buttons/bin-button.vue';
   import IconButton from '../../buttons/icon-button.vue';
@@ -15,6 +16,7 @@
 import ProductBinButton from '../buttons/product-bin-button.vue';
 
   const cartStore = useCartStore();
+  const app = useAppStore();
   const openDialog = ref(false)
 
   const props = defineProps({
@@ -62,6 +64,7 @@ import ProductBinButton from '../buttons/product-bin-button.vue';
   <div
     :class="[props.good && props.good.stock <= 0 && 'disabled no-pointer-events', 'card_setting_v3 bg-grey-2 pa-14']"
     v-bind="$attrs"
+    @click="openDialog = true"
   >
     <div class="row justify-between items-center q-mb-xs">
       <IconButton color="bg-white" class="q-pa-none" :customIcon="true" @click="openDialog = true">
@@ -69,7 +72,10 @@ import ProductBinButton from '../buttons/product-bin-button.vue';
       </IconButton>
       <div class="text-subtitle1 row">
         <div class="mr-14">99% THC</div>
-        <div class="row items-center intensity_icons_container">
+        <div
+          class="row items-center intensity_icons_container"
+          :class="[app.lang_dir == 'rtl' ? 'intensity_icons_container_rtl' : '']"
+        >
           <div class="intensity_icon bg-red" />
           <div class="intensity_icon bg-red" />
           <div class="intensity_icon bg-red" />
@@ -222,7 +228,7 @@ import ProductBinButton from '../buttons/product-bin-button.vue';
     display: grid;
     grid-row: 2 / 3;
     grid-column: 1 / 3;
-    grid-template-columns: repeat(auto-fit, minmax(5%, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(5%, 10%));
     column-gap: 1.5rem;
   }
 
@@ -241,6 +247,9 @@ import ProductBinButton from '../buttons/product-bin-button.vue';
     box-shadow: var(--box-shadow--product_cart_v3);
   }
   .intensity_icons_container > *:not(:last-child) {
+    margin-right: 0.5rem;
+  }
+  .intensity_icons_container_rtl > *:not(:first-child) {
     margin-right: 0.5rem;
   }
   .intensity_icon {
