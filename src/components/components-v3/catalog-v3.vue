@@ -17,6 +17,7 @@
   import { useIntersectionObserver } from '@vueuse/core';
   import CartDrawer from './cart/cart-drawer.vue';
   import Cta from './cta.vue';
+import moment from 'moment';
 
   const target = ref(null);
   const goodsStore = useGoodsStore();
@@ -41,7 +42,7 @@
     app.openDrawerCart(true);
   }
   const changeLanguage = async (newLocale: string) => {
-    const flag = app.kioskState.catalogLocales.find(l => l.lang_code === newLocale)?.flag_src;
+    const flag = app.kioskState.catalogLocales?.find(l => l.lang_code === newLocale)?.flag_src ?? '';
     await app.setLocale(newLocale);
     await goodsStore.updateGoods(newLocale);
     selectedLang.value = flag;
@@ -171,11 +172,24 @@
     // stop();
   });
 
+  console.log('kioskState.settings?.tdp ?? "localhost:3010"', app.kioskState.settings?.tdp ?? "localhost:3010")
+  const date = new Date();
+  const time = date.getTime();
+  const formattedTime = moment(time).format('LT');
+
 </script>
 
 <template>
   <div class="catalog_container relative-position">
-
+    <!-- ping light -->
+    <div class="ping_container row">
+      <div>{{ app.kioskState.name }}</div>
+      <div>{{ formattedTime }}</div>
+      <div class="ping_cat_light bg-green-10" />
+      <div
+        :class="[app.kioskState.settings?.tdp ? 'ping_tdp_light' : 'ping_tdp_light_not__signal' ,'bg-green']"
+      />
+    </div>
     <!-- header -->
     <header class="row justify-between q-pa-xl header_style_v3 bg-grey-2">
       <div class="row q-gutter-x-md">
@@ -340,6 +354,7 @@
   width: 100%;
   height: 100vh;
   color: var(--body-text);
+  position: relative;
 }
 
 .header_style_v3 {
@@ -422,5 +437,40 @@ li > div.active {
 .additional_lang_style {
   width: $width !important;
   height: $height !important;
+}
+
+.ping_container {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  column-gap: 0.5em;
+}
+
+.ping_tdp_light {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 1rem;
+  &__not_signal {
+    box-shadow: 0 0 0 0 green;
+    background-color: transparent;
+    animation: ping 2s infinite;
+  }
+}
+.ping_cat_light {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 1rem;
+}
+
+@keyframes ping {
+  0% {
+    box-shadow: 0px 0px 0px 0px green;
+  }
+  50% {
+    box-shadow: 0px 0px 1px 2px green;
+  }
+  100% {
+    box-shadow: 0px 0px 2px 4px green;
+  }
 }
 </style>
