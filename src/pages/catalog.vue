@@ -21,6 +21,8 @@ import CartDrawer from '../components/catalog/cart/cart-drawer.vue';
 </template>
 
 <style scoped>
-
+main {
+  background: #181818
+}
 </style>
 
