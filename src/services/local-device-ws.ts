@@ -1,11 +1,21 @@
+import { watchEffect } from 'vue';
+
 import { RawLocalDeviceWsMessage } from '../types';
-import { apiReportsGetView, eventEmitter, isPlainObject, isString } from '../services';
-import i18next from 'i18next';
+import { eventEmitter, isPlainObject, isString } from '../services';
+import { settings } from './terminal';
 
 let serviceLaunched = false;
 export let ws: WebSocket | null = null;
 
-export async function initLocalDeviceWsService(address: string): Promise<void> {
+watchEffect(() => {
+  const address = settings.value?.tdp;
+  if (address) {
+    initLocalDeviceWsService(address);
+  }
+})
+
+// TODO: Allow address change
+async function initLocalDeviceWsService(address: string): Promise<void> {
   if (!serviceLaunched) {
     serviceLaunched = true;
     await startLocalDeviceWsService(address);

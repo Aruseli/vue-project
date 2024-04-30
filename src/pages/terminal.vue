@@ -9,6 +9,7 @@
   import { computed } from 'vue';
   import Rectangular from 'src/components/buttons/rectangular-button.vue';
   import TestZone from '../components/components-v3/test-zone.vue';
+  import * as usersService from 'src/services/users';
 
   const $q = useQuasar();
   const appStore = useAppStore();
@@ -23,7 +24,7 @@
   async function onSubmitLogin() {
     $q.loading.show();
     try {
-      await appStore.login(state.userName, state.userPassword)
+      await usersService.login(state.userName, state.userPassword)
     }
     catch(e) {
       console.log(e)
@@ -44,16 +45,13 @@
   let statusIsUnknown = computed(() => appStore.kioskState.status == 'Unknown')
   let statusIsUnboundTerminal = computed(() => appStore.kioskState.status == 'UnboundTerminal')
   let statusIsUnauthenticated = computed(() => appStore.kioskState.status == 'Unauthenticated')
-  let statusIsUnrecoverableError = computed(() =>
-    appStore.kioskState.status == 'UnrecoverableError'
-      || appStore.kioskState.status == 'Ready'
-      // We don't have anything to show for READY state
-      // TODO: Consider moving employee actions or even router to this page with v-if="statusIsReady"
-  )
+  let statusIsUnrecoverableError = computed(() => appStore.kioskState.status == 'UnrecoverableError')
+  let statusIsReady = computed(() => appStore.kioskState.status == 'Ready')
 </script>
 
 <template>
-  <q-page class="flex flex-center relative bg-secondary" style="height: 100%; width: 100%">
+  <router-view v-if="statusIsReady" />
+  <q-page v-if="!statusIsReady" class="flex flex-center relative bg-secondary" style="height: 100%; width: 100%">
     <div class="pa-40 items-center row full-height">
       <div v-if="statusIsUnrecoverableError">
         <q-card class='bg-secondary no-box-shadow'>
