@@ -352,7 +352,7 @@ import moment from 'moment';
   grid-template-rows: max-content 1fr;
   grid-template-columns: max-content 1fr;
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 1rem);
   color: var(--body-text);
   position: relative;
   align-self: center;
