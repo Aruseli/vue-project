@@ -263,9 +263,9 @@
   <router-view />
   <div class="bg_layer" />
   <div id="modal" />
-  <div id="redirect-dialog" />
   <div id="drawer" />
   <Dialogs />
+  <div id="redirect-dialog" />
   <RedirectDialog
     :modelValue="redirectDialogState"
     mode="light"
