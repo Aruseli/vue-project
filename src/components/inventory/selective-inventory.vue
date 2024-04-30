@@ -86,6 +86,25 @@ async function handlePrintConfirmation(printConfirmed) {
     }
   }
 
+  const reset = (id) => {
+    const item = selectiveInventoryStore.selectedInventory?.items.find((i) => i.id === id);
+    if(item?.id == id) {
+      showDialog({
+        text: `${t('are_you_sure_you_want_to_rescan_the_product')} ${item.title}`,
+        buttons: [{
+          name: "no", type: "common", handler: async () => {
+            console.log("close");
+          },
+        }, {
+          name: "yes", type: "primary", handler: async () => {
+            item.quant = 0;
+            item.scannedItems = [];
+          },
+        }],
+      })
+    }
+  }
+
 </script>
 
 <template>
@@ -140,7 +159,7 @@ async function handlePrintConfirmation(printConfirmed) {
             :not_equal="inv.stock !== inv.quant"
             :class="{ 'highlighted': inv.confirmed }"
             @itemConfirm="inv.confirmed = !inv.confirmed"
-            @resetActualQuantity="inv.quant = 0"
+            @resetActualQuantity="reset(inv.id)"
             :id="inv.id"
           />
         </ol>

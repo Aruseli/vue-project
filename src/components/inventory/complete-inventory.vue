@@ -17,6 +17,7 @@
     wsSendMessage,
   } from 'src/services';
   import RedirectDialog from "src/components/dialog/redirect-dialog.vue";
+import { showDialog } from 'src/services/dialogs';
 
   const goodsStore = useGoodsStore();
   const inventoryStore = useInventoryStore();
@@ -117,6 +118,27 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
     }
   }
 
+
+  const reset = (id: string) => {
+    const item = inventoryStore.inventory.find((i) => i.id === id);
+    if(item?.id == id) {
+      showDialog({
+        text: `${t('are_you_sure_you_want_to_rescan_the_product')} ${item.title}`,
+        buttons: [{
+          name: "no", type: "common", handler: async () => {
+            console.log("close");
+          },
+        }, {
+          name: "yes", type: "primary", handler: async () => {
+            item.quant = 0;
+            item.scannedItems = [];
+          },
+        }],
+      })
+    }
+  }
+
+
   const date = new Date();
   // Format the date using Moment.js
   const formattedDate = moment(date).format("DD.MM.YY");
@@ -193,7 +215,7 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
             :not_equal="good.stock !== good.quant"
             :class="{ 'highlighted': good.confirmed }"
             @itemConfirm="good.confirmed = !good.confirmed"
-            @resetActualQuantity="good.quant = 0"
+            @resetActualQuantity="reset(good.id)"
             :id="good.id"
           />
         </ol>

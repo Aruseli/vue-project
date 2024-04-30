@@ -138,9 +138,14 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
       showDialog({
         text: `${t('are_you_sure_you_want_to_rescan_the_product')} ${item.title}`,
         buttons: [{
-          name: "no", type: "common", handler: async () => {console.log("close")}
+          name: "no", type: "common", handler: async () => {
+            console.log("close");
+          },
         }, {
-          name: "yes", type: "primary", handler: async () => item.quant = 0
+          name: "yes", type: "primary", handler: async () => {
+            item.quant = 0;
+            item.scannedItems = [];
+          },
         }],
       })
     }

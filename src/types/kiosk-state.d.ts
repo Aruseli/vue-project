@@ -105,11 +105,11 @@ export type User = {
 }
 
 export type Correspondent = {
-  id?: string,
-  name?: string,
-  entityType?: string,
-  entityId?: string,
-  corrType?: string,
+  id: string,
+  name: string,
+  entityType: string,
+  entityId: string,
+  corrType: string,
 }
 
 export type TerminalShift = {
@@ -127,8 +127,8 @@ export type TerminalShift = {
 
 export type KioskState = {
   status: 'Unknown' | 'UnboundTerminal' | 'Unauthenticated' | 'Ready' | 'UnrecoverableError',
-  name: string,
-  code: string,
+  name?: string,
+  code?: string,
   params?: TerminalParams,
   /**
    * This is the `{ .."config.js"."settings", ..backend_terminal_settings }`.

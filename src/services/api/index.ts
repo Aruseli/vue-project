@@ -1,5 +1,5 @@
 import { Correspondent, TerminalParams, TerminalShift, User } from "src/types/kiosk-state";
-import config from 'src/services/config';
+
 
 async function fetchApi<T = any>(url: string, data?: Record<string, any>, mode: 'json' | 'text' = 'json', headers: any = {}): Promise<T> {
   let response;
@@ -55,11 +55,11 @@ async function fetchApi<T = any>(url: string, data?: Record<string, any>, mode: 
   }
 }
 
-export async function apiAddAnyTerminal(name: string, code: string) {
+export async function apiAddAnyTerminal(name: string, code: string, type_id: string) {
   const response = await fetchApi<{ data: TerminalParams }>('/api/v2/addAnyTerminal', {
     name,
     code,
-    type_id: config.terminal_type_id,
+    type_id,
   })
   return response.data;
 }
@@ -82,7 +82,6 @@ export async function apiGetLocalesList(objectId: string, locationId: string) {
     objectId,
     locationId,
   });
-  console.log('apiGetLocalesList', response)
   return response.data.locales as {id: string, lang_code: string, name: string, flag_code: string}[];
 }
 
@@ -90,25 +89,22 @@ export async function apiGetLocale(lang: string) {
   const response = await fetchApi('/api/v2/kiosk/getLocale', {
     lang,
   });
-  console.log('apiGetLocale', response);
   return response.data.locale;
 }
 export async function apiGetCurrentShift(locationId: string) {
   const response = await fetchApi('/api/v2/sales/currentShift', {
     id: locationId,
   });
-  console.log('apiGetCurrentShift', response)
   return response.data.id as string
 }
 export async function apiGetShift(terminalId: string) {
   const response = await fetchApi('/api/v2/sales/getShift', {
     id: terminalId,
   });
-  console.log('apiGetShift', response)
   return response.data as {
-    shift: TerminalShift,
-    last_open_operation: { staff1: string, details: { terminal_shift_id: string } },
-    last_close_operation: { staff1: string, details: { terminal_shift_id: string } },
+    shift?: TerminalShift,
+    last_open_operation?: { staff1: string, details: { terminal_shift_id: string } },
+    last_close_operation?: { staff1: string, details: { terminal_shift_id: string } },
   };
 }
 export async function apiAddShift(terminalId: string, locationShiftId: string, user_id: string) {
@@ -117,7 +113,6 @@ export async function apiAddShift(terminalId: string, locationShiftId: string, u
     global_shift_id: locationShiftId,
     user_id: user_id,
   });
-  console.log('apiAddShift', response)
   return response.data as { id: string }
 }
 export async function apiCloseShift(terminalShiftId: string, state: number, user_id: string) {
@@ -126,7 +121,6 @@ export async function apiCloseShift(terminalShiftId: string, state: number, user
     state: state,
     user_id: user_id,
   });
-  console.log('apiCloseShift', response)
   return response.data as { success: number }
 }
 
@@ -296,7 +290,6 @@ export async function apiSaveDocument(doc: SaveableDocument, terminal_shift_id?:
   const response = await fetchApi('/api/v2/kiosk/saveDocument', {
     doc, terminal_shift_id,
   });
-  console.log('saveDocument', response);
   return response.data.id as string;
 }
 

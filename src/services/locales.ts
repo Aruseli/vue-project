@@ -6,6 +6,10 @@ import i18next from 'i18next';
 export async function updateCatalogLocales(kioskState: KioskState) {
   // Update locales
   while (true) {
+    if (!kioskState.user) {
+      await delay(100);
+      continue;
+    }
     try {
       const locales = await apiGetLocalesList(kioskState.params!.object_id!, kioskState.params!.location_id!)
         .then(r => r?.map(l => ({
@@ -14,15 +18,14 @@ export async function updateCatalogLocales(kioskState: KioskState) {
           flag_src: `/flags/4x3/${l?.flag_code}.svg`,
           flag_code: l?.flag_code
         })))
-          console.log({locales})
+      console.log({locales});
       kioskState.catalogLocales = locales;
       await Promise.all(locales.map(async (lc) => {
         const locale = await apiGetLocale(lc.lang_code)
         i18next.addResourceBundle(lc.lang_code, "global", locale, true, false);
       }))
       break
-    } catch {
-    }
+    } catch(e) { console.error(e); }
     await delay(1000)
   }
 }
