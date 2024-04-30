@@ -11,7 +11,11 @@ import CartDrawer from '../components/catalog/cart/cart-drawer.vue';
 </script>
 
 <template>
-  <q-page :style="{ direction: app.lang_dir }" class="flex align-center relative justify-start window-full">
+  <q-page
+    :style="{ direction: app.lang_dir }"
+    class="flex align-center relative justify-start window-full"
+    :class="{ 'bg_black': app.kioskState.settings?.alt_ui == 'design_v3' }"
+  >
     <CartDrawer v-if="app.kioskState.settings?.alt_ui !== 'design_v3'" />
     <CatalogHeader v-if="app.kioskState.settings?.alt_ui == 'design_v1'" />
     <Catalog v-if="app.kioskState.settings?.alt_ui == 'design_v1'" />
@@ -21,7 +25,7 @@ import CartDrawer from '../components/catalog/cart/cart-drawer.vue';
 </template>
 
 <style scoped>
-main {
+.bg_black {
   background: #181818
 }
 </style>

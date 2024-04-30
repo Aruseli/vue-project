@@ -186,7 +186,7 @@
           :key='goodCategory.id'
           class="text-h3"
         >
-          <div @click="selectCategory(index)" :class='{active : index == selectedIndex}'>
+          <div @click="selectCategory(index)" :class='{active : index == selectedIndex}' class="first_letter">
             {{ goodCategory.title }}
           </div>
         </li>
@@ -194,9 +194,9 @@
     </div>
 
     <q-scroll-area class="goods_container q-px-lg q-pt-lg full-width full-height">
-      <article v-for="(goodCategory, index) in goodsStore.goods" :key="goodCategory.id" class="q-mb-md" :id="index" v-intersection="observer">
-        <div class="text-h4 q-mb-sm text-black">{{ goodCategory.title }}</div>
-        <div v-if="goodCategory.goods.length == 0" class="text-body1 text-black">{{$t('category_empty')}}</div>
+      <article v-for="(goodCategory, index) in goodsStore.goods" :key="goodCategory.id" class="mb-90" :id="index" v-intersection="observer">
+        <div class="text-h2 q-mb-lg text-black first_letter">{{ goodCategory.title }}</div>
+        <div v-if="goodCategory.goods.length == 0" class="text-h3 text-black mb-60">{{$t('category_empty')}}</div>
         <transition appear @enter="enterCardShake">
           <div class="row image_grid_alt">
             <ProductCard :good="good" v-for="(good, index) in goodCategory.goods" :key="index" class="card_setting_alt" />
@@ -204,7 +204,7 @@
         </transition>
       </article>
     </q-scroll-area>
-    <RedirectDialog :modelValue="dialogState">
+    <RedirectDialog :modelValue="dialogState" mode="light">
       <template #content>
         <div class="text-h3 text-center">{{$t('buying_session_will_end_in')}} <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}</div>
       </template>
@@ -243,7 +243,7 @@
 .image_grid_alt {
   display: grid;
   grid-template-columns: repeat(4,  1fr);
-  gap: 2em;
+  gap: 3rem;
   width: 100%;
   height: auto;
   padding: 0 0.2em;

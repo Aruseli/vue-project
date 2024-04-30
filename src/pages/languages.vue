@@ -11,11 +11,11 @@
 
   const router = useRouter();
   const changeLanguage = async (newLocale: string) => {
-    const flag = app.kioskState.catalogLocales.find(l => l.lang_code === newLocale)?.flag_src;
+    const flag = app.kioskState.catalogLocales ? app.kioskState.catalogLocales.find(l => l.lang_code === newLocale)?.flag_src : null;
     await goodsStore.updateGoods(newLocale);
     app.setLocale(newLocale);
     router.push("catalog");
-    localStorage.setItem("lang", flag);
+    localStorage.setItem("lang", flag || '');
     if (app.kioskState.settings?.alt_ui == "design_v3") {
       document.body.className = "v3_body_style";
     }
@@ -73,6 +73,10 @@
 }
 
 .hello_bg {
+  display: grid;
+  grid-template-rows: 1fr max-content;
+  align-items: center;
+  justify-content: center;
   background-image: url('/start.jpg');
   background-position: center;
   background-repeat: no-repeat;

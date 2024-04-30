@@ -272,7 +272,7 @@
   >
     <template #content>
       <div class="text-h3 text-center mb-30">
-        <div class="text-h3 first-letter">{{$t('the_buying_session_will_end_in')}}</div>
+        <div class="text-h3 first_letter">{{$t('the_buying_session_will_end_in')}}</div>
         <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}
       </div>
     </template>

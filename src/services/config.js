@@ -72,7 +72,7 @@ export default {
     "shifts__state_closing": 5,
     "shifts__state_closed": 0,
 
-    "alt_ui": 'design_v3',
+    "alt_ui": 'design_v2',
 
     "payment_type_id_cash": "8f404e9c-e42f-4251-8520-13961924c5e6",
     "payment_type_id_card": "df828bbb-05f7-4f64-bb36-3c20b0e37393",

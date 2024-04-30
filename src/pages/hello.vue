@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import Logo from 'src/components/logo/logo.vue';
   import { useRouter } from 'vue-router';
-  import { onMounted, onUnmounted, ref } from 'vue';
+  import { Ref, onMounted, onUnmounted, ref } from 'vue';
   import LogoSvg from 'src/components/logo/logo-svg.vue';
   import { useAppStore } from 'src/stores/app';
   import { forceNewVisit } from 'src/services/tracking';
@@ -42,6 +42,7 @@
     clearTimeout(shiftsUpdateTimer.value  as number);
     shiftsUpdateTimer.value = null;
   })
+
 </script>
 
 <template>
@@ -82,6 +83,18 @@
 </template>
 
 <style scoped>
+
+#video {
+  width: 100%;
+  height: 100%;
+}
+#canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
 .bg_filtered {
   position: absolute;
   top: 0;

@@ -232,7 +232,7 @@ import moment from 'moment';
               :key='goodCategory.id'
               class="text-h3 text-weight-bold"
             >
-              <div @click="selectCategory(goodCategory.id, $event)" :class='{active : goodCategory.id == selectedIndex}'>
+              <div @click="selectCategory(goodCategory.id, $event)" :class='{active : goodCategory.id == selectedIndex}' class="first_letter">
                 {{ goodCategory.title }}
               </div>
             </li>
@@ -268,10 +268,9 @@ import moment from 'moment';
         <div class="text-h2 q-mb-lg text-uppercase text-white">
           {{ goodCategory.title }}
         </div>
-        <div
-          v-if="goodCategory.goods.length == 0"
-          class="text-h3 text-white"
-        >{{$t('category_empty')}}</div>
+        <div v-if="goodCategory.goods.length == 0" class="text-h3 text-white mb-30">
+          {{$t('category_empty')}}
+        </div>
         <transition appear @enter="animation">
           <div class="row image_grid">
             <ProductCard
@@ -296,7 +295,7 @@ import moment from 'moment';
     >
       <template #content>
         <div class="text-h3 text-center mb-30">
-          <div class="text-h3 first-letter">{{$t('the_buying_session_will_end_in')}}</div>
+          <div class="text-h3 first_letter">{{$t('the_buying_session_will_end_in')}}</div>
           <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}
         </div>
       </template>

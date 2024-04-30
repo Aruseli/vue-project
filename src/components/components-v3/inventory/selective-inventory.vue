@@ -164,9 +164,9 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
       </div>
       <div class="full-width buttons_container px-100 pb-40">
         <RectangularButton
-        @click="confirmInventory"
-        color="warning"
-        :name="$t('declare_discrepancy')"
+          @click="confirmInventory"
+          color="warning"
+          :name="$t('declare_discrepancy')"
         />
         <RectangularButton
           name="confirm"

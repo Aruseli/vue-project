@@ -62,3 +62,9 @@
     <q-icon flat :color="props.textColor" :size="props.size" :name="props.icon" v-if="!props.customIcon" :class="props.iconStyle"></q-icon>
    </q-btn>
 </template>
+
+<style scoped>
+.q-icon {
+  font-size: 5rem !important;
+}
+</style>
