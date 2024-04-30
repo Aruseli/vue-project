@@ -72,7 +72,7 @@
         <div v-if="app.orderDialog == false" class="full-height">
           <div class="full-height q-pa-xl">
 
-            <div class="q-mb-lg-md q-mb-xs-sm">
+            <div class="mb-30">
               <div class="row items-center justify-between q-mb-lg-md q-mb-xs-xs">
                 <div class="text-h1 text-left text-white text-uppercase col-10  text-weight-bold">
                   {{ $t('order') }}
@@ -98,7 +98,7 @@
               <div class="bg-negative full-width" style="height: 0.1rem" />
             </div>
 
-            <div v-if="!cartStore.cart.length" class="q-pa-lg-md q-pa-xs-sm text-center">
+            <div v-if="!cartStore.cart.length" class="pa-30 text-center">
               <div class="text-h2">{{ $t('empty_cart') }}</div>
             </div>
 

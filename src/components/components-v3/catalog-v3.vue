@@ -355,6 +355,7 @@ import moment from 'moment';
   height: 100vh;
   color: var(--body-text);
   position: relative;
+  align-self: center;
 }
 
 .header_style_v3 {
