@@ -281,11 +281,7 @@
   >
     <template #content>
       <div class="text-h3 text-center mb-30">
-<<<<<<< HEAD
         <div class="text-h3 first_letter line_height">{{$t('the_buying_session_will_end_in')}}</div>
-=======
-        <div class="text-h3 first_letter">{{$t('the_session_will_end_in')}}</div>
->>>>>>> d0253e45ba71c842bf9fb71f8dcd1b7bd7b37fad
         <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}
       </div>
     </template>
