@@ -1,14 +1,14 @@
 import i18next, { t } from 'i18next';
 import { defineStore } from 'pinia';
-import { Cookies, Notify } from 'quasar';
-import { eventEmitter, initLocalDeviceWsService } from 'src/services';
-import { apiAddAnyTerminal, apiAuth, apiAuthBearer, apiGetCurrentShift, apiGetShift, apiUsersWhoami, apiAddShift, apiCloseShift, apiGetCorrespondentByEntity } from 'src/services/api';
+import { Cookies } from 'quasar';
 import { updateCatalogLocales } from 'src/services/locales';
-import { delay, throwErr } from 'src/services/utils';
 import { KioskState } from 'src/types/kiosk-state';
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, watchEffect } from 'vue';
 import { Router, useRouter } from 'vue-router';
-import config from 'src/services/config';
+import { currentUser, logout, startLoopUpdateCurrentUser } from 'src/services/users';
+import { initTerminal, settings, terminalParams } from 'src/services/terminal';
+import { kioskCorr, userCorr } from 'src/services/documents/correspondents';
+import { closeTerminalShift, locationShift, openTerminalShift, startClosingTerminalShift, terminalShift, terminalShiftOpenedBy, terminalShiftPreviousClosedBy, updateShifts } from 'src/services/shifts';
 
 export const useAppStore = defineStore('app', () => {
   const router = useRouter();
@@ -16,7 +16,6 @@ export const useAppStore = defineStore('app', () => {
   const orderDialog = ref(false);
   const langDialog = ref(false);
   const tab = ref('');
-  const shiftLoading = ref(true);
   const lang_dir = ref('ltr');
   const redirectDialogState = ref(false);
 
@@ -36,130 +35,22 @@ export const useAppStore = defineStore('app', () => {
 
   const kioskState = reactive<KioskState>({
     status: 'Unknown',
-    name: getTerminalName(router),
-    code: getTerminalCode(router),
   })
-  if (!kioskState.code) {
-    kioskState.globalError = new Error(t('no_terminal_code_provided_on_startup'))
-    kioskState.status = 'UnrecoverableError'
-  }
 
-  const updateShifts = async () => {
-    shiftLoading.value = true;
-    try {
-      const locationId = kioskState.params?.location_id ?? throwErr("location_id is missing");
-      const terminalId = kioskState.params?.terminal_id ?? throwErr("terminal_id is missing");
+  router.isReady().then(() => {
+    kioskState.name = getTerminalName(router);
+    kioskState.code = getTerminalCode(router);
 
-      const locationShift = {
-        id: await apiGetCurrentShift(locationId),
-      };
-      const {
-        shift: terminalShift,
-        last_open_operation: lastOpen,
-        last_close_operation: lastClose,
-      } = await apiGetShift(terminalId);
-
-      kioskState.locationShift = locationShift;
-      kioskState.terminalShift = terminalShift;
-      kioskState.terminalShiftOpenedBy = lastOpen?.details?.terminal_shift_id == terminalShift?.id ? lastOpen?.staff1 : undefined;
-      kioskState.terminalShiftPreviousClosedBy = lastClose?.staff1;
-      console.log("Location shift", kioskState.locationShift);
-      console.log("Terminal shift", kioskState.terminalShift);
-      console.log("Terminal shift opened by", kioskState.terminalShiftOpenedBy);
-      console.log("Terminal shift previous closed by", kioskState.terminalShiftPreviousClosedBy);
-    } catch (error) {
-      console.log('updateShifts error:', error)
-    } finally {
-      shiftLoading.value = false;
+    if (!kioskState.code) {
+      kioskState.globalError = new Error(t('no_terminal_code_provided_on_startup'))
+      kioskState.status = 'UnrecoverableError'
     }
-  }
 
-  const openTerminalShift = async () => {
-    await updateShifts();
-    shiftLoading.value = true;
-    try {
-      if (kioskState.terminalShift) {
-        throwErr('terminalShift exists');
-      }
-      await apiAddShift(
-        kioskState.params?.terminal_id ?? throwErr('terminal_id is missing'),
-        kioskState.locationShift?.id ?? throwErr('locationShift.id is missing'),
-        kioskState.user?.id ?? throwErr('user.id is missing'),
-      );
-    } catch (error) {
-      console.log("openTerminalShift error:", error);
-      Notify.create({
-        color: 'warning',
-        position: 'center',
-        message: t('error_during_shift_open'),
-      });
-    } finally {
-      shiftLoading.value = false;
-    }
-    await updateShifts();
-  };
+    initTerminal(kioskState.name, kioskState.code);
+    router.push('/');
+  })
 
-  const closeTerminalShift = async () => {
-    await updateShifts();
-    shiftLoading.value = true;
-    try {
-      if (kioskState.terminalShift?.state == kioskState.settings?.shifts__state_closed) {
-        return;
-      }
-      if (kioskState.terminalShift?.state != kioskState.settings?.shifts__state_closing) {
-        throwErr('wrong terminalShift state');
-      }
-      const result = await apiCloseShift(
-        kioskState.terminalShift?.id ?? throwErr('terminalShift.id is missing'),
-        kioskState.settings?.shifts__state_closed ?? throwErr('settings are missing'),
-        kioskState.user?.id ?? throwErr('user.id is missing'),
-      );
-      if (!result.success) {
-        throwErr("Close shift wasn't successful")
-      }
-    } catch (error) {
-      console.log("closeTerminalShift error:", error);
-      Notify.create({
-        color: 'warning',
-        position: 'center',
-        message: t('error_during_shift_close'),
-      });
-    } finally {
-      shiftLoading.value = false;
-    }
-    await updateShifts();
-  };
-
-  const startClosingTerminalShift = async() => {
-    await updateShifts();
-    shiftLoading.value = true;
-    try {
-      if (kioskState.terminalShift?.state == kioskState.settings?.shifts__state_closing) {
-        return;
-      }
-      if (kioskState.terminalShift?.state != kioskState.settings?.shifts__state_open) {
-        throwErr('wrong terminalShift state');
-      }
-      await apiCloseShift(
-        kioskState.terminalShift?.id ?? throwErr('terminalShift.id is missing'),
-        kioskState.settings?.shifts__state_closing ?? throwErr('settings are missing'),
-        kioskState.user?.id ?? throwErr('user.id is missing'),
-      );
-    } catch (error) {
-      console.log("startClosingTerminalShift error:", error);
-      Notify.create({
-        color: 'warning',
-        position: 'center',
-        message: t('error_during_shift_closing'),
-      });
-    } finally {
-      shiftLoading.value = false;
-    }
-    await updateShifts();
-  }
-
-  setTimeout(loopUpdateTerminalParams, 0, kioskState);
-  setTimeout(loopUpdateCurrentUser, 0, kioskState)
+  startLoopUpdateCurrentUser();
 
   const setLocale = async (lang_code: string) => {
     console.log('setLocale', lang_code)
@@ -173,36 +64,6 @@ export const useAppStore = defineStore('app', () => {
     await setLocale(kioskState.settings?.loc ?? 'en' )
   }
 
-  const login = async (userName: string, userPassword: string) => {
-    await apiAuth(userName, userPassword)
-    await updateCurrentUser(kioskState)
-  }
-
-  const loginByToken = async (token: string) => {
-    const sessionToken = await apiAuthBearer(token)
-    await updateCurrentUser(kioskState)
-    return !!sessionToken
-  }
-
-  let inited = false;
-  eventEmitter.on('kioskState.status', async ({ newStatus }) => {
-    if (newStatus != 'Ready') {
-      await router.push('/');
-      return
-    }
-    if (!inited) {
-      inited = true
-      await resetLocale()
-      router.push('/employee-actions') // Redirect to employee-actions on startup
-    }
-
-    // Init locales
-    await updateCatalogLocales(kioskState);
-    await updateShifts();
-  })
-
-  //===================================
-
   const hasRight = (right?: string) => !!right && !!kioskState.user?.rights.some(r => r.id == right);
   const shiftIsOpen = computed<boolean>(() => kioskState.terminalShift?.state == kioskState.settings?.shifts__state_open);
   const shiftIsClosing = computed<boolean>(() => kioskState.terminalShift?.state == kioskState.settings?.shifts__state_closing);
@@ -210,9 +71,87 @@ export const useAppStore = defineStore('app', () => {
   const shiftIsGood = computed<boolean>(() => shiftIsOpen.value && shiftIsUpToDate.value);
 
   const lockTerminal = async () => {
-    Cookies.remove('session');
-    await updateCurrentUser(kioskState);
+    await logout();
   }
+
+  let catalogLocalesInited = false;
+  watchEffect(async () => {
+    if (currentUser.value && terminalParams.value && !catalogLocalesInited) {
+      try {
+        catalogLocalesInited = true;
+        await updateCatalogLocales(kioskState);
+      } catch {
+        catalogLocalesInited = false;
+      }
+    }
+  })
+
+  setTimeout(resetLocale, 0);
+
+  watchEffect(async () => {
+    if (currentUser.value === null) {
+      await router.push('/');
+    }
+  })
+
+
+  let inited = false;
+  let redirecting = false;
+  watchEffect(async () => {
+    kioskState.params = terminalParams.value;
+    kioskState.settings = settings.value;
+    kioskState.user = currentUser.value ?? undefined; // ?? is backward compatibility
+    kioskState.userCorr = userCorr.value;
+    kioskState.kioskCorr = kioskCorr.value;
+    kioskState.locationShift = locationShift.value;
+    kioskState.terminalShift = terminalShift.value ?? undefined; // ?? is backward compatibility
+    kioskState.terminalShiftOpenedBy = terminalShiftOpenedBy.value ?? undefined; // ?? is backward compatibility
+    kioskState.terminalShiftPreviousClosedBy = terminalShiftPreviousClosedBy.value ?? undefined; // ?? is backward compatibility
+
+    const currentUserIsReady = currentUser.value !== undefined;
+    const locationShiftIsReady = locationShift.value !== undefined;
+    const terminalShiftIsReady = terminalShift.value !== undefined;
+
+    const oldStatus = kioskState.status
+    let newStatus: KioskState['status'] = deduceStatus(kioskState)
+
+    // Erroneous transitions
+    if (oldStatus == 'Ready' &&
+        [
+          'Unknown',
+          'UnboundTerminal',
+        ].findIndex(s => s == newStatus) >= 0
+      ) {
+        kioskState.globalError = new Error(t('TERMINAL_WAS_UNREGISTERED'))
+        newStatus = 'UnrecoverableError'
+    }
+
+    if (!inited &&
+      (
+        currentUserIsReady && !currentUser.value /* not logged in */ ||
+        newStatus == 'Ready' && terminalShiftIsReady && locationShiftIsReady
+      )
+    ) {
+      inited = true;
+      try { await resetLocale(); } catch(e) { console.error(e); }
+      if (currentUser.value && shiftIsGood.value) {
+        redirecting = true;
+        await router.push('/hello');
+        redirecting = false;
+      } else {
+        kioskState.user = undefined;
+        newStatus = deduceStatus(kioskState);
+        await logout();
+      }
+    }
+    if (redirecting || !inited && newStatus == 'Ready') {
+      // Fix some race conditions
+      return;
+    }
+    kioskState.status = newStatus;
+  })
+
+  //===================================
 
   return {
     drawerCartState,
@@ -224,8 +163,6 @@ export const useAppStore = defineStore('app', () => {
     openLangDialog,
 
     kioskState,
-    login,
-    loginByToken,
     setLocale,
     resetLocale,
     lang_dir,
@@ -271,31 +208,6 @@ export const useAppStore = defineStore('app', () => {
   }
 });
 
-async function loopUpdateTerminalParams(kioskState: KioskState) {
-  while(true) {
-    if (kioskState.status == 'UnrecoverableError') {
-      return
-    }
-    let terminalParams = await tryFetchTerminalParams(kioskState.name, kioskState.code);
-    if (terminalParams) {
-      kioskState.params = terminalParams
-      kioskState.settings = {
-        ...config.settings,
-        ...terminalParams.terminal_settings,
-      };
-      console.log('terminalParams', terminalParams)
-      console.log('settings', kioskState.settings)
-      initLocalDeviceWsService(kioskState.settings?.tdp ?? "localhost:3010")
-      updateKioskStatus(kioskState)
-    }
-    await delay(
-      kioskState.params ?
-      config.terminal_status_update_interval :
-      config.terminal_registration_attempt_interval
-    )
-  }
-}
-
 function getTerminalCode(router: Router) {
   const queryParams = router.currentRoute.value.query
   const terminalCode = queryParams?.terminalCode?.toString()
@@ -308,76 +220,6 @@ function getTerminalCode(router: Router) {
 function getTerminalName(router: Router) {
   const queryParams = router.currentRoute.value.query
   return queryParams?.terminalName?.toString() ?? 'Unnamed kiosk'
-}
-
-async function tryFetchTerminalParams(terminalName: string, terminalCode: string) {
-  try {
-    console.log(`Update terminal params. Name: ${terminalName}, code: ${terminalCode}`);
-    return await apiAddAnyTerminal(terminalName, terminalCode);
-  }
-  catch {
-    Notify.create({
-      color: 'warning',
-      position: 'center',
-      message: t('ERROR_FETCH_TERMINAL_PARAMS'),
-    });
-  }
-  return undefined;
-}
-
-async function loopUpdateCurrentUser(kioskState: KioskState) {
-  while(true) {
-    await updateCurrentUser(kioskState)
-    await delay(kioskState.settings?.user_info_update_interval ?? config.settings.user_info_update_interval)
-  }
-}
-
-async function updateCurrentUser(kioskState: KioskState) {
-
-  try {
-    kioskState.user = await apiUsersWhoami();
-    console.log("user", kioskState.user);
-    kioskState.userCorr = await apiGetCorrespondentByEntity(kioskState.user?.id, kioskState.settings!.user_corr_type!);
-    console.log("userCorr", kioskState.userCorr);
-    kioskState.kioskCorr = await apiGetCorrespondentByEntity(kioskState.params!.terminal_id!, kioskState.settings!.kiosk_corr_type!);
-    console.log("kioskCorr", kioskState.kioskCorr);
-    updateKioskStatus(kioskState);
-  } catch (e: any) {
-    if (e?.message?.includes("ERR_AUTH")) {
-      kioskState.user = undefined;
-      console.log("whoami", undefined);
-      console.log("kioskState", kioskState);
-      updateKioskStatus(kioskState);
-
-    } else {
-      Notify.create({
-        color: "warning",
-        position: "center",
-        message: t("ERROR_FETCH_USER_INFO"),
-      });
-    }
-  }
-}
-
-function updateKioskStatus(kioskState: KioskState) {
-  const oldStatus = kioskState.status
-  let newStatus: KioskState['status'] = deduceStatus(kioskState)
-
-  // Erroneous transitions
-  if (oldStatus == 'Ready' &&
-      [
-        'Unknown',
-        'UnboundTerminal',
-      ].findIndex(s => s == newStatus) >= 0
-    ) {
-      kioskState.globalError = new Error(t('TERMINAL_WAS_UNREGISTERED'))
-      newStatus = 'UnrecoverableError'
-  }
-
-  if (oldStatus != newStatus) {
-    kioskState.status = newStatus
-    eventEmitter.emit('kioskState.status', { oldStatus, newStatus })
-  }
 }
 
 function deduceStatus(kioskState: KioskState) {
@@ -395,72 +237,3 @@ function deduceStatus(kioskState: KioskState) {
   }
   return 'Ready'
 }
-
-
-
-
-
-
-  //=======================================
-  // Printer example (temp)
-
-  // const sessionToken = localStorage.getItem('sessionToken');
-
-  // async function doAuth() {
-  //   $q.loading.show();
-  //   try {
-  //     const authToken = await apiAuth('v.kakotkin@fait.gl', '1c8b6f9f-a29a');
-
-  //     if (!authToken) {
-  //       $q.notify({
-  //         message: 'Auth error...',
-  //         icon: 'warning',
-  //         color: 'negative',
-  //       });
-  //     }
-  //     else {
-  //       localStorage.setItem('sessionToken', authToken);
-  //     }
-  //   }
-  //   catch(e) {
-  //     console.log(e);
-  //     $q.notify({
-  //       message: 'Error occured',
-  //       icon: 'warning',
-  //       color: 'warning',
-  //     });
-  //   }
-  //   finally {
-  //     $q.loading.hide();
-  //   }
-  // }
-
-  // const printText = ref('<print align="center" bold>text</print><printqr>hello world</printqr>');
-
-  // function sendWsCommand() {
-  //   wsSendMessage('check-print', printText.value);
-  // }
-
-  // const check1ViewId = ref('c2db028c-bee9-4504-9302-379a888a1676');
-
-  // async function sendCatPrintCommand() {
-  //   $q.loading.show();
-  //   try {
-  //     const viewData = await apiReportsGetView(check1ViewId.value);
-  //     console.log(viewData);
-  //     wsSendMessage('check-print', viewData);
-  //   }
-  //   catch(e) {
-  //     console.log(e);
-  //     $q.notify({
-  //       message: 'Error occured',
-  //       icon: 'warning',
-  //       color: 'warning',
-  //     });
-  //   }
-  //   finally {
-  //     $q.loading.hide();
-  //   }
-  // }
-
-  //=======================================

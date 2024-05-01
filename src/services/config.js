@@ -81,8 +81,8 @@ export default {
     "check_content_type": "продажа товара",
 
     "printer_type": "usb",
-    networkHost: undefined,
-    networkPort: undefined,
+    "networkHost": undefined,
+    "networkPort": undefined,
   },
 
   // These three lines are outside of settings because they are used

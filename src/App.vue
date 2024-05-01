@@ -12,9 +12,10 @@
   import { useInventoryStore } from "./stores/inventory";
   import { useSelectiveInventoryStore } from "./stores/selective-inventory";
   import { forceNewVisit } from "./services/tracking";
-  import { onMounted, ref } from "vue";
+  import { computed, onMounted, ref } from "vue";
   import { debugGenerateArrival } from "src/services/documents/documents";
-  import {showDialog, showSimpleNotification} from "./services/dialogs";
+  import {closeAllDialogs, showDialog, showSimpleNotification} from "./services/dialogs";
+  import * as usersService from 'src/services/users';
 
   const route = useRoute()
   const router = useRouter()
@@ -67,7 +68,7 @@
           if (route.path in []) {
             return
           }
-          if (await appStore.loginByToken(barcode.token)) {
+          if (await usersService.loginByToken(barcode.token)) {
             forceNewVisit();
             await appStore.resetLocale()
             router.push('/employee-actions')
@@ -169,6 +170,9 @@
   }
 
   const getRedirectSettings = () => {
+    if (appStore.value?.kioskState.status != "Ready") {
+      return undefined;
+    }
     if (route.path != lastPath.value) {
       updateRedirectSettings();
       lastPath.value = route.path;
@@ -244,6 +248,11 @@
     router.isReady().then(() => {
       appStore.value = useAppStore() as any;
 
+      router.beforeEach((to, from, next) => {
+        closeAllDialogs();
+        next();
+      });
+
       // Start or reset redirect timer
       router.afterEach(() => {
         resetRedirectTimer();
@@ -272,7 +281,11 @@
   >
     <template #content>
       <div class="text-h3 text-center mb-30">
+<<<<<<< HEAD
         <div class="text-h3 first_letter line_height">{{$t('the_buying_session_will_end_in')}}</div>
+=======
+        <div class="text-h3 first_letter">{{$t('the_session_will_end_in')}}</div>
+>>>>>>> d0253e45ba71c842bf9fb71f8dcd1b7bd7b37fad
         <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}
       </div>
     </template>
