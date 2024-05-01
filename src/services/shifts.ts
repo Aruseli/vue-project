@@ -39,7 +39,7 @@ async function with_retries(fn: () => Promise<boolean>) {
 
 
 export async function closeTerminalShift() {
-  await updateShifts();
+  await updateShifts(true);
   try {
     if (terminalShift.value?.state == settings.value?.shifts__state_closed) {
       return;
@@ -63,11 +63,11 @@ export async function closeTerminalShift() {
       message: t('error_during_shift_close'),
     });
   }
-  await updateShifts();
+  await updateShifts(true);
 };
 
 export async function openTerminalShift() {
-  await updateShifts();
+  await updateShifts(true);
   try {
     if (terminalShift.value) {
       throwErr('terminalShift exists');
@@ -85,12 +85,12 @@ export async function openTerminalShift() {
       message: t('error_during_shift_open'),
     });
   }
-  await updateShifts();
+  await updateShifts(true);
 }
 
 
 export async function startClosingTerminalShift() {
-  await updateShifts();
+  await updateShifts(true);
   try {
     if (terminalShift.value?.state == settings.value?.shifts__state_closing) {
       return;
@@ -111,13 +111,13 @@ export async function startClosingTerminalShift() {
       message: t('error_during_shift_closing'),
     });
   }
-  await updateShifts();
+  await updateShifts(true);
 }
 
-export async function updateShifts() {
+export async function updateShifts(force = false) {
   const result = await Promise.all([
-    updateLocationShift(),
-    updateTerminalShift(),
+    updateLocationShift(force),
+    updateTerminalShift(force),
   ]);
   return result.reduce((prev, curr) => prev && curr);
 }

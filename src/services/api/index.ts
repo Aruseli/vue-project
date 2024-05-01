@@ -77,6 +77,11 @@ export async function apiAuthBearer(token: string) {
   return response.data.token;
 }
 
+export async function apiLogout() {
+  const response = await fetchApi('/api/v2/auth/closeSession');
+  return response;
+}
+
 export async function apiGetLocalesList(objectId: string, locationId: string) {
   const response = await fetchApi('/api/v2/kiosk/getLocalesList', {
     objectId,

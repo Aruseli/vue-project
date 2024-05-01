@@ -109,10 +109,10 @@
     await selectiveInventoryStore.updateInventories();
     inventoryRequests.value = selectiveInventoryStore.inventoriesDocuments.length;
     if( inventoryRequests.value > 0 && app.shiftIsGood && app.hasRight(app.kioskState.settings?.rights__kiosk_selective_inventory) ) {
-      await showDialog({
+      showDialog({
         text: t('there_are_documents_for_inventory'),
         buttons: [{
-          name: "defer", type: "common", handler: async () => {console.log("close")}
+          name: "defer", type: "common", handler: async () => { /* close */ }
         }, {
           name: "execute", type: "primary", handler: async () => route('selective-inventory')
         }],

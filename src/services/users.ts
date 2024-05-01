@@ -3,7 +3,7 @@ import { Cookies, Notify } from "quasar";
 import { ref } from "vue"
 
 import { User } from "src/types";
-import { apiAuth, apiAuthBearer, apiUsersWhoami } from "./api";
+import { apiAuth, apiAuthBearer, apiLogout, apiUsersWhoami } from "./api";
 import config from "./config";
 import { settings } from "./terminal";
 import { delay } from "./utils";
@@ -68,7 +68,7 @@ export function startLoopUpdateCurrentUser() {
 
 export async function logout() {
   console.log("User logout");
-  Cookies.remove('session');
+  await apiLogout();
   currentUser.value = null;
   await updateCurrentUser();
 }
