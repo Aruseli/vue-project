@@ -68,7 +68,7 @@ const emit = defineEmits(['click'])
   </div>
   <template>
     <Modal :isOpen="app.langDialog" @click="app.openLangDialog(false)">
-      <div class="bg-grey-3 container_languages_v3" >
+      <div class="bg-grey-3 container_languages_v3 pa-60" >
         <Language v-for="lang in app.kioskState.catalogLocales"
           :key="lang.lang_code"
           :src="lang.flag_src"

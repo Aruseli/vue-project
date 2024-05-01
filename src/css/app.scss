@@ -6,11 +6,6 @@ $font-family-poppins: 'Poppins', sans-serif;
 $width: calc(6.5em + 1.7262vmin);
 $height: calc(8em + 1.7262vmin);
 
-@font-face {
-  font-family: Poppins;
-  src: url(./fonts/customfont.woff);
-}
-
 .v3_body_style {
   font-family: $font-family-poppins;
 }
@@ -20,6 +15,7 @@ $height: calc(8em + 1.7262vmin);
     padding: 1rem;
   }
   --body-text: #FAFAFA;
+  --px11: 0.6875rem;
   --px14: 0.875rem;
   --px16: 1rem;
   --px20: 1.5rem;
@@ -45,24 +41,24 @@ $height: calc(8em + 1.7262vmin);
 }
 
 $margins: (
-  "5": 0.3125rem, "10": 0.625rem, "20": 1.5rem, "40": 2.5rem,
-    "14": 0.875rem,
+  "5": 0.3125rem, "10": 0.625rem, "20": 1.25rem, "40": 2.5rem,
+  "14": 0.875rem,
 
-    "15": 0.9375rem, "30": 1.875rem, "60": 3.75rem, "90": 5.5rem,
+  "15": 0.9375rem, "30": 1.875rem, "60": 3.75rem, "90": 5.5rem,
 
-    "16": 1rem,
-    "50": 3.125rem,
-    "54": 3.375rem,
-    "70": 4.375rem,
-    "74": 4.625rem,
-    "100": 6.25rem,
-    "120": 7.5rem,
-    "140": 8.75rem,
-    "200": 12.5rem
-  );
+  "16": 1rem,
+  "50": 3.125rem,
+  "54": 3.375rem,
+  "70": 4.375rem,
+  "74": 4.625rem,
+  "100": 6.25rem,
+  "120": 7.5rem,
+  "140": 8.75rem,
+  "200": 12.5rem
+);
 
 $paddings: (
-  "5": 0.3125rem, "10": 0.625rem, "20": 1.5rem, "40": 2.5rem,
+  "5": 0.3125rem, "10": 0.625rem, "20": 1.25rem, "40": 2.5rem,
   "14": 0.875rem,
 
   "21": 1.3125rem,
@@ -98,17 +94,17 @@ $paddings: (
   .mt-#{$name} {
     @include marginT($size);
   }
-  @media (max-width: 80rem) {
-    .mb-#{$name} {
-      @include marginB(calc($size / 2));
-    }
-    .mr-#{$name} {
-      @include marginR(calc($size / 2));
-    }
-    .mt-#{$name} {
-      @include marginT(calc($size / 2));
-    }
-  }
+  // @media (max-width: 80rem) {
+  //   .mb-#{$name} {
+  //     @include marginB(calc($size / 2));
+  //   }
+  //   .mr-#{$name} {
+  //     @include marginR(calc($size / 2));
+  //   }
+  //   .mt-#{$name} {
+  //     @include marginT(calc($size / 2));
+  //   }
+  // }
 }
 
 
@@ -140,20 +136,20 @@ $paddings: (
     @include paddingB($size);
   }
 
-  @media (max-width: 80rem) {
-    .px-#{$name} {
-      @include paddingX(calc($size / 2));
-    }
-    .pa-#{$name} {
-      @include padding(calc($size / 2));
-    }
-    .pt-#{$name} {
-      @include paddingT(calc($size / 2));
-    }
-    .pb-#{$name} {
-      @include paddingB(calc($size / 2));
-    }
-  }
+  // @media (max-width: 80rem) {
+  //   .px-#{$name} {
+  //     @include paddingX(calc($size / 2));
+  //   }
+  //   .pa-#{$name} {
+  //     @include padding(calc($size / 2));
+  //   }
+  //   .pt-#{$name} {
+  //     @include paddingT(calc($size / 2));
+  //   }
+  //   .pb-#{$name} {
+  //     @include paddingB(calc($size / 2));
+  //   }
+  // }
 }
 
 body {
@@ -204,6 +200,9 @@ body.body--dark {
 
 .first_letter::first-letter {
   text-transform: uppercase
+}
+.line_height {
+  line-height: 1.5;
 }
 
 #modal, #redirect-dialog {
@@ -473,36 +472,29 @@ padding: 0;
 }
 
 .container_languages_firs_setting {
-  width: 60vw;
-  height: auto;
-  max-height: 60vh;
+  width: 49.7rem;
+  height: 47rem;
   display: grid;
-  grid-template-columns: repeat( auto-fit, minmax($width, 1fr) );
-  grid-auto-rows: $height;
-  gap: 4rem;
+  grid-template-columns: repeat( 4, max-content );
+  row-gap: 2.5rem;
+  column-gap: 2.5rem;
   justify-content: center;
   align-items: center;
   border-radius: var(--border-xxs);
   overflow-y: scroll;
-  @media (max-width: 80rem) {
-    width: 90vw;
-  }
+  scrollbar-width: none;
 }
 .container_languages_v3 {
-  width: 60vw;
+  width: 49.7rem;
+  height: 47rem;
   display: grid;
-  grid-template-columns: repeat( auto-fit, minmax($width, 1fr) );
-  grid-auto-rows: minmax($height, 1fr);
-  gap: 4rem;
+  grid-template-columns: repeat( 4, max-content );
+  row-gap: 2.5rem;
+  column-gap: 2.5rem;
   justify-content: center;
-  padding: 4rem;
   border-radius: var(--border-xxs);
-  overflow: hidden;
-  @media (max-width: 80rem) {
-    width: 80vw;
-    gap: 2rem;
-    padding: 2rem;
-  }
+  overflow: scroll;
+  scrollbar-width: none;
 }
 
 .img_angle_bottom {
@@ -532,8 +524,8 @@ padding: 0;
 }
 
 .q-btn--round {
-  width: clamp(2rem, 0.5vw + 0.5rem, 3rem);
-  height: clamp(2rem, 0.5vw + 0.5rem, 3rem);
+  width: 3rem;
+  height: 5rem;
 
   // @media (max-width: 80rem) {
   //   width: 2em;

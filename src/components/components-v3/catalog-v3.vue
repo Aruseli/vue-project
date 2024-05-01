@@ -191,7 +191,7 @@ import moment from 'moment';
       />
     </div>
     <!-- header -->
-    <header class="row justify-between q-pa-xl header_style_v3 bg-grey-2">
+    <header class="row justify-between items-center q-pa-xl header_style_v3 bg-grey-2">
       <div class="row q-gutter-x-md">
         <LogoSimple text_style="text-green">
           <LogoSvg
@@ -213,7 +213,7 @@ import moment from 'moment';
         :quantity="cartStore.totalQuantity"
         badgeStyleAlt="bg-red"
       >
-        <BinIcon :quantity="cartStore.totalQuantity" />
+        <BinIcon :quantity="cartStore.totalQuantity" class="bin_icon_style" />
       </BinButton>
     </header>
 
@@ -238,7 +238,7 @@ import moment from 'moment';
             </li>
           </ul>
         </section>
-        <div class="column">
+        <div class="column items-center">
           <!-- <div class="row">
             <Language
               :language="selectedLang"
@@ -257,7 +257,11 @@ import moment from 'moment';
     </aside>
 
     <!-- catalog -->
-    <q-scroll-area class="goods_container q-px-lg q-pt-lg full-width relative-position full-height">
+    <q-scroll-area
+      :bar-style="{background: 'transparent'}"
+      :thumb-style="{background: 'transparent'}"
+      class="goods_container q-px-lg q-pt-lg full-width relative-position full-height"
+    >
       <article
         v-for="goodCategory in goodsStore.goods"
         :key="goodCategory.id"
@@ -295,7 +299,7 @@ import moment from 'moment';
     >
       <template #content>
         <div class="text-h3 text-center mb-30">
-          <div class="text-h3 first_letter">{{$t('the_buying_session_will_end_in')}}</div>
+          <div class="text-h3 first_letter line_height">{{$t('the_buying_session_will_end_in')}}</div>
           <span>{{ countdown }}</span>&ensp;{{ $t('seconds', {count: countdown}) }}
         </div>
       </template>
@@ -320,7 +324,7 @@ import moment from 'moment';
   <!-- languages dialog -->
   <template>
     <Modal :isOpen="app.langDialog" @click="app.openLangDialog(false)">
-      <div class="bg-grey-3 container_languages_v3" >
+      <div class="bg-grey-3 container_languages_v3 pa-60" >
         <Language v-for="lang in app.kioskState.catalogLocales"
           :key="lang.lang_code"
           :src="lang.flag_src"
@@ -334,8 +338,17 @@ import moment from 'moment';
 </template>
 
 <style lang="scss">
-  $width: calc(2.5em + 1.7262vmin);
-  $height: calc(1em + 1.7262vmin);
+$width: calc(2.5em + 1.7262vmin);
+$height: calc(1em + 1.7262vmin);
+.bin_icon_style {
+  width: 5rem;
+  @media (max-width: 1500px) {
+    width: 3.5rem;
+  }
+  @media (max-width: 700px) {
+    width: 2rem;
+  }
+}
 .cart_positioning {
   position: absolute;
   grid-area: catalog / catalog / cta / cta;
@@ -351,7 +364,7 @@ import moment from 'moment';
   grid-template-rows: max-content 1fr;
   grid-template-columns: max-content 1fr;
   width: 100%;
-  height: calc(100vh - 1rem);
+  height: calc(100vh - 2rem);
   color: var(--body-text);
   position: relative;
   align-self: center;
@@ -390,16 +403,17 @@ import moment from 'moment';
 
 .help_button {
   text-transform: none;
+  width: 100%;
 }
 
 .image_grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--px20);
+  gap: var(--px14);
   width: 100%;
   height: auto;
   padding: 0 0.2em;
-  @media(max-width: 80rem) {
+  @media(max-width: 60rem) {
     grid-template-columns: repeat(2,  1fr);
   }
 }

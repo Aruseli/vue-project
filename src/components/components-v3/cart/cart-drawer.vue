@@ -112,11 +112,12 @@
                 >
 
                   <!-- image -->
-                  <div class="col-3 q-mr-xl">
+                  <div class="mr-40">
                     <q-img
                       :src="item.image"
                       :ration="1"
-                      height="150px"
+                      height="120px"
+                      width="120px"
                       fit="none"
                       class="img_style_v3"
                     >
@@ -154,21 +155,21 @@
 
                     <!-- buttons -->
                     <div class="column justify-between items-end">
-                      <q-btn flat round @click="cartStore.removeFromCart(item.id)">
+                      <q-btn flat @click="cartStore.removeFromCart(item.id)">
                         <q-icon name="img:/bin.svg" size="2.5rem" />
                       </q-btn>
 
                       <div class="row justify-between items-center">
                         <OperatorButton
-                          :icon="evaPlusOutline"
-                          @click="() => cartStore.increaseItemsCount(item)"
-                        />
-                        <div
-                          class='text-h2 text-white q-mx-lg-md q-mx-xs-sm q-my-none'
-                        >{{ item.quant }}</div>
-                        <OperatorButton
                           :icon="evaMinusOutline"
                           @click="() => cartStore.decreaseItemsCount(item)"
+                        />
+                          <div
+                            class='text-h2 text-white q-mx-lg-md q-mx-xs-sm q-my-none'
+                          >{{ item.quant }}</div>
+                        <OperatorButton
+                          :icon="evaPlusOutline"
+                          @click="() => cartStore.increaseItemsCount(item)"
                         />
                       </div>
                     </div>
@@ -181,15 +182,11 @@
             <div class="full-width total_style bg-grey-3" v-if="cartStore.cart.length">
               <div
                 class="q-mb-sm"
-                :class="[cartStore.cart.length > 0 ? 'q-mb-lg-md q-mb-xs-sm' : 'q-mb-none row justify-between items-center']">
+                :class="[cartStore.cart.length > 0 ? 'mb-30' : 'q-mb-none row justify-between items-center']">
 
                 <DividerThin class="bg-white mb-20" />
 
-                <div
-                  class="text-white text-h2 q-px-xl no-margin row justify-between fit"
-                >
-                  <div>{{ $t('total') }}</div>
-                </div>
+                <div class="text-white text-uppercase text-h2 q-px-xl row justify-between fit mb-30">{{ $t('total') }}</div>
 
                 <div class="text-white row justify-between q-px-xl">
                   <div
@@ -206,18 +203,18 @@
 
               </div>
               <div
-                class="full-width q-px-xl q-pb-xl"
+                class="full-width q-px-xl mb-40"
                 v-show="cartStore.cart.length"
               >
                 <RectangularButton
-                  class="fit q-py-xs-sm"
+                  class="fit px-50"
                   :name="$t('checkout')"
                   :disable="isDisabled"
                   @click="submitOrder"
                   :rounded="false"
                   color="white"
                   textColor="grey-3"
-                  classTitle="text-h4 text-weight-bold"
+                  classTitle="text-h2 text-weight-bold q-py-xl"
                 />
               </div>
             </div>
@@ -267,18 +264,18 @@
   }
   .container_settings > *:not(:last-of-type) {
     margin-bottom: var(--px30);
-    @media(max-width: 1300px) {
+    /* @media(max-width: 1300px) {
       margin-bottom: 1rem;
-    }
+    } */
   }
   .container_settings > *:last-of-type {
     margin-bottom: var(--px60);
-    @media(max-width: 1300px) {
+    /* @media(max-width: 1300px) {
       margin-bottom: var(--px30);
     }
     @media(max-width: 900px) {
       margin-bottom: 1rem;
-    }
+    } */
   }
 
   .cart_product_item_v3 {

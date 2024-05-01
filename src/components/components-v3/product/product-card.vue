@@ -66,25 +66,23 @@ import ProductBinButton from '../buttons/product-bin-button.vue';
     v-bind="$attrs"
     @click="openDialog = true"
   >
-    <div class="row justify-between items-center q-mb-xs">
-      <IconButton color="bg-white" class="q-pa-none" :customIcon="true" @click="openDialog = true">
-        <AttentionIcon />
-      </IconButton>
+    <div class="row justify-between items-center mb-10">
+      <AttentionIcon />
       <div class="text-subtitle1 row">
-        <div class="mr-14">99% THC</div>
         <div
-          class="row items-center intensity_icons_container"
+          class="row items-center intensity_icons_container mr-10"
           :class="[app.lang_dir == 'rtl' ? 'intensity_icons_container_rtl' : '']"
         >
           <div class="intensity_icon bg-red" />
           <div class="intensity_icon bg-red" />
           <div class="intensity_icon bg-red" />
         </div>
+        <div>99% THC</div>
       </div>
     </div>
 
     <!-- main image -->
-    <div class="img_container mb-14 relative-position">
+    <div class="img_container mb-10 relative-position">
       <q-img
         :src="props.good?.images[0]?.image"
         :alt="props.good?.title"
@@ -102,40 +100,37 @@ import ProductBinButton from '../buttons/product-bin-button.vue';
     </div>
 
     <!-- title + price + buttons -->
-    <div class="row no-wrap justify-between items-center relative-position">
-      <div>
-        <div class="mb-14 ellipsis text-capitalize text-h4 text-left text-green">
-          {{ props.good?.title }}
-        </div>
-
-        <div class="column">
-          <div class="text-h3" v-if="props.good && props.good.stock <= 0">{{ t('out_of_stock') }}</div>
-          <div class="text-h3" v-else>&#3647&ensp;{{ props.good?.price }}</div>
-        </div>
+    <div class="column no-wrap justify-between items-start relative-position">
+      <div class="mb-14 ellipsis text-capitalize text-body1 text-left text-green">
+        {{ props.good?.title }}
+      </div>
+      <div class="row justify-between items-center full-width">
+        <div class="text-h4" v-if="props.good && props.good.stock <= 0">{{ t('out_of_stock') }}</div>
+        <div class="text-h4" v-else>&#3647&ensp;{{ props.good?.price }}</div>
+        <ProductBinButton @click="addGoodToCart(props.good as Good)">
+          <BinIcon :quantity="cartStore.totalQuantity" v-if="!goodInCart" width="1rem" height="1rem" class="product_bin" />
+          <div v-else class="text-h2 no-margin text-white">{{ goodInCart.quant }}</div>
+        </ProductBinButton>
       </div>
 
-      <ProductBinButton @click="addGoodToCart(props.good as Good)" class="bin_button_style">
-        <BinIcon :quantity="cartStore.totalQuantity" class="bin_alt_style" v-if="!goodInCart" />
-        <div v-else class="text-h2 no-margin text-white">{{ goodInCart.quant }}</div>
-      </ProductBinButton>
       <transition name="slide-fade">
         <div class="bg-grey-2 row justify-between items-center absolute-top full-height" v-if="goodInCart">
-          <OperatorButton
-            round
-            textColor="text-white"
-            :icon="evaPlusOutline"
-            @click="increase(props.good as Good)"
-            class="bg-transparent"
-          />
-          <div
-            class='text-h2 text-white q-mx-lg-md q-mx-xs-sm q-my-none'
-          >{{ goodInCart.quant }}</div>
           <OperatorButton
             round
             class="bg-transparent"
             textColor="text-white"
             :icon="evaMinusOutline"
             @click="decrease(props.good as Good)"
+          />
+          <div
+          class='text-subtitle1 text-white q-mx-lg-md q-mx-xs-sm q-my-none'
+          >{{ goodInCart.quant }}</div>
+          <OperatorButton
+            round
+            textColor="text-white"
+            :icon="evaPlusOutline"
+            @click="increase(props.good as Good)"
+            class="bg-transparent"
           />
         </div>
       </transition>
@@ -152,7 +147,7 @@ import ProductBinButton from '../buttons/product-bin-button.vue';
     >
       <template #carousel>
         <Carousel>
-          <div class="relative-position full-width full-height">
+          <div class="relative-position carousel_img">
             <div class="full-width full-height" />
             <Slide v-for="(images, index) in props.good.images" :key="index" class="absolute-top-left">
               <template #slide>
@@ -216,6 +211,10 @@ import ProductBinButton from '../buttons/product-bin-button.vue';
   $calc_width: calc(15em + 6vmax);
   $calc_width_alt: calc(12em + 4.5vmax);
 
+  .carousel_img {
+    width: 25rem;
+    height: 25rem;
+  }
   .active {
     opacity: 1
   }
@@ -247,19 +246,19 @@ import ProductBinButton from '../buttons/product-bin-button.vue';
     box-shadow: var(--box-shadow--product_cart_v3);
   }
   .intensity_icons_container > *:not(:last-child) {
-    margin-right: 0.5rem;
+    margin-right: 0.25rem;
   }
   .intensity_icons_container_rtl > *:not(:first-child) {
-    margin-right: 0.5rem;
+    margin-right: 0.25rem;
   }
   .intensity_icon {
-    width: var(--px16);
-    height: var(--px16);
-    border-radius: var(--px16);
+    width: var(--px11);
+    height: var(--px11);
+    border-radius: var(--px11);
   }
 
   .img_container {
-    width: 59%;
+    width: 57.5%;
     overflow: hidden;
     align-self: center;
     aspect-ratio: 1;
@@ -269,11 +268,12 @@ import ProductBinButton from '../buttons/product-bin-button.vue';
     border-radius: 0 !important;
     scale: 0.9;
   }
-  .bin_alt_style {
-    width: clamp(1.5rem, 1.5vw + 1rem, 3rem) !important;
-    align-self: stretch;
+  .product_bin {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
-
   .slide-fade-enter-active,
   .slide-fade-leave-active {
     transition: all 0.3s cubic-bezier(0.215, 0.610, 0.355, 1);

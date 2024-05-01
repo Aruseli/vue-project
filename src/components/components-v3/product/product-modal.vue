@@ -52,7 +52,7 @@ const addGoodToCart = (good: Good) => {
 
 <template>
   <Modal :isOpen="props.isOpen" @click="emit('click')">
-    <div class="dialog_container column bg-grey-3 q-pa-xl relative-position">
+    <div class="dialog_container bg-grey-3 q-pa-xl relative-position">
       <IconButton
         icon="close"
         textColor="grey"
@@ -63,12 +63,12 @@ const addGoodToCart = (good: Good) => {
         @click="emit('click')"
         class="absolute-top-right text-h3"
       />
-      <div class="text-h2 text-green mb-74">
+      <div class="text-h2 text-green text-uppercase mb-60">
         {{ props.good.name }}
       </div>
 
       <!-- carousel + characteristics -->
-      <div class="mb-74 slider_grid">
+      <div class="mb-40 slider_grid">
 
         <!-- carousel -->
         <slot name="carousel" />
@@ -114,12 +114,14 @@ const addGoodToCart = (good: Good) => {
       </div>
 
       <!-- description -->
-      <div class="text-grey text-h3 q-mb-lg">
-        {{ $t('description') }}
+      <div class="column mb-20">
+        <div class="text-grey text-h3 mb-20">
+          {{ $t('description') }}
+        </div>
+        <div class="text-h4 text-white text-weight-regular line_height content_description" v-html="props.good.description"/>
       </div>
 
       <!-- add to cart -->
-      <div class="text-h4 text-white q-mb-lg text-weight-regular" v-html="props.good.description"/>
       <div class="full-width">
         <q-btn
           v-if="!goodInCart"
@@ -165,19 +167,20 @@ const addGoodToCart = (good: Good) => {
 <style lang="scss" scoped>
 
   .dialog_container {
-    width: 55vw;
-    min-width: 50vw;
-    max-width: 60vw;
-    height: max-content;
-    @media (max-width: 1500px) {
-      width: 85vw;
-      max-width: 95vw;
-    }
+    width: 48.75rem;
+    height: 65.6rem;
+    display: grid;
+    grid-template-rows: repeat(2, max-content) 1fr max-content;
+  }
+  .content_description {
+    max-height: 180px;
+    overflow: scroll;
+    scrollbar-width: thin;
   }
   .slider_grid {
     display: grid;
     grid-template-columns: 1fr 0.7fr;
-    grid-template-rows: 35rem max-content;
+    grid-template-rows: 25rem max-content;
     column-gap: var(--px20);
     row-gap: var(--px20);
     width: 100%;

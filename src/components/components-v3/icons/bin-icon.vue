@@ -12,7 +12,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="relative-position bin_icon_style">
+  <div class="relative-position">
     <svg :width="props.width" :height="props.height" viewBox="0 0 52 42" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M13 21L13 33" stroke="#FAFAFA" stroke-width="4" stroke-linecap="round"/>
       <path d="M26 21L26 33" stroke="#FAFAFA" stroke-width="4" stroke-linecap="round"/>
@@ -25,15 +25,3 @@ const props = defineProps({
     </svg>
   </div>
 </template>
-
-<style scoped>
-.bin_icon_style {
-  width: 5rem;
-  @media (max-width: 1500px) {
-    width: 3.5rem;
-  }
-  @media (max-width: 700px) {
-    width: 2rem;
-  }
-}
-</style>

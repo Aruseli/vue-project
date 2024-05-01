@@ -6,11 +6,11 @@
     },
     color: {
       type: String,
-      default: 'white',
+      default: 'transparent',
     },
     textColor: {
       type: String,
-      default: 'grey-1',
+      default: 'white',
     },
   })
 
@@ -20,7 +20,6 @@
 <template>
   <q-btn
     unelevated
-    round
     :color="props.color"
     :text-color="props.textColor"
     v-bind="$attrs"

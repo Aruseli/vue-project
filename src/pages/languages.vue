@@ -31,7 +31,7 @@
     <Logo class="logo_row logo" classes="q-mr-sm" v-if="app.kioskState.settings?.alt_ui !== 'design_v3'">
       <LogoSvg fill="#FAFAFA" />
     </Logo>
-    <div class="bg-grey-3 mb-60 pa-80 container_languages_firs_setting">
+    <div class="bg-grey-3 mb-60 pa-60 container_languages_firs_setting">
       <language v-for="lang in app.kioskState.catalogLocales"
         :key="lang.lang_code"
         :src="lang.flag_src"
@@ -41,7 +41,7 @@
         class="additional_lang_container_styles"
       />
     </div>
-    <div class="text-white text-h1 text-uppercase title_styles">{{ $t('find_your_experience') }}</div>
+    <div class="text-white text-h1 text-uppercase text-weight-bold title_styles mb-120 line_height">{{ $t('find_your_experience') }}</div>
   </q-page>
 </template>
 
@@ -95,7 +95,7 @@
 .title_styles {
   justify-self: center;
   text-align: center;
-  width: 40vw;
+  width: 50vw;
 }
 
 </style>

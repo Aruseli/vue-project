@@ -40,7 +40,7 @@
       :aria-label="props.language"
     />
     <div
-      class="text-left text-uppercase lang_style text-white text-h2 q-ml-sm" v-if="!!props.language"
+      class="text-left text-uppercase lang_style text-white text-h4" v-if="!!props.language"
     >{{ props.language }}</div>
   </div>
 </template>
@@ -49,14 +49,15 @@
 $width: calc(6.5em + 1.7262vmin);
 $height: calc(3.5em + 1.7262vmin);
 .img_style {
-  height: $height;
-  width: $width;
-  border-radius: var(--border-sm);
+  height: 100%;
+  width: 100%;
+  border-radius: var(--border-xs);
   margin-top: 0.125em;
   margin-inline: 0.125em;
 }
 .lang_container_new {
-  width: 100%;
+  width: 8.75rem;
+  height: 5rem;
 }
 
 .lang_style {

@@ -1,12 +1,20 @@
 // https://quasar.dev/style/sass-scss-variables#variables-list
 
-// text
-$h1: (size: clamp(2rem, 6vw + 0.5rem, 6rem), line-height: 1.5, letter-spacing: -.01562em, weight: 700) !default;
-$h2: (size: clamp(1.5rem, 2vw + 0.5rem, 2.25rem), line-height: 1.5, letter-spacing: -.00833em, weight: 700) !default;
-$h3: (size: clamp(1.375rem, 1.5vw + 1rem, 2rem), line-height: 1.3, letter-spacing: normal, weight: 600) !default;
-$h4: (size: clamp(1.15rem, 1.3vw + 0.5rem, 1.5rem), line-height: 1.5, letter-spacing: .00735em, weight: 600) !default;
-$subtitle1: (size: clamp(0.75rem, 0.7vw + 0.5rem, 1rem), line-height: 1.1, letter-spacing: .00937em, weight: 400) !default;
-$body1: (size: clamp(1rem, 1vw + 0.5rem, 1.125rem), line-height: 1.5, letter-spacing: .03125em, weight: 400) !default;
+// responsive fonts
+// $h1: (size: clamp(2rem, 6vw + 0.5rem, 6rem), line-height: 1.5, letter-spacing: -.01562em, weight: 700) !default;
+// $h2: (size: clamp(1.5rem, 2vw + 0.5rem, 2.25rem), line-height: 1.5, letter-spacing: -.00833em, weight: 700) !default;
+// $h3: (size: clamp(1.375rem, 1.5vw + 1rem, 2rem), line-height: 1.3, letter-spacing: normal, weight: 600) !default;
+// $h4: (size: clamp(1.15rem, 1.3vw + 0.5rem, 1.5rem), line-height: 1.5, letter-spacing: .00735em, weight: 600) !default;
+// $subtitle1: (size: clamp(0.75rem, 0.7vw + 0.5rem, 1rem), line-height: 1.1, letter-spacing: .00937em, weight: 400) !default;
+// $body1: (size: clamp(1rem, 1vw + 0.5rem, 1.125rem), line-height: 1.5, letter-spacing: .03125em, weight: 400) !default;
+
+// not responsive fonts
+$h1: (size: 6rem, line-height: 1, letter-spacing: -.01562em, weight: 700) !default;
+$h2: (size: 2.25rem, line-height: 1, letter-spacing: -.00833em, weight: 700) !default;
+$h3: (size: 2rem, line-height: 1, letter-spacing: normal, weight: 600) !default;
+$h4: (size: 1.5rem, line-height: 1, letter-spacing: .00735em, weight: 600) !default;
+$subtitle1: (size: 1rem, line-height: 1, letter-spacing: .00937em, weight: 400) !default;
+$body1: (size: 1.125rem, line-height: 1, letter-spacing: .03125em, weight: 400) !default;
 
 // sizes for define margins/paddings
 $space-base: 16px !default;

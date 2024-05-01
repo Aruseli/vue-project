@@ -13,7 +13,7 @@ const emit = defineEmits(['click']);
     <div class="column">
       <div class="text-h2 text-uppercase q-mb-xl">{{ $t('your_order') }}</div>
       <div>
-        <div class="text-h4 text-capitalize q-mb-xs">
+        <div class="text-h4 mb-16">
           {{ $t('positions', { count: cartStore.totalQuantity }) }}: <span>{{ cartStore.totalQuantity }}</span>
         </div>
         <div class="text-h4 row">

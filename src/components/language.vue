@@ -28,11 +28,11 @@
       :src="props.src"
       :alt="props.alt"
       ratio="16/9"
-      class="lang_img_style"
+      class="lang_img_style mb-10"
       :class="props.imgClasses"
       fit='fill'
     />
-    <div class="text-left text-white text-uppercase text-h3 lang_title_style">{{ props.language }}</div>
+    <div class="text-left text-white text-uppercase text-h4 lang_title_style">{{ props.language }}</div>
   </div>
 </template>
 
