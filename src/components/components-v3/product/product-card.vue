@@ -84,13 +84,12 @@ import ProductBinButton from '../buttons/product-bin-button.vue';
     <!-- main image -->
     <div class="img_container mb-10 relative-position">
       <img
-        :data-url="props.good?.images[0]?.image"
+        :src="props.good?.images[0]?.image"
         :alt="props.good?.title"
-
         class="img_style"
       />
-      <div class="absolute-top-right" />
-      <div class="absolute-bottom-left" />
+      <div class="absolute-top-right product_img_angle_top" />
+      <div class="absolute-bottom-left product_img_angle_bottom" />
     </div>
 
     <!-- title + price + buttons -->

@@ -56,8 +56,8 @@ $height: calc(3.5em + 1.7262vmin);
   margin-inline: 0.125em;
 }
 .lang_container_new {
-  width: 8.75rem;
-  height: 5rem;
+  width: max-content;
+  height: max-content;
 }
 
 .lang_style {

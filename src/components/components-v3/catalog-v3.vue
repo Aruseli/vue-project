@@ -200,7 +200,7 @@ import moment from 'moment';
             height="6em"
           />
         </LogoSimple>
-        <div class="row">
+        <div class="row items-center">
           <Language
             :src="selectedLang"
             @click="app.openLangDialog(true)"
