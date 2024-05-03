@@ -24,7 +24,6 @@
   const openDialog = ref(false);
   const open = () => {
     openDialog.value = true;
-    console.log('123')
   }
 </script>
 
@@ -43,7 +42,7 @@
       <div class="text-h4 text-weight-regular">
         {{ props.order.allTitles }}
       </div>
-      <Bin @click="open" :disable="isDisabled" />
+      <Bin @click="open" class="px-0" :round="false" :disable="isDisabled" />
     </div>
   </div>
   <DialogDelete :modelValue="openDialog" title="delete_order">

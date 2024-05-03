@@ -4,6 +4,11 @@ const props = defineProps({
     type: Boolean,
     required: false,
     default: false
+  },
+  round: {
+    type: Boolean,
+    required: false,
+    default: true
   }
 })
 
@@ -11,7 +16,8 @@ const emit = defineEmits(['click']);
 </script>
 <template>
   <q-btn
-    flat round
+    flat
+    :round="props.round"
     :disable="props.disable"
     v-bind="$attrs"
     @click.stop="emit('click')"

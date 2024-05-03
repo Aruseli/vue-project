@@ -36,9 +36,9 @@
     @click="emit('click')"
     v-bind="$attrs"
     :disable="props.disable"
-    class="pa-16 full-width"
+    class="full-width"
   >
-    <div :class="props.classTitle">{{ props.name }}</div>
+    <div class="text-h2" :class="props.classTitle">{{ props.name }}</div>
     <slot></slot>
    </q-btn>
 </template>
@@ -47,6 +47,7 @@
 button {
   box-shadow: var(--border-shadow);
   border-radius: var(--border-xxs);
+  height: 100px;
 }
 /* button.disabled {
   background-color: #5D5D5D;

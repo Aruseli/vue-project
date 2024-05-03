@@ -1,3 +1,3 @@
 <template>
-  <div class="full-width" v-bind="$attrs" style="height: 0.1rem" />
+  <div class="full-width" v-bind="$attrs" style="height: 1px" />
 </template>

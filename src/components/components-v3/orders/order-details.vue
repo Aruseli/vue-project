@@ -59,6 +59,7 @@ import OrderCard from './order-card.vue';
   const deleteProduct = async (id: string) => {
     await ordersStore.deleteGoodInCurrentOrder(id);
   }
+
 </script>
 
 <template>
@@ -85,20 +86,20 @@ import OrderCard from './order-card.vue';
     <DividerBold class="mb-30" />
     <div class="px-40 pb-20">
       <div class="column">
-        <div class="row justify-between text-h2 text-uppercase">
-          <div class="q-mr-sm">{{ $t('total') }}</div>
-          <div> {{ ordersStore.currentOrder?.totalPrice }}&ensp;&#3647</div>
-        </div>
+        <div class="mb-20 text-h2 text-uppercase">{{ $t('total') }}</div>
 
-        <div class="text-h3 row q-gutter-x-sm text-weight-bold">
-          <span>{{ $t('order') }}</span>&ensp;
-          <span>{{ ordersStore.currentOrder?.totalCount }}</span>&ensp;
-          <span>{{ $t('product') }}</span>
-          <span>{{ $t('units', { count: ordersStore.currentOrder?.totalCount }) }}</span>
+        <div class="row justify-between">
+          <div class="text-h3 row q-gutter-x-sm text-weight-bold">
+            <span>{{ $t('order') }}</span>&ensp;
+            <span>{{ ordersStore.currentOrder?.totalCount }}</span>&ensp;
+            <span>{{ $t('product') }}</span>
+            <span>{{ $t('units', { count: ordersStore.currentOrder?.totalCount }) }}</span>
+          </div>
+          <div class="text-h2"> {{ ordersStore.currentOrder?.totalPrice }}&ensp;&#3647</div>
         </div>
       </div>
     </div>
-    <DividerThin class="bg-grey-1 mb-40" />
+    <DividerThin class="bg-grey-2 mb-40" />
     <div class="column items-center px-100 pb-40 full-width buttons_container">
       <RectangularButton
         :name="$t('cash_payment')"

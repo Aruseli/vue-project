@@ -212,12 +212,10 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
           :name="$t('declare_discrepancy')"
           color="warning"
           @click="submitInventory"
-          classTitle="text-h2"
         />
         <RectangularButton
           :name="$t('confirm')"
           @click="submitInventory"
-          classTitle="text-h2"
         />
       </div>
     </div>
