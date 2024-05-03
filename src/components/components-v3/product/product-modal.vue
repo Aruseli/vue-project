@@ -125,7 +125,7 @@ const addGoodToCart = (good: Good) => {
       <div class="full-width">
         <q-btn
           v-if="!goodInCart"
-          class="full-width"
+          class="full-width add_button"
           unelevated
           no-caps
           color="white"
@@ -176,6 +176,9 @@ const addGoodToCart = (good: Good) => {
     max-height: 180px;
     overflow: scroll;
     scrollbar-width: thin;
+  }
+  .add_button {
+    height: 80px;
   }
   .slider_grid {
     display: grid;

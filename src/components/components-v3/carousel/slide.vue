@@ -25,8 +25,8 @@ const emit = defineEmits(['click']);
 
 <style>
 .slide_container {
-  width: 100%;
-  height: 100%;
+  width: max-content;
+  height: max-content;
 }
 .slide_animation-enter-active,
 .slide_animation-leave-active {

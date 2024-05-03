@@ -83,20 +83,14 @@ import ProductBinButton from '../buttons/product-bin-button.vue';
 
     <!-- main image -->
     <div class="img_container mb-10 relative-position">
-      <q-img
-        :src="props.good?.images[0]?.image"
+      <img
+        :data-url="props.good?.images[0]?.image"
         :alt="props.good?.title"
-        :ratio="4/3"
+
         class="img_style"
-      >
-        <template #loading>
-          <div class="text-subtitle1 text-white">
-            Loading...
-          </div>
-        </template>
-      </q-img>
-      <div class="absolute-top-right img_angle_top" />
-      <div class="absolute-bottom-left img_angle_bottom" />
+      />
+      <div class="absolute-top-right" />
+      <div class="absolute-bottom-left" />
     </div>
 
     <!-- title + price + buttons -->
@@ -149,22 +143,15 @@ import ProductBinButton from '../buttons/product-bin-button.vue';
         <Carousel>
           <div class="relative-position carousel_img">
             <div class="full-width full-height" />
-            <Slide v-for="(images, index) in props.good.images" :key="index" class="absolute-top-left">
+            <Slide v-for="(images, index) in props.good.images" :key="index" class="absolute-top-left ">
               <template #slide>
-                <q-img
-                  :src="images.image"
-                  width="100%"
-                  height="100%"
-                  :ratio="1"
-                  class="slide_img"
-                  v-show="currentSlide === index"
-                >
-                  <template #loading>
-                    <div class="text-subtitle1 text-white">
-                      Loading...
-                    </div>
-                  </template>
-                </q-img>
+                <div class="img_container_main">
+                  <img
+                    :src="images.image"
+                    class="slide_img"
+                    v-show="currentSlide === index"
+                  />
+                </div>
               </template>
             </Slide>
             <div class="absolute-top-right img_angle_top" />
@@ -181,19 +168,12 @@ import ProductBinButton from '../buttons/product-bin-button.vue';
             class="relative-position"
           >
             <template #slide>
-              <q-img
-                :src="images.image"
-                width="100%"
-                height="100%"
-                :ratio="1"
-                class="slide_img"
-              >
-                <template #loading>
-                  <div class="text-subtitle1 text-white">
-                    Loading...
-                  </div>
-                </template>
-              </q-img>
+              <div class="img_container_mini">
+                <img
+                  :src="images.image"
+                  class="slide_img"
+                />
+              </div>
             </template>
             <template #angles>
               <div class="absolute-top-right slide_img_angle_top" />
@@ -210,7 +190,12 @@ import ProductBinButton from '../buttons/product-bin-button.vue';
 <style lang="scss" scoped>
   $calc_width: calc(15em + 6vmax);
   $calc_width_alt: calc(12em + 4.5vmax);
-
+  .img_angle_top_main {
+    top: 4px;
+    right: 4px;
+    width: 5rem;
+    height: 5rem;
+  }
   .carousel_img {
     width: 25rem;
     height: 25rem;
@@ -234,6 +219,8 @@ import ProductBinButton from '../buttons/product-bin-button.vue';
   .slide_img {
     border-radius: 0 !important;
     scale: 0.9;
+    width: 100%;
+    height: 100%;
   }
   .card_setting_v3 {
     border-radius: var(--border-xxs);
@@ -264,9 +251,22 @@ import ProductBinButton from '../buttons/product-bin-button.vue';
     aspect-ratio: 1;
     display: flex;
   }
+  .img_container_main {
+    width: 25rem;
+    height: 25rem;
+    overflow: hidden;
+    align-self: center;
+    aspect-ratio: 1;
+    display: flex;
+  }
   .img_style {
     border-radius: 0 !important;
     scale: 0.9;
+  }
+  .img_container_mini {
+    width: 3.75rem;
+    height: 3.75rem;
+    aspect-ratio: 1;
   }
   .product_bin {
     height: 100%;

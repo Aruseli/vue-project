@@ -13,9 +13,9 @@ const props = defineProps({
 </script>
 
 <template>
-  <btn class="relative-position bin_button_style" @click.stop="emit('click')">
+  <button class="relative-position bin_button_style" @click.stop="emit('click')">
     <slot></slot>
-  </btn>
+  </button>
 </template>
 
 
@@ -25,5 +25,6 @@ const props = defineProps({
     border: thin solid green;
     width: 2rem;
     height: 2rem;
+    background: transparent;
   }
 </style>
