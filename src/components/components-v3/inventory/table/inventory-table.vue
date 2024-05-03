@@ -7,12 +7,12 @@
     <table class="table_scroll">
       <thead>
         <tr>
-          <th class="text-h4">#</th>
+          <th class="text-h4 bin_number_td">#</th>
           <th class="text-h4">{{ $t('product_name') }}</th>
           <th class="text-h4">{{ $t('estimated_quantity') }}
   (pcs)</th>
           <th class="text-h4">{{ $t('actual_quantity') }} (pcs)</th>
-          <th class="text-h4"></th>
+          <th class="text-h4 equal_td"></th>
         </tr>
       </thead>
 
@@ -26,6 +26,12 @@
 <style scoped>
 .table_scroll {
   width: 100%;
+}
+.bin_number_td {
+  min-width: 100px;
+}
+.equal_td {
+  min-width: 80px;
 }
 .table_scroll thead {
   position: sticky;

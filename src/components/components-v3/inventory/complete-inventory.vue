@@ -190,14 +190,14 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
     <div>
       <DividerBold class="mb-30" />
       <div class="row justify-between items-center px-40 mb-40">
-        <div class="row text-h3">
+        <div class="row text-h4">
           <span class="mr-16">{{$t('total')}}</span>
           <span class="mr-16">{{inventoryStore.inventory.length}}</span>
           <span class="mr-16">{{ $t('product') }}</span>
           <span>{{ $t('units', {count: inventoryStore.inventory.length}) }}</span>
         </div>
 
-        <div class="text-h3 text-weight-regular row">
+        <div class="text-h4 text-weight-regular row">
           <div class="mr-16">{{$t('estimated_quantity')}}</div>
           <div class="mr-16">{{inventoryStore.totalQuantity}}</div>
           <div class="mr-16">{{ $t('pc', {count: inventoryStore.totalQuantity}) }}</div>
@@ -212,10 +212,12 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
           :name="$t('declare_discrepancy')"
           color="warning"
           @click="submitInventory"
+          classTitle="text-h2"
         />
         <RectangularButton
           :name="$t('confirm')"
           @click="submitInventory"
+          classTitle="text-h2"
         />
       </div>
     </div>

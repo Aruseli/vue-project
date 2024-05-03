@@ -81,12 +81,12 @@ table tr {
   border-right: 1px solid #000;
   border-bottom: none;
   border-top: none;
-  height: 5rem;
 }
 
 table td {
-    /* border-left: 1px solid #000; */
-    border-right: 1px solid #000;
+  border-right: 1px solid #000;
+  height: 1.5rem;
+
 }
 thead {
   border-top: 2px solid rgb(38, 38, 38);
@@ -100,7 +100,7 @@ thead > tr > th {
 td {
   font-size: clamp(1.15rem, 1.3vw + 0.5rem, 1.5rem);
   text-align: center;
-  padding: 1rem;
+  padding: 0 1rem;
 }
 td:nth-child(2) {
   text-align: left;
