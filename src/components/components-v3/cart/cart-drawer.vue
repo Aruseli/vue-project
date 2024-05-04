@@ -74,12 +74,17 @@
 
             <div class="mb-30">
               <div class="row items-center justify-between q-mb-lg-md q-mb-xs-xs">
-                <div class="text-h1 text-left text-white text-uppercase col-10  text-weight-bold">
+                <div class="text-h1 text-white text-uppercase col-10  text-weight-bold"
+                  :class="[app.lang_dir == 'rtl' ? 'text-right' : 'text-left']"
+                >
                   {{ $t('order') }}
                 </div>
 
                 <!-- close + bin -->
-                <div class="row absolute cart_buttons">
+                <div
+                  class="row absolute"
+                  :class="[app.lang_dir == 'rtl' ? 'cart_buttons_rtl' : 'cart_buttons']"
+                >
                   <q-btn flat round @click="cartStore.clearCart()" class="q-mr-sm">
                     <q-icon name="img:/bin.svg" size="2.5rem" class="text-grey" />
                   </q-btn>
@@ -112,7 +117,9 @@
                 >
 
                   <!-- image -->
-                  <div class="mr-40">
+                  <div
+                    :class="[app.lang_dir == 'rtl' ? 'ml-40' : 'mr-40']"
+                  >
                     <img
                       :src="item.image"
                       class="img_style_v3"
@@ -237,6 +244,10 @@
   .cart_buttons {
     top: var(--px14);
     right: var(--px14);
+  }
+  .cart_buttons_rtl {
+    left: var(--px14);
+    top: var(--px14);
   }
   .img_style_v3 {
     border-radius: 0 !important;

@@ -420,6 +420,7 @@ $height: calc(1em + 1.7262vmin);
   width: 100%;
   height: auto;
   padding: 0 0.2em;
+  box-sizing: border-box;
   @media(max-width: 60rem) {
     grid-template-columns: repeat(2,  1fr);
   }

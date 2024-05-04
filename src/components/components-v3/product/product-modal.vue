@@ -96,14 +96,14 @@ const addGoodToCart = (good: Good) => {
             </div>
 
             <div class="text-grey mb-14">{{ $t('technical_specifications') }}</div>
-            <div class=" text-white q-mb-lg text-capitalize">
+            <div class="text-white q-mb-lg text-capitalize">
               <span>{{ $t('relaxation') }}</span> &#183;
               <span>{{ $t('calm') }}</span>
             </div>
 
             <div class="text-grey mb-14">{{ $t('set') }}</div>
-            <div class="text-white q-mb-lg row text-capitalize">
-              <span >{{ $t('product') }} 1:</span>
+            <div class="text-white q-mb-lg text-capitalize">
+              <span>{{ $t('product') }} 1:</span>&ensp;
               <span class="text-green">{{ $t('calm') }}</span> &#183;
               <span class="text-green">{{ $t('happy') }}</span>
             </div>
@@ -174,8 +174,10 @@ const addGoodToCart = (good: Good) => {
   }
   .content_description {
     max-height: 180px;
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: hidden;
     scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
   }
   .add_button {
     height: 80px;

@@ -84,6 +84,9 @@ $paddings: (
 @mixin marginT($size) {
   margin-top: $size;
 }
+@mixin marginL($size) {
+  margin-left: $size;
+}
 
 @each $name, $size in $margins {
   .mb-#{$name} {
@@ -94,6 +97,9 @@ $paddings: (
   }
   .mt-#{$name} {
     @include marginT($size);
+  }
+  .ml-#{$name} {
+    @include marginL($size);
   }
   // @media (max-width: 80rem) {
   //   .mb-#{$name} {

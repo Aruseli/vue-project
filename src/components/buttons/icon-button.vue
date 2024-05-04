@@ -65,6 +65,6 @@
 
 <style scoped>
 .q-icon {
-  font-size: 5rem !important;
+  font-size: 4rem !important;
 }
 </style>
