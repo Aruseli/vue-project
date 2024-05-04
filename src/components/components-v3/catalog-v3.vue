@@ -185,7 +185,9 @@ import moment from 'moment';
 <template>
   <div class="catalog_container relative-position">
     <!-- ping light -->
-    <div class="ping_container row">
+    <div class="row"
+      :class="[app.lang_dir == 'rtl' ? 'ping_container_rtl' : 'ping_container']"
+    >
       <div>{{ app.kioskState.name }}</div>
       <div>{{ formattedTime }}</div>
       <div class="ping_cat_light bg-green-10" />
@@ -459,40 +461,5 @@ li > div.active {
 .additional_lang_style {
   width: $width !important;
   height: $height !important;
-}
-
-.ping_container {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  column-gap: 0.5em;
-}
-
-.ping_tdp_light {
-  width: 1rem;
-  height: 1rem;
-  border-radius: 1rem;
-  &__not_signal {
-    box-shadow: 0 0 0 0 green;
-    background-color: transparent;
-    animation: ping 2s infinite;
-  }
-}
-.ping_cat_light {
-  width: 1rem;
-  height: 1rem;
-  border-radius: 1rem;
-}
-
-@keyframes ping {
-  0% {
-    box-shadow: 0px 0px 0px 0px green;
-  }
-  50% {
-    box-shadow: 0px 0px 1px 2px green;
-  }
-  100% {
-    box-shadow: 0px 0px 2px 4px green;
-  }
 }
 </style>

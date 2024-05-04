@@ -8,11 +8,14 @@ import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import BackButton from '../buttons/back-button.vue';
 import ExistOrder from './exist-order.vue';
+import { useAppStore } from 'src/stores/app';
+import moment from 'moment';
 
   const $q = useQuasar();
   const router = useRouter();
   const goodsStore = useGoodsStore();
   const ordersStore = useOrdersStore();
+  const app = useAppStore();
   const deleteOrder = async (id: string) => {
     await ordersStore.deleteOrder(id);
   }
@@ -37,10 +40,25 @@ import ExistOrder from './exist-order.vue';
       router.push('/employee-actions')
     }
   })
+  const date = new Date();
+  // Format the date using Moment.js
+  const formattedDate = moment(date).format("DD.MM.YY");
+  const time = date.getTime();
+  const formattedTime = moment(time).format("LT").slice(0, -3);
 </script>
 
 <template>
   <div class="main_container full-height">
+    <div class="row"
+      :class="[app.lang_dir == 'rtl' ? 'ping_container_rtl' : 'ping_container']"
+    >
+      <div>{{ app.kioskState.name }}</div>
+      <div>{{ formattedTime }}</div>
+      <div class="ping_cat_light bg-green-10" />
+      <div
+        :class="[app.kioskState.settings?.tdp ? 'ping_tdp_light' : 'ping_tdp_light_not__signal' ,'bg-green']"
+      />
+    </div>
     <div class="row justify-center relative-position px-40 pt-40 mb-50">
       <BackButton @click="router.push('/employee-actions')" class="absolute-top-left" />
       <div
