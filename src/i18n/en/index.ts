@@ -120,4 +120,5 @@ export default {
   not_print: "don't print",
   print_inventory_results: 'print inventory results?',
   dismiss: "Dismiss",
+  not_available: 'not available',
 };

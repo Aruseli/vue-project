@@ -62,10 +62,11 @@ import ProductBinButton from '../buttons/product-bin-button.vue';
 
 <template>
   <div
-    :class="[props.good && props.good.stock <= 0 && 'disabled no-pointer-events', 'card_setting_v3 bg-grey-2 pa-14']"
+    :class="[props.good && props.good.stock <= 0 && 'disabled no-pointer-events disabled_class', 'card_setting_v3 bg-grey-2 pa-14 relative-position']"
     v-bind="$attrs"
     @click="openDialog = true"
   >
+    <div v-if="props.good && props.good.stock <= 0" class="text-h4 absolute full-width full-height flex items-center justify-center notavalible_class"><p>{{ $t('not_available') }}</p></div>
     <div class="row justify-between items-center mb-10">
       <AttentionIcon />
       <div class="text-subtitle1 row">
@@ -98,8 +99,8 @@ import ProductBinButton from '../buttons/product-bin-button.vue';
         {{ props.good?.title }}
       </div>
       <div class="row justify-between items-center full-width">
-        <div class="text-h4" v-if="props.good && props.good.stock <= 0">{{ t('out_of_stock') }}</div>
-        <div class="text-h4" v-else>&#3647&ensp;{{ props.good?.price }}</div>
+        <!-- <div class="text-h4" v-if="props.good && props.good.stock <= 0">{{ t('out_of_stock') }}</div> -->
+        <div class="text-h4">&#3647&ensp;{{ props.good?.price }}</div>
         <ProductBinButton @click="addGoodToCart(props.good as Good)">
           <BinIcon :quantity="cartStore.totalQuantity" v-if="!goodInCart" width="1rem" height="1rem" class="product_bin" />
           <div v-else class="text-h2 no-margin text-white">{{ goodInCart.quant }}</div>
@@ -189,6 +190,12 @@ import ProductBinButton from '../buttons/product-bin-button.vue';
 <style lang="scss" scoped>
   $calc_width: calc(15em + 6vmax);
   $calc_width_alt: calc(12em + 4.5vmax);
+  .disabled_class {
+    filter: grayscale(1);
+  }
+  .notavalible_class {
+    z-index: 1;
+  }
   .img_angle_top_main {
     top: 4px;
     right: 4px;
