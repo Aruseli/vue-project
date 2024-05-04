@@ -113,20 +113,10 @@
 
                   <!-- image -->
                   <div class="mr-40">
-                    <q-img
+                    <img
                       :src="item.image"
-                      :ration="1"
-                      height="120px"
-                      width="120px"
-                      fit="none"
                       class="img_style_v3"
-                    >
-                      <template #loading>
-                        <div class="text-subtitle1 text-black">
-                          Loading...
-                        </div>
-                      </template>
-                    </q-img>
+                    />
                   </div>
 
                   <!-- container for title + price + buttons -->
@@ -250,6 +240,9 @@
   }
   .img_style_v3 {
     border-radius: 0 !important;
+    height: 7.5rem;
+    width: 7.5rem;
+    object-fit: contain;
   }
   .drawer_style_v3 {
     z-index: 199;

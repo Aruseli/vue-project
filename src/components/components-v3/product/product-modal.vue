@@ -146,7 +146,8 @@ const addGoodToCart = (good: Good) => {
             color="white"
             textColor="grey-1"
             @click="decrease(props.good  as Good)"
-            class="pa-21"
+            class="operator_button"
+            iconStyle="font-size: 1rem !important"
           />
           <div class="text-h2 no-margin text-grey">{{ goodInCart.quant }}</div>
           <IconButton
@@ -155,7 +156,7 @@ const addGoodToCart = (good: Good) => {
             textColor="grey-1"
             :icon="evaPlusOutline"
             @click="increase(props.good  as Good)"
-            class="pa-21"
+            class="operator_button"
           />
         </div>
       </div>
@@ -178,6 +179,10 @@ const addGoodToCart = (good: Good) => {
   }
   .add_button {
     height: 80px;
+  }
+  .operator_button {
+    height: 80px;
+    width: 80px;
   }
   .slider_grid {
     display: grid;

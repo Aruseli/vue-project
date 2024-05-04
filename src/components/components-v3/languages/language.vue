@@ -28,7 +28,7 @@
 <template>
   <div
     @click="emit('click')"
-    class="lang_container_new justify-center items-center row"
+    class="lang_container_new justify-center items-center column"
   >
     <q-img
       :src="props.src"

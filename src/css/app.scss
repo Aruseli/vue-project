@@ -490,7 +490,7 @@ padding: 0;
   transform: translateX(-50%);
 }
 .container_languages_v3 {
-  width: 49.7rem;
+  width: max-content;
   height: 47rem;
   display: grid;
   grid-template-columns: repeat( 4, max-content );
