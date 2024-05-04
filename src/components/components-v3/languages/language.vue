@@ -49,8 +49,8 @@
 $width: calc(6.5em + 1.7262vmin);
 $height: calc(3.5em + 1.7262vmin);
 .img_style {
-  height: 100%;
-  width: 100%;
+  height: 100px;
+  width: 100px;
   border-radius: var(--border-xs);
   margin-top: 0.125em;
   margin-inline: 0.125em;
