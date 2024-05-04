@@ -214,7 +214,7 @@
                   :rounded="false"
                   color="white"
                   textColor="grey-3"
-                  classTitle="text-weight-bold q-py-xl"
+                  classTitle="text-h2 text-weight-bold q-py-xl"
                 />
               </div>
             </div>
