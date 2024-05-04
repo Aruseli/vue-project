@@ -1,19 +1,16 @@
 <script setup lang="ts">
   import { evaMinusOutline, evaPlusOutline } from '@quasar/extras/eva-icons';
-  import { t } from 'i18next';
-  import { computed, ref } from 'vue';
-  import { useCartStore } from '../../../stores/cart';
-  import { useAppStore } from '../../../stores/app';
-  import { Good } from '../../../stores/goods';
-  import BinButton from '../../buttons/bin-button.vue';
-  import IconButton from '../../buttons/icon-button.vue';
-  import Carousel from '../carousel/carousel.vue';
-  import Slide from '../carousel/slide.vue';
-  import AttentionIcon from '../icons/attention-icon.vue';
-  import BinIcon from '../icons/bin-icon.vue';
-  import ProductModal from './product-modal.vue';
-  import OperatorButton from '../buttons/operator-button.vue'
+import { computed, ref } from 'vue';
+import { useAppStore } from '../../../stores/app';
+import { useCartStore } from '../../../stores/cart';
+import { Good } from '../../../stores/goods';
+import OperatorButton from '../buttons/operator-button.vue';
 import ProductBinButton from '../buttons/product-bin-button.vue';
+import Carousel from '../carousel/carousel.vue';
+import Slide from '../carousel/slide.vue';
+import AttentionIcon from '../icons/attention-icon.vue';
+import BinIcon from '../icons/bin-icon.vue';
+import ProductModal from './product-modal.vue';
 
   const cartStore = useCartStore();
   const app = useAppStore();

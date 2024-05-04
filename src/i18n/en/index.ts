@@ -102,8 +102,15 @@ export default {
   fresh: 'fresh',
   mint: 'mint',
   effects: 'effects',
+
+  //effects
   relaxation: 'relaxation',
   calm: 'calm',
+  happy: 'happy',
+  concentration: 'concentration',
+  activity: 'activity',
+  excitement: 'excitement',
+
   technical_specifications: 'technical specifications',
   add_to_cart: 'add to cart',
   your_order: 'your order',
@@ -121,4 +128,5 @@ export default {
   print_inventory_results: 'print inventory results?',
   dismiss: "Dismiss",
   not_available: 'not available',
+  set: 'set',
 };

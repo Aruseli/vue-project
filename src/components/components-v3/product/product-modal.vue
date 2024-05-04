@@ -82,31 +82,30 @@ const addGoodToCart = (good: Good) => {
           <!-- characteristics for cannabis bud -->
           <div>
             <div class="text-grey mb-14">{{ $t('variety') }}</div>
-            <div class="text-white q-mb-lg">
+            <div class="text-white q-mb-lg text-capitalize">
               <span>{{ $t('hybrid') }}</span> &#183;
               <span>{{ $t('sativa') }}</span> &#183;
-              <span>{{ $t('indica') }}</span> &#183;
-              <span>{{ $t('indica') }}</span> &#183;
-              <span>{{ $t('indica') }}</span> &#183;
+              <span>{{ $t('indica') }}</span>
             </div>
 
             <div class="text-grey mb-14">{{ $t('taste') }}</div>
-            <div class="text-white q-mb-lg">
+            <div class="text-white q-mb-lg text-capitalize">
               <span>{{ $t('fruity') }}</span> &#183;
               <span>{{ $t('fresh') }}</span> &#183;
               <span>{{ $t('mint') }}</span>
             </div>
 
-            <div class="text-grey mb-14">{{ $t('effects') }}</div>
-            <div class=" text-white q-mb-lg">
+            <div class="text-grey mb-14">{{ $t('technical_specifications') }}</div>
+            <div class=" text-white q-mb-lg text-capitalize">
               <span>{{ $t('relaxation') }}</span> &#183;
               <span>{{ $t('calm') }}</span>
             </div>
 
-            <div class="text-grey mb-14">{{ $t('technical_specifications') }}</div>
-            <div class=" text-white">
-              <span>{{ $t('relaxation') }}</span> &#183;
-              <span>{{ $t('calm') }}</span>
+            <div class="text-grey mb-14">{{ $t('set') }}</div>
+            <div class="text-white q-mb-lg row text-capitalize">
+              <span >{{ $t('product') }} 1:</span>
+              <span class="text-green">{{ $t('calm') }}</span> &#183;
+              <span class="text-green">{{ $t('happy') }}</span>
             </div>
           </div>
         </div>
@@ -183,7 +182,7 @@ const addGoodToCart = (good: Good) => {
   .slider_grid {
     display: grid;
     grid-template-columns: 1fr 0.7fr;
-    grid-template-rows: 25rem max-content;
+    grid-template-rows: minmax(25rem, 1fr) max-content;
     column-gap: var(--px20);
     row-gap: var(--px20);
     width: 100%;

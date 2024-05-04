@@ -24,18 +24,18 @@ import moment from 'moment';
   const app = useAppStore();
   const cartStore = useCartStore();
   const router = useRouter();
-  const selectedIndex = ref('');
+  const selectedID = ref('');
   const selectedLang = ref('');
 
   const options = {
     threshold: [0],
-    rootMargin: "0% 0% -70% 0%",
+    rootMargin: "0% 0% -85% 0%",
   }
 
   const { stop } = useIntersectionObserver(
     target,
     ([ isIntersecting ], observerElement) => {
-      selectedIndex.value = isIntersecting.target.id;
+      selectedID.value = isIntersecting.target.id;
     }, options
   )
   const openDrawer = () => {
@@ -49,13 +49,16 @@ import moment from 'moment';
     app.langDialog = false;
   };
 
-  const selectCategory = (id: string, event: Event) => {
-    event.preventDefault();
+  const selectCategory = (id: string) => {
     const element = document.getElementById(id);
-    selectedIndex.value = id;
-    element?.scrollIntoView({
-      behavior: "smooth",
-    });
+    selectedID.value = id;
+    console.log('Пытаемся прокрутить к элементу с ID:', id);
+    if (element) {
+      console.log('Элемент найден:', element);
+      element?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      console.log('Элемент с таким ID не найден.');
+    }
   };
 
   const animation = () => {
@@ -228,11 +231,15 @@ import moment from 'moment';
             <div class="bg-white categories_line" />
           </div>
           <ul class='tabs__header'>
-            <li v-for='(goodCategory, index) in goodsStore.goods'
+            <li v-for='goodCategory in goodsStore.goods'
               :key='goodCategory.id'
               class="text-h3 text-weight-bold"
             >
-              <div @click="selectCategory(goodCategory.id, $event)" :class='{active : goodCategory.id == selectedIndex}' class="first_letter">
+              <div
+
+                @click.prevent="selectCategory(goodCategory.id)" :class='{active : goodCategory.id === selectedID}'
+                class="first_letter"
+              >
                 {{ goodCategory.title }}
               </div>
             </li>
