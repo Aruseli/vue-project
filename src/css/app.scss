@@ -484,6 +484,10 @@ padding: 0;
   border-radius: var(--border-xxs);
   overflow-y: scroll;
   scrollbar-width: none;
+  position: absolute;
+  margin: 0 auto;
+  left: 50%;
+  transform: translateX(-50%);
 }
 .container_languages_v3 {
   width: 49.7rem;

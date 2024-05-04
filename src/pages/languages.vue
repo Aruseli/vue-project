@@ -25,7 +25,7 @@
 
 <template>
   <q-page
-    class="relative window-height"
+    class="relative-position window-height"
     :class="[app.kioskState.settings?.alt_ui === 'design_v3' ? 'flame_hello_bg' : 'hello_bg']"
   >
     <Logo class="logo_row logo" classes="q-mr-sm" v-if="app.kioskState.settings?.alt_ui !== 'design_v3'">
@@ -83,8 +83,7 @@
   background-size: cover;
 }
 .flame_hello_bg {
-  display: grid;
-  grid-template-rows: 1fr max-content;
+  display: flex;
   align-items: center;
   justify-content: center;
   background-image: url('/grey-flame.png');
@@ -93,9 +92,10 @@
   background-size: cover;
 }
 .title_styles {
-  justify-self: center;
   text-align: center;
+  align-content: flex-end;
   width: 50vw;
+  height: 100%;
 }
 
 </style>
