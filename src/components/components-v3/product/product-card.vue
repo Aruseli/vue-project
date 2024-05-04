@@ -277,13 +277,4 @@ import ProductModal from './product-modal.vue';
     justify-content: center;
     align-items: center;
   }
-  .slide-fade-enter-active,
-  .slide-fade-leave-active {
-    transition: all 0.3s cubic-bezier(0.215, 0.610, 0.355, 1);
-  }
-  .slide-fade-leave-to,
-  .slide-fade-enter-from {
-    opacity: 0;
-    transform: translateY(100%);
-  }
 </style>
