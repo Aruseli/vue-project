@@ -11,6 +11,7 @@
   import OrderCheck from './order-check.vue';
   import DividerThin from '../../dividers/divider-thin.vue';
   import OperatorButton from '../buttons/operator-button.vue';
+  import Image from '../image.vue';
 
   const $q = useQuasar();
   const router = useRouter();
@@ -120,7 +121,11 @@
                   <div
                     :class="[app.lang_dir == 'rtl' ? 'ml-40' : 'mr-40']"
                   >
-                    <img
+                    <!-- <img
+                      :src="item.image"
+                      class="img_style_v3"
+                      /> -->
+                    <Image
                       :src="item.image"
                       class="img_style_v3"
                     />

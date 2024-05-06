@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Image from './components-v3/image.vue';
 
   const props = defineProps({
     src: {
@@ -24,13 +25,12 @@
 
 <template>
   <div @click="emit('click')" class="lang_container justify-center items-center" v-bind="$attrs">
-    <q-img
+    <Image
       :src="props.src"
       :alt="props.alt"
       ratio="16/9"
       class="lang_img_style mb-10"
       :class="props.imgClasses"
-      fit='fill'
     />
     <div class="text-left text-white text-uppercase text-h4 lang_title_style">{{ props.language }}</div>
   </div>

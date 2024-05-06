@@ -1,13 +1,13 @@
 <script setup lang="ts">
   import Logo from 'src/components/logo/logo.vue';
   import { useRouter } from 'vue-router';
-  import { Ref, onMounted, onUnmounted, ref } from 'vue';
+  import { onMounted, onUnmounted, ref } from 'vue';
   import LogoSvg from 'src/components/logo/logo-svg.vue';
   import { useAppStore } from 'src/stores/app';
   import { forceNewVisit } from 'src/services/tracking';
 
   const router = useRouter();
-  const show = ref(true);
+  const show = ref(false);
   const shiftsUpdateTimer = ref<number | null>(null);
   const app = useAppStore();
 
@@ -38,6 +38,7 @@
     app.resetLocale();
     shiftsUpdateTimer.value = setTimeout(updateShifts, 0)  as unknown as number;
     app.colorMode = 'dark';
+    show.value = true;
   })
   onUnmounted(() => {
     clearTimeout(shiftsUpdateTimer.value  as number);
@@ -55,8 +56,12 @@
       </video>
       <div class="hello_text" @click="onClick">
         <div class="column justify-center items-center text-center container_text mb-120">
-          <q-icon color="white" name="img:/cta.svg" class="handIconStyle" />
-          <div class="text-white text-h1 text-uppercase title_styles">{{ $t('find_your_experience') }}</div>
+          <transition name="">
+            <q-icon v-show="show" color="white" name="img:/cta.svg" class="handIconStyle" />
+          </transition>
+          <transition name="text-fade">
+            <div v-show="show" class="text-white text-h1 text-uppercase title_styles">{{ $t('find_your_experience') }}</div>
+          </transition>
         </div>
       </div>
     </div>
@@ -67,12 +72,9 @@
         <Logo class="logo_row self-start" classes="q-mr-sm img_style">
           <LogoSvg fill="#FAFAFA" />
         </Logo>
-
-        <Transition name="slide-fade" mode="out-in">
-          <p v-show="show" class="text-h1 text-center text-white text-uppercase">
-            {{ $t('find_your_experience') }}
-          </p>
-        </Transition>
+        <div class="text-h1 text-center text-white text-uppercase">
+          {{ $t('find_your_experience') }}
+        </div>
         <div class="column">
           <div class="text-h4 text-center text-grey-2 text-uppercase">
             {{ $t('tap_on_screen') }}
@@ -139,5 +141,27 @@
 }
 .handIconStyle {
   font-size: clamp(7rem, 7vw + 1rem, 13rem);
+}
+
+.text-fade-enter-active {
+  animation: rotateAnimation 3s;
+}
+.text-fade-leave-active {
+  animation: rotateAnimation 3s;
+}
+
+@keyframes rotateAnimation {
+  0% {
+    transform: perspective(730px) rotateY(180deg) rotateX(90deg);
+  }
+  33% {
+    transform: rotateX(55deg);
+  }
+  66% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
 }
 </style>

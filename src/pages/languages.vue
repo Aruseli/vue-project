@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import Logo from '../components/logo/logo.vue';
-  import language from '../components/language.vue';
+  import Language from '../components/language.vue';
   import LogoSvg from '../components/logo/logo-svg.vue';
   import { useRouter } from 'vue-router';
   import { useAppStore } from 'src/stores/app';
@@ -36,7 +36,7 @@
       <LogoSvg fill="#FAFAFA" />
     </Logo>
     <div class="bg-grey-3 mb-60 pa-60 container_languages_firs_setting">
-      <language v-for="lang in app.kioskState.catalogLocales"
+      <Language v-for="lang in app.kioskState.catalogLocales"
         :key="lang.lang_code"
         :src="lang.flag_src"
         :alt="lang.name"

@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { useAppStore } from '../../../stores/app';
+  import Image from '../image.vue';
 
   const app = useAppStore();
   const props = defineProps({
@@ -30,7 +31,8 @@
     @click="emit('click')"
     class="lang_container_new justify-center items-center column"
   >
-    <q-img
+
+    <Image
       :src="props.src"
       :alt="props.alt"
       ratio="16/9"

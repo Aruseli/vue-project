@@ -362,6 +362,7 @@ $height: calc(1em + 1.7262vmin);
   color: var(--body-text);
   position: relative;
   align-self: center;
+  overflow: hidden;
 }
 
 .header_style_v3 {
