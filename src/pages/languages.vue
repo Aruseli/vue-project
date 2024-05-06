@@ -5,6 +5,7 @@
   import { useRouter } from 'vue-router';
   import { useAppStore } from 'src/stores/app';
   import { useGoodsStore } from 'src/stores/goods';
+  import { onMounted } from 'vue';
 
   const app = useAppStore();
   const goodsStore = useGoodsStore();
@@ -20,6 +21,9 @@
       document.body.className = "v3_body_style";
     }
   }
+  onMounted(() => {
+    app.colorMode = 'dark';
+  })
 
 </script>
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PropType, ref } from 'vue';
+import { PropType, ref, onMounted } from 'vue';
 import RectangularButton from '../buttons/rectangular-button.vue';
 import LogoSimple from '../logo/logo-simple.vue';
 import LogoSvg from '../logo/logo-svg.vue';
@@ -7,7 +7,6 @@ import { useAppStore } from 'src/stores/app';
 import { useGoodsStore } from 'src/stores/goods';
 import Modal from '../overlay/modal.vue';
 import Language from '../components-v3/languages/language.vue';
-import moment from 'moment';
 
 const app = useAppStore();
 const goodsStore = useGoodsStore();
@@ -36,24 +35,14 @@ const props = defineProps({
     default: 0
   }
 })
+onMounted(() => {
+  app.colorMode = 'dark';
+})
 const emit = defineEmits(['click'])
-const date = new Date();
-  const time = date.getTime();
-  const formattedTime = moment(time).format("LT").slice(0, -3);
 </script>
 
 <template>
   <div class="column justify-center items-center full-height full-width container">
-    <div class="row text-white"
-      :class="[app.lang_dir == 'rtl' ? 'ping_container_rtl' : 'ping_container']"
-    >
-      <div>{{ app.kioskState.name }}</div>
-      <div>{{ formattedTime }}</div>
-      <div class="ping_cat_light bg-green-10" />
-      <div
-        :class="[app.kioskState.settings?.tdp ? 'ping_tdp_light' : 'ping_tdp_light_not__signal' ,'bg-green']"
-      />
-    </div>
     <LogoSimple text_style="text-green" class="logo_positioning">
       <LogoSvg
         fill="#88D863"

@@ -16,6 +16,7 @@
   import { debugGenerateArrival } from "src/services/documents/documents";
   import {closeAllDialogs, showDialog, showSimpleNotification} from "./services/dialogs";
   import * as usersService from 'src/services/users';
+  import Ping from './components/components-v3/ping.vue';
 
   const route = useRoute()
   const router = useRouter()
@@ -104,7 +105,6 @@
       }
     }
   })
-
 
   // ======================================================
   // Handle inactivity redirects
@@ -300,4 +300,6 @@
       />
     </template>
   </RedirectDialog>
+
+  <Ping />
 </template>

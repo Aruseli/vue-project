@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, reactive } from 'vue';
+  import { ref, reactive, onMounted } from 'vue';
   import QrcodeVue from 'qrcode.vue';
   import { t } from 'i18next';
   import { useQuasar } from 'quasar';
@@ -40,6 +40,10 @@
       $q.loading.hide();
     }
   }
+
+  onMounted(() => {
+    appStore.colorMode = 'dark';
+  });
 
   // statuses are here because I wasn't able to force type safety for enum in v-if
   let statusIsUnknown = computed(() => appStore.kioskState.status == 'Unknown')

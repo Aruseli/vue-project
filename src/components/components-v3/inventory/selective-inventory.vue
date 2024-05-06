@@ -45,7 +45,6 @@ import InventoryTable from './table/inventory-table.vue';
   const date = selectiveInventoryStore.selectedInventory?.inventoryDate;
   // Format the date using Moment.js
   const formattedDate = moment(date).format('DD.MM.YY HH:mm');
-  const formattedTime = moment(date).format("LT");
 
 async function handlePrintConfirmation(printConfirmed: boolean) {
   $q.loading.show();
@@ -115,16 +114,6 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
 
 <template>
   <div class="main_container full-height full-width">
-    <div class="row"
-      :class="[app.lang_dir == 'rtl' ? 'ping_container_rtl' : 'ping_container']"
-    >
-      <div>{{ app.kioskState.name }}</div>
-      <div>{{ formattedTime }}</div>
-      <div class="ping_cat_light bg-green-10" />
-      <div
-        :class="[app.kioskState.settings?.tdp ? 'ping_tdp_light' : 'ping_tdp_light_not__signal' ,'bg-green']"
-      />
-    </div>
     <div class="column justify-center relative-position mb-20 px-40 pt-40">
       <BackButton @click="router.push('/employee-actions')" class="absolute-top-left" />
       <div class="text-h2 text-uppercase text-center mb-100">

@@ -18,6 +18,7 @@ export const useAppStore = defineStore('app', () => {
   const tab = ref('');
   const lang_dir = ref('ltr');
   const redirectDialogState = ref(false);
+  const colorMode = ref('light');
 
   const openDrawerCart = (state: boolean) => {
     drawerCartState.value = state;
@@ -177,7 +178,7 @@ export const useAppStore = defineStore('app', () => {
     shiftIsUpToDate,
     shiftIsGood,
     lockTerminal,
-
+    colorMode,
     redirectDialogState,
 
     customerModeIsAllowed: computed<boolean>(() => {

@@ -62,16 +62,6 @@ const goodsStore = useGoodsStore();
 
 <template>
   <div class="main_container full-height full-width">
-    <div class="row"
-      :class="[appStore.lang_dir == 'rtl' ? 'ping_container_rtl' : 'ping_container']"
-    >
-      <div>{{ appStore.kioskState.name }}</div>
-      <div>{{ formattedTime }}</div>
-      <div class="ping_cat_light bg-green-10" />
-      <div
-        :class="[appStore.kioskState.settings?.tdp ? 'ping_tdp_light' : 'ping_tdp_light_not__signal' ,'bg-green']"
-      />
-    </div>
     <div class="column justify-center relative-position q-mb-xl px-40 pt-40">
       <BackButton @click="router.push('/employee-actions')" class="absolute-top-left" />
       <div class="text-h2 text-uppercase text-center mb-100">

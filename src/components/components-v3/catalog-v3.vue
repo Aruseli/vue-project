@@ -160,6 +160,7 @@ import moment from 'moment';
       "touchstart",
     ].forEach((e) => document.addEventListener(e, boundResetTimer));
     selectedLang.value = localStorage.getItem("lang") || "";
+    app.colorMode = 'dark';
   });
 
   onUnmounted(() => {
@@ -175,26 +176,10 @@ import moment from 'moment';
     // stop();
   });
 
-  console.log('kioskState.settings?.tdp ?? "localhost:3010"', app.kioskState.settings?.tdp ?? "localhost:3010")
-  const date = new Date();
-  const time = date.getTime();
-  const formattedTime = moment(time).format('LT');
-
 </script>
 
 <template>
   <div class="catalog_container relative-position">
-    <!-- ping light -->
-    <div class="row"
-      :class="[app.lang_dir == 'rtl' ? 'ping_container_rtl' : 'ping_container']"
-    >
-      <div>{{ app.kioskState.name }}</div>
-      <div>{{ formattedTime }}</div>
-      <div class="ping_cat_light bg-green-10" />
-      <div
-        :class="[app.kioskState.settings?.tdp ? 'ping_tdp_light' : 'ping_tdp_light_not__signal' ,'bg-green']"
-      />
-    </div>
     <!-- header -->
     <header class="row justify-between items-center q-pa-xl header_style_v3 bg-grey-2">
       <div class="row q-gutter-x-md">
