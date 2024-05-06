@@ -39,6 +39,7 @@ import moment from 'moment';
       })
       router.push('/employee-actions')
     }
+    app.colorMode = 'light';
   })
 </script>
 

@@ -263,6 +263,9 @@
       ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
         document.addEventListener(e, boundResetTimer)
       )
+      if (appStore.value) {
+          appStore.value.colorMode = 'dark';
+        }
     });
   })
 

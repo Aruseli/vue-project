@@ -2,16 +2,27 @@
 import { useAppStore } from '../../stores/app';
 import moment from 'moment';
 import { computed, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 const app = useAppStore();
 const date = new Date();
 const time = date.getTime();
 const formattedTime = moment(time).format("LT").slice(0, -3);
 
 const textColorClass = ref('text-black'); // Начальное значение
-// const textColorClass = computed(() => app.colorMode === 'dark' ? 'text-white' : 'text-black');
 
 watch(() => app.colorMode, (newValue) => {
   textColorClass.value = newValue === 'dark' ? 'text-white' : 'text-black';
+});
+
+router.beforeEach((to, from, next) => {
+  if (typeof to.meta.colorMode === 'string') {
+    app.colorMode = to.meta.colorMode;
+  } else {
+    app.colorMode = 'light'; // Значение по умолчанию
+  }
+  next();
 });
 </script>
 

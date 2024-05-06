@@ -13,7 +13,6 @@ import BackButton from '../buttons/back-button.vue';
 import RectangularButton from '../buttons/rectangular-button.vue';
 import ArrivalItem from './arrival-item.vue';
 
-
 const goodsStore = useGoodsStore();
 
   const $q = useQuasar();
@@ -56,6 +55,7 @@ const goodsStore = useGoodsStore();
       })
       router.push('/employee-actions')
     }
+    appStore.colorMode = 'light';
   })
 
 </script>

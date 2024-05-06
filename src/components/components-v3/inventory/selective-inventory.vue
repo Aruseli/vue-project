@@ -109,7 +109,7 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
       })
     }
   }
-
+  console.log('colorMode', app.colorMode)
 </script>
 
 <template>

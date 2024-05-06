@@ -108,7 +108,7 @@ const emit = defineEmits(['click'])
 
 .trans_positioning {
   position: absolute;
-  top: var(--px40);
+  top: 3.125rem;
   right: var(--px40);
 }
 .button_style {

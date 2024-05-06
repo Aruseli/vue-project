@@ -77,14 +77,10 @@ table {
     /* border:1px solid black; */
     border-collapse: collapse;
 }
-table tr {
-  border-right: 1px solid #000;
-  border-bottom: none;
-  border-top: none;
-}
-
 table td {
-  border-right: 1px solid #000;
+  border-top: none;
+  border-bottom: none;
+  border-right: 1px solid #181818;
   height: 1.5rem;
 
 }
