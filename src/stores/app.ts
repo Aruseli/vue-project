@@ -1,6 +1,5 @@
 import i18next, { t } from 'i18next';
 import { defineStore } from 'pinia';
-import { Cookies } from 'quasar';
 import { updateCatalogLocales } from 'src/services/locales';
 import { KioskState } from 'src/types/kiosk-state';
 import { computed, reactive, ref, watchEffect } from 'vue';

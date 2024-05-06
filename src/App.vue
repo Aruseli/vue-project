@@ -10,7 +10,6 @@
   import { useGoodsStore } from "./stores/goods";
   import { useArrivalsStore } from'src/stores/arrivals';
   import { useInventoryStore } from "./stores/inventory";
-  import { useSelectiveInventoryStore } from "./stores/selective-inventory";
   import { forceNewVisit } from "./services/tracking";
   import { computed, onMounted, ref } from "vue";
   import { debugGenerateArrival } from "src/services/documents/documents";
@@ -30,7 +29,6 @@
     const goodsStore = useGoodsStore();
     const arrivalsStore = useArrivalsStore();
     const inventoryStore = useInventoryStore();
-    const selectiveInventoryStore = useSelectiveInventoryStore();
     if (evt.cmd == 'barcode' && process.env.DEV && evt.data == 'debugGenerateArrival') {
       await debugGenerateArrival();
     }
@@ -50,12 +48,10 @@
       }
       if (route.path == '/complete-inventory' ||
           route.path == '/open-shift/complete-inventory' ||
-          route.path == '/close-shift/complete-inventory'
+          route.path == '/close-shift/complete-inventory' ||
+          route.path == '/selective-inventory'
       ) {
         await inventoryStore.scanInventoryGood(uuids[0]);
-      }
-      if (route.path == '/selective-inventory') {
-        await selectiveInventoryStore.scanInventoryGood(uuids[0]);
       }
     }
     if (evt.cmd == 'barcode' && evt.data.length == 13) {

@@ -8,6 +8,10 @@ import config from "./config";
 import { delay } from "./utils";
 
 export const terminalParams = ref<TerminalParams | undefined>(undefined);
+/**
+ * This is the `{ .."config.js"."settings", ..backend_terminal_settings }`.
+ * Settings from server have higher priority than local settings.
+ */
 export const settings = ref<Settings | undefined>(undefined);
 let _inited = false;
 let _name = '';

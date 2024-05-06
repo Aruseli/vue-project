@@ -7,6 +7,7 @@ import { t } from "i18next";
 import { Notify } from 'quasar';
 import { journalErroneousAction } from "src/services/documents/documents";
 import { showSimpleNotification } from "src/services/dialogs";
+import { settings } from "src/services/terminal";
 
 export const useArrivalsStore = defineStore("arrivalsStore", () => {
   const appStore = useAppStore();
@@ -69,13 +70,14 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
     }
     doc.state = 0;
     doc.respperson_ref = appStore.kioskState.userCorr?.id;
-    doc.details.forEach((d) => {
-      const item = arrival.value?.items.find((i) => i.id == d.good_id);
-      if (!item || d.quant != 1 || item.issued != item.quant || !item.itemsToScan.includes(d.doc_detail_link)) {
-        throw new Error(`Wrong state of arrival to issue.`);
-      }
-      d.total = item.price * d.quant;
-    });
+    doc.details.filter(d => d.doc_detail_type == settings.value?.docdetail_type__goods_arrival_incoming)
+      .forEach((d) => {
+        const item = arrival.value?.items.find((i) => i.id == d.good_id);
+        if (!item || d.quant != 1 || item.issued != item.quant || !item.itemsToScan.includes(d.doc_detail_link)) {
+          throw new Error(`Wrong state of arrival to issue.`);
+        }
+        d.total = item.price * d.quant;
+      });
     await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '');
   };
 
@@ -147,7 +149,7 @@ function documentGoodsArrival(ad: KioskDocument, goodsStore: ReturnType<typeof u
       if (!good) {
         hasAllGoods = false;
       }
-      const goodDetails = ad.details.filter(d => d.good_id == goodId);
+      const goodDetails = ad.details.filter(d => d.good_id == goodId && d.doc_detail_type == settings.value?.docdetail_type__goods_arrival_incoming);
       const quant = goodDetails.reduce((acc, d) => acc + d.quant, 0);
       const total = goodDetails.reduce((acc, d) => acc + d.total, 0);
       return {

@@ -4,7 +4,7 @@
   import { useQuasar } from 'quasar';
   import i18next, { t } from 'i18next';
   import { useAppStore } from 'src/stores/app';
-  import { useSelectiveInventoryStore } from 'src/stores/selective-inventory';
+  import { useInventoryStore } from 'src/stores/inventory';
   import { delay, printLeftovers } from 'src/services';
   import { useGoodsStore } from 'src/stores/goods';
   import EmployeeActions from '../components/components-v3/employee-actions.vue';
@@ -16,7 +16,7 @@
   const router = useRouter();
   const app = useAppStore();
   const goodsStore = useGoodsStore();
-  const selectiveInventoryStore = useSelectiveInventoryStore();
+  const inventoryStore = useInventoryStore();
   const inventoryRequests = ref(0);
 
   const route = (path) => {
@@ -106,8 +106,8 @@
       goodsStore.updateGoods(i18next.language); // Don't await intentionally
     }
     await app.updateShifts();
-    await selectiveInventoryStore.updateInventories();
-    inventoryRequests.value = selectiveInventoryStore.inventoriesDocuments.length;
+    await inventoryStore.updateInventoryRequests();
+    inventoryRequests.value = inventoryStore.inventoryRequestsDocuments.length;
     if( inventoryRequests.value > 0 && app.shiftIsGood && app.hasRight(app.kioskState.settings?.rights__kiosk_selective_inventory) ) {
       showDialog({
         text: t('there_are_documents_for_inventory'),

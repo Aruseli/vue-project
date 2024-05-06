@@ -18,12 +18,16 @@ export type Settings = {
   munit_id: string,
 
   doc_type__invoice: string,
-  docdetail_type__invoice_placing: string,
-  docdetail_type__invoice_issue: string,
+  docdetail_type__invoice: string,
   doc_type__goods_arrival: string,
+  docdetail_type__goods_arrival_incoming: string,
   doc_type__inventory: string,
   docdetail_type__inventory: string,
+  doc_type__inventory_request: string,
+  docdetail_type__inventory_request: string,
   docoperation_type__erroneous_action: string,
+  inventory_request_state_requested: number,
+  inventory_request_state_fulfilled: number,
 
   rights__kiosk_open_shift: string,
   rights__kiosk_close_own_shift: string,
@@ -129,23 +133,42 @@ export type KioskState = {
   status: 'Unknown' | 'UnboundTerminal' | 'Unauthenticated' | 'Ready' | 'UnrecoverableError',
   name?: string,
   code?: string,
+  /**
+   * @deprecated in favor of `import { terminalParams } from 'src/services/terminal';`
+   */
   params?: TerminalParams,
   /**
-   * This is the `{ .."config.js"."settings", ..backend_terminal_settings }`.
-   * Settings from server have higher priority than local settings.
+   * @deprecated in favor of `import { settings } from 'src/services/terminal';`
    */
   settings?: Settings,
   globalError?: Error,
+  /**
+   * @deprecated in favor of `import { currentUser } from 'src/services/users';`
+   */
   user?: User,
+  /**
+   * @deprecated in favor of `import { userCorr } from 'src/services/documents/correspondents';`
+   */
   userCorr?: Correspondent,
+  /**
+   * @deprecated in favor of `import { kioskCorr } from 'src/services/documents/correspondents';`
+   */
   kioskCorr?: Correspondent,
   catalogLocales?: LocaleInfo[],
+  /**
+   * @deprecated in favor of `import { locationShift } from 'src/services/shifts';`
+   */
   locationShift?: { id: string },
+  /**
+   * @deprecated in favor of `import { terminalShift } from 'src/services/shifts';`
+   */
   terminalShift?: TerminalShift,
-  // TODO
-  /** User ID */
+  /**
+   * @deprecated in favor of `import { terminalShiftOpenedBy } from 'src/services/shifts';`
+   */
   terminalShiftOpenedBy?: string,
-  // TODO
-  /** User ID */
+  /**
+   * @deprecated in favor of `import { terminalShiftPreviousClosedBy } from 'src/services/shifts';`
+   */
   terminalShiftPreviousClosedBy?: string,
 }

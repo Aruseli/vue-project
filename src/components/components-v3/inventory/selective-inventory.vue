@@ -6,7 +6,7 @@ import { printInventory } from 'src/services';
 import { showDialog } from 'src/services/dialogs';
 import { useAppStore } from "src/stores/app";
 import { useGoodsStore } from 'src/stores/goods';
-import { useSelectiveInventoryStore } from 'src/stores/selective-inventory';
+import { useInventoryStore } from 'src/stores/inventory';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import DividerBold from '../../dividers/divider-bold.vue';
@@ -18,19 +18,18 @@ import InventoryTable from './table/inventory-table.vue';
   const $q = useQuasar();
 
   const router = useRouter();
-  const selectiveInventoryStore = useSelectiveInventoryStore();
+  const inventoryStore = useInventoryStore();
   const goodsStore = useGoodsStore();
 
   const app = useAppStore();
-  const documentId = ref(undefined);
+  const documentId = ref<string | undefined>(undefined);
 
   onMounted(async () => {
     try {
       await goodsStore.updateGoods(i18next.language)
-      await selectiveInventoryStore.updateInventories();
-      await selectiveInventoryStore.selectInventory();
+      await inventoryStore.prepareRequestedInventory();
     } catch (err) {
-      console.error('selectiveInventoryStore.updateInventories error:', err)
+      console.error('inventoryStore.prepareRequestedInventory error:', err)
       $q.notify({
         color: 'warning',
         icon: 'warning',
@@ -42,7 +41,7 @@ import InventoryTable from './table/inventory-table.vue';
     }
   })
 
-  const date = selectiveInventoryStore.selectedInventory?.inventoryDate;
+  const date = inventoryStore.inventory?.inventoryDate;
   // Format the date using Moment.js
   const formattedDate = moment(date).format('DD.MM.YY HH:mm');
 
@@ -74,13 +73,13 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
 }
 
   const confirmInventory = async () => {
-    const result = await selectiveInventoryStore.confirmSelectedInventory();
+    const result = await inventoryStore.submitInventory();
     if (result) {
       const { documentId: docId } = result;
       if (docId) {
         documentId.value = docId;
         // await showPrintConfirmationDialog();
-        await showDialog({
+        showDialog({
           text: t("print_inventory_results"),
           buttons: [{
             name: "not_print", type: "equal", handler: async () => handlePrintConfirmation(false)
@@ -92,7 +91,7 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
     }
   }
   const reset = (id: string) => {
-    const item = selectiveInventoryStore.selectedInventory?.items.find((i) => i.id === id);
+    const item = inventoryStore.inventory?.items.find((i) => i.id === id);
     if(item?.id == id) {
       showDialog({
         text: `${t('are_you_sure_you_want_to_rescan_the_product')} ${item.title}`,
@@ -126,7 +125,7 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
         </div>
         <div class="text-h4 row q-gutter-x-sm text-weight-regular">
           <span>{{ formattedDate }}</span>
-          <span>№{{ selectiveInventoryStore.selectedInventory?.inventoryNumStr  }}</span>
+          <span>№{{ inventoryStore.inventory?.inventoryNumStr  }}</span>
         </div>
       </div>
     </div>
@@ -134,7 +133,7 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
     <div class="scroll_area">
       <InventoryTable>
         <InventoryTableBody
-          v-for="(inv, index) in selectiveInventoryStore.selectedInventory?.items"
+          v-for="(inv, index) in inventoryStore.inventory?.items"
           :key="inv.id"
           :good_quant="inv.quant"
           :good_title="inv.title"
@@ -152,19 +151,19 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
       <div class="row justify-between items-center items-center px-40 mb-40">
         <div class="row text-h3">
           <span class="mr-16">{{$t('total')}}</span>
-          <span class="mr-16">{{selectiveInventoryStore.selectedInventory?.items.length}}</span>
+          <span class="mr-16">{{inventoryStore.inventory?.items.length}}</span>
           <span class="mr-16">{{ $t('product') }}</span>
-          <span>{{ $t('units', {count: selectiveInventoryStore.selectedInventory?.items.length}) }}</span>
+          <span>{{ $t('units', {count: inventoryStore.inventory?.items.length}) }}</span>
         </div>
 
         <div class="text-h3 text-weight-regular row">
           <div class="mr-16">{{$t('estimated_quantity')}}</div>
-          <div class="mr-16">{{selectiveInventoryStore.selectedInventory?.totalStock}}</div>
-          <div class="mr-16">{{ $t('pc', {count: selectiveInventoryStore.selectedInventory?.totalStock}) }}</div>
+          <div class="mr-16">{{inventoryStore.inventory?.totalStock}}</div>
+          <div class="mr-16">{{ $t('pc', {count: inventoryStore.inventory?.totalStock}) }}</div>
           <q-separator color="secondary" vertical class="mr-16" size="0.2rem" />
           <div class="mr-16">{{$t('actual_quantity')}}</div>
-          <div class="mr-16">{{ selectiveInventoryStore.totalQuant }}</div>
-          <div>{{ $t('pc', {count: selectiveInventoryStore.totalQuant}) }}</div>
+          <div class="mr-16">{{ inventoryStore.totalActualQuant }}</div>
+          <div>{{ $t('pc', {count: inventoryStore.totalActualQuant}) }}</div>
         </div>
       </div>
       <div class="full-width buttons_container px-100 pb-40">

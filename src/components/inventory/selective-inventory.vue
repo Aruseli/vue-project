@@ -3,7 +3,7 @@
   import moment from 'moment';
   import { useQuasar } from 'quasar';
   import { useGoodsStore } from 'src/stores/goods';
-  import { useSelectiveInventoryStore } from 'src/stores/selective-inventory';
+  import { useInventoryStore } from 'src/stores/inventory';
   import { onMounted , ref} from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import RectangularButton from '../buttons/rectangular-button.vue';
@@ -17,7 +17,7 @@ import { printInventory } from 'src/services';
 
   const router = useRouter();
   const route = useRoute();
-  const selectiveInventoryStore = useSelectiveInventoryStore();
+  const inventoryStore = useInventoryStore();
   const goodsStore = useGoodsStore();
 
   const app = useAppStore();
@@ -27,10 +27,9 @@ import { printInventory } from 'src/services';
   onMounted(async () => {
     try {
       await goodsStore.updateGoods(i18next.language)
-      await selectiveInventoryStore.updateInventories();
-      await selectiveInventoryStore.selectInventory();
+      await inventoryStore.prepareRequestedInventory();
     } catch (err) {
-      console.error('selectiveInventoryStore.updateInventories error:', err)
+      console.error('inventoryStore.prepareRequestedInventory error:', err)
       $q.notify({
         color: 'warning',
         icon: 'warning',
@@ -42,9 +41,11 @@ import { printInventory } from 'src/services';
     }
   })
 
-  const date = selectiveInventoryStore.selectedInventory?.inventoryDate;
-  // Format the date using Moment.js
-  const formattedDate = moment(date).format('DD.MM.YY HH:mm');
+  const formattedDate = computed(() => {
+    const date = inventoryStore.inventory?.inventoryDate;
+    // Format the date using Moment.js
+    return moment(date).format('DD.MM.YY HH:mm');
+  });
 
 async function showPrintConfirmationDialog() {
 
@@ -79,15 +80,15 @@ async function handlePrintConfirmation(printConfirmed) {
 }
 
   const confirmInventory = async () => {
-    const {documentId: docId} = await selectiveInventoryStore.confirmSelectedInventory()
-    if(docId) {
+    const {documentId: docId} = await inventoryStore.submitInventory();
+    if (docId) {
       documentId.value = docId;
       await showPrintConfirmationDialog();
     }
   }
 
   const reset = (id) => {
-    const item = selectiveInventoryStore.selectedInventory?.items.find((i) => i.id === id);
+    const item = inventoryStore.inventory?.items.find((i) => i.id === id);
     if(item?.id == id) {
       showDialog({
         text: `${t('are_you_sure_you_want_to_rescan_the_product')} ${item.title}`,
@@ -141,7 +142,7 @@ async function handlePrintConfirmation(printConfirmed) {
         </div>
         <div class="row date_style text-h3">
           <span>{{ formattedDate }}</span>
-          <span>№{{ selectiveInventoryStore.selectedInventory?.inventoryNumStr }}</span>
+          <span>№{{ inventoryStore.inventory?.inventoryNumStr }}</span>
         </div>
       </div>
       <DividerBold />
@@ -151,7 +152,7 @@ async function handlePrintConfirmation(printConfirmed) {
       <div>
         <ol class="bg-white text-black relative-position q-pl-none">
           <ListItem
-            v-for="inv in selectiveInventoryStore.selectedInventory?.items"
+            v-for="inv in inventoryStore.inventory?.items"
             :key="inv.id"
             :actual_quantity="inv.quant"
             :good_name="inv.title"
@@ -183,19 +184,19 @@ async function handlePrintConfirmation(printConfirmed) {
       >
         <div class="row text-h3">
           <span class="q-mr-xs-xs">{{$t('total')}}</span>
-          <span class="q-mr-xs-xs">{{selectiveInventoryStore.selectedInventory?.items.length}}</span>
+          <span class="q-mr-xs-xs">{{inventoryStore.inventory?.items.length}}</span>
           <span class="q-mr-xs-xs">{{ $t('product') }}</span>
-          <span>{{ $t('units', {count: selectiveInventoryStore.selectedInventory?.items.length}) }}</span>
+          <span>{{ $t('units', {count: inventoryStore.inventory?.items.length}) }}</span>
         </div>
 
         <div class="text-h3 text-weight-regular row q-gutter-x-sm">
           <div class="q-mr-xs-xs">{{$t('estimated_quantity')}}</div>
-          <div class="q-mr-xs-xs">{{selectiveInventoryStore.selectedInventory?.totalStock}}</div>
-          <div class="q-mr-xs-xs">{{ $t('pc', {count: selectiveInventoryStore.selectedInventory?.totalStock}) }}</div>
+          <div class="q-mr-xs-xs">{{inventoryStore.inventory?.totalStock}}</div>
+          <div class="q-mr-xs-xs">{{ $t('pc', {count: inventoryStore.inventory?.totalStock}) }}</div>
           <q-separator color="secondary" vertical class="q-mr-xs-xs" size="0.2rem" />
           <div class="q-mr-xs-xs">{{$t('actual_quantity')}}</div>
-          <div class="q-mr-xs-xs">{{ selectiveInventoryStore.totalQuant }}</div>
-          <div>{{ $t('pc', {count: selectiveInventoryStore.totalQuant}) }}</div>
+          <div class="q-mr-xs-xs">{{ inventoryStore.totalActualQuant }}</div>
+          <div>{{ $t('pc', {count: inventoryStore.totalActualQuant}) }}</div>
         </div>
       </div>
       <div class="row justify-evenly">
