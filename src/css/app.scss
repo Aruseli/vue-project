@@ -542,12 +542,24 @@ padding: 0;
   border-left: thin solid white;
   width: 0.7rem;
   height: 0.7rem;
+  &__active {
+    border-bottom: thin solid #88D863;
+    border-left: thin solid #88D863;
+    width: 0.7rem;
+    height: 0.7rem;
+  }
 }
 .slide_img_angle_top {
   border-right: thin solid white;
   border-top: thin solid white;
   width: 0.7rem;
   height: 0.7rem;
+  &__active {
+    border-right: thin solid #88D863;
+    border-top: thin solid #88D863;
+    width: 0.7rem;
+    height: 0.7rem;
+  }
 }
 
 .q-btn--round {

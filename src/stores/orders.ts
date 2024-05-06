@@ -90,7 +90,8 @@ export const useOrdersStore = defineStore("orders", () => {
       const debugGoodItemIds = currentOrder.value?.items.flatMap(i => goodsStore.getGoodById(i.id).items.map(item => item.mark));
       console.log("Order expected good individual IDs", debugGoodItemIds);
       console.log(debugGoodItemIds?.map(s => `curl --location 'http://127.0.0.1:3010/api/system/emulate/barcode?code=${s}'`).join('\n'));
-    } catch {
+    } catch(e) {
+      console.error(e);
       currentOrder.value = null;
       currentOrderDocument.value = null;
     } finally {
@@ -106,7 +107,6 @@ export const useOrdersStore = defineStore("orders", () => {
     doc.state = 0;
     doc.respperson_ref = appStore.kioskState.userCorr?.id ?? throwErr("Missing userCorr");
     doc.details = doc.details
-      .filter(d => d.doc_detail_type == appStore.kioskState.settings?.docdetail_type__invoice_placing)
       .flatMap(d => {
         const item = currentOrder.value?.items.find((i) => i.id == d.good_id);
         if (
@@ -116,11 +116,7 @@ export const useOrdersStore = defineStore("orders", () => {
           console.log("Order line error while issuing", d, item);
           throw new Error(`Wrong state of order to issue.`);
         }
-        d.state = item.deleted ? 1 : 0;
-        d.total = item.price * d.quant;
-        return [
-          d,
-          ...item.issuedItems.map((itemId, index) => ({
+        return item.issuedItems.map((itemId, index) => ({
             id: undefined,
             state: 0,
             rec_order: d.rec_order * 100 + index,
@@ -129,9 +125,8 @@ export const useOrdersStore = defineStore("orders", () => {
             quant: 1,
             total: item.price,
             doc_detail_link: itemId,
-            doc_detail_type: appStore.kioskState.settings?.docdetail_type__invoice_issue ?? '',
-          })),
-        ]
+            doc_detail_type: appStore.kioskState.settings?.docdetail_type__invoice ?? '',
+          }));
       });
     const totalPrice = currentOrder.value?.totalPrice ?? throwErr("Wrong state of order to issue: totalPrice");
     let payment_type_id: string;
@@ -175,7 +170,6 @@ export const useOrdersStore = defineStore("orders", () => {
 
   const docDetailsToCheckContent = ({doc} :{doc: SaveableDocument}): Check['content'] => {
     return doc.details
-      .filter(d => d.doc_detail_type == appStore.kioskState.settings?.docdetail_type__invoice_placing)
       .map((detail) => ({
         id: detail.id,
         type: appStore.kioskState.settings?.check_content_type ?? '',

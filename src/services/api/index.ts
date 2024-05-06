@@ -262,7 +262,6 @@ export type SaveableDocument = {
   state: number,
   doc_type: string,
   abbr_text?: any,
-  abbr_num?: number,
   doc_date: string, // e.g. '2024-01-24'
   doc_order: number,
   corr_from_ref: string,

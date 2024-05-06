@@ -22,10 +22,14 @@ export default {
 
     "doc_type__goods_arrival": "c50c9265-6874-4ecc-950f-588145ff3b65",
     "doc_type__inventory": "9f358a54-742e-49f7-bbe6-2cf906d534c3",
+    "doc_type__inventory_request": "bb3e82aa-f45d-47e5-9c32-0d6e8f7881ca",
     "doc_type__invoice": "3631602d-ef2e-41fe-8aaf-0c063eacb5e1",
+    "docdetail_type__goods_arrival_incoming": "bd91b47e-e905-46c5-bbe8-736757f03b87",
     "docdetail_type__inventory": "23e85f54-cf45-417e-bd57-afd89a2a93de",
-    "docdetail_type__invoice_issue": "f15e302a-b60e-4a7d-bbba-64d29548355c",
-    "docdetail_type__invoice_placing": "23e85f54-cf45-417e-bd57-afd89a2a93de",
+    "docdetail_type__inventory_request": "fdacca65-6f36-4343-8821-f1dc1d18e1cf",
+    "docdetail_type__invoice": "f15e302a-b60e-4a7d-bbba-64d29548355c",
+    "inventory_request_state_requested": 0,
+    "inventory_request_state_fulfilled": 6,
 
     "docoperation_type__erroneous_action": "850180e3-837f-436f-8d92-2a6ff4a8de97",
 

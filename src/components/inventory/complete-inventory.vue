@@ -32,7 +32,7 @@ import { showDialog } from 'src/services/dialogs';
   const isPrintConfirmationDialogVisible = ref(false);
 
   const allowConfirm = computed(() => {
-    return inventoryStore.inventory?.every((i) => i.stock == i.quant);
+    return inventoryStore.inventory?.items?.every((i) => i.stock == i.quant);
   });
 
   async function showPrintConfirmationDialog() {
@@ -120,7 +120,7 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
 
 
   const reset = (id: string) => {
-    const item = inventoryStore.inventory.find((i) => i.id === id);
+    const item = inventoryStore.inventory?.items.find((i) => i.id === id);
     if(item?.id == id) {
       showDialog({
         text: `${t('are_you_sure_you_want_to_rescan_the_product')} ${item.title}`,
@@ -148,9 +148,9 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
   onMounted(async () => {
     try {
       await goodsStore.updateGoods(i18next.language);
-      await inventoryStore.updateInventory();
+      await inventoryStore.prepareFullInventory();
     } catch (err) {
-      console.error("inventoryStore.updateInventories error:", err);
+      console.error("inventoryStore.prepareFullInventory error:", err);
       $q.notify({
         color: "warning",
         icon: "warning",
@@ -207,7 +207,7 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
       <div>
         <ol class="bg-white text-black relative-position ol_style">
           <ListItem
-            v-for="good in inventoryStore.inventory"
+            v-for="good in inventoryStore.inventory?.items"
             :key="good.id"
             :actual_quantity="good.quant"
             :good_name="good.title"
@@ -228,15 +228,15 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
       >
         <div class="row text-h3">
           <span class="q-mr-xs-xs">{{$t('total')}}</span>
-          <span class="q-mr-xs-xs">{{inventoryStore.inventory.length}}</span>
+          <span class="q-mr-xs-xs">{{inventoryStore.inventory?.items.length}}</span>
           <span class="q-mr-xs-xs">{{ $t('product') }}</span>
-          <span>{{ $t('units', {count: inventoryStore.inventory.length}) }}</span>
+          <span>{{ $t('units', {count: inventoryStore.inventory?.items.length}) }}</span>
         </div>
 
         <div class="text-h3 text-weight-regular row">
           <div class="q-mr-xs-xs">{{$t('estimated_quantity')}}</div>
-          <div class="q-mr-xs-xs">{{inventoryStore.totalQuantity}}</div>
-          <div class="q-mr-xs-xs">{{ $t('pc', {count: inventoryStore.totalQuantity}) }}</div>
+          <div class="q-mr-xs-xs">{{inventoryStore.inventory?.totalStock}}</div>
+          <div class="q-mr-xs-xs">{{ $t('pc', {count: inventoryStore.inventory?.totalStock}) }}</div>
           <q-separator color="secondary" vertical class="q-mr-xs-xs" size="0.2rem" />
           <div class="q-mr-xs-xs">{{$t('actual_quantity')}}</div>
           <div class="q-mr-xs-xs">{{ inventoryStore.totalActualQuant }}</div>

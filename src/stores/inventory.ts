@@ -1,13 +1,14 @@
 import { t } from "i18next";
 import { defineStore } from "pinia";
 import { KioskDocument, SaveableDocument, apiGetDocument, apiGetDocuments, apiSaveDocument, throwErr } from "src/services";
-import { getNextInventoryNumber } from "src/services/documents/counters";
 import { computed, ref } from "vue";
 import { useAppStore } from "./app";
-import { useGoodsStore, type Good } from "./goods";
-import { Notify } from 'quasar';
+import { useGoodsStore } from "./goods";
 import { journalErroneousAction } from "src/services/documents/documents";
 import { showSimpleNotification } from "src/services/dialogs";
+import { settings } from "src/services/terminal";
+import { kioskCorr, userCorr } from "src/services/documents/correspondents";
+import { terminalShift } from "src/services/shifts";
 
 export type InventoryItem = {
   id: string,
@@ -20,44 +21,71 @@ export type InventoryItem = {
 }
 
 export const useInventoryStore = defineStore("inventoryStore", () => {
-  const appStore = useAppStore();
   const goodsStore = useGoodsStore();
 
-  const inventory = ref<InventoryItem[]>([]);
+  const inventory = ref<ReturnType<typeof documentToInventory> | null>(null);
   const inventoryDocument = ref<KioskDocument | null>(null);
   const inventoryLoading = ref(true);
-  const docNum = ref(0);
 
-  // This will be useful when we apply DRI to code and merge document stores
-  const initFullInventoryDoc = async () => {
-    const settings = appStore.kioskState.settings;
-    const kioskCorrId = appStore.kioskState.kioskCorr?.id ?? throwErr("Missing kioskCorr");
+  const inventoryRequestsCurrent = ref<string | undefined>(undefined);
+  const inventoryRequestsLoading = ref(true);
+  const inventoryRequestsDocuments = ref([] as KioskDocument[]);
+  const inventoryRequestsLastUpdate = ref(0);
+
+  const updateInventoryRequests = async () => {
+    inventoryRequestsLoading.value = true;
+    try {
+      if (!settings.value || !kioskCorr.value) {
+        console.error("Settings or kioskCorr are not defined");
+        return;
+      }
+      const documents = await apiGetDocuments(
+        [settings.value.doc_type__inventory_request],
+        [settings.value.inventory_request_state_requested],
+        [kioskCorr.value.id],
+      )
+      documents.sort(
+        (a, b) => (a.doc_date != b.doc_date) ? a.doc_date - b.doc_date : a.doc_order - b.doc_order
+      );
+      inventoryRequestsDocuments.value = documents;
+      inventoryRequestsLastUpdate.value = Date.now();
+    } finally {
+      inventoryRequestsLoading.value = false;
+    }
+  };
+
+
+  const initInventoryDocForGoods = async (goodIds: Set<string>) => {
+    if (!settings.value || !kioskCorr.value || !userCorr.value) {
+      throwErr("Settings or kioskCorr or userCorr are not defined");
+    }
     const doc = {
       id: undefined,
       state: 2,
-      doc_type: settings?.doc_type__inventory ?? "",
+      doc_type: settings.value.doc_type__inventory,
       abbr_text: undefined,
-      abbr_num: getNextInventoryNumber(),
       doc_date: new Date().toISOString(),
       doc_order: 0,
-      corr_from_ref: kioskCorrId,
-      corr_to_ref: kioskCorrId,
-      respperson_ref: appStore.kioskState.userCorr?.id ?? "",
-      currency_ref: settings?.currency_id ?? "",
+      corr_from_ref: kioskCorr.value.id,
+      corr_to_ref: kioskCorr.value.id,
+      respperson_ref: userCorr.value.id,
+      currency_ref: settings.value.currency_id,
       curr_rate: 1,
       comment: undefined,
       details: goodsStore.goods.flatMap(gs =>
-        gs.goods.flatMap((good, index) => good.items.map((item, index2) => ({
-          id: undefined,
-          state: 0,
-          rec_order: index * 100 + index2 + 1,
-          good_id: good.id,
-          munit_id: settings?.munit_id ?? "", // default
-          quant: 1,
-          total: good.price,
-          doc_detail_link: item.mark,
-          doc_detail_type: settings?.docdetail_type__inventory ?? "",
-        })),
+        gs.goods.filter(g => goodIds.has(g.id)).flatMap((good, index) =>
+          good.items.map((item, index2) => ({
+            id: undefined,
+            state: 0,
+            rec_order: index * 100 + index2 + 1,
+            good_id: good.id,
+            munit_id: settings.value?.munit_id ?? "",
+            quant: 1,
+            total: good.price,
+            doc_detail_link: item.mark,
+            doc_detail_type: settings.value?.docdetail_type__inventory ?? "",
+          })
+        ),
       ))
     }
     return doc;
@@ -70,42 +98,72 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     }
 
     doc.state = 0;
-    doc.respperson_ref = appStore.kioskState.userCorr?.id ?? throwErr("Missing userCorr");
+    doc.respperson_ref = userCorr.value?.id ?? throwErr("Missing userCorr");
 
-    doc.details = inventory.value?.flatMap((item, goodIndex) =>
+    doc.details = inventory.value?.items.flatMap((item, goodIndex) =>
       item.scannedItems.map((itemId, index) => ({
         id: undefined,
         state: 0,
         rec_order: goodIndex * 100 + index,
         good_id: item.id,
-        munit_id: appStore.kioskState.settings?.munit_id ?? '',
+        munit_id: settings.value?.munit_id ?? '',
         quant: 1,
         total: item.price,
         doc_detail_link: itemId,
-        doc_detail_type: appStore.kioskState.settings?.docdetail_type__inventory ?? '',
+        doc_detail_type: settings.value?.docdetail_type__inventory ?? '',
       }))) ?? [];
 
-    const documentId = await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id);
+    const documentId = await apiSaveDocument(doc, terminalShift.value?.id);
+
+    const reqDoc = inventoryRequestsCurrent.value ? inventoryRequestsDocuments.value.find(d => d.id == inventoryRequestsCurrent.value) : undefined;
+    if (reqDoc) {
+      reqDoc.state = settings.value?.inventory_request_state_fulfilled ?? throwErr("Missing inventory_request_state_fulfilled");
+      await apiSaveDocument(doc, terminalShift.value?.id);
+    }
+
     return { documentId }
   };
 
-  const updateInventory = async () => {
+  const prepareInventory = async (goodIds: Set<string>) => {
+    const doc = await initInventoryDocForGoods(goodIds);
+    const documentId = await apiSaveDocument(doc, terminalShift.value?.id);
+    inventoryDocument.value = await apiGetDocument(documentId);
+    inventory.value = documentToInventory(inventoryDocument.value, goodsStore);
+    const debugGoodItemIds = inventory.value?.items.flatMap(i => goodsStore.getGoodById(i.id).items.map(item => item.mark));
+    console.log("Inventory expected good individual IDs", debugGoodItemIds);
+    console.log(debugGoodItemIds.map(s => `curl --location 'http://127.0.0.1:3010/api/system/emulate/barcode?code=${s}'`).join('\n'))
+    console.log(debugGoodItemIds.map(s => `https://tdp.high-thai.com/api/system/emulate/barcode?code=${s}`).join('\n'))
+  }
+
+  const prepareFullInventory = async () => {
     inventoryLoading.value = true;
     try {
-      const doc = await initFullInventoryDoc();
-      const documentId = await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id);
-      inventoryDocument.value = await apiGetDocument(documentId);
-      inventory.value = documentToInventory(inventoryDocument.value, goodsStore).items;
-      const debugGoodItemIds = inventory.value?.flatMap(i => goodsStore.getGoodById(i.id).items.map(item => item.mark));
-      console.log("Order expected good individual IDs", debugGoodItemIds);
-      console.log(debugGoodItemIds.map(s => `curl --location 'http://127.0.0.1:3010/api/system/emulate/barcode?code=${s}'`).join('\n'))
+      const allGoodsIds = new Set(goodsStore.goods.flatMap(gc => gc.goods.map(g => g.id)));
+      inventoryRequestsCurrent.value = undefined;
+      await prepareInventory(allGoodsIds);
     } finally {
       inventoryLoading.value = false;
     }
   };
 
+  const prepareRequestedInventory = async () => {
+    inventoryLoading.value = true;
+    try {
+      const cache_ttl = settings.value?.cache__inventories_ttl_ms ?? throwErr('settings not defined');
+      if (Date.now() - inventoryRequestsLastUpdate.value > cache_ttl) {
+        await updateInventoryRequests();
+      }
+      const requestDoc = inventoryRequestsDocuments.value[0] || null;
+      const goodIds = new Set(requestDoc.details.map(d => d.good_id));
+      inventoryRequestsCurrent.value = requestDoc.id;
+      await prepareInventory(goodIds);
+    } finally {
+      inventoryLoading.value = true;
+    }
+  }
+
   const totalActualQuant = computed(() => {
-    return inventory.value?.reduce(
+    return inventory.value?.items.reduce(
       (acc: number, item: any) => acc + item.quant,
       0
     ) ?? 0;
@@ -119,7 +177,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
       showSimpleNotification(t('unknown_good_marking'));
       return;
     }
-    const inventoryItem = inventory.value?.find((i) => i.id == good.id);
+    const inventoryItem = inventory.value?.items.find((i) => i.id == good.id);
     if (!inventoryItem) {
       await journalErroneousAction(docId, { event_type: 'scanned_good_is_not_in_inventory', marking: itemId });
       showSimpleNotification(t('scanned_good_is_not_in_inventory'));
@@ -139,20 +197,21 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     inventory,
     inventoryDocument,
     inventoryLoading,
-    updateInventory,
+    inventoryRequestsDocuments,
+    inventoryRequestsLastUpdate,
+    inventoryRequestsLoading,
+    updateInventoryRequests,
+    prepareFullInventory,
+    prepareRequestedInventory,
     scanInventoryGood,
     submitInventory,
-    totalQuantity: computed(() =>
-      inventory.value.reduce((acc, item) => acc + (item.stock ?? 0), 0)
-    ),
     totalActualQuant,
-    docNum,
-    docNumStr: computed(() => docNum.value?.toString().padStart(4, "0") ?? t("Unknown")),
+    docNumStr: computed(() => inventoryDocument.value?.abbr_num?.toString().padStart(4, "0") ?? t("Unknown")),
   };
 });
 
 function documentToInventory(
-  inv: SaveableDocument,
+  inv: KioskDocument,
   goodsStore: ReturnType<typeof useGoodsStore>
 ) {
   const goodIds = [...new Set(inv.details.map(d => d.good_id as string))]

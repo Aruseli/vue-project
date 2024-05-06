@@ -11,6 +11,7 @@ import Slide from '../carousel/slide.vue';
 import AttentionIcon from '../icons/attention-icon.vue';
 import BinIcon from '../icons/bin-icon.vue';
 import ProductModal from './product-modal.vue';
+import Image from '../image.vue';
 
   const cartStore = useCartStore();
   const app = useAppStore();
@@ -81,10 +82,11 @@ import ProductModal from './product-modal.vue';
 
     <!-- main image -->
     <div class="img_container mb-10 relative-position">
-      <img
+
+      <Image
         :src="props.good?.images[0]?.image"
         :alt="props.good?.title"
-        class="img_style"
+
       />
       <div class="absolute-top-right product_img_angle_top" />
       <div class="absolute-bottom-left product_img_angle_bottom" />
@@ -138,21 +140,22 @@ import ProductModal from './product-modal.vue';
     >
       <template #carousel>
         <Carousel>
-          <div class="relative-position carousel_img">
-            <div class="full-width full-height" />
-            <Slide v-for="(images, index) in props.good.images" :key="index" class="absolute-top-left ">
+          <div class="carousel_img">
+            <Slide
+              v-for="(images, index) in props.good.images"
+              :key="index"
+              class="absolute"
+            >
               <template #slide>
                 <div class="img_container_main">
-                  <img
+                  <Image
                     :src="images.image"
                     class="slide_img"
-                    v-show="currentSlide === index"
+                    v-if="currentSlide === index"
                   />
                 </div>
               </template>
             </Slide>
-            <div class="absolute-top-right img_angle_top" />
-            <div class="absolute-bottom-left img_angle_bottom" />
           </div>
         </Carousel>
       </template>
@@ -163,18 +166,16 @@ import ProductModal from './product-modal.vue';
             :key="index"
             @click="setCurrentSlide(index)"
             class="relative-position"
+            :dot_slide="true"
+            :activeState="currentSlide === index"
           >
             <template #slide>
               <div class="img_container_mini">
-                <img
+                <Image
                   :src="images.image"
                   class="slide_img"
                 />
               </div>
-            </template>
-            <template #angles>
-              <div class="absolute-top-right slide_img_angle_top" />
-              <div class="absolute-bottom-left slide_img_angle_bottom" />
             </template>
           </Slide>
         </div>
@@ -202,6 +203,7 @@ import ProductModal from './product-modal.vue';
   .carousel_img {
     width: 25rem;
     height: 25rem;
+    position: relative;
   }
   .active {
     opacity: 1
@@ -261,10 +263,6 @@ import ProductModal from './product-modal.vue';
     align-self: center;
     aspect-ratio: 1;
     display: flex;
-  }
-  .img_style {
-    border-radius: 0 !important;
-    scale: 0.9;
   }
   .img_container_mini {
     width: 3.75rem;

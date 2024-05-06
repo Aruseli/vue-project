@@ -8,7 +8,7 @@ Services and stores directories are in the middle of refactoring:
   - /documents/
     - documents
     - arrivals
-    - inventories (объединяем с selective-inventory)
+    - inventory
     - orders
   - /local-hardware/
     - barcodes
