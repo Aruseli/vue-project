@@ -129,4 +129,5 @@ export default {
   dismiss: "Dismiss",
   not_available: 'not available',
   set: 'set',
+  cart_item_is_limited_by_stock: 'Cannot add more items than is available',
 };

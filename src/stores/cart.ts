@@ -4,11 +4,14 @@ import { Good, useGoodsStore } from './goods';
 import { useAppStore } from './app';
 import { apiSaveDocument, printOrder } from 'src/services';
 import { QVueGlobals } from 'quasar';
+import { showSimpleNotification } from 'src/services/dialogs';
+import { t } from 'i18next';
 
 export type CartItem = {
   id: string,
   quant: number,
   price: number,
+  stock: number,
 }
 
 export const useCartStore = defineStore('cartStore',
@@ -27,10 +30,14 @@ export const useCartStore = defineStore('cartStore',
 
     const increaseItemsCount = (good: Good | CartItem) => {
       const cartItem = cart.value.find(i => i.id == good.id)
+      if ((cartItem?.quant ?? 0) + 1 > good.stock) {
+        showSimpleNotification(t('cart_item_is_limited_by_stock'));
+        return;
+      }
       if (cartItem) {
         cartItem.quant += 1;
       } else {
-        cart.value.push({ id: good.id, quant: 1, price: good.price})
+        cart.value.push({ id: good.id, quant: 1, price: good.price, stock: good.stock })
       }
     }
 

@@ -107,7 +107,6 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     }
     goodsLoading.value = true
     goodsLoadingWaiter.value = new Deferred()
-    let i = 0;
     while (true) {
       try {
         if (appStore.kioskState.status != 'Ready') {
@@ -120,13 +119,13 @@ export const useGoodsStore = defineStore('goodsStore', () => {
           apiGetGoods(location_id, locale),
           apiGetStockRemains(appStore.kioskState.kioskCorr?.id ?? ''),
         ]);
-        const stockRemainsMap = Object.fromEntries(stockRemains.map(v => [v.good_id, v.items]));
+        const stockRemainsMap = Object.fromEntries(stockRemains.map(v => [v.good_id, v]));
         goods.value = fetchedGoods.map(gc => ({
           ...gc,
           goods: gc.goods.filter(g => !!g).map(g => ({
             ...g,
-            stock: stockRemainsMap[g.id]?.length ?? 0,
-            items: stockRemainsMap[g.id] ?? [],
+            stock: (stockRemainsMap[g.id]?.items?.length ?? 0) - (stockRemainsMap[g.id]?.reserved ?? 0),
+            items: stockRemainsMap[g.id]?.items ?? [],
             images: g.images_ids.map(id => ({
               id,
               image: imagesCache.get(id),
