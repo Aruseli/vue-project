@@ -301,8 +301,8 @@ import moment from 'moment';
         <ModalButton
           :name="$t('complete')"
           unelevated
-          color="black"
-          textColor="white"
+          color="white"
+          textColor="black"
           @click="redirect"
         />
         <ModalButton
