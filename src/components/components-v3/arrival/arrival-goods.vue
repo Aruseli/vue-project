@@ -194,7 +194,7 @@ import { showDialog } from 'src/services/dialogs';
           <div>{{ $t('pc', {count: arrivalsStore.totalQuant}) }}</div>
         </div>
       </div>
-      <div class="full-width buttons_container">
+      <div class="full-width buttons_container px-100">
         <!-- <RectangularButton :name="$t('print')" :color="'secondary'" size="xl" class="q-pr-sm" @click="printGoodsArrival({documentId: arrivalsStore.arrivalDocument?.id ?? '', $q, appStore})" /> -->
         <RectangularButton
           @click="confirmArrival"
