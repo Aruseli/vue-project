@@ -57,6 +57,7 @@
     :text-color="props.textColor"
     v-bind="$attrs"
     @click="emit('click')"
+    :class="[props.disable? 'disable_class' : '']"
   >
     <slot></slot>
     <q-icon flat :color="props.textColor" :size="props.size" :name="props.icon" v-if="!props.customIcon" :class="props.iconStyle"></q-icon>
@@ -66,5 +67,8 @@
 <style scoped>
 .q-icon {
   font-size: 4rem !important;
+}
+.disable_class {
+  filter: brightness(0.5);
 }
 </style>

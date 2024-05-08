@@ -98,7 +98,6 @@ import Image from '../image.vue';
         {{ props.good?.title }}
       </div>
       <div class="row justify-between items-center full-width">
-        <!-- <div class="text-h4" v-if="props.good && props.good.stock <= 0">{{ t('out_of_stock') }}</div> -->
         <div class="text-h4">&#3647&ensp;{{ props.good?.price }}</div>
         <ProductBinButton @click="addGoodToCart(props.good as Good)">
           <BinIcon :quantity="cartStore.totalQuantity" v-if="!goodInCart" width="1rem" height="1rem" class="product_bin" />
@@ -111,19 +110,17 @@ import Image from '../image.vue';
           <OperatorButton
             round
             class="bg-transparent"
-            textColor="text-white"
             :icon="evaMinusOutline"
             @click="decrease(props.good as Good)"
           />
           <div
-          class='text-subtitle1 text-white q-mx-lg-md q-mx-xs-sm q-my-none'
+          class='text-h4 text-white q-mx-lg-md q-mx-xs-sm q-my-none'
           >{{ goodInCart?.quant }}</div>
           <OperatorButton
             round
-            textColor="text-white"
             :icon="evaPlusOutline"
-            @click="increase(props.good as Good)"
-            class="bg-transparent"
+            @click="cartStore.increaseItemsCount(props.good as Good)"
+            :disabled="(goodInCart?.quant ?? 0) >= (goodInCart?.stock ?? 0)"
           />
         </div>
       </transition>

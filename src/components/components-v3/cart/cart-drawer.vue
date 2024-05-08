@@ -116,15 +116,8 @@
                   v-for="(item, index) in cartStore.cartExtended" :key="index"
                   class="cart_product_item_v3 bg-grey-1 row pa-20"
                 >
-
                   <!-- image -->
-                  <div
-                    :class="[app.lang_dir == 'rtl' ? 'ml-40' : 'mr-40']"
-                  >
-                    <!-- <img
-                      :src="item.image"
-                      class="img_style_v3"
-                      /> -->
+                  <div :class="[app.lang_dir == 'rtl' ? 'ml-40' : 'mr-40']">
                     <Image
                       :src="item.image"
                       class="img_style_v3"
@@ -164,14 +157,15 @@
                       <div class="row justify-between items-center">
                         <OperatorButton
                           :icon="evaMinusOutline"
-                          @click="() => cartStore.decreaseItemsCount(item)"
+                          @click="cartStore.decreaseItemsCount(item)"
                         />
                           <div
                             class='text-h2 text-white q-mx-lg-md q-mx-xs-sm q-my-none'
                           >{{ item.quant }}</div>
                         <OperatorButton
                           :icon="evaPlusOutline"
-                          @click="() => cartStore.increaseItemsCount(item)"
+                          @click="cartStore.increaseItemsCount(item)"
+                          :disabled="item.quant >= item.stock"
                         />
                       </div>
                     </div>

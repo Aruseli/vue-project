@@ -149,14 +149,15 @@ const addGoodToCart = (good: Good) => {
             class="operator_button"
             iconStyle="font-size: 1rem !important"
           />
-          <div class="text-h2 no-margin text-grey">{{ goodInCart.quant }}</div>
+          <div class="text-h2 no-margin text-white">{{ goodInCart.quant }}</div>
           <IconButton
             :rounded="false"
             color="white"
             textColor="grey-1"
             :icon="evaPlusOutline"
-            @click="increase(props.good  as Good)"
+            @click="increase(props.good as Good)"
             class="operator_button"
+            :disable="goodInCart.quant >= goodInCart.stock"
           />
         </div>
       </div>
@@ -197,4 +198,5 @@ const addGoodToCart = (good: Good) => {
   .close_button {
     right: var(--px20);
   }
+
 </style>
