@@ -56,15 +56,9 @@ const emit = defineEmits(['click']);
   z-index: 9999;
 }
 
-.teleport-modal-animation-enter-active,
-.teleport-modal-animation-leave-active {
-  transition: all 0.5s cubic-bezier(0.215, 0.610, 0.355, 1);
-}
-
 .teleport-modal-animation-leave-to,
 .teleport-modal-animation-enter-from {
   opacity: 0;
-  transform: scale(1.1);
 }
 
 </style>

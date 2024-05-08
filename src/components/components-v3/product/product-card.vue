@@ -93,7 +93,7 @@ import Image from '../image.vue';
     </div>
 
     <!-- title + price + buttons -->
-    <div class="column no-wrap justify-between items-start relative-position">
+    <div class="column no-wrap justify-between items-start">
       <div class="mb-14 ellipsis text-capitalize text-body1 text-left text-green">
         {{ props.good?.title }}
       </div>
@@ -107,7 +107,7 @@ import Image from '../image.vue';
       </div>
 
       <transition name="slide-fade">
-        <div class="bg-grey-2 row justify-between items-center absolute-top full-height" v-if="goodInCart">
+        <div class="bg-grey-2 row justify-between items-center absolute-bottom-left full-width" v-show="goodInCart">
           <OperatorButton
             round
             class="bg-transparent"
@@ -117,7 +117,7 @@ import Image from '../image.vue';
           />
           <div
           class='text-subtitle1 text-white q-mx-lg-md q-mx-xs-sm q-my-none'
-          >{{ goodInCart.quant }}</div>
+          >{{ goodInCart?.quant }}</div>
           <OperatorButton
             round
             textColor="text-white"

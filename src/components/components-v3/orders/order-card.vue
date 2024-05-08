@@ -3,6 +3,7 @@
   import DialogDelete from './dialog-delete.vue';
   import RectangularButton from '../buttons/rectangular-button.vue';
   import { ref } from 'vue';
+  import Image from '../image.vue';
 
   const props = defineProps({
     good: {
@@ -23,19 +24,11 @@
     :class="'cart_product_item row pa-30 ' + (props.good.issued != props.good.quant ? 'bg-white' : 'bg-green')"
     v-bind="$attrs"
     @click="emit('click')">
-    <div class="col-1 mr-40">
-      <q-img
+    <div class="col-2 mr-40">
+      <Image
         :src="props.good.image"
-        ration="1"
         class="img_style"
-        fit="none"
-      >
-        <template #loading>
-          <div class="text-subtitle1 text-black">
-            Loading...
-          </div>
-        </template>
-      </q-img>
+      />
     </div>
     <div class="column justify-evenly col">
       <div class="row justify-between items-center">
@@ -85,6 +78,7 @@
   .img_style {
     border-radius: var(--border-xxs);
     width:  100%;
-    height: 100%
+    height: 100%;
+    aspect-ratio: 1;
   }
 </style>
