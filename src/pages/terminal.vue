@@ -10,6 +10,7 @@
   import Rectangular from 'src/components/buttons/rectangular-button.vue';
   import TestZone from '../components/components-v3/test-zone.vue';
   import * as usersService from 'src/services/users';
+import Image from 'src/components/components-v3/image.vue';
 
   const $q = useQuasar();
   const appStore = useAppStore();
@@ -102,15 +103,16 @@
         </q-card>
       </div>
 
-      <div v-if="statusIsUnauthenticated" class="full-height row items-center justify-center container">
+      <div v-if="statusIsUnauthenticated" class="full-height column items-center justify-center container">
 
-        <Logo class="logo_column">
+        <Logo class="logo_column" v-show="!appStore.kioskState.settings?.keyboard_login_enabled">
           <LogoSvg fill="#FAFAFA" />
         </Logo>
 
         <q-form
           class="text-text fit"
           @submit.prevent="onSubmitLogin"
+          v-if="!appStore.kioskState.settings?.keyboard_login_enabled"
         >
           <q-input
             v-model="state.userName"
@@ -162,6 +164,11 @@
             <!-- <q-btn label="authorization" unelevated type="submit" color="primary" class="fit" /> -->
           </div>
         </q-form>
+
+        <div v-else class="row items-center justify-center">
+          <Image src="/barcode_scanner-white.svg" />
+          <div class="text-white text-h2">{{ $t('scan_badge') }}</div>
+        </div>
         <!-- <TestZone class="mt-90" /> -->
       </div>
     </div>
@@ -177,6 +184,14 @@
 }
 .auth_button_style {
   height: clamp(2rem, 0.4167rem + 5.4167vi, 8.5rem);
-  /* font-size: clamp(1.5rem, 0.4167rem + 5.4167vi, 8rem); */
+}
+.barcodeEnable_logo_position {
+  position: absolute;
+  top: 4rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.barcodeEnable_logo {
+  width: 5rem !important;
 }
 </style>

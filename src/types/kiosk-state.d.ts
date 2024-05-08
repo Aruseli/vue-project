@@ -73,6 +73,8 @@ export type Settings = {
 
   alt_ui: 'design_v1' | 'design_v2' | 'design_v3' | string,
 
+  keyboard_login_enabled: boolean,
+
   payment_type_id_cash: string,
   payment_type_id_card: string,
 
