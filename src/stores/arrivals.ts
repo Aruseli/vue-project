@@ -79,6 +79,7 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
         d.total = item.price * d.quant;
       });
     await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '');
+    return { success: true, documentId: doc.id };
   };
 
   const totalQuant = computed(() => {

@@ -113,8 +113,8 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
 
 <template>
   <div class="main_container full-height full-width">
-    <div class="column justify-center relative-position mb-20 px-40 pt-40">
-      <BackButton @click="router.push('/employee-actions')" class="absolute-top-left" />
+    <div class="column justify-center relative-position mb-20 px-40 pt-60">
+      <BackButton @click="router.push('/employee-actions')" class="back_button_class" />
       <div class="text-h2 text-uppercase text-center mb-100">
         {{ $t('selective_inventory') }}
       </div>

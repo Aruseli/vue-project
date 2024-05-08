@@ -64,8 +64,8 @@ import OrderCard from './order-card.vue';
 
 <template>
   <div class="main_container full-height">
-    <div class="row justify-center relative-position q-mb-xl px-40 pt-40">
-      <BackButton @click="router.push('/issuing-order')" class="absolute-top-left" />
+    <div class="row justify-center relative-position q-mb-xl px-40 pt-60">
+      <BackButton @click="router.push('/issuing-order')" class="back_button_class" />
       <div
         class="text-h2 text-uppercase text-center"
       >{{ $t('order') }}&ensp;№{{ ordersStore.currentOrder?.orderNumStr }}</div>

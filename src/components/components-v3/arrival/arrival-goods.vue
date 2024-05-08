@@ -2,18 +2,20 @@
   import i18next, { t } from 'i18next';
 import moment from 'moment';
 import { useQuasar } from 'quasar';
-import { printGoodsArrival } from 'src/services';
+import { printGoodsArrival, printInventory } from 'src/services';
 import { useAppStore } from 'src/stores/app';
 import { useArrivalsStore } from 'src/stores/arrivals';
 import { useGoodsStore } from 'src/stores/goods';
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import DividerBold from '../../dividers/divider-bold.vue';
 import BackButton from '../buttons/back-button.vue';
 import RectangularButton from '../buttons/rectangular-button.vue';
 import ArrivalItem from './arrival-item.vue';
+import { showDialog } from 'src/services/dialogs';
 
-const goodsStore = useGoodsStore();
+  const goodsStore = useGoodsStore();
+  const documentId = ref<string | undefined>(undefined);
 
   const $q = useQuasar();
 
@@ -26,8 +28,50 @@ const goodsStore = useGoodsStore();
     return arrivalsStore.arrival?.items?.every(i => i.issued == i.quant)
   });
 
+  async function handlePrintConfirmation(printConfirmed: boolean) {
+    $q.loading.show();
+    try {
+      if (printConfirmed) {
+        if (documentId.value !== undefined) {
+          await printInventory({ documentId: documentId.value, $q, appStore: appStore });
+        } else {
+          // Handle the case where documentId.value is undefined
+          console.error("documentId is undefined");
+        }
+      }
+    } catch (error) {
+      console.error("inventoryStore.submitInventory print error:", error);
+      $q.notify({
+        color: "warning",
+        icon: "warning",
+        position: "center",
+        message: t("unable_to_print_submit_inventory"),
+        timeout: 6000,
+      });
+    } finally {
+      $q.loading.hide();
+      router.push("/employee-actions");
+      // TODO возможно стоит добавить диалоговое окно, перед редиректом, с информацией что товар добавлен
+    }
+  }
+
   const confirmArrival = async () => {
-    await arrivalsStore.confirmArrivalGoodsIssue()
+    const result = await arrivalsStore.confirmArrivalGoodsIssue();
+    if (result) {
+      const { documentId: docId } = result;
+      if (docId) {
+        documentId.value = docId;
+        // await showPrintConfirmationDialog();
+        showDialog({
+          text: t("print_inventory_results"),
+          buttons: [{
+            name: "not_print", type: "equal", handler: async () => handlePrintConfirmation(false)
+          }, {
+            name: "print", type: "equal", handler: async () => handlePrintConfirmation(true)
+          }],
+        })
+      }
+    }
     router.push('/employee-actions');
     // TODO возможно стоит добавить диалоговое окно, перед редиректом, с информацией что товар добавлен
   }
@@ -58,12 +102,30 @@ const goodsStore = useGoodsStore();
     appStore.colorMode = 'light';
   })
 
+  const reset = (id: string) => {
+    const item = arrivalsStore.arrival?.items.find((i) => i.id === id);
+    if(item?.id == id) {
+      showDialog({
+        text: `${t('are_you_sure_you_want_to_rescan_the_product')} ${item.title}`,
+        buttons: [{
+          name: "no", type: "common", handler: async () => {
+            console.log("close");
+          },
+        }, {
+          name: "yes", type: "primary", handler: async () => {
+            item.quant = 0;
+          },
+        }],
+      })
+    }
+  }
+
 </script>
 
 <template>
   <div class="main_container full-height full-width">
-    <div class="column justify-center relative-position q-mb-xl px-40 pt-40">
-      <BackButton @click="router.push('/employee-actions')" class="absolute-top-left" />
+    <div class="column justify-center relative-position q-mb-xl px-40 pt-60">
+      <BackButton @click="router.push('/employee-actions')" class="back_button_class" />
       <div class="text-h2 text-uppercase text-center mb-100">
         {{ $t('arrival_goods') }}
       </div>
@@ -81,43 +143,39 @@ const goodsStore = useGoodsStore();
     </div>
 
     <!-- header -->
-    <div class="full-width px-40 justify-between header_class items-center">
+    <div class="full-width px-40 py-10 justify-between header_class items-center">
       <div class="text-h4 text-weight-bold text-center">
         <div>
           #
         </div>
       </div>
-      <div class="text-h4 text-weight-bold">
+      <div class="text-h4 text-weight-bold first_letter">
           {{ $t('product_name') }}
       </div>
       <div class="text-h4 text-weight-bold column">
-        <span>{{ $t('estimated_quantity') }}</span>
+        <span class="first_letter">{{ $t('estimated_quantity') }}</span>
         <span>({{$t('pcs')}})</span>
       </div>
       <div class="text-h4 text-weight-bold column">
-        <span>{{ $t('actual_quantity') }}</span>
+        <span class="first_letter">{{ $t('actual_quantity') }}</span>
         <span>({{$t('pcs')}})</span>
-      </div>
-      <div class="text-h4 text-weight-bold opacity_header">
-        buttons
       </div>
     </div>
 
-    <div class="scroll_area px-40">
+    <div class="scroll_area_block pa-20">
       <div class="arrivals_container">
         <ArrivalItem v-for="(arrival, index) in arrivalsStore.arrival?.items"
           :key="arrival.id"
-          :good="arrival"
-          :number="index + 1"
-          :not_equal="arrival.issued !== arrival.quant"
-          :class="{ 'highlighted': arrival.confirmed }"
-          @itemConfirm="arrival.confirmed = !arrival.confirmed"
-          @resetActualQuantity="arrival.issued = 0"
+          :good_title="arrival.title"
+          :good_stock="arrival.issued"
+          :good_quant="arrival.quant"
+          :good_number="index + 1"
+          @resetActualQuantity="reset(arrival.id)"
         />
       </div>
     </div>
-    <DividerBold class="mb-40" />
-    <div class="column pa-40">
+    <DividerBold class="mb-14" />
+    <div class="column px-40 pb-40">
       <div class="row justify-between items-center mb-40">
         <div class="text-h3 row">
           <span class="mr-16">{{$t('total')}}</span>
@@ -126,7 +184,7 @@ const goodsStore = useGoodsStore();
           <span>{{ $t('units', {count: arrivalsStore.arrival?.items.length}) }}</span>
         </div>
 
-        <div class="text-h3 text-weight-regular row">
+        <div class="text-h4 text-weight-regular row">
           <div class="mr-16">{{$t('estimated_quantity')}}</div>
           <div class="mr-16">{{arrivalsStore.arrival?.totalCount}}</div>
           <div class="mr-16">{{ $t('pc', {count: arrivalsStore.arrival?.totalCount}) }}</div>
@@ -137,7 +195,12 @@ const goodsStore = useGoodsStore();
         </div>
       </div>
       <div class="full-width buttons_container">
-        <RectangularButton :name="$t('print')" :color="'secondary'" size="xl" class="q-pr-sm" @click="printGoodsArrival({documentId: arrivalsStore.arrivalDocument?.id ?? '', $q, appStore})" />
+        <!-- <RectangularButton :name="$t('print')" :color="'secondary'" size="xl" class="q-pr-sm" @click="printGoodsArrival({documentId: arrivalsStore.arrivalDocument?.id ?? '', $q, appStore})" /> -->
+        <RectangularButton
+          @click="confirmArrival"
+          color="warning"
+          :name="$t('declare_discrepancy')"
+        />
         <RectangularButton
           :name="$t('confirm')"
           class="fit button_style_confirm"
@@ -154,13 +217,17 @@ const goodsStore = useGoodsStore();
   display: grid;
   grid-template-rows: repeat(2, max-content) 1fr max-content 0.1fr;
 }
+.scroll_area_block {
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
 .opacity_header {
   opacity: 0;
 }
 .header_class {
   display: grid;
-  grid-template-columns: 15fr 50fr 25fr 25fr 15fr;
-  column-gap: 3rem;
+  grid-template-columns: 15fr 77fr 58fr 52fr 5fr;
+  column-gap: 2rem;
   border-bottom: 3px solid black;
   border-top: 3px solid black;
 }
@@ -170,7 +237,7 @@ const goodsStore = useGoodsStore();
 
 .buttons_container {
   display: grid;
-  grid-template-columns: 0.3fr 1fr;
+  grid-template-columns: 1fr 1fr;
   column-gap: var(--px60);
 }
 

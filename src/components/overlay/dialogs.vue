@@ -28,7 +28,7 @@ const clickBackground = async () => {
           role="dialog"
           aria-modal="true"
         >
-          <div class="text-h3 text-center pa-60 text_container first_letter">
+          <div class="text-h3 text-center pa-60 text_container first_letter line_height">
             {{ dialog.text }}
           </div>
           <q-img v-if="dialog.icon" :src="dialog.icon" />

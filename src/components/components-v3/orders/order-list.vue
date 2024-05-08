@@ -45,8 +45,8 @@ import moment from 'moment';
 
 <template>
   <div class="main_container full-height">
-    <div class="row justify-center relative-position px-40 pt-40 mb-50">
-      <BackButton @click="router.push('/employee-actions')" class="absolute-top-left" />
+    <div class="row justify-center relative-position px-40 pt-60 mb-50">
+      <BackButton @click="router.push('/employee-actions')" class="back_button_class" />
       <div
         class="text-h2 text-uppercase text-center"
       >{{ $t('open_orders') }}</div>

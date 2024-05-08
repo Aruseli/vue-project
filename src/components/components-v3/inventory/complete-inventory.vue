@@ -164,8 +164,8 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
         :class="[app.kioskState.settings?.tdp ? 'ping_tdp_light' : 'ping_tdp_light_not__signal' ,'bg-green']"
       />
     </div>
-    <div class="column justify-center relative-position mb-20 px-40 pt-40">
-      <BackButton @click="router.push('/employee-actions')" class="absolute-top-left" />
+    <div class="column justify-center relative-position mb-20 px-40 pt-60">
+      <BackButton @click="router.push('/employee-actions')" class="back_button_class" />
       <div class="text-h2 text-uppercase text-center mb-100">
         {{ $t('complete_inventory') }}
       </div>
@@ -192,7 +192,6 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
           :good_stock="good.stock ?? 0"
           :good_number="index + 1"
           :class="{ 'highlighted': good.confirmed }"
-          @itemConfirm="good.confirmed = !good.confirmed"
           @resetActualQuantity="reset(good.id)"
         />
       </InventoryTable>

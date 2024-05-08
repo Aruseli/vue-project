@@ -128,6 +128,10 @@ $paddings: (
 @mixin paddingB($size) {
   padding-bottom: $size;
 }
+@mixin paddingY($size) {
+  padding-top: $size;
+  padding-bottom: $size;
+}
 
 @each $name, $size in $paddings {
   .px-#{$name} {
@@ -141,6 +145,9 @@ $paddings: (
   }
   .pb-#{$name} {
     @include paddingB($size);
+  }
+  .py-#{$name} {
+    @include paddingY($size);
   }
 
   // @media (max-width: 80rem) {
@@ -616,4 +623,10 @@ padding: 0;
 .slide-fade-enter-from {
   opacity: 0;
   transform: translateY(100%);
+}
+
+.back_button_class {
+  position: absolute;
+  top: 1rem;
+  left: 0.5rem;
 }
