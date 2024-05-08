@@ -28,6 +28,8 @@ export type Settings = {
   docoperation_type__erroneous_action: string,
   inventory_request_state_requested: number,
   inventory_request_state_fulfilled: number,
+  arrival_request_state_requested: number,
+  arrival_request_state_fulfilled: number,
 
   rights__kiosk_open_shift: string,
   rights__kiosk_close_own_shift: string,

@@ -30,6 +30,8 @@ export default {
     "docdetail_type__invoice": "f15e302a-b60e-4a7d-bbba-64d29548355c",
     "inventory_request_state_requested": 0,
     "inventory_request_state_fulfilled": 6,
+    "arrival_request_state_requested": 0,
+    "arrival_request_state_fulfilled": 6,
 
     "docoperation_type__erroneous_action": "850180e3-837f-436f-8d92-2a6ff4a8de97",
 

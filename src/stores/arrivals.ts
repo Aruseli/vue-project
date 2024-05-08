@@ -1,13 +1,15 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import { useAppStore } from "./app";
-import { KioskDocument, apiGetDocuments, apiSaveDocument, throwErr } from "src/services";
+import { KioskDocument, SaveableDocument, apiGetDocuments, apiSaveDocument, throwErr } from "src/services";
 import { useGoodsStore, type Good } from "./goods";
 import { t } from "i18next";
 import { Notify } from 'quasar';
 import { journalErroneousAction } from "src/services/documents/documents";
 import { showSimpleNotification } from "src/services/dialogs";
 import { settings } from "src/services/terminal";
+import { userCorr } from "src/services/documents/correspondents";
+import { terminalShift } from "src/services/shifts";
 
 export const useArrivalsStore = defineStore("arrivalsStore", () => {
   const appStore = useAppStore();
@@ -21,6 +23,11 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
   const arrival = ref<ReturnType<typeof documentGoodsArrival> | null>(null);
   const arrivalDocument = ref<KioskDocument | null>(null);
   const arrivalGoodsLoading = ref(true);
+
+  const arrivalRequestsCurrent = ref<string | undefined>(undefined);
+  const arrivalRequestsLoading = ref(true);
+  const arrivalRequestsDocuments = ref([] as KioskDocument[]);
+  const arrivalRequestsLastUpdate = ref(0);
 
   const updateArrivals = async () => {
     arrivalsLoading.value = true;
@@ -64,22 +71,34 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
   };
 
   const confirmArrivalGoodsIssue = async () => {
-    const doc = arrivalDocument.value;
+    const doc: SaveableDocument | null = arrivalDocument.value;
     if (!doc) {
       return;
     }
     doc.state = 0;
-    doc.respperson_ref = appStore.kioskState.userCorr?.id;
-    doc.details.filter(d => d.doc_detail_type == settings.value?.docdetail_type__goods_arrival_incoming)
-      .forEach((d) => {
-        const item = arrival.value?.items.find((i) => i.id == d.good_id);
-        if (!item || d.quant != 1 || item.issued != item.quant || !item.itemsToScan.includes(d.doc_detail_link)) {
-          throw new Error(`Wrong state of arrival to issue.`);
-        }
-        d.total = item.price * d.quant;
-      });
-    await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '');
-    return { success: true, documentId: doc.id };
+    doc.respperson_ref = userCorr.value?.id ?? throwErr("Missing userCorr");
+
+    doc.details = arrival.value?.items.flatMap((item, goodIndex) =>
+      item.scannedItems.map((itemId, index) => ({
+        id: undefined,
+        state: 0,
+        rec_order: goodIndex * 100 + index,
+        good_id: item.id,
+        munit_id: settings.value?.munit_id ?? '',
+        quant: 1,
+        total: item.price,
+        doc_detail_link: itemId,
+        doc_detail_type: settings.value?.docdetail_type__inventory ?? '',
+      }))) ?? [];
+
+    const documentId = await apiSaveDocument(doc, terminalShift.value?.id);
+
+    const reqDoc = arrivalRequestsCurrent.value ? arrivalRequestsDocuments.value.find(d => d.id == arrivalRequestsCurrent.value) : undefined;
+    if (reqDoc) {
+      reqDoc.state = settings.value?.arrival_request_state_fulfilled ?? throwErr("Missing arrival_request_state_fulfilled");
+      await apiSaveDocument(doc, terminalShift.value?.id);
+    }
+    return { documentId: doc.id };
   };
 
   const totalQuant = computed(() => {
@@ -163,6 +182,7 @@ function documentGoodsArrival(ad: KioskDocument, goodsStore: ReturnType<typeof u
         issued: 0,
         issuedItems: [] as string[],
         confirmed: false,
+        scannedItems: [] as string[],
       };
     })
   };

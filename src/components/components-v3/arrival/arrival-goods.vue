@@ -33,7 +33,7 @@ import { showDialog } from 'src/services/dialogs';
     try {
       if (printConfirmed) {
         if (documentId.value !== undefined) {
-          await printInventory({ documentId: documentId.value, $q, appStore: appStore });
+          await printGoodsArrival({documentId: arrivalsStore.arrivalDocument?.id ?? '', $q, appStore})
         } else {
           // Handle the case where documentId.value is undefined
           console.error("documentId is undefined");
@@ -56,13 +56,12 @@ import { showDialog } from 'src/services/dialogs';
   }
 
   const confirmArrival = async () => {
-    const result = await arrivalsStore.confirmArrivalGoodsIssue();
+   const result =  await arrivalsStore.confirmArrivalGoodsIssue();
     if (result) {
       const { documentId: docId } = result;
       if (docId) {
         documentId.value = docId;
-        // await showPrintConfirmationDialog();
-        showDialog({
+        await showDialog({
           text: t("print_inventory_results"),
           buttons: [{
             name: "not_print", type: "equal", handler: async () => handlePrintConfirmation(false)
@@ -70,9 +69,10 @@ import { showDialog } from 'src/services/dialogs';
             name: "print", type: "equal", handler: async () => handlePrintConfirmation(true)
           }],
         })
+
       }
     }
-    router.push('/employee-actions');
+    // router.push('/employee-actions');
     // TODO возможно стоит добавить диалоговое окно, перед редиректом, с информацией что товар добавлен
   }
 
@@ -205,7 +205,6 @@ import { showDialog } from 'src/services/dialogs';
           :name="$t('confirm')"
           class="fit button_style_confirm"
           @click="confirmArrival"
-          :disable="!allowConfirm"
         />
       </div>
     </div>
