@@ -24,11 +24,11 @@
       class="cart_close_button absolute-top-right"
       @click="emit('click')"
     />
-    <div class="text-h2 text-white text-uppercase text-center pt-140 px-200 mb-200">
+    <div class="text-h2 text-white text-uppercase text-center pt-100 px-140 mb-200 line_height">
       {{$t('order_was_successfully_confirmed')}}
     </div>
     <div class="items-center column">
-      <div class="text-green text-h1 text-center first_letter px-140 mb-100 contact_style">
+      <div class="text-green text-h1 text-center first_letter px-40 mb-100 contact_style line_height_1_3">
         {{$t('contact_seller_for_further_information')}}
       </div>
       <LogoSvg
@@ -37,21 +37,22 @@
         height="15em"
         class="mb-100"
       />
-      <div class="text-h2 text-center text-uppercase text-white">
+      <div class="text-h2 text-center text-uppercase text-white mb-120">
         {{$t('thank_you')}}
       </div>
     </div>
     <div class="full-width q-pa-xl">
       <ol class=" text-white full-width">
-        <li class="text-h4 text-weight-light text-white" v-for="item in cartStore.cartExtended" :key="item.id">
+        <li class="text-h4 text-weight-light text-white pb-10" v-for="item in cartStore.cartExtended" :key="item.id">
           <div class="ordered_product">
             <div>{{ item.title }}</div>
             <div class="dotted_border" />
             <div>
-              <span>{{ item.quant }}</span>
-              <span>{{ $t('pc', { count: item.quant }) }}</span> &#8260;
-              <span>{{ item.price * item.quant }}&ensp;&#3647</span>
+              <span>{{ item.quant }}</span>&ensp;
+              <span>{{ $t('pc', { count: item.quant }) }}</span>
             </div>
+            <div class="dotted_border" />
+            <div>{{ item.price * item.quant }}&ensp;&#3647</div>
           </div>
         </li>
       </ol>
@@ -62,9 +63,7 @@
       <div class="column q-px-xl full-width">
         <div class="text-h2 text-uppercase">{{ $t('total') }}</div>
         <div class="text-white row justify-between full-width">
-          <div
-            class="text-h3 row text-weight-regular q-gutter-x-sm text-white items-center"
-          >
+          <div class="text-h3 row text-weight-regular q-gutter-x-sm text-white items-center">
             <span>{{ $t('order') }}</span>
             <span>{{ cartStore.totalQuantity }}</span>
             <span>{{ $t('pieces', { count: cartStore.totalQuantity }) }}</span>
@@ -97,7 +96,7 @@
 
   .ordered_product {
     display: grid;
-    grid-template-columns: max-content 1fr max-content;
+    grid-template-columns: max-content 1fr max-content 1fr max-content;
   }
 
   .dotted_border {
