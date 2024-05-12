@@ -48,7 +48,7 @@
         closeDrawerCart();
         cartStore.clearCart();
         router.push('hello');
-      }, 100000);
+      }, app.kioskState.settings?.customer_successful_order_notify_duration_ms ?? 7000);
     } catch (err) {
       console.error('ordersStore.selectOrder error:', err)
       $q.notify({
