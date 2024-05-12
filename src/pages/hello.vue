@@ -60,7 +60,7 @@
             <q-icon v-show="show" color="white" name="img:/cta.svg" class="handIconStyle" />
           </transition>
           <transition name="text-fade">
-            <div v-show="show" class="text-white text-h1 text-uppercase title_styles">{{ $t('find_your_experience') }}</div>
+            <div v-show="show" class="text-white text-h1 text-uppercase title_styles line_height_1_3">{{ $t('find_your_experience') }}</div>
           </transition>
         </div>
       </div>

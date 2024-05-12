@@ -45,7 +45,7 @@
         class="additional_lang_container_styles"
       />
     </div>
-    <div class="text-white text-h1 text-uppercase text-weight-bold text-center title_styles mb-120 line_height">{{ $t('find_your_experience') }}</div>
+    <div class="text-white text-h1 text-uppercase text-weight-bold text-center title_styles mb-120 line_height_1_3">{{ $t('find_your_experience') }}</div>
   </q-page>
 </template>
 
