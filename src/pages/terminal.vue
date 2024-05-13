@@ -11,6 +11,7 @@
   import TestZone from '../components/components-v3/test-zone.vue';
   import * as usersService from 'src/services/users';
 import Image from 'src/components/components-v3/image.vue';
+import LogoCube from 'src/components/logo/logo-cube.vue';
 
   const $q = useQuasar();
   const appStore = useAppStore();
@@ -108,6 +109,7 @@ import Image from 'src/components/components-v3/image.vue';
         <Logo class="logo_column" v-show="!appStore.kioskState.settings?.keyboard_login_enabled">
           <LogoSvg fill="#FAFAFA" />
         </Logo>
+        <LogoCube v-show="appStore.kioskState.settings?.keyboard_login_enabled" />
 
         <q-form
           class="text-text fit"
