@@ -148,7 +148,7 @@ import Image from '../image.vue';
                   <Image
                     :src="images.image"
                     class="slide_img"
-                    v-if="currentSlide === index"
+                    v-show="currentSlide === index"
                   />
                 </div>
               </template>
