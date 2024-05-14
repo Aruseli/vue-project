@@ -53,6 +53,30 @@
       ) {
         await inventoryStore.scanInventoryGood(uuids[0]);
       }
+
+      // DocumentBarcode
+      if (appStore.orderIssueIsAllowed && route.path == '/employee-actions') {
+        await ordersStore.updateOrders()
+        // if (process.env.DEV) {
+        console.log('Order ids', ordersStore.ordersDocuments.map(d => d.id));
+        // }
+        ordersStore.ordersDocuments.forEach(d => {
+          if (d.id == uuids[0]) {
+            router.push(`/issuing-order/order/${d.id}`)
+          }
+        });
+      }
+      if (appStore.arrivalsAreAllowed && route.path == '/employee-actions') {
+        await arrivalsStore.updateArrivals();
+        // if (process.env.DEV) {
+        console.log('Arrival ids', arrivalsStore.arrivalsDocuments.map(d => d.id));
+        // }
+        arrivalsStore.arrivalsDocuments.forEach(d => {
+          if (d.id == uuids[0]) {
+            router.push(`/arrival-goods/${d.id}`)
+          }
+        });
+      }
     }
     if (evt.cmd == 'barcode' && evt.data.length == 13) {
       const barcode = parseBarcode(evt.data)
