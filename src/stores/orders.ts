@@ -1,11 +1,12 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useAppStore } from "./app";
-import { Check, KioskDocument, SaveableDocument, apiGetDocuments, apiSaveDocument, apiSaveOperation, apiUpsertCheck, throwErr } from "src/services";
+import { Check, KioskDocument, SaveableDocument, apiGetDocument, apiGetDocuments, apiSaveDocument, apiSaveOperation, apiUpsertCheck, throwErr } from "src/services";
 import { useGoodsStore } from "./goods";
 import { t } from "i18next";
 import { showSimpleNotification } from "src/services/dialogs";
 import { journalErroneousAction } from "src/services/documents/documents";
+import { terminalShift } from "src/services/shifts";
 
 export type Order = {
   id: string,
@@ -142,6 +143,9 @@ export const useOrdersStore = defineStore("orders", () => {
       default:
         throw new Error(`Wrong state of order to issue: payment_type_id`);
     }
+    await apiSaveDocument(doc, terminalShift.value?.id ?? '');
+
+    const updatedDoc = await apiGetDocument(doc.id); // need to fill up detatils ids for check content
     const check: Check = {
       ext_source: appStore.kioskState.settings!.check_ext_source,
       ext_id: doc.id,
@@ -151,7 +155,7 @@ export const useOrdersStore = defineStore("orders", () => {
       check_type: 'sale',
       total: totalPrice,
       state: 0,
-      content: docDetailsToCheckContent({ doc }),
+      content: docDetailsToCheckContent({ doc: updatedDoc }),
       payments: [
         {
           amount: totalPrice,
@@ -163,8 +167,6 @@ export const useOrdersStore = defineStore("orders", () => {
         }
       ],
     };
-
-    await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '');
     await apiUpsertCheck(check);
   };
 
