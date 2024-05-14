@@ -34,7 +34,12 @@ const props = defineProps({
 </script>
 
 <template>
-  <Modal :isOpen="props.modelValue" to="#redirect-dialog">
+  <Modal
+    :isOpen="props.modelValue"
+    to="#redirect-dialog"
+    bgModalStyle="z-index: 9999"
+    contentBlockStyle="z-index: 99999"
+  >
     <div
       class="dialog_style overflow-hidden"
       role="dialog"
@@ -56,13 +61,15 @@ const props = defineProps({
 </template>
 
 <style scoped>
+.bg_modal_class {
+  z-index: 9999;
+}
 .dialog_style {
   border-radius: var(--border-xxs);
   width: 48rem;
   min-height: 22rem;
   display: grid;
   grid-template-rows: 1fr repeat(2, max-content);
-  /* grid-template-rows: 1fr max-content; */
   align-items: center;
 }
 

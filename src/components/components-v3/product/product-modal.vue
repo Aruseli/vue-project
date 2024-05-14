@@ -33,12 +33,11 @@
     }
   })
 
-
   const goodInCart = computed(() => cartStore.cart.find((item) => item.id === props.good.id))
 
-const addGoodToCart = (good: Good) => {
-  cartStore.increaseItemsCount(good);
-};
+  const addGoodToCart = (good: Good) => {
+    cartStore.increaseItemsCount(good);
+  };
 
   const decrease = (good: Good) => {
     cartStore.decreaseItemsCount(good);
@@ -48,6 +47,7 @@ const addGoodToCart = (good: Good) => {
     cartStore.increaseItemsCount(good);
   }
   const emit = defineEmits(['click']);
+  const description = props.good.description.replace(/\n/g, '<br/>');
 </script>
 
 <template>
@@ -117,7 +117,7 @@ const addGoodToCart = (good: Good) => {
         <div class="text-grey text-h3 mb-20">
           {{ $t('description') }}
         </div>
-        <div class="text-h4 text-white text-weight-regular line_height content_description" v-html="props.good.description"/>
+        <div class="text-h4 text-white text-weight-regular line_height content_description" v-html="description"/>
       </div>
 
       <!-- add to cart -->
@@ -178,7 +178,7 @@ const addGoodToCart = (good: Good) => {
     overflow-y: scroll;
     overflow-x: hidden;
     scrollbar-width: thin;
-    scrollbar-color: transparent transparent;
+    scrollbar-color: #5d5d5d transparent;
   }
   .add_button {
     height: 80px;

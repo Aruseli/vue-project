@@ -10,6 +10,12 @@ const props = defineProps({
     required: false,
     default: "#modal"
   },
+  bgModalStyle: {
+    type: String,
+  },
+  contentBlockStyle: {
+    type: String,
+  }
 })
 
 const emit = defineEmits(['click']);
@@ -25,10 +31,11 @@ const emit = defineEmits(['click']);
           role="dialog"
           aria-modal="true"
           v-bind="$attrs"
+          :style="props.contentBlockStyle"
         >
           <slot></slot>
         </div>
-        <div class="modal_bg" @click="emit('click')">
+        <div class="modal_bg" @click="emit('click')" :style="props.bgModalStyle">
         </div>
       </div>
     </transition>
