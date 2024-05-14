@@ -47,7 +47,6 @@
     cartStore.increaseItemsCount(good);
   }
   const emit = defineEmits(['click']);
-  const description = props.good.description.replace(/\n/g, '<br/>');
 </script>
 
 <template>
@@ -117,7 +116,7 @@
         <div class="text-grey text-h3 mb-20">
           {{ $t('description') }}
         </div>
-        <div class="text-h4 text-white text-weight-regular line_height content_description" v-html="description"/>
+        <div class="text-h4 text-white text-weight-regular line_height content_description" v-html="props.good.description"/>
       </div>
 
       <!-- add to cart -->
