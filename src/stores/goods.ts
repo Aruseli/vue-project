@@ -124,7 +124,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
           ...gc,
           goods: gc.goods.filter(g => !!g).map(g => ({
             ...g,
-            description: g.description.replace(/\n/g, '<br/>'),
+            description: g.description?.replace(/\n/g, '<br/>'),
             stock: (stockRemainsMap[g.id]?.items?.length ?? 0) - (stockRemainsMap[g.id]?.reserved ?? 0),
             items: stockRemainsMap[g.id]?.items ?? [],
             images: g.images_ids.map(id => ({
