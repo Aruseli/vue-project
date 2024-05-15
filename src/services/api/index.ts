@@ -64,6 +64,19 @@ export async function apiAddAnyTerminal(name: string, code: string, type_id: str
   return response.data;
 }
 
+export async function apiHealthCheck(timeout: number): Promise<boolean> {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+    const response = await fetch('/appinfo', { signal: controller.signal });
+    clearTimeout(timeoutId);
+    return response.status === 200;
+  }
+  catch (error) {
+    return false;
+  }
+}
+
 // Note: There is also /api/v2/auth/openSession
 export async function apiAuth(userName: string, userPassword: string) {
   const response = await fetchApi<{ token: string }>('/auth/login.json', { userName, userPassword })
