@@ -28,7 +28,7 @@
 </script>
 
 <template>
-  <div class="order_item column justify-between bg-white pa-20 mb-40" v-bind="$attrs" @click="emit('click')">
+  <div class="order_item column justify-between bg-white pa-20 mb-20" v-bind="$attrs" @click="emit('click')">
     <div class="row justify-between items-center mb-10">
       <div class="text-h3">
         № {{ props.order.orderNumStr }}

@@ -21,7 +21,7 @@
 
 <template>
   <div
-    :class="'cart_product_item row pa-10 ' + (props.good.issued != props.good.quant ? 'bg-white' : 'bg-green')"
+    :class="'cart_product_item row pa-10 mb-20 ' + (props.good.issued != props.good.quant ? 'bg-white' : 'bg-green')"
     v-bind="$attrs"
     @click="emit('click')">
     <div class="row">

@@ -11,6 +11,8 @@ import DividerBold from '../../dividers/divider-bold.vue';
 import DividerThin from '../../dividers/divider-thin.vue';
 import BackButton from '../buttons/back-button.vue';
 import OrderCard from './order-card.vue';
+import Bin from './bin.vue';
+import DialogDelete from './dialog-delete.vue';
 
   const $q = useQuasar();
   const appStore = useAppStore();
@@ -27,8 +29,6 @@ import OrderCard from './order-card.vue';
     await printCheck({documentId: doc.id, $q, appStore})
     router.push('/issued-order');
   }
-
-  const allowClickScan = ref(process.env.DEV);
 
   const allowConfirm = computed(() => {
     return ordersStore.currentOrder?.items?.every(i => i.issued == i.quant)
@@ -60,15 +60,24 @@ import OrderCard from './order-card.vue';
     await ordersStore.deleteGoodInCurrentOrder(id);
   }
 
+  const openDialog = ref(false);
+  const open = () => {
+    openDialog.value = true;
+  }
+  const deleteOrder = async (id: string) => {
+    await ordersStore.deleteOrder(id);
+    router.go(-1);
+  }
 </script>
 
 <template>
   <div class="main_container full-height">
     <div class="row justify-center relative-position q-mb-xl px-40 pt-60">
       <BackButton @click="router.push('/issuing-order')" class="back_button_class" />
-      <div
-        class="text-h2 text-uppercase text-center"
-      >{{ $t('order') }}&ensp;№{{ ordersStore.currentOrder?.orderNumStr }}</div>
+      <div class="text-h2 text-uppercase text-center mr-20">
+        {{ $t('order') }}&ensp;№{{ ordersStore.currentOrder?.orderNumStr }}
+      </div>
+      <Bin @click="open" class="px-0" :round="false" />
     </div>
     <DividerThin class="mb-60 bg-grey-1" />
     <div class="scroll_area px-40">
@@ -90,8 +99,8 @@ import OrderCard from './order-card.vue';
 
         <div class="row justify-between">
           <div class="text-h3 row q-gutter-x-sm text-weight-bold">
-            <span>{{ $t('order') }}</span>&ensp;
-            <span>{{ ordersStore.currentOrder?.totalCount }}</span>&ensp;
+            <span>{{ $t('order') }}</span>
+            <span>{{ ordersStore.currentOrder?.totalCount }}</span>
             <span>{{ $t('product') }}</span>
             <span>{{ $t('units', { count: ordersStore.currentOrder?.totalCount }) }}</span>
           </div>
@@ -126,6 +135,21 @@ import OrderCard from './order-card.vue';
       />
     </div>
   </div>
+  <DialogDelete :modelValue="openDialog" title="delete_order">
+    <template #content>
+      <div class="text-center text-uppercase text-h3 mb-20">{{ ordersStore.currentOrder?.orderNumStr }}</div>
+    </template>
+    <template #actions>
+      <RectangularButton
+        :name="$t('no')"
+        @click="openDialog = false"
+        />
+        <RectangularButton
+        :name="$t('yes')"
+        @click="deleteOrder(ordersStore.currentOrder?.id ?? '')"
+        />
+    </template>
+  </DialogDelete>
 </template>
 
 <style scoped lang="scss">
