@@ -160,6 +160,11 @@ export type ApiGood = {
   price: number,
   images_ids: string[],
   code: string,
+  props: {
+    prop_id: number;
+    prop_value: number;
+    prop_name: string
+  }
 }
 
 export async function apiGetGoods(location_id: string, locale: string) {
