@@ -18,34 +18,33 @@
 
 <template>
   <div class="column items-center window-height full-width container">
-    <div class="column mb-120 mt-200 text-h1 text-center text-uppercase">
+    <div class="column mb-90 mt-140 text-h1 text-center text-uppercase line_height_1_3">
       <div>{{ $t('the_order') }}</div>
       <div>№{{ ordersStore.currentOrder?.orderNumStr }}</div>
       <div>{{ $t('was_issued_successfully') }}</div>
     </div>
     <div class="logo_container">
-      <LogoSvg class="mb-120" />
+      <LogoSvg class="mb-90" />
     </div>
 
     <div class="column mb-90 full-width px-100">
-      <div class="column mb-90 full-width total_container pa-40">
-        <div class="row justify-between text-h2 text-uppercase">
-          <div class="q-mr-sm">{{ $t('total') }}</div>
-          <div> {{ ordersStore.currentOrder?.totalPrice }}&ensp;&#3647</div>
-        </div>
-
-        <div class="text-h3 row q-gutter-x-sm text-weight-bold">
-          <span>{{ $t('order') }}</span>&ensp;
-          <span>{{ ordersStore.currentOrder?.totalCount }}</span>&ensp;
+      <div class="column mb-90 full-width total_container px-40 py-20">
+        <div class="text-h3 row q-gutter-x-sm text-weight-bold mb-10">
+          <span class>{{ $t('order') }}</span>
+          <span>{{ ordersStore.currentOrder?.totalCount }}</span>
           <span>{{ $t('product') }}</span>
           <span>{{ $t('units', { count: ordersStore.currentOrder?.totalCount }) }}</span>
         </div>
+        <div class="row justify-between text-h2 text-uppercase">
+          <div class="q-mr-sm">{{ $t('total') }}</div>
+          <div> {{ ordersStore.currentOrder?.totalPrice }}&ensp;&#3647;</div>
+        </div>
       </div>
     </div>
-    <div class="full-width px-180">
+    <div class="full-width px-140">
       <ol class=" text-grey full-width">
         <li
-          class="text-h4 text-weight-light"
+          class="text-h4 text-weight-light mb-10"
           v-for="item in ordersStore.currentOrder?.items"
           :key="item.id"
         >
@@ -54,20 +53,21 @@
             <div class="dotted_border" />
             <div>
               <span>{{ item.quant }}</span>
-              <span>{{ $t('pc', { count: item.quant }) }}</span> &#8260;
-              <span>{{ item.price * item.quant }}&ensp;&#3647</span>
+              <span>{{ $t('pc', { count: item.quant }) }}</span>
             </div>
+            <div class="dotted_border" />
+            <div>{{ item.price * item.quant }}&ensp;&#3647</div>
           </div>
         </li>
       </ol>
     </div>
-    <div class="buttons_class justify-center full-width">
+    <div class="buttons_class justify-center full-width mb-140 px-140">
       <RectangularButton
-        :name="$t('back_to_order_list')"
+        :name="$t('open_orders')"
         @click="goToOrderedList"
       />
         <RectangularButton
-        :name="$t('back_to_menu')"
+        :name="$t('main_menu')"
         @click="goToEmployeeActions"
       />
     </div>
@@ -91,10 +91,7 @@
 }
 .ordered_list {
   display: grid;
-  grid-template-columns: max-content 1fr max-content;
-}
-.dotted_border {
-  border-bottom: 5px dotted grey;
+  grid-template-columns: max-content 1fr max-content 1fr max-content;
 }
 
 .buttons_class {

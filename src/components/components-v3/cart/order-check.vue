@@ -1,15 +1,22 @@
 <script setup lang="ts">
-  import { evaArrowBack, evaMinusOutline, evaPlusOutline } from '@quasar/extras/eva-icons';
-  import { useAppStore } from 'src/stores/app';
+  import { t } from 'i18next';
   import { useCartStore } from 'src/stores/cart';
-  import DividerBold from '../../dividers/divider-bold.vue';
-  import DividerThin from '../../dividers/divider-thin.vue';
+  import { computed, ref } from 'vue';
   import IconButton from '../../buttons/icon-button.vue';
+  import DividerThin from '../../dividers/divider-thin.vue';
   import LogoSvg from '../../logo/logo-svg.vue';
 
   const cartStore = useCartStore();
 
   const emit = defineEmits(['click']);
+  const message = ref(t('contact_seller_for_further_information'));
+  const maxFontSize = 6; // максимальный размер шрифта
+  const minFontSize = 4; // минимальный размер шрифта
+
+  const computedFontSize = computed(() => {
+    const length = message.value.length;
+    return length > 38 ? `${minFontSize}rem` : `${maxFontSize}rem`;
+  });
 </script>
 
 <template>
@@ -24,12 +31,12 @@
       class="cart_close_button absolute-top-right"
       @click="emit('click')"
     />
-    <div class="text-h2 text-white text-uppercase text-center pt-100 px-140 mb-200 line_height">
+    <div class="text-h2 text-white text-uppercase text-center pt-100 px-140 mb-200 line_height_1_3">
       {{$t('order_was_successfully_confirmed')}}
     </div>
     <div class="items-center column">
-      <div class="text-green text-h1 text-center first_letter px-40 mb-100 contact_style line_height_1_3">
-        {{$t('contact_seller_for_further_information')}}
+      <div class="text-green text-center first_letter px-40 mb-100 contact_style line_height_1_3" :style="{ fontSize: computedFontSize }">
+        {{$t(message)}}
       </div>
       <LogoSvg
         fill="#5D5D5D"
@@ -43,7 +50,7 @@
     </div>
     <div class="full-width q-pa-xl">
       <ol class=" text-white full-width">
-        <li class="text-h4 text-weight-light text-white pb-10" v-for="item in cartStore.cartExtended" :key="item.id">
+        <li class="text-h4 text-weight-light text-white mb-10" v-for="item in cartStore.cartExtended" :key="item.id">
           <div class="ordered_product">
             <div>{{ item.title }}</div>
             <div class="dotted_border" />
@@ -52,7 +59,7 @@
               <span>{{ $t('pc', { count: item.quant }) }}</span>
             </div>
             <div class="dotted_border" />
-            <div>{{ item.price * item.quant }}&ensp;&#3647</div>
+            <div>{{ item.price * item.quant }}&ensp;&#3647;</div>
           </div>
         </li>
       </ol>
@@ -99,10 +106,4 @@
     grid-template-columns: max-content 1fr max-content 1fr max-content;
   }
 
-  .dotted_border {
-    border-bottom: 5px dotted white;
-  }
-  /* .contact_style {
-    width: max-content;
-  } */
 </style>

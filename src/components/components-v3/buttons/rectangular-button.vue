@@ -47,7 +47,7 @@
 button {
   box-shadow: var(--border-shadow);
   border-radius: var(--border-xxs);
-  height: 100px;
+  height: 80px;
 }
 /* button.disabled {
   background-color: #5D5D5D;

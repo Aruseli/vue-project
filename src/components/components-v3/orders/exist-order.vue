@@ -47,7 +47,7 @@
   </div>
   <DialogDelete :modelValue="openDialog" title="delete_order">
     <template #content>
-      <div class="text-center text-uppercase text-h3 mb-20">№ {{ props.order.orderNumStr }}</div>
+      <div class="text-center text-uppercase text-h3 mb-40">№ {{ props.order.orderNumStr }}</div>
     </template>
     <template #actions>
       <RectangularButton

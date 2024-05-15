@@ -223,9 +223,8 @@ import moment from 'moment';
               class="text-h3 text-weight-bold"
             >
               <div
-
                 @click.prevent="selectCategory(goodCategory.id)" :class='{active : goodCategory.id === selectedID}'
-                class="first_letter"
+                class="first_letter line_height_1_3"
               >
                 {{ goodCategory.title }}
               </div>
@@ -263,7 +262,7 @@ import moment from 'moment';
         ref="target"
         class="mb-90"
       >
-        <div class="text-h2 q-mb-lg text-uppercase text-white">
+        <div class="text-h2 q-mb-lg text-uppercase text-white line_height_1_3">
           {{ goodCategory.title }}
         </div>
         <div v-if="goodCategory.goods.length == 0" class="text-h3 text-white mb-30">

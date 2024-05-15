@@ -22,7 +22,7 @@ const props = defineProps({
   <Modal :isOpen="props.modelValue" to="#redirect-dialog">
     <div class="modal_container column pa-40 bg-white">
       <div class="column">
-        <div class="text-h2 text-center text-uppercase">{{ $t(props.title) }}</div>
+        <div class="text-h2 text-center text-uppercase mb-10">{{ $t(props.title) }}</div>
         <slot name="content"></slot>
       </div>
       <div class="buttons_class justify-center full-width">

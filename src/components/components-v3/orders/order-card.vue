@@ -21,34 +21,34 @@
 
 <template>
   <div
-    :class="'cart_product_item row pa-30 ' + (props.good.issued != props.good.quant ? 'bg-white' : 'bg-green')"
+    :class="'cart_product_item row pa-10 ' + (props.good.issued != props.good.quant ? 'bg-white' : 'bg-green')"
     v-bind="$attrs"
     @click="emit('click')">
-    <div class="col-2 mr-40">
-      <Image
-        :src="props.good.image"
-        class="img_style"
-      />
-    </div>
-    <div class="column justify-evenly col">
-      <div class="row justify-between items-center">
+    <div class="row">
+      <div class="col-2 mr-40 img_container">
+        <Image
+          :src="props.good.image"
+          class="img_style"
+        />
+      </div>
+      <div class="column justify-evenly items-left">
         <div class="text-h3 text-weight-bold">
           {{ props.good.title }}
         </div>
-        <Bin @click="open" />
-      </div>
-      <div class="row justify-between items-center">
         <div class="text-h2">
           &#3647&ensp;{{ props.good.price }}
         </div>
-        <div class="text-h2 row q-gutter-x-sm">
+      </div>
+    </div>
+      <div class="column justify-between items-right">
+        <Bin @click="open" class="px-0" :round="false" />
+        <div class="text-h4 row q-gutter-x-sm">
           <span>{{ props.good.issued > 0 ? props.good.issued + ' / ' : '' }}</span>
           <span>{{ props.good.quant }}</span>
           <span>{{ $t('pc', {count: props.good.quant}) }}</span>
         </div>
       </div>
     </div>
-  </div>
   <DialogDelete :modelValue="openDialog" title="delete_order">
     <template #content>
       <div class="text-center text-uppercase text-h3 mb-20">{{ props.good.title }}</div>
@@ -67,14 +67,17 @@
 </template>
 
 <style scoped lang="scss">
-.cart_product_item {
+  .cart_product_item {
     width: 100%;
     height: max-content;
     justify-content: space-between;
     border-radius: var(--border-xxs);
     box-shadow: var(--border-shadow);
   }
-
+  .img_container {
+    width: 5.75rem;
+    height: 5.75rem;
+  }
   .img_style {
     border-radius: var(--border-xxs);
     width:  100%;

@@ -72,6 +72,7 @@ $paddings: (
   "100": 6.25rem,
   "120": 7.5rem,
   "140": 8.75rem,
+  // "150": 9.75rem,
   "200": 12.5rem
 );
 
@@ -638,4 +639,8 @@ padding: 0;
   position: absolute;
   top: 1rem;
   left: 0.5rem;
+}
+
+.dotted_border {
+  border-bottom: 3px dotted grey;
 }

@@ -160,7 +160,7 @@
                           @click="cartStore.decreaseItemsCount(item)"
                         />
                           <div
-                            class='text-h2 text-white q-mx-lg-md q-mx-xs-sm q-my-none'
+                            class='text-h3 text-white q-mx-lg-md q-mx-xs-sm q-my-none'
                           >{{ item.quant }}</div>
                         <OperatorButton
                           :icon="evaPlusOutline"

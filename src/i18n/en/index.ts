@@ -131,4 +131,5 @@ export default {
   set: 'set',
   cart_item_is_limited_by_stock: 'Cannot add more items than is available',
   scan_badge: "scan the employee's badge",
+  main_menu: "main menu",
 };

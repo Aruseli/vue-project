@@ -1,5 +1,6 @@
 <script setup>
   import i18next from 'i18next';
+  import { t } from 'i18next';
 import moment from 'moment';
 import { useQuasar } from 'quasar';
 import { useArrivalsStore } from 'src/stores/arrivals';
