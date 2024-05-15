@@ -24,6 +24,11 @@
           image?: String,
         }[],
         code: String,
+        props: {
+          prop_id: Number,
+          prop_value: Number,
+          prop_name: String
+        }
       }
     },
     isOpen: {
@@ -32,6 +37,11 @@
       default:false,
     }
   })
+
+  const thc = props.good.props.find((prop: any) => prop.prop_name === "THC")?.prop_value
+  const cbg = props.good.props.find((prop: any) => prop.prop_name === "CBG")?.prop_value
+  const strength = parseInt(props.good.props.find((prop: any) => prop.prop_name === "strength")?.prop_value)
+
 
   const goodInCart = computed(() => cartStore.cart.find((item) => item.id === props.good.id))
 
@@ -96,8 +106,23 @@
 
             <div class="text-grey mb-14">{{ $t('technical_specifications') }}</div>
             <div class="text-white q-mb-lg text-capitalize">
-              <span>{{ $t('relaxation') }}</span> &#183;
-              <span>{{ $t('calm') }}</span>
+              <p style="margin-bottom: 15px;">{{ $t('relaxation') }}</p> 
+              <p style="margin-bottom: 15px;">{{ $t('calm') }}</p>
+              <div
+                class="row items-center intensity_icons_container mr-10"
+                style="align-items: baseline"
+                :class="[app.lang_dir == 'rtl' ? 'intensity_icons_container_rtl' : '']"
+              >
+              <p style="margin-bottom: 15px;">{{ $t('thc') + ' ' + thc + '%' }}</p> 
+
+                <div 
+                  v-if="!isNaN(strength)"
+                  v-for="n in strength" 
+                  :key="n" 
+                  class="intensity_icon bg-red"
+                />
+              </div>
+              <p style="margin-bottom: 0;">{{ $t('cbg') + ' ' + cbg + '%' }}</p>
             </div>
 
             <div class="text-grey mb-14">{{ $t('set') }}</div>
@@ -196,6 +221,17 @@
   }
   .close_button {
     right: var(--px20);
+  }
+  .intensity_icons_container > *:not(:last-child) {
+    margin-right: 0.25rem;
+  }
+  .intensity_icons_container_rtl > *:not(:first-child) {
+    margin-right: 0.25rem;
+  }
+  .intensity_icon {
+    width: var(--px11);
+    height: var(--px11);
+    border-radius: var(--px11);
   }
 
 </style>
