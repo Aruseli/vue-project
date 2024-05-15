@@ -90,9 +90,10 @@ export default {
     "networkPort": undefined,
   },
 
-  // These three lines are outside of settings because they are used
+  // These four lines are outside of settings because they are used
   // before backend settings overrides are available
   "terminal_type_id": "654c6b75-54c5-4153-a3c7-b0f6a3431c68",
   "terminal_registration_attempt_interval": (process.env.DEV) ? 1000 : 5000,
   "terminal_status_update_interval": (process.env.DEV) ? 60_000 : 600_000,
+  "cat_health_check_interval_ms": 5000,
 }

@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { useAppStore } from '../../stores/app';
 import moment from 'moment';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, onMounted, onUnmounted } from 'vue';
+import { apiHealthCheck, ws } from "src/services";
+import config from "src/services/config";
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const app = useAppStore();
-const date = new Date();
-const time = date.getTime();
-const formattedTime = moment(time).format("LT").slice(0, -3);
+const formattedTime = ref(moment().format("LT").slice(0, -3));
+let healthCheckInterval: NodeJS.Timeout;
+const isCatHealthy = ref(false);
+const isWsHealthy = ref(false);
 
 const textColorClass = ref('text-black'); // Начальное значение
 
@@ -24,6 +27,18 @@ router.beforeEach((to, from, next) => {
   }
   next();
 });
+
+onMounted(() => {
+  healthCheckInterval = setInterval(async () => {
+    formattedTime.value = moment().format("LT").slice(0, -3);
+    isCatHealthy.value  = await apiHealthCheck(config.cat_health_check_interval_ms);
+    isWsHealthy.value = !!ws?.OPEN;
+  }, config.cat_health_check_interval_ms);
+});
+
+onUnmounted(() => {
+  clearInterval(healthCheckInterval); 
+});
 </script>
 
 <template>
@@ -32,10 +47,8 @@ router.beforeEach((to, from, next) => {
   >
     <div :class="textColorClass">{{ app.kioskState.name }}</div>
     <div :class="textColorClass">{{ formattedTime }}</div>
-    <div class="ping_cat_light bg-green-10" />
-    <div
-      :class="[app.kioskState.settings?.tdp ? 'ping_tdp_light' : 'ping_tdp_light_not__signal' ,'bg-green']"
-    />
+    <div :class="isCatHealthy ? 'ping_cat_light' : 'ping_cat_light__not_signal'" />
+    <div :class="isWsHealthy ? 'ping_tdp_light' : 'ping_tdp_light__not_signal'" />
   </div>
 </template>
 
