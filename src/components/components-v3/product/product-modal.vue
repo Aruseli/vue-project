@@ -41,7 +41,6 @@
   const thc = props.good.props.find((prop: any) => prop.prop_name === "THC")?.prop_value
   const cbg = props.good.props.find((prop: any) => prop.prop_name === "CBG")?.prop_value
   const strength = parseInt(props.good.props.find((prop: any) => prop.prop_name === "strength")?.prop_value)
-  console.log({strength})
 
 
   const goodInCart = computed(() => cartStore.cart.find((item) => item.id === props.good.id))

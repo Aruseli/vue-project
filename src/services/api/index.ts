@@ -194,7 +194,6 @@ export async function apiGetGoods(location_id: string, locale: string) {
   }
 
   function addPropNames(response: any) {
-    console.log(`response.data.goodTypes`, response.data.goodTypes)
     response.data.goodTypes.forEach((goodType: any) => {
         goodType.goods.forEach((good: any) => {
           good.props.forEach((prop: any) => {
