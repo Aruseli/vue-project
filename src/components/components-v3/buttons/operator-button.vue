@@ -18,7 +18,6 @@ import { PropType } from 'vue';
       default: false,
     },
   })
-  console.log('disable', props.disabled)
 
   const emit = defineEmits(['click']);
 </script>

@@ -35,6 +35,7 @@
     app.openDrawerCart(false)
   }
 
+  const timer = ref<NodeJS.Timeout | null>(null);
   const isDisabled = ref(false);
 //app.kioskState.settings?.customer_successful_order_notify_duration_ms ??
   async function submitOrder() {
@@ -43,7 +44,7 @@
     try {
       await cartStore.submitOrder({$q})
       app.openOrderDialog(true);
-      setTimeout(() => {
+       timer.value = setTimeout(() => {
         app.openOrderDialog(false);
         closeDrawerCart();
         cartStore.clearCart();
@@ -64,6 +65,16 @@
   }
 
   const emit = defineEmits(['click']);
+
+  const orderCheckClose = () => {
+    cartStore.clearCart();
+    app.openDrawerCart(false);
+    closeDrawerCart();
+    app.orderDialog = false;
+    if (timer.value) {
+      clearTimeout(timer.value);
+    }
+  }
 </script>
 
 <template>
@@ -216,7 +227,7 @@
             </div>
           </div>
         </div>
-        <OrderCheck @click="closeDrawerCart" v-else-if="app.orderDialog == true" />
+        <OrderCheck v-else-if="app.orderDialog == true" @click="orderCheckClose" />
       </transition>
     </div>
   </transition>
