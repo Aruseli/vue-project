@@ -160,6 +160,11 @@ export type ApiGood = {
   price: number,
   images_ids: string[],
   code: string,
+  props: {
+    prop_id: number;
+    prop_value: number;
+    prop_name: string;
+  }
 }
 
 export async function apiGetGoods(location_id: string, locale: string) {
@@ -169,6 +174,7 @@ export async function apiGetGoods(location_id: string, locale: string) {
   });
   removeNullGoods(response)
   fixGoodsTitles(response)
+  addPropNames(response)
   return response.data.goodTypes as ApiGoodCategory[];
 
   // Bug: empty list should be [] instead of [null]
@@ -185,6 +191,17 @@ export async function apiGetGoods(location_id: string, locale: string) {
         g.title = g.title ?? g.name
       })
     })
+  }
+
+  function addPropNames(response: any) {
+    response.data.goodTypes.forEach((goodType: any) => {
+        goodType.goods.forEach((good: any) => {
+          good.props.forEach((prop: any) => {
+            prop.prop_name = response.data.propsNames.find((propName: any) => propName.prop_id === prop.prop_id).prop_name
+          })
+        })
+      }
+    )
   }
 }
 

@@ -31,10 +31,18 @@ import Image from '../image.vue';
           image?: String,
         }[],
         code: String,
+        props: {
+          prop_id: Number,
+          prop_value: Number,
+          prop_name: String
+        }
       },
       required: true,
     },
   })
+
+  const thc = props.good.props.find((prop: any) => prop.prop_name === "THC")?.prop_value
+  const strength = parseInt(props.good.props.find((prop: any) => prop.prop_name === "strength")?.prop_value)
 
   const goodInCart = computed(() => cartStore.cart.find((item) => item.id === props.good.id))
 
@@ -72,11 +80,14 @@ import Image from '../image.vue';
           class="row items-center intensity_icons_container mr-10"
           :class="[app.lang_dir == 'rtl' ? 'intensity_icons_container_rtl' : '']"
         >
-          <div class="intensity_icon bg-red" />
-          <div class="intensity_icon bg-red" />
-          <div class="intensity_icon bg-red" />
+          <div 
+            v-if="!isNaN(strength)"
+            v-for="n in strength" 
+            :key="n" 
+            class="intensity_icon bg-red"
+          />
         </div>
-        <div>99% THC</div>
+        <div>{{thc}}% THC</div>
       </div>
     </div>
 

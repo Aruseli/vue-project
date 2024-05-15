@@ -20,7 +20,12 @@ export type Good = {
     id: string,
     image?: string, // base64
   }[],
-  code: string
+  code: string,
+  props: {
+    prop_id: number;
+    prop_value: number;
+    prop_name: string;
+  }
 }
 
 export type GoodCategory = {
@@ -130,7 +135,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
             images: g.images_ids.map(id => ({
               id,
               image: imagesCache.get(id),
-            }))
+            })),
           })),
         }));
         const goodsArray = goods.value.flatMap(gc => gc.goods);
