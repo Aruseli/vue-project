@@ -52,6 +52,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
   const goods = ref<GoodCategory[]>([]);
   const goodsByGoodId = ref<{ [key: string]: Good}>({});
   const goodsByItemId = ref<{ [key: string]: Good}>({});
+  const goodsByItemCode = ref<{ [key: string]: Good}>({});
   const imagesCache = reactive(new Map<string, string>()) // id -> base64 image
   const goodsLoading = ref(false)
   const goodsLoadingWaiter = ref(new Deferred())
@@ -141,6 +142,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
         const goodsArray = goods.value.flatMap(gc => gc.goods);
         goodsByGoodId.value = Object.fromEntries(goodsArray.map(g => [g.id, g]));
         goodsByItemId.value = Object.fromEntries(goodsArray.flatMap(g => g.items.map(item => [item.mark, g])));
+        goodsByItemCode.value = Object.fromEntries(goodsArray.flatMap(g => g.items.map(item => [item.code, g])));
         setTimeout(() => updateImages(), 0);
         appStore.tab = fetchedGoods[0].id
         goodsLoading.value = false
@@ -162,6 +164,11 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     return goodsByItemId.value[id];
   }
 
+  const getGoodByItemCode = (id: string) => {
+    return goodsByItemCode.value[id];
+  }
+
+
   const waitGoodsReady = async () => {
     await goodsLoadingWaiter.value.promise
   }
@@ -170,8 +177,10 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     goods,
     goodsByGoodId,
     goodsByItemId,
+    goodsByItemCode,
     getGoodById,
     getGoodByItemId,
+    getGoodByItemCode,
 
     updateGoods,
     goodsLoading,

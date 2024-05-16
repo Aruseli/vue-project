@@ -32,6 +32,47 @@
     if (evt.cmd == 'barcode' && process.env.DEV && evt.data == 'debugGenerateArrival') {
       await debugGenerateArrival();
     }
+
+    // GoodBarcode
+    function tryGetGoodIdOrCodeFromBarchode() {
+      if (evt.cmd != 'barcode') {
+        return null;
+      }
+      const linkGoodRegexp = /[?&]g=([0-9a-zA-Z]+)/;
+      const goodCode = evt.data.match(linkGoodRegexp)?.[1];
+      if (goodCode) {
+        return goodCode;
+      }
+
+      const uuidRegExp = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi
+      const uuids = evt.data.match(uuidRegExp);
+      if (uuids?.length > 1) {
+        console.error("What's with uuids? Why not one?", uuids);
+        return null;
+      }
+      if (uuids?.length == 1) {
+        return uuids[0];
+      }
+
+      return null;
+    }
+    const goodIdOrCode = tryGetGoodIdOrCodeFromBarchode();
+    if (goodIdOrCode) {
+      if (route.path == `/issuing-order/order/${route.params.id}`) {
+        await ordersStore.scanGood(goodIdOrCode);
+      }
+      if (route.path == `/arrival-goods/${route.params.id}`) {
+        await arrivalsStore.scanArrivalGood(goodIdOrCode);
+      }
+      if (route.path == '/complete-inventory' ||
+          route.path == '/open-shift/complete-inventory' ||
+          route.path == '/close-shift/complete-inventory' ||
+          route.path == '/selective-inventory'
+      ) {
+        await inventoryStore.scanInventoryGood(goodIdOrCode);
+      }
+    }
+
     const uuidRegExp = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi
     if (evt.cmd == 'barcode' && uuidRegExp.test(evt.data)) {
       const uuids = evt.data.match(uuidRegExp);
@@ -39,23 +80,9 @@
         console.error("What's with uuids? Why not one?", uuids);
         return;
       }
-      // GoodBarcode
-      if (route.path == `/issuing-order/order/${route.params.id}`) {
-        await ordersStore.scanGood(uuids[0]);
-      }
-      if (route.path == `/arrival-goods/${route.params.id}`) {
-        await arrivalsStore.scanArrivalGood(uuids[0]);
-      }
-      if (route.path == '/complete-inventory' ||
-          route.path == '/open-shift/complete-inventory' ||
-          route.path == '/close-shift/complete-inventory' ||
-          route.path == '/selective-inventory'
-      ) {
-        await inventoryStore.scanInventoryGood(uuids[0]);
-      }
 
       // DocumentBarcode
-      if (appStore.orderIssueIsAllowed && route.path == '/employee-actions') {
+      if (appStore.orderIssueIsAllowed && (route.path == '/employee-actions' || route.path == '/')) {
         await ordersStore.updateOrders()
         // if (process.env.DEV) {
         console.log('Order ids', ordersStore.ordersDocuments.map(d => d.id));
@@ -66,7 +93,7 @@
           }
         });
       }
-      if (appStore.arrivalsAreAllowed && route.path == '/employee-actions') {
+      if (appStore.arrivalsAreAllowed && route.path == '/employee-actions' || route.path == '/') {
         await arrivalsStore.updateArrivals();
         // if (process.env.DEV) {
         console.log('Arrival ids', arrivalsStore.arrivalsDocuments.map(d => d.id));
@@ -95,8 +122,8 @@
             router.push('/employee-actions')
           }
           break;
-        case '230': // Document
-          if (appStore.orderIssueIsAllowed && route.path == '/employee-actions') {
+        case '230': // Document, OBSOLETE
+          if (appStore.orderIssueIsAllowed && route.path == '/employee-actions' || route.path == '/') {
             await ordersStore.updateOrders()
             // if (process.env.DEV) {
             console.log('Order barcodes', ordersStore.ordersDocuments.map(d => d.barcode));
@@ -107,7 +134,7 @@
               }
             });
           }
-          if (appStore.arrivalsAreAllowed && route.path == '/employee-actions') {
+          if (appStore.arrivalsAreAllowed && route.path == '/employee-actions' || route.path == '/') {
             await arrivalsStore.updateArrivals();
             // if (process.env.DEV) {
             console.log('Arrival barcodes', arrivalsStore.arrivalsDocuments.map(d => d.barcode));

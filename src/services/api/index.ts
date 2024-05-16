@@ -266,6 +266,7 @@ export type KioskDocument = {
     quant: any,
     total: any,
     doc_detail_link: any,
+    doc_detail_link_b58: any,
     doc_detail_type: any,
     doc_detail_type_name: any,
   }[],
