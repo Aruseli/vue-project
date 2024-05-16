@@ -8,7 +8,6 @@
 
   const cartStore = useCartStore();
 
-  const emit = defineEmits(['click']);
   const message = ref(t('contact_seller_for_further_information'));
   const maxFontSize = 6; // максимальный размер шрифта
   const minFontSize = 4; // минимальный размер шрифта
@@ -17,6 +16,8 @@
     const length = message.value.length;
     return length > 38 ? `${minFontSize}rem` : `${maxFontSize}rem`;
   });
+
+  const emit = defineEmits(['click']);
 </script>
 
 <template>
