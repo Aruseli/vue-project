@@ -13,7 +13,6 @@ import BackButton from '../buttons/back-button.vue';
 import OrderCard from './order-card.vue';
 import Bin from './bin.vue';
 import DialogDelete from './dialog-delete.vue';
-import { showDialog } from 'src/services/dialogs';
 
   const $q = useQuasar();
   const appStore = useAppStore();
@@ -62,13 +61,8 @@ import { showDialog } from 'src/services/dialogs';
   }
 
   const openDialog = ref(false);
-  const openReason = ref(false);
-  const reason = ref('because I want')
   const open = () => {
     openDialog.value = true;
-  }
-  const deletionReason = () => {
-    openReason.value = true;
   }
   const deleteOrder = async (id: string) => {
     await ordersStore.deleteOrder(id);
@@ -141,58 +135,12 @@ import { showDialog } from 'src/services/dialogs';
       />
     </div>
   </div>
-  <DialogDelete :modelValue="openDialog"
-    :title="openReason == false ? 'delete_order' : 'reason for deletion'"
-  >
-    <template #content>
-      <div v-if="openReason == false" class="text-center text-uppercase text-h3 mb-20">{{ ordersStore.currentOrder?.orderNumStr }}</div>
-      <div v-else>
-        <div class="text-left text-h4 mb-20 column">
-          <q-radio
-            v-model="reason"
-            checked-icon="task_alt"
-            unchecked-icon="panorama_fish_eye"
-            :val="$t('because I want')"
-            :label="$t('because I want')"
-            color="black"
-            keep-color
-          />
-          <q-radio
-            v-model="reason"
-            checked-icon="task_alt"
-            unchecked-icon="panorama_fish_eye"
-            :val="$t('because I can')"
-            :label="$t('because I can')"
-            color="black"
-            keep-color
-          />
-          <q-radio
-            v-model="reason"
-            checked-icon="task_alt"
-            unchecked-icon="panorama_fish_eye"
-            :val="$t('because it is necessary')"
-            :label="$t('because it is necessary')"
-            color="black"
-            keep-color
-          />
-        </div>
-        <RectangularButton
-          :name="$t('delete')"
-          @click="deleteOrder(ordersStore.currentOrder?.id ?? '')"
-        />
-      </div>
-    </template>
-    <template #actions v-if="openReason == false">
-      <RectangularButton
-        :name="$t('no')"
-        @click="openDialog = false"
-        />
-      <RectangularButton
-      :name="$t('yes')"
-      @click="openReason = true"
-      />
-    </template>
-  </DialogDelete>
+  <DialogDelete
+    :modelValue="openDialog"
+    :orderNum="ordersStore.currentOrder?.orderNumStr"
+    @deleteOrder="deleteOrder(ordersStore.currentOrder?.id ?? '')"
+    @open="openDialog = false"
+  />
 </template>
 
 <style scoped lang="scss">

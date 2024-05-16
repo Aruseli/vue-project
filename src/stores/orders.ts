@@ -5,7 +5,7 @@ import { Check, KioskDocument, SaveableDocument, apiGetDocument, apiGetDocuments
 import { useGoodsStore } from "./goods";
 import { t } from "i18next";
 import { showSimpleNotification } from "src/services/dialogs";
-import { journalErroneousAction } from "src/services/documents/documents";
+import { journalDeletion, journalErroneousAction } from "src/services/documents/documents";
 import { terminalShift } from "src/services/shifts";
 
 export type Order = {
@@ -62,13 +62,14 @@ export const useOrdersStore = defineStore("orders", () => {
     }
   };
 
-  const deleteOrder = async (id: string) => {
+  const deleteOrder = async (id: string, reason: string) => {
     ordersLoading.value = true;
     try {
       const doc = ordersDocuments.value.find(doc => doc.id == id);
       if (doc) {
         doc.state = 1;
         await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '')
+        await journalDeletion(doc.id, { event_type: 'delete_current_order', marking: id, reason: reason })
       }
     } finally {
       ordersLoading.value = false;
@@ -214,11 +215,13 @@ export const useOrdersStore = defineStore("orders", () => {
     currentOrderItem.issued = currentOrderItem.issuedItems.push(itemId);
   };
 
-  const deleteGoodInCurrentOrder = async (id: string) => {
+  const deleteGoodInCurrentOrder = async (id: string, reason: string) => {
+    const docId = currentOrder.value?.id ?? throwErr("Missing currentOrder.value?.id");
     const item = currentOrder.value?.items.find(i => i.id == id);
     if (item) {
       item.deleted = true;
       recalculateTotals(currentOrder.value!);
+      await journalDeletion(docId, { event_type: 'delete_good_in_current_order', marking: item, reason: reason })
     }
   }
 

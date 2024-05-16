@@ -13,6 +13,16 @@ export async function journalErroneousAction(doc_id: string, data?: object) {
     data,
   )
 }
+export async function journalDeletion(doc_id: string, data?: object) {
+  const appStore = useAppStore();
+  await apiSaveOperation(
+    appStore.kioskState.settings?.docoperation_type__deletion_reason ?? '',
+    doc_id,
+    appStore.kioskState.userCorr?.id ?? '',
+    appStore.kioskState.terminalShift?.id ?? '',
+    data,
+  )
+}
 
 export async function debugGenerateArrival() {
   const appStore = useAppStore();

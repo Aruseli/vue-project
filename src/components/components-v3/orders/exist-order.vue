@@ -45,21 +45,12 @@
       <Bin @click="open" class="px-0" :round="false" :disable="isDisabled" />
     </div>
   </div>
-  <DialogDelete :modelValue="openDialog" title="delete_order">
-    <template #content>
-      <div class="text-center text-uppercase text-h3 mb-40">№ {{ props.order.orderNumStr }}</div>
-    </template>
-    <template #actions>
-      <RectangularButton
-        :name="$t('no')"
-        @click="openDialog = false"
-        />
-        <RectangularButton
-        :name="$t('yes')"
-        @click="emit('deleteOrder')"
-        />
-    </template>
-  </DialogDelete>
+  <DialogDelete
+    :modelValue="openDialog"
+    :orderNum="props.order.orderNumStr"
+    @deleteOrder="emit('deleteOrder')"
+    @open="openDialog = false"
+  />
 </template>
 
 <style scoped lang="scss">

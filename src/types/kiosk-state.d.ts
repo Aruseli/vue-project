@@ -26,6 +26,7 @@ export type Settings = {
   doc_type__inventory_request: string,
   docdetail_type__inventory_request: string,
   docoperation_type__erroneous_action: string,
+  docoperation_type__deletion_reason: string,
   inventory_request_state_requested: number,
   inventory_request_state_fulfilled: number,
 

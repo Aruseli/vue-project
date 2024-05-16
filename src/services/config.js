@@ -32,6 +32,7 @@ export default {
     "inventory_request_state_fulfilled": 6,
 
     "docoperation_type__erroneous_action": "850180e3-837f-436f-8d92-2a6ff4a8de97",
+    "docoperation_type__deletion_reason": "850180e3-837f-436f-8d92-2a6ff4a8de97",
 
     "rights__kiosk_open_shift": "a2bd93d9-c7a3-4a53-ace9-0a655ac4dff1",
     "rights__kiosk_close_own_shift": "05dcfdba-1b5c-477c-a2f4-e2ac341f5e72",
