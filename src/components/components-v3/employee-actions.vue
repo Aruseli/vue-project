@@ -35,9 +35,6 @@ const props = defineProps({
     default: 0
   }
 })
-onMounted(() => {
-  app.colorMode = 'dark';
-})
 const emit = defineEmits(['click'])
 </script>
 

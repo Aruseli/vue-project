@@ -132,4 +132,7 @@ export default {
   cart_item_is_limited_by_stock: 'Cannot add more items than is available',
   scan_badge: "scan the employee's badge",
   main_menu: "main menu",
+  missing_user_corr: "User correspondent is missing",
+  missing_kiosk_corr: "Kiosk correspondent is missing",
+  reload_interface: "Reload interface",
 };

@@ -94,6 +94,12 @@
         },
         disable: !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_print_stock),
       },
+      {
+        name: 'reload_interface',
+        click: async () => {
+          window.location.reload();
+        },
+      }
     ];
   });
 

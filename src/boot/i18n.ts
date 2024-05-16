@@ -6,7 +6,6 @@ import messages from '../i18n/index';
 
 const i18n = i18next.init({
   debug: true,
-  partialBundledLanguages: true,
   lng: 'en',
   interpolation: {
     escapeValue: false,
