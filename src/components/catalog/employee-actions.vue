@@ -10,10 +10,6 @@ const props = defineProps({
     type: Array as PropType<Button[]>,
     default: []
   },
-  inventoryRequests: {
-    type: Number,
-    default: 0
-  }
 })
 const emit = defineEmits(['click'])
 </script>
@@ -33,7 +29,7 @@ const emit = defineEmits(['click'])
       @click="button.click"
     >
       <div v-if="button.badge == true" class="badge_style bg-positive flex items-center justify-center">
-        <div class="text-white text-h3">{{ inventoryRequests }}</div>
+        <div class="text-white text-h3">{{ button.badge_text }}</div>
       </div>
     </RectangularButton>
 
