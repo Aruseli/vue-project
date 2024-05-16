@@ -110,6 +110,11 @@ module.exports = configure(function (ctx) {
           changeOrigin: true,
           cookieDomainRewrite: 'localhost',
         },
+        '/appinfo': {
+          target: process.env.VUE_CAT_URL,
+          changeOrigin: true,
+          cookieDomainRewrite: 'localhost',
+        },
       },
     },
 

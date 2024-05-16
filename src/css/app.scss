@@ -597,33 +597,39 @@ padding: 0;
   column-gap: 0.5em;
 }
 
-.ping_tdp_light {
+.ping_light {
   width: 1rem;
   height: 1rem;
   border-radius: 1rem;
+  background-color: green;
+}
+
+.ping_tdp_light {
+  @extend .ping_light;
   &__not_signal {
-    box-shadow: 0 0 0 0 green;
-    background-color: transparent;
-    animation: ping 2s infinite;
+    @extend .ping_light;
+    background-color: red;
   }
 }
 .ping_cat_light {
-  width: 1rem;
-  height: 1rem;
-  border-radius: 1rem;
+  @extend .ping_light;
+  &__not_signal {
+    @extend .ping_light;
+    background-color: red;
+  }
 }
 
-@keyframes ping {
-  0% {
-    box-shadow: 0px 0px 0px 0px green;
-  }
-  50% {
-    box-shadow: 0px 0px 1px 2px green;
-  }
-  100% {
-    box-shadow: 0px 0px 2px 4px green;
-  }
-}
+// @keyframes ping {
+//   0% {
+//     box-shadow: 0px 0px 0px 0px green;
+//   }
+//   50% {
+//     box-shadow: 0px 0px 1px 2px green;
+//   }
+//   100% {
+//     box-shadow: 0px 0px 2px 4px green;
+//   }
+// }
 
 .slide-fade-enter-active,
 .slide-fade-leave-active {

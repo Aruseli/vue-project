@@ -154,7 +154,7 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
 
 <template>
   <div class="main_container full-height full-width relative-position">
-    <div class="row"
+    <!-- <div class="row"
       :class="[app.lang_dir == 'rtl' ? 'ping_container_rtl' : 'ping_container']"
     >
       <div>{{ app.kioskState.name }}</div>
@@ -163,7 +163,7 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
       <div
         :class="[app.kioskState.settings?.tdp ? 'ping_tdp_light' : 'ping_tdp_light_not__signal' ,'bg-green']"
       />
-    </div>
+    </div> -->
     <div class="column justify-center relative-position mb-20 px-40 pt-60">
       <BackButton @click="router.push('/employee-actions')" class="back_button_class" />
       <div class="text-h2 text-uppercase text-center mb-100">
