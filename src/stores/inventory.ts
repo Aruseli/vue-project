@@ -129,10 +129,10 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     const documentId = await apiSaveDocument(doc, terminalShift.value?.id);
     inventoryDocument.value = await apiGetDocument(documentId);
     inventory.value = documentToInventory(inventoryDocument.value, goodsStore);
-    const debugGoodItemIds = inventory.value?.items.flatMap(i => goodsStore.getGoodById(i.id).items.map(item => item.mark));
-    console.log("Inventory expected good individual IDs", debugGoodItemIds);
-    console.log(debugGoodItemIds.map(s => `curl --location 'http://127.0.0.1:3010/api/system/emulate/barcode?code=${s}'`).join('\n'))
-    console.log(debugGoodItemIds.map(s => `https://tdp.high-thai.com/api/system/emulate/barcode?code=${s}`).join('\n'))
+    const debugGoodItemCodes = inventory.value?.items.flatMap(i => goodsStore.getGoodById(i.id).items.map(item => item.code));
+    console.log("Inventory expected good individual codes", debugGoodItemCodes);
+    console.log(debugGoodItemCodes.map(s => `curl --location 'http://127.0.0.1:3010/api/system/emulate/barcode?code=''url?g=${s}'''`).join('\n'))
+    console.log(debugGoodItemCodes.map(s => `https://tdp.high-thai.com/api/system/emulate/barcode?code=''url?g=${s}''`).join('\n'))
   }
 
   const prepareFullInventory = async () => {
@@ -169,22 +169,23 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     ) ?? 0;
   });
 
-  const scanInventoryGood = async (itemId: string) => {
+  const scanInventoryGood = async (itemIdOrCode: string) => {
     const docId = inventoryDocument.value?.id ?? throwErr("Missing selectedInventory.value?.id");
-    const good = goodsStore.getGoodByItemId(itemId);
-    if (!good) {
-      await journalErroneousAction(docId, { event_type: 'unknown_good_marking', marking: itemId });
+    const good = goodsStore.getGoodByItemCode(itemIdOrCode) ?? goodsStore.getGoodByItemId(itemIdOrCode);
+    const itemId = good?.items.find(g => g.code == itemIdOrCode || g.mark == itemIdOrCode)?.mark;
+    if (!good || !itemId) {
+      await journalErroneousAction(docId, { event_type: 'unknown_good_marking', marking: itemIdOrCode });
       showSimpleNotification(t('unknown_good_marking'));
       return;
     }
     const inventoryItem = inventory.value?.items.find((i) => i.id == good.id);
     if (!inventoryItem) {
-      await journalErroneousAction(docId, { event_type: 'scanned_good_is_not_in_inventory', marking: itemId });
+      await journalErroneousAction(docId, { event_type: 'scanned_good_is_not_in_inventory', marking: itemIdOrCode });
       showSimpleNotification(t('scanned_good_is_not_in_inventory'));
       return;
     }
     if (inventoryItem.scannedItems.includes(itemId)) {
-      await journalErroneousAction(docId, { event_type: 'repeated_good_scan', marking: itemId });
+      await journalErroneousAction(docId, { event_type: 'repeated_good_scan', marking: itemIdOrCode });
       showSimpleNotification(t('repeated_good_scan'));
       return;
     }

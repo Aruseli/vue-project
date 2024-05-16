@@ -54,9 +54,10 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
         ? documentGoodsArrival(arrivalDoc, goodsStore)
         : null;
       arrivalDocument.value = arrivalDoc;
-      const debugGoodItemIds = arrival.value?.items.flatMap(i => i.itemsToScan);
-      console.log("Arrival expected good individual IDs", debugGoodItemIds);
-      console.log(debugGoodItemIds?.map(s => `curl --location 'http://127.0.0.1:3010/api/system/emulate/barcode?code=${s}'`).join('\n'))
+      const debugGoodItemCodes = arrival.value?.items.flatMap(i => i.itemsToScan.map(i => i.code));
+      console.log("Arrival expected good individual codes", debugGoodItemCodes);
+      console.log(debugGoodItemCodes?.map(s => `curl --location 'http://127.0.0.1:3010/api/system/emulate/barcode?code=''url?g=${s}'''`).join('\n'));
+      console.log(debugGoodItemCodes?.map(s => `https://tdp.high-thai.com/api/system/emulate/barcode?code=''url?g=${s}''`).join('\n'));
     } catch {
       arrival.value = null;
       arrivalDocument.value = null;
@@ -95,16 +96,17 @@ export const useArrivalsStore = defineStore("arrivalsStore", () => {
     return 0;
   });
 
-  const scanArrivalGood = async (itemId: string) => {
+  const scanArrivalGood = async (itemIdOrCode: string) => {
     const docId = arrival.value?.id ?? throwErr("Missing currentOrder.value?.id");
-    const arrivalItem = arrival.value?.items.find((i) => i.itemsToScan.includes(itemId));
-    if (!arrivalItem) {
-      await journalErroneousAction(docId, { event_type: 'scanned_good_not_in_arrival', marking: itemId });
+    const arrivalItem = arrival.value?.items.find((i) => i.itemsToScan.find((is) => is.id == itemIdOrCode || is.code == itemIdOrCode));
+    const itemId = arrivalItem?.itemsToScan.find((i) => i.id == itemIdOrCode || i.code == itemIdOrCode)?.id;
+    if (!arrivalItem || !itemId) {
+      await journalErroneousAction(docId, { event_type: 'scanned_good_not_in_arrival', marking: itemIdOrCode });
       showSimpleNotification(t('scanned_good_not_in_arrival'));
       return;
     }
     if (arrivalItem.issuedItems.includes(itemId)) {
-      await journalErroneousAction(docId, { event_type: 'repeated_good_scan', marking: itemId });
+      await journalErroneousAction(docId, { event_type: 'repeated_good_scan', marking: itemIdOrCode });
       showSimpleNotification(t('repeated_good_scan'));
       return;
     }
@@ -162,7 +164,7 @@ function documentGoodsArrival(ad: KioskDocument, goodsStore: ReturnType<typeof u
         price: total / quant,
         title: good?.title,
         image: good?.images[0]?.image,
-        itemsToScan: goodDetails.map(d => d.doc_detail_link),
+        itemsToScan: goodDetails.map(d => ({ id: d.doc_detail_link, code: d.doc_detail_link_b58 })),
         issued: 0,
         issuedItems: [] as string[],
         confirmed: false,

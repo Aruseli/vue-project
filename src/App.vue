@@ -16,6 +16,8 @@
   import {closeAllDialogs } from "./services/dialogs";
   import * as usersService from 'src/services/users';
   import Ping from './components/components-v3/ping.vue';
+  import { initTerminal } from "./services/terminal";
+  import { updateShifts } from "./services/shifts";
 
   const route = useRoute()
   const router = useRouter()
@@ -32,6 +34,47 @@
     if (evt.cmd == 'barcode' && process.env.DEV && evt.data == 'debugGenerateArrival') {
       await debugGenerateArrival();
     }
+
+    // GoodBarcode
+    function tryGetGoodIdOrCodeFromBarchode() {
+      if (evt.cmd != 'barcode') {
+        return null;
+      }
+      const linkGoodRegexp = /[?&]g=([0-9a-zA-Z]+)/;
+      const goodCode = evt.data.match(linkGoodRegexp)?.[1];
+      if (goodCode) {
+        return goodCode;
+      }
+
+      const uuidRegExp = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi
+      const uuids = evt.data.match(uuidRegExp);
+      if (uuids?.length > 1) {
+        console.error("What's with uuids? Why not one?", uuids);
+        return null;
+      }
+      if (uuids?.length == 1) {
+        return uuids[0];
+      }
+
+      return null;
+    }
+    const goodIdOrCode = tryGetGoodIdOrCodeFromBarchode();
+    if (goodIdOrCode) {
+      if (route.path == `/issuing-order/order/${route.params.id}`) {
+        await ordersStore.scanGood(goodIdOrCode);
+      }
+      if (route.path == `/arrival-goods/${route.params.id}`) {
+        await arrivalsStore.scanArrivalGood(goodIdOrCode);
+      }
+      if (route.path == '/complete-inventory' ||
+          route.path == '/open-shift/complete-inventory' ||
+          route.path == '/close-shift/complete-inventory' ||
+          route.path == '/selective-inventory'
+      ) {
+        await inventoryStore.scanInventoryGood(goodIdOrCode);
+      }
+    }
+
     const uuidRegExp = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi
     if (evt.cmd == 'barcode' && uuidRegExp.test(evt.data)) {
       const uuids = evt.data.match(uuidRegExp);
@@ -39,23 +82,9 @@
         console.error("What's with uuids? Why not one?", uuids);
         return;
       }
-      // GoodBarcode
-      if (route.path == `/issuing-order/order/${route.params.id}`) {
-        await ordersStore.scanGood(uuids[0]);
-      }
-      if (route.path == `/arrival-goods/${route.params.id}`) {
-        await arrivalsStore.scanArrivalGood(uuids[0]);
-      }
-      if (route.path == '/complete-inventory' ||
-          route.path == '/open-shift/complete-inventory' ||
-          route.path == '/close-shift/complete-inventory' ||
-          route.path == '/selective-inventory'
-      ) {
-        await inventoryStore.scanInventoryGood(uuids[0]);
-      }
 
       // DocumentBarcode
-      if (appStore.orderIssueIsAllowed && route.path == '/employee-actions') {
+      if (appStore.orderIssueIsAllowed && (route.path == '/employee-actions' || route.path == '/')) {
         await ordersStore.updateOrders()
         // if (process.env.DEV) {
         console.log('Order ids', ordersStore.ordersDocuments.map(d => d.id));
@@ -66,7 +95,7 @@
           }
         });
       }
-      if (appStore.arrivalsAreAllowed && route.path == '/employee-actions') {
+      if (appStore.arrivalsAreAllowed && route.path == '/employee-actions' || route.path == '/') {
         await arrivalsStore.updateArrivals();
         // if (process.env.DEV) {
         console.log('Arrival ids', arrivalsStore.arrivalsDocuments.map(d => d.id));
@@ -95,8 +124,8 @@
             router.push('/employee-actions')
           }
           break;
-        case '230': // Document
-          if (appStore.orderIssueIsAllowed && route.path == '/employee-actions') {
+        case '230': // Document, OBSOLETE
+          if (appStore.orderIssueIsAllowed && route.path == '/employee-actions' || route.path == '/') {
             await ordersStore.updateOrders()
             // if (process.env.DEV) {
             console.log('Order barcodes', ordersStore.ordersDocuments.map(d => d.barcode));
@@ -107,7 +136,7 @@
               }
             });
           }
-          if (appStore.arrivalsAreAllowed && route.path == '/employee-actions') {
+          if (appStore.arrivalsAreAllowed && route.path == '/employee-actions' || route.path == '/') {
             await arrivalsStore.updateArrivals();
             // if (process.env.DEV) {
             console.log('Arrival barcodes', arrivalsStore.arrivalsDocuments.map(d => d.barcode));
@@ -131,7 +160,7 @@
   // ======================================================
 
   // should init in onmounted becauce depends on route which is undefined before mount
-  const appStore = ref<ReturnType<typeof useAppStore> | null>(null)
+  const appStore = useAppStore()
   const redirectAt = ref(0);
   const countdown = ref(0);
   const redirectDialogState = ref(false);
@@ -150,7 +179,7 @@
       redirectSettings.value = null;
       return;
     }
-    const settings = appStore.value?.kioskState.settings ?? throwErr('Settings are not defined');
+    const settings = appStore.kioskState.settings ?? throwErr('Settings are not defined');
     // menu
     if (/^\/(employee-actions|issued-order)$/.test(route.path)) {
       redirectSettings.value = {
@@ -190,7 +219,7 @@
   }
 
   const getRedirectSettings = () => {
-    if (appStore.value?.kioskState.status != "Ready") {
+    if (appStore.kioskState.status != "Ready") {
       return undefined;
     }
     if (route.path != lastPath.value) {
@@ -208,15 +237,19 @@
     if (!redirectSettings) {
       return;
     }
-    if (redirectSettings.action == 'customer') {
-      await appStore.value?.updateShifts();
-      if (appStore.value?.customerModeIsAllowed) {
-        await router.push('hello');
-        return;
+    try {
+      if (redirectSettings.action == 'customer') {
+        await updateShifts(true);
+        if (appStore.customerModeIsAllowed) {
+          await router.push('/hello');
+          return;
+        }
       }
+    } catch (e) {
+      console.error(e);
     }
     // action == 'lock' | whatever
-    await appStore.value?.lockTerminal();
+    await appStore.lockTerminal();
   }
 
   const tick = () => {
@@ -265,9 +298,9 @@
   const redirectTimer = ref<NodeJS.Timeout | null>(null);
   const boundResetTimer = resetRedirectTimer.bind(this);
   onMounted(() => {
-    router.isReady().then(() => {
-      appStore.value = useAppStore() as any;
+    initTerminal();
 
+    router.isReady().then(() => {
       router.beforeEach((to, from, next) => {
         closeAllDialogs();
         next();
@@ -283,9 +316,6 @@
       ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
         document.addEventListener(e, boundResetTimer)
       )
-      if (appStore.value) {
-          appStore.value.colorMode = 'dark';
-        }
     });
   })
 

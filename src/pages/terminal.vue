@@ -12,6 +12,7 @@
   import * as usersService from 'src/services/users';
 import Image from 'src/components/components-v3/image.vue';
 import LogoCube from 'src/components/logo/logo-cube.vue';
+import { settings, terminalCode, terminalParams } from 'src/services/terminal';
 
   const $q = useQuasar();
   const appStore = useAppStore();
@@ -43,15 +44,11 @@ import LogoCube from 'src/components/logo/logo-cube.vue';
     }
   }
 
-  onMounted(() => {
-    appStore.colorMode = 'dark';
-  });
-
   // statuses are here because I wasn't able to force type safety for enum in v-if
   let statusIsUnknown = computed(() => appStore.kioskState.status == 'Unknown')
   let statusIsUnboundTerminal = computed(() => appStore.kioskState.status == 'UnboundTerminal')
   let statusIsUnauthenticated = computed(() => appStore.kioskState.status == 'Unauthenticated')
-  let statusIsUnrecoverableError = computed(() => appStore.kioskState.status == 'UnrecoverableError')
+  let statusIsGlobalError = computed(() => appStore.kioskState.status == 'GlobalError')
   let statusIsReady = computed(() => appStore.kioskState.status == 'Ready')
 </script>
 
@@ -59,11 +56,11 @@ import LogoCube from 'src/components/logo/logo-cube.vue';
   <router-view v-if="statusIsReady" />
   <q-page v-if="!statusIsReady" class="flex flex-center relative bg-secondary" style="height: 100%; width: 100%">
     <div class="pa-40 items-center row full-height">
-      <div v-if="statusIsUnrecoverableError">
+      <div v-if="statusIsGlobalError">
         <q-card class='bg-secondary no-box-shadow'>
           <q-card-section>
             <div class="text-h2 text-white text-center">{{ $t('unrecoverable_error') }}</div>
-            <p>{{ appStore.kioskState.globalError?.message }}</p>
+            <div class="text-h2 text-white text-center mt-50">{{ appStore.kioskState.globalError?.message }}</div>
           </q-card-section>
         </q-card>
       </div>
@@ -84,15 +81,15 @@ import LogoCube from 'src/components/logo/logo-cube.vue';
             </div>
             <div>
               <div class="text-h3 text-center q-mb-md text-weight-bold">
-                Код терминала <code style="font-family: 'Courier New', monospace">{{ appStore.kioskState.code }}</code>
+                Код терминала <code style="font-family: 'Courier New', monospace">{{ terminalCode }}</code>
               </div>
               <div
-                v-if="appStore.kioskState.params?.terminal_id"
+                v-if="terminalParams?.terminal_id"
                 class="q-mx-auto q-mb-md"
                 style="width: 300px; height: 300px"
               >
                 <qrcode-vue
-                  :value="appStore.kioskState.params?.terminal_id"
+                  :value="terminalParams?.terminal_id"
                   level="M"
                   render-as="svg"
                   :size="300"
@@ -106,15 +103,15 @@ import LogoCube from 'src/components/logo/logo-cube.vue';
 
       <div v-if="statusIsUnauthenticated" class="full-height column items-center justify-center container">
 
-        <Logo class="logo_column" v-show="!appStore.kioskState.settings?.keyboard_login_enabled">
+        <Logo class="logo_column" v-show="settings?.keyboard_login_enabled">
           <LogoSvg fill="#FAFAFA" />
         </Logo>
-        <LogoCube v-show="appStore.kioskState.settings?.keyboard_login_enabled" />
+        <LogoCube v-show="!settings?.keyboard_login_enabled" />
 
         <q-form
           class="text-text fit"
           @submit.prevent="onSubmitLogin"
-          v-if="!appStore.kioskState.settings?.keyboard_login_enabled"
+          v-if="settings?.keyboard_login_enabled"
         >
           <q-input
             v-model="state.userName"

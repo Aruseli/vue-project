@@ -3,9 +3,9 @@ import { defineStore } from 'pinia';
 import { updateCatalogLocales } from 'src/services/locales';
 import { KioskState } from 'src/types/kiosk-state';
 import { computed, reactive, ref, watchEffect } from 'vue';
-import { Router, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { currentUser, logout, startLoopUpdateCurrentUser } from 'src/services/users';
-import { initTerminal, settings, terminalParams } from 'src/services/terminal';
+import { settings, terminalCode, terminalParams } from 'src/services/terminal';
 import { kioskCorr, userCorr } from 'src/services/documents/correspondents';
 import { closeTerminalShift, locationShift, openTerminalShift, startClosingTerminalShift, terminalShift, terminalShiftOpenedBy, terminalShiftPreviousClosedBy, updateShifts } from 'src/services/shifts';
 
@@ -38,15 +38,6 @@ export const useAppStore = defineStore('app', () => {
   })
 
   router.isReady().then(() => {
-    kioskState.name = getTerminalName(router);
-    kioskState.code = getTerminalCode(router);
-
-    if (!kioskState.code) {
-      kioskState.globalError = new Error(t('no_terminal_code_provided_on_startup'))
-      kioskState.status = 'UnrecoverableError'
-    }
-
-    initTerminal(kioskState.name, kioskState.code);
     router.push('/');
   })
 
@@ -112,6 +103,15 @@ export const useAppStore = defineStore('app', () => {
     const locationShiftIsReady = locationShift.value !== undefined;
     const terminalShiftIsReady = terminalShift.value !== undefined;
 
+    kioskState.globalError = undefined;
+    if (!terminalCode.value) {
+      kioskState.globalError = new Error(t('no_terminal_code_provided_on_startup'))
+    } else if (currentUser.value && kioskCorr.value === null) {
+      kioskState.globalError = new Error(t('missing_kiosk_corr'))
+    } else if (currentUser.value && userCorr.value === null) {
+      kioskState.globalError = new Error(t('missing_user_corr'))
+    }
+
     const oldStatus = kioskState.status
     let newStatus: KioskState['status'] = deduceStatus(kioskState)
 
@@ -122,8 +122,7 @@ export const useAppStore = defineStore('app', () => {
           'UnboundTerminal',
         ].findIndex(s => s == newStatus) >= 0
       ) {
-        kioskState.globalError = new Error(t('TERMINAL_WAS_UNREGISTERED'))
-        newStatus = 'UnrecoverableError'
+        window.location.reload(); // Just reload
     }
 
     if (!inited &&
@@ -208,23 +207,9 @@ export const useAppStore = defineStore('app', () => {
   }
 });
 
-function getTerminalCode(router: Router) {
-  const queryParams = router.currentRoute.value.query
-  const terminalCode = queryParams?.terminalCode?.toString()
-  if (!terminalCode && process.env.DEV) {
-    return 'kiosk-test';
-  }
-  return terminalCode ?? '';
-}
-
-function getTerminalName(router: Router) {
-  const queryParams = router.currentRoute.value.query
-  return queryParams?.terminalName?.toString() ?? 'Unnamed kiosk'
-}
-
 function deduceStatus(kioskState: KioskState) {
-  if (kioskState.globalError || kioskState.status == 'UnrecoverableError') {
-    return 'UnrecoverableError'
+  if (kioskState.globalError) {
+    return 'GlobalError'
   }
   if (!kioskState.params?.terminal_id) {
     return 'Unknown'

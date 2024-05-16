@@ -37,7 +37,6 @@
     forceNewVisit();
     app.resetLocale();
     shiftsUpdateTimer.value = setTimeout(updateShifts, 0)  as unknown as number;
-    app.colorMode = 'dark';
     show.value = true;
   })
   onUnmounted(() => {

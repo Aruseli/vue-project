@@ -89,9 +89,10 @@ export const useOrdersStore = defineStore("orders", () => {
         ? documentToOrder(orderDoc, goodsStore)
         : null;
       currentOrderDocument.value = orderDoc;
-      const debugGoodItemIds = currentOrder.value?.items.flatMap(i => goodsStore.getGoodById(i.id).items.map(item => item.mark));
-      console.log("Order expected good individual IDs", debugGoodItemIds);
-      console.log(debugGoodItemIds?.map(s => `curl --location 'http://127.0.0.1:3010/api/system/emulate/barcode?code=${s}'`).join('\n'));
+      const debugGoodItemCodes = currentOrder.value?.items.flatMap(i => goodsStore.getGoodById(i.id).items.map(item => item.code));
+      console.log("Order expected good individual codes", debugGoodItemCodes);
+      console.log(debugGoodItemCodes?.map(s => `curl --location 'http://127.0.0.1:3010/api/system/emulate/barcode?code=''url?g=${s}'''`).join('\n'))
+      console.log(debugGoodItemCodes?.map(s => `https://tdp.high-thai.com/api/system/emulate/barcode?code=''url?g=${s}''`).join('\n'))
     } catch(e) {
       console.error(e);
       currentOrder.value = null;
@@ -188,31 +189,32 @@ export const useOrdersStore = defineStore("orders", () => {
       }));
   };
 
-  const scanGood = async (itemId: string) => {
+  const scanGood = async (itemIdOrCode: string) => {
     const docId = currentOrder.value?.id ?? throwErr("Missing currentOrder.value?.id");
-    const good = goodsStore.getGoodByItemId(itemId);
-    if (!good) {
-      await journalErroneousAction(docId, { event_type: 'unknown_good_marking', marking: itemId });
+    const good = goodsStore.getGoodByItemCode(itemIdOrCode) ?? goodsStore.getGoodByItemId(itemIdOrCode);
+    const itemId = good?.items.find(g => g.code == itemIdOrCode || g.mark == itemIdOrCode)?.mark;
+    if (!good || !itemId) {
+      await journalErroneousAction(docId, { event_type: 'unknown_good_marking', marking: itemIdOrCode });
       showSimpleNotification(t('unknown_good_marking'));
       return;
     }
     const currentOrderItem = currentOrder.value?.items.find((i) => i.id == good.id);
     if (!currentOrderItem) {
-      await journalErroneousAction(docId, { event_type: 'scanned_good_is_not_in_order', marking: itemId });
+      await journalErroneousAction(docId, { event_type: 'scanned_good_is_not_in_order', marking: itemIdOrCode });
       showSimpleNotification(t('scanned_good_is_not_in_order'));
       return;
     }
     if (currentOrderItem.issuedItems.includes(itemId)) {
-      await journalErroneousAction(docId, { event_type: 'repeated_good_scan', marking: itemId });
+      await journalErroneousAction(docId, { event_type: 'repeated_good_scan', marking: itemIdOrCode });
       showSimpleNotification(t('repeated_good_scan'));
       return;
     }
     if (currentOrderItem.issued >= currentOrderItem.quant) {
-      await journalErroneousAction(docId, { event_type: 'order_overissue_attempt', marking: itemId });
+      await journalErroneousAction(docId, { event_type: 'order_overissue_attempt', marking: itemIdOrCode });
       showSimpleNotification(t('product_has_already_been_scanned'));
       return;
     }
-    currentOrderItem.issued = currentOrderItem.issuedItems.push(itemId);
+    currentOrderItem.issued = currentOrderItem.issuedItems.push();
   };
 
   const deleteGoodInCurrentOrder = async (id: string, reason: string) => {

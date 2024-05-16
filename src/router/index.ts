@@ -7,6 +7,7 @@ import {
 } from 'vue-router';
 
 import routes from './routes';
+import { terminalCode, terminalName } from 'src/services/terminal';
 
 /*
  * If not building with SSR mode, you can
@@ -34,12 +35,11 @@ export default route(function (/* { store, ssrContext } */) {
 
   // Persist some query params during navigation
   Router.beforeEach((to, from) => {
-    if (!to.query.terminalCode && from.query.terminalCode ||
-        !to.query.terminalName && from.query.terminalName) {
+    if (!to.query.terminalCode || !to.query.terminalName) {
       return Object.assign({}, to, {
         query: Object.assign({}, to.query, {
-          terminalCode: from.query.terminalCode,
-          terminalName: from.query.terminalName,
+          terminalCode: from.query.terminalCode ?? terminalCode.value,
+          terminalName: from.query.terminalName ?? terminalName.value,
         })
       })
     }

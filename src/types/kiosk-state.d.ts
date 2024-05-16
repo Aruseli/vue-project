@@ -133,9 +133,7 @@ export type TerminalShift = {
 }
 
 export type KioskState = {
-  status: 'Unknown' | 'UnboundTerminal' | 'Unauthenticated' | 'Ready' | 'UnrecoverableError',
-  name?: string,
-  code?: string,
+  status: 'Unknown' | 'UnboundTerminal' | 'Unauthenticated' | 'Ready' | 'GlobalError',
   /**
    * @deprecated in favor of `import { terminalParams } from 'src/services/terminal';`
    */

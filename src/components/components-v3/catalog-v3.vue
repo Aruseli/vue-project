@@ -160,7 +160,6 @@ import moment from 'moment';
       "touchstart",
     ].forEach((e) => document.addEventListener(e, boundResetTimer));
     selectedLang.value = localStorage.getItem("lang") || "";
-    app.colorMode = 'dark';
   });
 
   onUnmounted(() => {

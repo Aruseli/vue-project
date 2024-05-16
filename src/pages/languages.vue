@@ -21,10 +21,6 @@
       document.body.className = "v3_body_style";
     }
   }
-  onMounted(() => {
-    app.colorMode = 'dark';
-  })
-
 </script>
 
 <template>

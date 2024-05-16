@@ -6,7 +6,7 @@ export default {
    */
   "settings": {
     "loc": "en",
-    "tdp": "ws://127.0.0.1:3010",
+    "tdp": "ws://127.0.0.1:3010/ws",
 
     "view_ord": "a59a2a47-7ebb-497d-80ff-5b9386726871",
     "view_check": "ff7ce8d1-989f-4fc6-9ad4-4aacf65da9f8",
