@@ -176,11 +176,11 @@ import { showDialog } from 'src/services/dialogs';
             keep-color
           />
         </div>
+        <RectangularButton
+          :name="$t('delete')"
+          @click="deleteOrder(ordersStore.currentOrder?.id ?? '')"
+        />
       </div>
-      <RectangularButton
-        :name="$t('delete')"
-        @click="deleteOrder(ordersStore.currentOrder?.id ?? '')"
-      />
     </template>
     <template #actions v-if="openReason == false">
       <RectangularButton
