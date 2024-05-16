@@ -24,6 +24,10 @@
     emit('open');
     reasonDeletion.value = false;
   }
+  const deleteOrder = (reason) => {
+  // Вызываем событие 'delete-order' и передаем аргумент 'reason'
+    emit('deleteOrder', reason);
+  };
 </script>
 
 <template>
@@ -55,7 +59,7 @@
             :name="$t('confirm')"
             textColor="black"
             color="green"
-            @click="emit('deleteOrder')"
+            @click="deleteOrder(option)"
             classTitle="text-lowercase"
           />
         </div>
