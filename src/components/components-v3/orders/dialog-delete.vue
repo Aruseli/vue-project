@@ -1,9 +1,9 @@
-<script setup>
+<script setup lang="ts">
   import Modal from '../../overlay/modal.vue';
   import RectangularButton from '../buttons/rectangular-button.vue';
   import { ref } from 'vue';
 
-  const emit = defineEmits(['deleteOrder', 'open']);
+  const emit = defineEmits(['deletionWithReason', 'open', 'deletion']);
 
   const props = defineProps({
     modelValue: {
@@ -15,18 +15,32 @@
       type: String,
       required: true,
     },
+    option: {
+      type: String,
+    },
+    order: {
+      type: Boolean,
+      default: true,
+    }
   })
 
-  const option = ref();
-  const reasons = ['mistaking_order', 'no_confirming_age', 'buyer_left_without_placing_an_order', 'problems_with_payment', 'changes_in_terms_of_sale', 'order_cannot_be_completed_due_to_technical_reasons', 'products_are_out_of_stock']
+  const reasons = ['mistaking_order', 'no_confirming_age', 'buyer_left_without_placing_an_order', 'problems_with_payment', 'changes_in_terms_of_sale', 'order_cannot_be_completed_due_to_technical_reasons', 'products_are_out_of_stock'];
+
   const reasonDeletion = ref(false);
   const openDeletion = () => {
     emit('open');
     reasonDeletion.value = false;
-  }
-  const deleteOrder = (reason) => {
-  // Вызываем событие 'delete-order' и передаем аргумент 'reason'
-    emit('deleteOrder', reason);
+  };
+  const deletionMethod = (reason: string) => {
+    console.log('1')
+    if(props.order) {
+      console.log('2')
+      reasonDeletion.value = true
+      // Вызываем событие 'delete-order' и передаем аргумент 'reason'
+      emit('deletionWithReason', reason);
+    }
+    console.log('3')
+    emit('deletion');
   };
 </script>
 
@@ -49,7 +63,7 @@
               v-for="r in reasons"
               checked-icon="img:/radio-check.svg"
               unchecked-icon="img:/radio.svg"
-              v-model="option"
+              v-model="props.option"
               :val="$t(r)"
               :label="$t(r)"
               class="mb-15"
@@ -59,7 +73,7 @@
             :name="$t('confirm')"
             textColor="black"
             color="green"
-            @click="deleteOrder(option)"
+            @click="deletionMethod(props.option || '')"
             classTitle="text-lowercase"
           />
         </div>
@@ -71,7 +85,7 @@
         />
         <RectangularButton
           :name="$t('yes')"
-          @click="reasonDeletion = true"
+          @click="deletionMethod(props.option || '')"
         />
       </div>
     </div>

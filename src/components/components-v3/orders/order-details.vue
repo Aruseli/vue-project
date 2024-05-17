@@ -64,8 +64,8 @@ import DialogDelete from './dialog-delete.vue';
   const open = () => {
     openDialog.value = true;
   }
-  const deleteOrder = async (id: string) => {
-    await ordersStore.deleteOrder(id);
+  const deleteOrder = async (id: string, reason: string) => {
+    await ordersStore.deleteOrder(id, reason);
     router.go(-1);
   }
 </script>
@@ -137,8 +137,8 @@ import DialogDelete from './dialog-delete.vue';
   </div>
   <DialogDelete
     :modelValue="openDialog"
-    :orderNum="ordersStore.currentOrder?.orderNumStr"
-    @deleteOrder="deleteOrder(ordersStore.currentOrder?.id ?? '')"
+    :orderNum="ordersStore.currentOrder?.orderNumStr || ''"
+    @deletionWithReason="(reason) => deleteOrder(ordersStore.currentOrder?.id ?? '', reason)"
     @open="openDialog = false"
   />
 </template>

@@ -217,13 +217,12 @@ export const useOrdersStore = defineStore("orders", () => {
     currentOrderItem.issued = currentOrderItem.issuedItems.push();
   };
 
-  const deleteGoodInCurrentOrder = async (id: string, reason: string) => {
+  const deleteGoodInCurrentOrder = async (id: string) => {
     const docId = currentOrder.value?.id ?? throwErr("Missing currentOrder.value?.id");
     const item = currentOrder.value?.items.find(i => i.id == id);
     if (item) {
       item.deleted = true;
       recalculateTotals(currentOrder.value!);
-      await journalDeletion(docId, { event_type: 'delete_good_in_current_order', marking: item, reason: reason })
     }
   }
 

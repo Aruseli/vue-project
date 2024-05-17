@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import Bin from './bin.vue';
   import DialogDelete from './dialog-delete.vue';
-  import RectangularButton from '../buttons/rectangular-button.vue';
   import { ref } from 'vue';
   import Image from '../image.vue';
 
@@ -52,7 +51,7 @@
   <DialogDelete
     :orderNum="props.good.title"
     :modelValue="openDialog"
-    @deleteOrder="emit('deleteProduct')"
+    @deletion="emit('deleteProduct')"
     @open="openDialog = false"
   />
 </template>
