@@ -69,7 +69,7 @@ export const useOrdersStore = defineStore("orders", () => {
       if (doc) {
         doc.state = 1;
         await apiSaveDocument(doc, appStore.kioskState.terminalShift?.id ?? '')
-        await journalDeletion(doc.id, { event_type: 'delete_current_order', marking: id, reason: reason })
+        await journalDeletion(doc.id, { event_type: 'delete_current_order', reason: reason })
       }
     } finally {
       ordersLoading.value = false;
@@ -214,7 +214,7 @@ export const useOrdersStore = defineStore("orders", () => {
       showSimpleNotification(t('product_has_already_been_scanned'));
       return;
     }
-    currentOrderItem.issued = currentOrderItem.issuedItems.push();
+    currentOrderItem.issued = currentOrderItem.issuedItems.push(itemId);
   };
 
   const deleteGoodInCurrentOrder = async (id: string) => {
