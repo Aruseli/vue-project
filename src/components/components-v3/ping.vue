@@ -58,11 +58,11 @@ onUnmounted(() => {
       transition-show="slide-up"
       transition-hide="slide-down"
     >
-    <q-card>
-        <q-card-section>
-          <div class="text-h6">Network Unavailable</div>
-        </q-card-section>
-      </q-card>
+    <q-card  class='bg-secondary no-box-shadow'>
+      <q-card-section>
+        <div class="text-h2 text-white text-center q-my-xl">{{ $t('out_of_network') }}</div>
+      </q-card-section>
+    </q-card>
     </q-dialog>
 </template>
 
