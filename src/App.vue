@@ -16,6 +16,8 @@
   import {closeAllDialogs } from "./services/dialogs";
   import * as usersService from 'src/services/users';
   import Ping from './components/components-v3/ping.vue';
+  import { initTerminal } from "./services/terminal";
+  import { updateShifts } from "./services/shifts";
 
   const route = useRoute()
   const router = useRouter()
@@ -158,7 +160,7 @@
   // ======================================================
 
   // should init in onmounted becauce depends on route which is undefined before mount
-  const appStore = ref<ReturnType<typeof useAppStore> | null>(null)
+  const appStore = useAppStore()
   const redirectAt = ref(0);
   const countdown = ref(0);
   const redirectDialogState = ref(false);
@@ -177,7 +179,7 @@
       redirectSettings.value = null;
       return;
     }
-    const settings = appStore.value?.kioskState.settings ?? throwErr('Settings are not defined');
+    const settings = appStore.kioskState.settings ?? throwErr('Settings are not defined');
     // menu
     if (/^\/(employee-actions|issued-order)$/.test(route.path)) {
       redirectSettings.value = {
@@ -217,7 +219,7 @@
   }
 
   const getRedirectSettings = () => {
-    if (appStore.value?.kioskState.status != "Ready") {
+    if (appStore.kioskState.status != "Ready") {
       return undefined;
     }
     if (route.path != lastPath.value) {
@@ -235,15 +237,19 @@
     if (!redirectSettings) {
       return;
     }
-    if (redirectSettings.action == 'customer') {
-      await appStore.value?.updateShifts();
-      if (appStore.value?.customerModeIsAllowed) {
-        await router.push('hello');
-        return;
+    try {
+      if (redirectSettings.action == 'customer') {
+        await updateShifts(true);
+        if (appStore.customerModeIsAllowed) {
+          await router.push('/hello');
+          return;
+        }
       }
+    } catch (e) {
+      console.error(e);
     }
     // action == 'lock' | whatever
-    await appStore.value?.lockTerminal();
+    await appStore.lockTerminal();
   }
 
   const tick = () => {
@@ -292,9 +298,9 @@
   const redirectTimer = ref<NodeJS.Timeout | null>(null);
   const boundResetTimer = resetRedirectTimer.bind(this);
   onMounted(() => {
-    router.isReady().then(() => {
-      appStore.value = useAppStore() as any;
+    initTerminal();
 
+    router.isReady().then(() => {
       router.beforeEach((to, from, next) => {
         closeAllDialogs();
         next();
@@ -310,9 +316,6 @@
       ["mousemove", "keydown", "click", "scroll", "touchmove", "touchstart"].forEach(e =>
         document.addEventListener(e, boundResetTimer)
       )
-      if (appStore.value) {
-          appStore.value.colorMode = 'dark';
-        }
     });
   })
 

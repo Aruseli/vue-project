@@ -99,7 +99,6 @@ import { showDialog } from 'src/services/dialogs';
       })
       router.push('/employee-actions')
     }
-    appStore.colorMode = 'light';
   })
 
   const reset = (id: string) => {

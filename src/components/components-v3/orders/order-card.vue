@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import Bin from './bin.vue';
   import DialogDelete from './dialog-delete.vue';
-  import RectangularButton from '../buttons/rectangular-button.vue';
   import { ref } from 'vue';
   import Image from '../image.vue';
 
@@ -40,30 +39,21 @@
         </div>
       </div>
     </div>
-      <div class="column justify-between items-right">
-        <Bin @click="open" class="px-0" :round="false" />
-        <div class="text-h4 row q-gutter-x-sm">
-          <span>{{ props.good.issued > 0 ? props.good.issued + ' / ' : '' }}</span>
-          <span>{{ props.good.quant }}</span>
-          <span>{{ $t('pc', {count: props.good.quant}) }}</span>
-        </div>
+    <div class="column justify-between items-right">
+      <Bin @click="open" class="px-0" :round="false" />
+      <div class="text-h4 row q-gutter-x-sm">
+        <span>{{ props.good.issued > 0 ? props.good.issued + ' / ' : '' }}</span>
+        <span>{{ props.good.quant }}</span>
+        <span>{{ $t('pc', {count: props.good.quant}) }}</span>
       </div>
     </div>
-  <DialogDelete :modelValue="openDialog" title="delete_order">
-    <template #content>
-      <div class="text-center text-uppercase text-h3 mb-20">{{ props.good.title }}</div>
-    </template>
-    <template #actions>
-      <RectangularButton
-        :name="$t('no')"
-        @click="openDialog = false"
-        />
-        <RectangularButton
-        :name="$t('yes')"
-        @click="emit('deleteProduct')"
-        />
-    </template>
-  </DialogDelete>
+  </div>
+  <DialogDelete
+    :orderNum="props.good.title"
+    :modelValue="openDialog"
+    @deletion="emit('deleteProduct')"
+    @open="openDialog = false"
+  />
 </template>
 
 <style scoped lang="scss">

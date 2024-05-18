@@ -11,11 +11,13 @@
   import {default as EmployeeActionsOld} from '../components/catalog/employee-actions.vue';
   import TestZone from 'src/components/components-v3/test-zone.vue';
   import { showDialog, showSimpleNotification } from '../services/dialogs';
+import { useOrdersStore } from 'src/stores/orders';
 
   const $q = useQuasar();
   const router = useRouter();
   const app = useAppStore();
   const goodsStore = useGoodsStore();
+  const ordersStore = useOrdersStore();
   const inventoryStore = useInventoryStore();
   const inventoryRequests = ref(0);
 
@@ -64,6 +66,8 @@
         name: 'issue_order',
         click: () => route('issuing-order'),
         disable: !app.orderIssueIsAllowed,
+        badge: ordersStore.orders.length > 0 ? true : false,
+        badge_text: ordersStore.orders.length.toString(),
       },
       {
         name:'selective_inventory',
@@ -71,6 +75,7 @@
         // TODO rights__kiosk_selective_inventory_extended
         disable: inventoryRequests.value > 0 ? !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_selective_inventory) : true,
         badge: inventoryRequests.value > 0 ? true : false,
+        badge_text: inventoryRequests.value.toString(),
       },
       {
         name: 'complete_inventory',
@@ -80,7 +85,7 @@
       {
         name: 'arrival_goods',
         click: async () => {
-          await showSimpleNotification(t("scan_the_barcode_of_the_document"),'/barcode_scanner.svg')
+          showSimpleNotification(t("scan_the_barcode_of_the_document"),'/barcode_scanner.svg')
         },
         disable: !app.arrivalsAreAllowed,
       },
@@ -94,6 +99,12 @@
         },
         disable: !app.shiftIsGood || !app.hasRight(app.kioskState.settings?.rights__kiosk_print_stock),
       },
+      {
+        name: 'reload_interface',
+        click: async () => {
+          window.location.reload();
+        },
+      }
     ];
   });
 
@@ -106,6 +117,7 @@
       goodsStore.updateGoods(i18next.language); // Don't await intentionally
     }
     await app.updateShifts();
+    await ordersStore.updateOrders();
     await inventoryStore.updateInventoryRequests();
     inventoryRequests.value = inventoryStore.inventoryRequestsDocuments.length;
     if( inventoryRequests.value > 0 && app.shiftIsGood && app.hasRight(app.kioskState.settings?.rights__kiosk_selective_inventory) ) {
@@ -125,12 +137,10 @@
   <q-page class="flex flex-center bg-secondary relative-position">
     <EmployeeActions
       :buttons="buttons"
-      :inventoryRequests="inventoryRequests"
       v-if="app.kioskState.settings?.alt_ui === 'design_v3'"
     />
     <EmployeeActionsOld
       :buttons="buttons"
-      :inventoryRequests="inventoryRequests"
       v-if="app.kioskState.settings?.alt_ui !== 'design_v3'"
     />
     <!-- <TestZone /> -->

@@ -15,9 +15,9 @@ import moment from 'moment';
   const router = useRouter();
   const goodsStore = useGoodsStore();
   const ordersStore = useOrdersStore();
-  const app = useAppStore();
-  const deleteOrder = async (id: string) => {
-    await ordersStore.deleteOrder(id);
+  const deleteOrder = async (id: string, reason: string) => {
+    console.log('id', id,'reason', reason);
+    await ordersStore.deleteOrder(id, reason);
   }
 
   const goToOrder = (id: string) => {
@@ -39,7 +39,6 @@ import moment from 'moment';
       })
       router.push('/employee-actions')
     }
-    app.colorMode = 'light';
   })
 </script>
 
@@ -58,7 +57,7 @@ import moment from 'moment';
           <ExistOrder
             :order="order"
             @click="goToOrder(order.id)"
-            @deleteOrder="deleteOrder(order.id)"
+            @deleteOrder="(reason) => deleteOrder(order.id, reason)"
           />
         </div>
       </transition-group>

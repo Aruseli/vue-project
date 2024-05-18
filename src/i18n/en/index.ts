@@ -132,4 +132,15 @@ export default {
   cart_item_is_limited_by_stock: 'Cannot add more items than is available',
   scan_badge: "scan the employee's badge",
   main_menu: "main menu",
+  missing_user_corr: "User correspondent is missing",
+  missing_kiosk_corr: "Kiosk correspondent is missing",
+  reload_interface: "Reload interface",
+  reason_for_deletion: 'Please indicate the reason for deleting the order:',
+  mistaking_order: 'Mistaking order',
+  no_confirming_age: 'No documents confirming age',
+  buyer_left_without_placing_an_order: 'The buyer left without placing an order',
+  problems_with_payment: 'Problems with payment',
+  changes_in_terms_of_sale: 'Changes in terms of sale',
+  order_cannot_be_completed_due_to_technical_reasons: 'The order cannot be completed due to technical reasons',
+  products_are_out_of_stock: 'Products are out of stock'
 };

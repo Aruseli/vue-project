@@ -5,6 +5,7 @@ import { computed, ref, watch, onMounted, onUnmounted } from 'vue';
 import { apiHealthCheck, ws } from "src/services";
 import config from "src/services/config";
 import { useRouter } from 'vue-router';
+import { terminalName } from 'src/services/terminal';
 
 const router = useRouter();
 const app = useAppStore();
@@ -37,7 +38,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  clearInterval(healthCheckInterval); 
+  clearInterval(healthCheckInterval);
 });
 </script>
 
@@ -45,7 +46,7 @@ onUnmounted(() => {
   <div class="row ping_block"
     :class="[app.lang_dir == 'rtl' ? 'ping_container_rtl' : 'ping_container']"
   >
-    <div :class="textColorClass">{{ app.kioskState.name }}</div>
+    <div :class="textColorClass">{{ terminalName }}</div>
     <div :class="textColorClass">{{ formattedTime }}</div>
     <div :class="!isCatUnhealthy ? 'ping_cat_light' : 'ping_cat_light__not_signal'" />
     <div :class="isWsHealthy ? 'ping_tdp_light' : 'ping_tdp_light__not_signal'" />

@@ -26,6 +26,7 @@ export type Settings = {
   doc_type__inventory_request: string,
   docdetail_type__inventory_request: string,
   docoperation_type__erroneous_action: string,
+  docoperation_type__deletion_reason: string,
   inventory_request_state_requested: number,
   inventory_request_state_fulfilled: number,
 
@@ -132,9 +133,7 @@ export type TerminalShift = {
 }
 
 export type KioskState = {
-  status: 'Unknown' | 'UnboundTerminal' | 'Unauthenticated' | 'Ready' | 'UnrecoverableError',
-  name?: string,
-  code?: string,
+  status: 'Unknown' | 'UnboundTerminal' | 'Unauthenticated' | 'Ready' | 'GlobalError',
   /**
    * @deprecated in favor of `import { terminalParams } from 'src/services/terminal';`
    */

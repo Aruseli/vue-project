@@ -1,14 +1,8 @@
 <script setup lang="ts">
-  import { useQuasar } from 'quasar';
   import DividerThin from '../../dividers/divider-thin.vue';
   import Bin from './bin.vue';
-  import { useCartStore } from 'src/stores/cart';
   import { ref } from 'vue';
   import DialogDelete from './dialog-delete.vue';
-  import RectangularButton from '../buttons/rectangular-button.vue';
-
-  const cartStore = useCartStore();
-  const $q = useQuasar();
 
   const emit = defineEmits(['click', 'deleteOrder']);
 
@@ -17,7 +11,14 @@
       type: Object,
       required: true,
     },
+    option: {
+      type: String,
+    }
   })
+
+  const deletion = (reason: string) => {
+    emit('deleteOrder', reason);
+  }
 
   const isDisabled = ref(false);
 
@@ -45,21 +46,13 @@
       <Bin @click="open" class="px-0" :round="false" :disable="isDisabled" />
     </div>
   </div>
-  <DialogDelete :modelValue="openDialog" title="delete_order">
-    <template #content>
-      <div class="text-center text-uppercase text-h3 mb-40">№ {{ props.order.orderNumStr }}</div>
-    </template>
-    <template #actions>
-      <RectangularButton
-        :name="$t('no')"
-        @click="openDialog = false"
-        />
-        <RectangularButton
-        :name="$t('yes')"
-        @click="emit('deleteOrder')"
-        />
-    </template>
-  </DialogDelete>
+  <DialogDelete
+    :modelValue="openDialog"
+    :orderNum="props.order.orderNumStr"
+    @deletionWithReason="deletion(props.option || '')"
+    @open="openDialog = false"
+    :order="true"
+  />
 </template>
 
 <style scoped lang="scss">

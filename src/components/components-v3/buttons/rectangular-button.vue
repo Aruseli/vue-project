@@ -45,7 +45,7 @@
 
 <style scoped>
 button {
-  box-shadow: var(--border-shadow);
+  /* box-shadow: var(--border-shadow); */
   border-radius: var(--border-xxs);
   height: 80px;
 }

@@ -7,22 +7,23 @@ import { apiAddAnyTerminal } from "./api";
 import config from "./config";
 import { delay } from "./utils";
 
+export const terminalName = ref<string>('');
+export const terminalCode = ref<string>('');
 export const terminalParams = ref<TerminalParams | undefined>(undefined);
 /**
  * This is the `{ .."config.js"."settings", ..backend_terminal_settings }`.
  * Settings from server have higher priority than local settings.
  */
 export const settings = ref<Settings | undefined>(undefined);
-let _inited = false;
-let _name = '';
-let _code = '';
 
-export async function initTerminal(name: string, code: string) {
+let _inited = false;
+export async function initTerminal() {
   if (_inited) {
     throw new Error("Terminal service already inited");
   }
-  _name = name;
-  _code = code;
+  const params = new URLSearchParams(document.location.href.split('?')[1]);
+  terminalName.value = params.get('terminalName') ?? 'Unnamed kiosk';
+  terminalCode.value = params.get('terminalCode') ?? (process.env.DEV ? 'kiosk-test' : '');
   _inited = true;
   setTimeout(loopUpdateTerminalParams, 0);
 }
@@ -47,7 +48,7 @@ export async function updateTerminalParams() {
   }
   let success = true;
   try {
-    terminalParams.value = await apiAddAnyTerminal(_name, _code, config.terminal_type_id);
+    terminalParams.value = await apiAddAnyTerminal(terminalName.value, terminalCode.value, config.terminal_type_id);
     settings.value = {
       ...config.settings,
       ...terminalParams.value.terminal_settings,

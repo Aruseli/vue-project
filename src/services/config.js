@@ -6,7 +6,7 @@ export default {
    */
   "settings": {
     "loc": "en",
-    "tdp": "ws://127.0.0.1:3010",
+    "tdp": "ws://127.0.0.1:3010/ws",
 
     "view_ord": "a59a2a47-7ebb-497d-80ff-5b9386726871",
     "view_check": "ff7ce8d1-989f-4fc6-9ad4-4aacf65da9f8",
@@ -32,6 +32,7 @@ export default {
     "inventory_request_state_fulfilled": 6,
 
     "docoperation_type__erroneous_action": "850180e3-837f-436f-8d92-2a6ff4a8de97",
+    "docoperation_type__deletion_reason": "850180e3-837f-436f-8d92-2a6ff4a8de97",
 
     "rights__kiosk_open_shift": "a2bd93d9-c7a3-4a53-ace9-0a655ac4dff1",
     "rights__kiosk_close_own_shift": "05dcfdba-1b5c-477c-a2f4-e2ac341f5e72",
