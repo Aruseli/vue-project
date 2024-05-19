@@ -12,7 +12,7 @@ import DividerThin from '../../dividers/divider-thin.vue';
 import BackButton from '../buttons/back-button.vue';
 import OrderCard from './order-card.vue';
 import Bin from './bin.vue';
-import DialogDelete from './dialog-delete.vue';
+import DialogDeleteUnico from './dialog-delete-unico.vue';
 
   const $q = useQuasar();
   const appStore = useAppStore();
@@ -61,11 +61,18 @@ import DialogDelete from './dialog-delete.vue';
   }
 
   const openDialog = ref(false);
+  const openReasons = ref(false);
   const open = () => {
     openDialog.value = true;
   }
+  const closeReasons = () => {
+    openReasons.value = false;
+    openDialog.value = false;
+  }
   const deleteOrder = async (id: string, reason: string) => {
+    console.log('reason', reason)
     await ordersStore.deleteOrder(id, reason);
+    console.log('reason')
     router.go(-1);
   }
 </script>
@@ -135,11 +142,17 @@ import DialogDelete from './dialog-delete.vue';
       />
     </div>
   </div>
-  <DialogDelete
+  <DialogDeleteUnico
     :modelValue="openDialog"
+    :modelValueReason="openReasons"
     :orderNum="ordersStore.currentOrder?.orderNumStr || ''"
-    @deletionWithReason="(reason) => deleteOrder(ordersStore.currentOrder?.id ?? '', reason)"
+    @deletionWithReason="(reason) =>{
+      console.log(reason);
+      deleteOrder(ordersStore.currentOrder?.id ?? '', reason)
+    }"
     @open="openDialog = false"
+    @closeReasons="closeReasons"
+    @agreement="openReasons = true"
   />
 </template>
 

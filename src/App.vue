@@ -328,6 +328,7 @@
   <div id="drawer" />
   <Dialogs />
   <div id="redirect-dialog" />
+  <div id="reason-dialog" />
   <RedirectDialog
     :modelValue="redirectDialogState"
     mode="light"
