@@ -39,9 +39,8 @@
   })
 
   const thc = props.good.props.find((prop: any) => prop.prop_name === "THC")?.prop_value
-  const cbg = props.good.props.find((prop: any) => prop.prop_name === "CBG")?.prop_value
+  const cbd = props.good.props.find((prop: any) => prop.prop_name === "CBG")?.prop_value
   const strength = parseInt(props.good.props.find((prop: any) => prop.prop_name === "strength")?.prop_value)
-
 
   const goodInCart = computed(() => cartStore.cart.find((item) => item.id === props.good.id))
 
@@ -90,7 +89,7 @@
 
           <!-- characteristics for cannabis bud -->
           <div>
-            <div class="text-grey mb-14">{{ $t('variety') }}</div>
+            <!-- <div class="text-grey mb-14">{{ $t('variety') }}</div>
             <div class="text-white q-mb-lg text-capitalize">
               <span>{{ $t('hybrid') }}</span> &#183;
               <span>{{ $t('sativa') }}</span> &#183;
@@ -104,33 +103,32 @@
               <span>{{ $t('mint') }}</span>
             </div>
 
-            <div class="text-grey mb-14">{{ $t('technical_specifications') }}</div>
+            <div class="text-grey mb-14">{{ $t('technical_specifications') }}</div> -->
             <div class="text-white q-mb-lg text-capitalize">
-              <p style="margin-bottom: 15px;">{{ $t('relaxation') }}</p> 
-              <p style="margin-bottom: 15px;">{{ $t('calm') }}</p>
+              <!-- <div class="mb-15">{{ $t('relaxation') }}</div>
+              <div class="mb-15">{{ $t('calm') }}</div>
               <div
                 class="row items-center intensity_icons_container mr-10"
                 style="align-items: baseline"
                 :class="[app.lang_dir == 'rtl' ? 'intensity_icons_container_rtl' : '']"
-              >
-              <p style="margin-bottom: 15px;">{{ $t('thc') + ' ' + thc + '%' }}</p> 
-
-                <div 
+              > -->
+              <div class="text-uppercase mb-15">{{ $t('thc') + ' ' + thc + '%' }}</div>
+              <div
                   v-if="!isNaN(strength)"
-                  v-for="n in strength" 
-                  :key="n" 
+                  v-for="n in strength"
+                  :key="n"
                   class="intensity_icon bg-red"
-                />
-              </div>
-              <p style="margin-bottom: 0;">{{ $t('cbg') + ' ' + cbg + '%' }}</p>
+              />
+              <div class="text-uppercase">{{ $t('cbd') + ' ' + cbd + '%' }}</div>
             </div>
+            <!-- </div> -->
 
-            <div class="text-grey mb-14">{{ $t('set') }}</div>
+            <!-- <div class="text-grey mb-14">{{ $t('set') }}</div>
             <div class="text-white q-mb-lg text-capitalize">
               <span>{{ $t('product') }} 1:</span>&ensp;
               <span class="text-green">{{ $t('calm') }}</span> &#183;
               <span class="text-green">{{ $t('happy') }}</span>
-            </div>
+            </div> -->
           </div>
         </div>
         <slot name="slider-navigation" />
