@@ -56,7 +56,7 @@
     :modelValue="openDialog"
     :modelValueReason="openReasons"
     :orderNum="props.order.orderNumStr"
-    @deletionWithReason="deleteOrder(props.option || '')"
+    @deletionWithReason="deleteOrder(props.option)"
     @open="!openDialog"
     @closeReasons="closeReasons"
     @agreement="openReasons = true"

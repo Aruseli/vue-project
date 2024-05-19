@@ -33,7 +33,7 @@
 
   const reasons = ['mistaking_order', 'no_confirming_age', 'buyer_left_without_placing_an_order', 'problems_with_payment', 'changes_in_terms_of_sale', 'order_cannot_be_completed_due_to_technical_reasons', 'products_are_out_of_stock'];
   const selectedReason = ref(reasons[0]);
-  const updateParent = (value: string) => {
+  const updateReason = (value: string) => {
     emit('updateReason', value);
   };
 
