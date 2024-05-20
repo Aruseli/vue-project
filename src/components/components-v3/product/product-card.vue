@@ -77,14 +77,14 @@ import Image from '../image.vue';
       <AttentionIcon />
       <div class="text-subtitle1 row">
         <div
-          class="row items-center intensity_icons_container mr-10"
+          class="row items-center intensity_icons_container px-10"
           :class="[app.lang_dir == 'rtl' ? 'intensity_icons_container_rtl' : '']"
         >
           <div
             v-if="!isNaN(strength)"
             v-for="n in strength"
             :key="n"
-            class="intensity_icon bg-red"
+            :class="['intensity_icon', strength == 1 ? 'bg-green' : strength == 2 ? 'bg-yellow' : 'bg-red']"
           />
         </div>
         <div v-if="thc > 0">{{thc}}% THC</div>

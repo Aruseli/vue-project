@@ -112,13 +112,19 @@
                 style="align-items: baseline"
                 :class="[app.lang_dir == 'rtl' ? 'intensity_icons_container_rtl' : '']"
               > -->
-              <div class="text-uppercase mb-15">{{ $t('thc') + ' ' + thc + '%' }}</div>
-              <div
+              <div class="text-uppercase mb-15 row">{{ $t('thc') + ' ' + thc + '%' }}
+                <div
                   v-if="!isNaN(strength)"
-                  v-for="n in strength"
-                  :key="n"
-                  class="intensity_icon bg-red"
-              />
+                  class="row items-center px-10 q-gutter-x-xs"
+                >
+                  <div
+                    v-for="n in strength"
+                    :key="n"
+                    :class="['intensity_icon', strength == 1 ? 'bg-green' : strength == 2 ? 'bg-yellow' : 'bg-red']"
+                  />
+                </div>
+              </div>
+
               <div class="text-uppercase">{{ $t('cbd') + ' ' + cbd + '%' }}</div>
             </div>
             <!-- </div> -->
