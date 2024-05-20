@@ -65,9 +65,6 @@
 </template>
 
 <style scoped>
-.q-icon {
-  font-size: 4rem !important;
-}
 .disable_class {
   filter: brightness(0.5);
 }
