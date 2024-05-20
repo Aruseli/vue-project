@@ -220,10 +220,12 @@ import ProductCard from './product/product-card.vue';
             <li v-for='goodCategory in goodsStore.goods'
               :key='goodCategory.id'
               class="text-h3 text-weight-bold"
+
             >
               <div
                 @click.prevent="selectCategory(goodCategory.id)" :class='{active : goodCategory.id === selectedID}'
                 class="first_letter line_height_1_3"
+                v-if="goodCategory.goods.length > 0"
               >
                 {{ goodCategory.title }}
               </div>
@@ -261,22 +263,24 @@ import ProductCard from './product/product-card.vue';
         ref="target"
         class="mb-90"
       >
-        <div class="text-h2 q-mb-lg text-uppercase text-white line_height_1_3">
-          {{ goodCategory.title }}
-        </div>
-        <div v-if="goodCategory.goods.length == 0" class="text-h3 text-white mb-30">
-          {{$t('category_empty')}}
-        </div>
-        <transition appear @enter="animation">
-          <div class="row image_grid">
-            <ProductCard
-              v-for="good in goodCategory.goods"
-              :good="good"
-              :key="good.id"
-              class="card_setting_v3"
-            />
+        <template v-if="goodCategory.goods.length > 0">
+          <div class="text-h2 q-mb-lg text-uppercase text-white line_height_1_3">
+            {{ goodCategory.title }}
           </div>
-        </transition>
+          <div v-if="goodCategory.goods.length == 0" class="text-h3 text-white mb-30">
+            {{$t('category_empty')}}
+          </div>
+          <transition appear @enter="animation">
+            <div class="row image_grid">
+              <ProductCard
+                v-for="good in goodCategory.goods"
+                :good="good"
+                :key="good.id"
+                class="card_setting_v3"
+              />
+            </div>
+          </transition>
+        </template>
       </article>
     </q-scroll-area>
 
