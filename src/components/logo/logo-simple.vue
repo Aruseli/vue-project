@@ -23,9 +23,3 @@ const props = defineProps({
     <div class="text-h2 text-center text-secondary text-uppercase text-weight-bold q-mr-sm" :class="props.text_style">high case</div>
   </div>
 </template>
-
-<style scoped>
-.direction {
-  transform: rotateY(180deg);
-}
-</style>
