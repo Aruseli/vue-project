@@ -1,7 +1,8 @@
 <script setup lang="ts">
+  import gsap from 'gsap';
   import Logo from 'src/components/logo/logo.vue';
   import { useRouter } from 'vue-router';
-  import { onMounted, onUnmounted, ref } from 'vue';
+  import { computed, onBeforeUnmount, onMounted, onUnmounted, ref, watch } from 'vue';
   import LogoSvg from 'src/components/logo/logo-svg.vue';
   import { useAppStore } from 'src/stores/app';
   import { forceNewVisit } from 'src/services/tracking';
@@ -33,12 +34,34 @@
     }
   }
 
+  const langs = computed(() => app.kioskState.catalogLocales?.flatMap(l => [l.lang_code]) ?? []);
+  let currentLocaleIndex = ref(0);
+  const changeLanguageAutomatically = () => {
+    app.setLocale(langs.value[(currentLocaleIndex.value as number)]);
+    currentLocaleIndex.value = (currentLocaleIndex.value + 1) % langs.value.length;
+  };
+  const languageChangeInterval = setInterval(changeLanguageAutomatically, 3000);
+
+  const text = ref('find_your_experience');
+  function textAnimation() {
+    gsap.to(text.value, {
+      duration: 0.5,
+      autoAlpha: 1,
+      scale: 1,
+      ease: 'power2.out'
+    })
+  }
+
   onMounted(() => {
     forceNewVisit();
     app.resetLocale();
     shiftsUpdateTimer.value = setTimeout(updateShifts, 0)  as unknown as number;
     show.value = true;
   })
+  onBeforeUnmount(() => {
+    clearInterval(languageChangeInterval);
+    app.resetLocale();
+  });
   onUnmounted(() => {
     clearTimeout(shiftsUpdateTimer.value  as number);
     shiftsUpdateTimer.value = null;
@@ -59,7 +82,7 @@
             <q-icon v-show="show" color="white" name="img:/cta.svg" class="handIconStyle" />
           </transition>
           <transition name="text-fade">
-            <div v-show="show" class="text-white text-h1 text-uppercase title_styles line_height_1_3">{{ $t('find_your_experience') }}</div>
+            <div v-show="show" class="text-white text-h1 text-uppercase title_styles line_height_1_3">{{ $t(text) }}</div>
           </transition>
         </div>
       </div>
@@ -136,12 +159,11 @@
   align-items: center;
 }
 .container_text {
-  width: min-content;
+  width: 90%;
 }
 .handIconStyle {
   font-size: clamp(7rem, 7vw + 1rem, 13rem);
 }
-
 .text-fade-enter-active {
   animation: rotateAnimation 3s;
 }
