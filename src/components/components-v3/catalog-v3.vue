@@ -1,23 +1,22 @@
 <script setup lang="ts">
-  import gsap from 'gsap';
-  import { onMounted, onUnmounted, ref, onBeforeUnmount } from 'vue';
-  import { useRouter } from 'vue-router';
-  import { useAppStore } from '../../stores/app';
-  import { useCartStore } from '../../stores/cart';
-  import { useGoodsStore } from '../../stores/goods';
-  import RedirectDialog from '../dialog/redirect-dialog.vue';
-  import ProductCard from './product/product-card.vue';
-  import ModalButton from '../components-v3/buttons/modal-button.vue';
-  import LogoSimple from '../logo/logo-simple.vue';
-  import LogoSvg from '../logo/logo-svg.vue';
-  import Language from './languages/language.vue';
-  import BinButton from '../buttons/bin-button.vue';
-  import BinIcon from './icons/bin-icon.vue';
-  import Modal from '../overlay/modal.vue';
   import { useIntersectionObserver } from '@vueuse/core';
-  import CartDrawer from './cart/cart-drawer.vue';
-  import Cta from './cta.vue';
-import moment from 'moment';
+import gsap from 'gsap';
+import { onMounted, onUnmounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAppStore } from '../../stores/app';
+import { useCartStore } from '../../stores/cart';
+import { useGoodsStore } from '../../stores/goods';
+import BinButton from '../buttons/bin-button.vue';
+import ModalButton from '../components-v3/buttons/modal-button.vue';
+import RedirectDialog from '../dialog/redirect-dialog.vue';
+import LogoSimple from '../logo/logo-simple.vue';
+import LogoSvg from '../logo/logo-svg.vue';
+import Modal from '../overlay/modal.vue';
+import CartDrawer from './cart/cart-drawer.vue';
+import Cta from './cta.vue';
+import BinIcon from './icons/bin-icon.vue';
+import Language from './languages/language.vue';
+import ProductCard from './product/product-card.vue';
 
   const target = ref(null);
   const goodsStore = useGoodsStore();
@@ -175,6 +174,7 @@ import moment from 'moment';
     // stop();
   });
 
+
 </script>
 
 <template>
@@ -220,10 +220,12 @@ import moment from 'moment';
             <li v-for='goodCategory in goodsStore.goods'
               :key='goodCategory.id'
               class="text-h3 text-weight-bold"
+
             >
               <div
                 @click.prevent="selectCategory(goodCategory.id)" :class='{active : goodCategory.id === selectedID}'
                 class="first_letter line_height_1_3"
+                v-if="goodCategory.goods.length > 0"
               >
                 {{ goodCategory.title }}
               </div>
@@ -261,22 +263,24 @@ import moment from 'moment';
         ref="target"
         class="mb-90"
       >
-        <div class="text-h2 q-mb-lg text-uppercase text-white line_height_1_3">
-          {{ goodCategory.title }}
-        </div>
-        <div v-if="goodCategory.goods.length == 0" class="text-h3 text-white mb-30">
-          {{$t('category_empty')}}
-        </div>
-        <transition appear @enter="animation">
-          <div class="row image_grid">
-            <ProductCard
-              v-for="(good, index) in goodCategory.goods"
-              :good="good"
-              :key="index"
-              class="card_setting_v3"
-            />
+        <template v-if="goodCategory.goods.length > 0">
+          <div class="text-h2 q-mb-lg text-uppercase text-white line_height_1_3">
+            {{ goodCategory.title }}
           </div>
-        </transition>
+          <div v-if="goodCategory.goods.length == 0" class="text-h3 text-white mb-30">
+            {{$t('category_empty')}}
+          </div>
+          <transition appear @enter="animation">
+            <div class="row image_grid">
+              <ProductCard
+                v-for="good in goodCategory.goods"
+                :good="good"
+                :key="good.id"
+                class="card_setting_v3"
+              />
+            </div>
+          </transition>
+        </template>
       </article>
     </q-scroll-area>
 

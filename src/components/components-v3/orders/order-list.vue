@@ -18,6 +18,7 @@ import moment from 'moment';
   const deleteOrder = async (id: string, reason: string) => {
     console.log('id', id,'reason', reason);
     await ordersStore.deleteOrder(id, reason);
+    console.log('id', id,'reason', reason);
   }
 
   const goToOrder = (id: string) => {

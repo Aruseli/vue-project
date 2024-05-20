@@ -1,10 +1,9 @@
 <script setup lang="ts">
+  import { ref } from 'vue';
   import DividerThin from '../../dividers/divider-thin.vue';
   import Bin from './bin.vue';
-  import { ref } from 'vue';
-  import DialogDelete from './dialog-delete.vue';
+  import DialogDeleteUnico from './dialog-delete-unico.vue';
 
-  const emit = defineEmits(['click', 'deleteOrder']);
 
   const props = defineProps({
     order: {
@@ -13,18 +12,25 @@
     },
     option: {
       type: String,
+      default: ''
     }
   })
 
-  const deletion = (reason: string) => {
+  const emit = defineEmits(['click', 'deleteOrder']);
+  const deleteOrder = (reason: string) => {
     emit('deleteOrder', reason);
   }
 
   const isDisabled = ref(false);
 
   const openDialog = ref(false);
+  const openReasons = ref(false);
   const open = () => {
     openDialog.value = true;
+  }
+  const closeReasons = () => {
+    openReasons.value = false;
+    openDialog.value = false;
   }
 </script>
 
@@ -46,12 +52,14 @@
       <Bin @click="open" class="px-0" :round="false" :disable="isDisabled" />
     </div>
   </div>
-  <DialogDelete
+  <DialogDeleteUnico
     :modelValue="openDialog"
+    :modelValueReason="openReasons"
     :orderNum="props.order.orderNumStr"
-    @deletionWithReason="deletion(props.option || '')"
-    @open="openDialog = false"
-    :order="true"
+    @deletionWithReason="deleteOrder(props.option)"
+    @open="!openDialog"
+    @closeReasons="closeReasons"
+    @agreement="openReasons = true"
   />
 </template>
 

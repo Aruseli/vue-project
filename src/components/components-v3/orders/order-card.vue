@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import Bin from './bin.vue';
-  import DialogDelete from './dialog-delete.vue';
+  import DialogDeleteUnico from './dialog-delete-unico.vue';
   import { ref } from 'vue';
   import Image from '../image.vue';
 
@@ -48,10 +48,10 @@
       </div>
     </div>
   </div>
-  <DialogDelete
+  <DialogDeleteUnico
     :orderNum="props.good.title"
     :modelValue="openDialog"
-    @deletion="emit('deleteProduct')"
+    @agreement="emit('deleteProduct')"
     @open="openDialog = false"
   />
 </template>

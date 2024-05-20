@@ -63,6 +63,10 @@ import Image from '../image.vue';
   const setCurrentSlide = (index: number) => {
     currentSlide.value = index;
   };
+  const goToCart = () => {
+    app.openDrawerCart(true);
+    openDialog.value = false;
+  }
 </script>
 
 
@@ -72,22 +76,22 @@ import Image from '../image.vue';
     v-bind="$attrs"
     @click="openDialog = true"
   >
-    <div v-if="props.good && props.good.stock <= 0" class="text-h4 absolute full-width full-height flex items-center justify-center notavalible_class"><p>{{ $t('not_available') }}</p></div>
+    <div v-if="props.good && props.good.stock <= 0" class="text-h4 absolute full-width full-height flex items-center justify-center notavailable_class"><p>{{ $t('not_available') }}</p></div>
     <div class="row justify-between items-center mb-10">
       <AttentionIcon />
       <div class="text-subtitle1 row">
         <div
-          class="row items-center intensity_icons_container mr-10"
+          class="row items-center intensity_icons_container px-10"
           :class="[app.lang_dir == 'rtl' ? 'intensity_icons_container_rtl' : '']"
         >
-          <div 
+          <div
             v-if="!isNaN(strength)"
-            v-for="n in strength" 
-            :key="n" 
-            class="intensity_icon bg-red"
+            v-for="n in strength"
+            :key="n"
+            :class="['intensity_icon', strength == 1 ? 'bg-green' : strength == 2 ? 'bg-yellow' : 'bg-red']"
           />
         </div>
-        <div>{{thc}}% THC</div>
+        <div v-if="thc > 0">{{thc}}% THC</div>
       </div>
     </div>
 
@@ -145,6 +149,7 @@ import Image from '../image.vue';
       :good="props.good"
       :isOpen="openDialog"
       @click="openDialog = false"
+      @goToCart="goToCart"
     >
       <template #carousel>
         <Carousel>
@@ -199,7 +204,7 @@ import Image from '../image.vue';
   .disabled_class {
     filter: grayscale(1);
   }
-  .notavalible_class {
+  .notavailable_class {
     z-index: 1;
   }
   .img_angle_top_main {

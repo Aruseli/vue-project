@@ -1,7 +1,7 @@
 import Dexie, { Table } from 'dexie';
 import { defineStore } from 'pinia';
 import { Deferred, apiGetGoods, apiGetGoodsImages, apiGetStockRemains, delay } from 'src/services';
-import { reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { useAppStore } from './app';
 
 export type Good = {
@@ -174,7 +174,14 @@ export const useGoodsStore = defineStore('goodsStore', () => {
   }
 
   return {
-    goods,
+    goods: computed(() => {
+      return (goods.value as GoodCategory[]).map(good => {
+        return {
+         ...good,
+          goods: good.goods.sort((a, b) => b.stock - a.stock),
+        };
+      });
+    }),
     goodsByGoodId,
     goodsByItemId,
     goodsByItemCode,
