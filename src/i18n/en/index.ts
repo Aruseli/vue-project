@@ -142,5 +142,6 @@ export default {
   problems_with_payment: 'Problems with payment',
   changes_in_terms_of_sale: 'Changes in terms of sale',
   order_cannot_be_completed_due_to_technical_reasons: 'The order cannot be completed due to technical reasons',
-  products_are_out_of_stock: 'Products are out of stock'
+  products_are_out_of_stock: 'Products are out of stock',
+  go_to_cart: 'go to cart',
 };

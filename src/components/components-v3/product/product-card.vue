@@ -63,6 +63,10 @@ import Image from '../image.vue';
   const setCurrentSlide = (index: number) => {
     currentSlide.value = index;
   };
+  const goToCart = () => {
+    app.openDrawerCart(true);
+    openDialog.value = false;
+  }
 </script>
 
 
@@ -145,6 +149,7 @@ import Image from '../image.vue';
       :good="props.good"
       :isOpen="openDialog"
       @click="openDialog = false"
+      @goToCart="goToCart"
     >
       <template #carousel>
         <Carousel>

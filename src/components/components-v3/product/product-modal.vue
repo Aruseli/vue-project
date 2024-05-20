@@ -1,11 +1,11 @@
 <script setup lang="ts">
-  import { evaMinusOutline, evaPlusOutline } from '@quasar/extras/eva-icons';
-  import { computed, ref } from 'vue';
-  import { useAppStore } from '../../../stores/app';
-  import { useCartStore } from '../../../stores/cart';
-  import { Good } from '../../../stores/goods';
-  import IconButton from '../../buttons/icon-button.vue';
-  import Modal from '../../overlay/modal.vue';
+  import { computed } from 'vue';
+import { useAppStore } from '../../../stores/app';
+import { useCartStore } from '../../../stores/cart';
+import { Good } from '../../../stores/goods';
+import IconButton from '../../buttons/icon-button.vue';
+import Modal from '../../overlay/modal.vue';
+import RectangularButton from '../buttons/rectangular-button.vue';
 
   const cartStore = useCartStore();
   const app = useAppStore();
@@ -55,7 +55,7 @@
   const increase = (good: Good) => {
     cartStore.increaseItemsCount(good);
   }
-  const emit = defineEmits(['click']);
+  const emit = defineEmits(['click', 'goToCart']);
 </script>
 
 <template>
@@ -167,26 +167,30 @@
             </div>
           </div>
         </q-btn>
-        <div class="row justify-between items-center" v-else>
-          <IconButton
-            :rounded="false"
-            :icon="evaMinusOutline"
-            color="white"
-            textColor="grey-1"
-            @click="decrease(props.good  as Good)"
-            class="operator_button"
-            iconStyle="font-size: 1rem !important"
-          />
-          <div class="text-h2 no-margin text-white">{{ goodInCart.quant }}</div>
-          <IconButton
-            :rounded="false"
-            color="white"
-            textColor="grey-1"
-            :icon="evaPlusOutline"
-            @click="increase(props.good as Good)"
-            class="operator_button"
-            :disable="goodInCart.quant >= goodInCart.stock"
-          />
+        <div class="justify-between items-center buttons_grid" v-else>
+          <div class="row items-center justify-between bg-white">
+            <IconButton
+              :rounded="false"
+              icon="img:/minus.svg"
+              color="transparent"
+              textColor="grey-1"
+              @click="decrease(props.good  as Good)"
+              class="operator_button"
+              size='1rem'
+            />
+            <div class="text-h2 no-margin text-black">{{ goodInCart.quant }}</div>
+            <IconButton
+              :rounded="false"
+              color="transparent"
+              textColor="grey-1"
+              icon="img:/plus.svg"
+              size='1rem'
+              @click="increase(props.good as Good)"
+              class="operator_button"
+              :disable="goodInCart.quant >= goodInCart.stock"
+            />
+          </div>
+          <RectangularButton :name="$t('go_to_cart')" color="green" textColor="black" @click="emit('goToCart')" class="text-lowercase" />
         </div>
       </div>
     </div>
@@ -237,5 +241,14 @@
     height: var(--px11);
     border-radius: var(--px11);
   }
-
+  .buttons_grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    column-gap: 5rem;
+    width: 100%;
+  }
+  .icon_style > img {
+    width: 1rem;
+  }
 </style>
