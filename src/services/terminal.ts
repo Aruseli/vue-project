@@ -51,6 +51,7 @@ export async function updateTerminalParams() {
     terminalParams.value = await apiAddAnyTerminal(terminalName.value, terminalCode.value, config.terminal_type_id);
     settings.value = {
       ...config.settings,
+      ...terminalParams.value.terminal_props,
       ...terminalParams.value.terminal_settings,
     }
   } catch {

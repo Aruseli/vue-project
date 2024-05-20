@@ -95,6 +95,7 @@ export type TerminalParams = {
   location_id?: string,
   object_id?: string,
   terminal_settings?: Partial<Settings>,
+  terminal_props?: Partial<Settings>,
 }
 
 export type LocaleInfo = {
