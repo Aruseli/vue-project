@@ -106,6 +106,17 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     }
   }
 
+
+  function sortGoodsWithinCategory(goods: GoodCategory[]) {
+    return goods.map(category => {
+      const inStock = category.goods.filter(item => item.stock > 0);
+      inStock.sort((a, b) => a.title.localeCompare(b.title));
+      const outOfStock = category.goods.filter(item => item.stock === 0);
+      outOfStock.sort((a, b) => a.title.localeCompare(b.title));
+      return { ...category, goods: [...inStock, ...outOfStock] };
+    });
+  }
+
   const updateGoods = async (locale: string) => {
     if (goodsLoading.value) {
       await goodsLoadingWaiter.value.promise
@@ -139,6 +150,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
             })),
           })),
         }));
+        goods.value = sortGoodsWithinCategory(goods.value);
         const goodsArray = goods.value.flatMap(gc => gc.goods);
         goodsByGoodId.value = Object.fromEntries(goodsArray.map(g => [g.id, g]));
         goodsByItemId.value = Object.fromEntries(goodsArray.flatMap(g => g.items.map(item => [item.mark, g])));
@@ -172,16 +184,8 @@ export const useGoodsStore = defineStore('goodsStore', () => {
   const waitGoodsReady = async () => {
     await goodsLoadingWaiter.value.promise
   }
-
   return {
-    goods: computed(() => {
-      return (goods.value as GoodCategory[]).map(good => {
-        return {
-         ...good,
-          goods: good.goods.sort((a, b) => b.stock - a.stock),
-        };
-      });
-    }),
+    goods,
     goodsByGoodId,
     goodsByItemId,
     goodsByItemCode,
@@ -195,6 +199,7 @@ export const useGoodsStore = defineStore('goodsStore', () => {
     imagesCache,
     imagesCacheExpirationAt,
     waitGoodsReady,
+    sortGoodsWithinCategory
   }
 },
   // {
