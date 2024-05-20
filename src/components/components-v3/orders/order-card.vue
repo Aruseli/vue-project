@@ -1,8 +1,9 @@
 <script setup lang="ts">
   import Bin from './bin.vue';
-  import DialogDeleteUnico from './dialog-delete-unico.vue';
   import { ref } from 'vue';
   import Image from '../image.vue';
+import { showDialog } from 'src/services/dialogs';
+import { t } from 'i18next';
 
   const props = defineProps({
     good: {
@@ -11,11 +12,19 @@
     },
   })
 
+  const emit = defineEmits(['click', 'deleteProduct']);
   const openDialog = ref(false);
   const open = () => {
-    openDialog.value = true;
+    // openDialog.value = true;
+    showDialog({
+      text: `${t('delete_product')} ${props.good.title}`,
+      buttons: [{
+        name: "not", type: "equal", handler: async () => openDialog.value = false
+      }, {
+        name: "yes", type: "equal", handler: async () => emit('deleteProduct')
+      }],
+    })
   }
-  const emit = defineEmits(['click', 'deleteProduct']);
 </script>
 
 <template>
@@ -48,12 +57,6 @@
       </div>
     </div>
   </div>
-  <DialogDeleteUnico
-    :orderNum="props.good.title"
-    :modelValue="openDialog"
-    @agreement="emit('deleteProduct')"
-    @open="openDialog = false"
-  />
 </template>
 
 <style scoped lang="scss">

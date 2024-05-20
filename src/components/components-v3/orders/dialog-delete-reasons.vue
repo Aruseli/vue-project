@@ -6,11 +6,6 @@
   const props = defineProps({
     modelValue: {
       type: Boolean,
-      required: true,
-      default: false,
-    },
-    modelValueReason: {
-      type: Boolean,
       default: false,
     },
     orderNum: {
@@ -25,7 +20,7 @@
       default: true,
     }
   })
-  const emit = defineEmits(['updateReason', 'deletionWithReason', 'open', 'closeReasons', 'agreement']);
+  const emit = defineEmits(['updateReason', 'deletionWithReason', 'closeReasons']);
   // const reasonOption = ref(props.option);
   // watch(reasonOption, (newValue) => {
   //   emit('update:props.option', newValue);
@@ -36,12 +31,6 @@
   const updateReason = (value: string) => {
     emit('updateReason', value);
   };
-
-  const reasonDeletion = ref(false);
-  const openDeletion = () => {
-    emit('open');
-    reasonDeletion.value = false;
-  };
   const deletionMethod = (reason: string) => {
     // Вызываем событие 'delete-order' и передаем аргумент 'reason'
     emit('deletionWithReason', reason);
@@ -49,29 +38,7 @@
 </script>
 
 <template>
-  <Modal :isOpen="props.modelValue" to="#redirect-dialog">
-    <div class="modal_container__delete pa-20 column bg-white relative-position">
-      <div class="column">
-        <div class="text-h2 text-center text-uppercase mb-10 line_height">
-          {{ $t('delete_order') }}
-        </div>
-        <div class="text-center text-uppercase text-h3 mb-40">
-          {{ props.orderNum }}
-        </div>
-      </div>
-      <div class="buttons_class justify-center full-width">
-        <RectangularButton
-          :name="$t('no')"
-          @click="emit('open')"
-        />
-        <RectangularButton
-          :name="$t('yes')"
-          @click="emit('agreement')"
-        />
-      </div>
-    </div>
-  </Modal>
-  <Modal :isOpen="props.modelValueReason" to="#reason-dialog" contentBlockStyle="top: 50%; transform: translateY(-50%);">
+  <Modal :isOpen="props.modelValue" to="#reason-dialog" contentBlockStyle="top: 50%; transform: translateY(-50%);">
     <div class="modal_container pa-40 column bg-white relative-position">
       <q-icon name="clear" size="3rem" color="grey" @click="emit('closeReasons')" class="absolute clear_icon" />
       <div class="column">
@@ -85,7 +52,7 @@
               checked-icon="img:/radio-check.svg"
               unchecked-icon="img:/radio.svg"
               v-model="selectedReason"
-              @update="emit('updateReason', selectedReason)"
+              @update="updateReason"
               :val="$t(r)"
               :label="$t(r)"
               class="mb-15"
@@ -120,10 +87,4 @@
   top: 1rem;
   right: 1rem;
 }
-.buttons_class {
-  display: grid;
-  grid-template-columns: repeat(2, 0.5fr);
-  column-gap: 2rem;
-}
-
 </style>

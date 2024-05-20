@@ -2,7 +2,9 @@
   import { ref } from 'vue';
   import DividerThin from '../../dividers/divider-thin.vue';
   import Bin from './bin.vue';
-  import DialogDeleteUnico from './dialog-delete-unico.vue';
+  import DialogDeleteReasons from './dialog-delete-reasons.vue';
+  import { showDialog } from 'src/services/dialogs';
+  import { t } from 'i18next';
 
 
   const props = defineProps({
@@ -26,7 +28,14 @@
   const openDialog = ref(false);
   const openReasons = ref(false);
   const open = () => {
-    openDialog.value = true;
+    showDialog({
+      text: `${t('delete_product')} ${props.order.orderNumStr}`,
+      buttons: [{
+        name: "not", type: "equal", handler: async () => openDialog.value = false
+      }, {
+        name: "yes", type: "equal", handler: async () => openReasons.value = true
+      }],
+    })
   }
   const closeReasons = () => {
     openReasons.value = false;
@@ -52,14 +61,11 @@
       <Bin @click="open" class="px-0" :round="false" :disable="isDisabled" />
     </div>
   </div>
-  <DialogDeleteUnico
-    :modelValue="openDialog"
-    :modelValueReason="openReasons"
+  <DialogDeleteReasons
+    :modelValue="openReasons"
     :orderNum="props.order.orderNumStr"
-    @deletionWithReason="deleteOrder(props.option)"
-    @open="!openDialog"
+    @deletionWithReason="(reason) => deleteOrder(reason)"
     @closeReasons="closeReasons"
-    @agreement="openReasons = true"
   />
 </template>
 
