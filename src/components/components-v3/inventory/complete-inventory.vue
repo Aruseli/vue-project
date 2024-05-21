@@ -62,22 +62,13 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
   }
 }
 
-  async function submitInventory() {
+  async function submitInventory(autocomplete = false) {
     try {
       $q.loading.show();
       try {
-        if (route.path === "/open-shift/complete-inventory") {
-          const { documentId: docId } = await inventoryStore.submitInventory();
-          documentId.value = docId;
-        } else if (route.path == "/close-shift/complete-inventory") {
-          const { documentId: docId } = await inventoryStore.submitInventory();
-          documentId.value = docId;
-        } else {
-          const { documentId: docId } = await inventoryStore.submitInventory();
-          documentId.value = docId;
-        }
-        // await showPrintConfirmationDialog();
-        await showDialog({
+        const { documentId: docId } = await inventoryStore.submitInventory(autocomplete);
+        documentId.value = docId;
+        showDialog({
           text: t("print_inventory_results"),
           buttons: [{
             name: "not_print", type: "equal", handler: async () => handlePrintConfirmation(false)
@@ -208,13 +199,17 @@ async function handlePrintConfirmation(printConfirmed: boolean) {
       </div>
       <div class="full-width buttons_container px-100 pb-40">
         <RectangularButton
+          :name="$t('autocomplete_inventory_under_my_responsibility')"
+          @click="submitInventory(true)"
+        />
+        <RectangularButton v-if="!inventoryStore.isInventoryDone"
           :name="$t('declare_discrepancy')"
           color="warning"
-          @click="submitInventory"
+          @click="submitInventory(false)"
         />
-        <RectangularButton
+        <RectangularButton v-else
           :name="$t('confirm')"
-          @click="submitInventory"
+          @click="submitInventory(false)"
         />
       </div>
     </div>
