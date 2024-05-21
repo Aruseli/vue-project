@@ -59,7 +59,8 @@ export function showSimpleNotification(text: string, icon?: string) {
     text,
     icon,
     buttons: [
-      { name: 'dismiss', handler: async () => {}, type: "primary" },
+      // { name: 'dismiss', handler: async () => {}, type: "primary" },
+      { name: 'ok', handler: async () => {}, type: "primary" },
     ]
   })
 }
