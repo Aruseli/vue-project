@@ -223,7 +223,7 @@
             </div>
           </div>
         </div>
-        <OrderCheck v-else-if="app.orderDialog == true" />
+        <OrderCheck v-else-if="app.orderDialog == true" @click="backdropCloseDrawer" />
       </transition>
     </div>
   </transition>
