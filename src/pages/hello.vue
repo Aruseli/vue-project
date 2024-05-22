@@ -12,6 +12,25 @@
   const shiftsUpdateTimer = ref<number | null>(null);
   const app = useAppStore();
 
+  const textContainer = ref(null);
+  const langs = computed(() => app.kioskState.catalogLocales?.flatMap(l => [l.lang_code]) ?? []);
+  let currentLocaleIndex = ref(0);
+  const changeLanguageAutomatically = () => {
+    app.setLocale(langs.value[(currentLocaleIndex.value as number)]);
+    currentLocaleIndex.value = (currentLocaleIndex.value + 1) % langs.value.length;
+  };
+  const changeLanguageWithAnimation = () => {
+    gsap.to(textContainer.value, {
+      opacity: 0, scale: 0.95, duration: 0.5,
+      onComplete: () => {
+        changeLanguageAutomatically();
+        gsap.to(textContainer.value, {
+          opacity: 1, scale: 1, duration: 0.5
+        });
+      }
+    });
+  };
+  const languageChangeInterval = setInterval(changeLanguageWithAnimation, 3000);
   const onClick = async () => {
     forceNewVisit();
     await router.push('languages');
@@ -34,23 +53,7 @@
     }
   }
 
-  const langs = computed(() => app.kioskState.catalogLocales?.flatMap(l => [l.lang_code]) ?? []);
-  let currentLocaleIndex = ref(0);
-  const changeLanguageAutomatically = () => {
-    app.setLocale(langs.value[(currentLocaleIndex.value as number)]);
-    currentLocaleIndex.value = (currentLocaleIndex.value + 1) % langs.value.length;
-  };
-  const languageChangeInterval = setInterval(changeLanguageAutomatically, 3000);
-
   const text = ref('find_your_experience');
-  function textAnimation() {
-    gsap.to(text.value, {
-      duration: 0.5,
-      autoAlpha: 1,
-      scale: 1,
-      ease: 'power2.out'
-    })
-  }
 
   onMounted(() => {
     forceNewVisit();
@@ -77,9 +80,9 @@
         <source src="flame.mp4" type="video/mp4">
       </video>
       <div class="hello_text" @click="onClick">
-        <div class="column justify-center items-center text-center container_text mb-120">
+        <div class="column justify-center items-center text-center container_text mb-120" ref="textContainer">
           <transition name="">
-            <q-icon v-show="show" color="white" name="img:/cta.svg" class="handIconStyle" />
+            <q-icon v-show="show" color="white" name="img:/cta.svg" class="handIconStyle mb-15" />
           </transition>
           <transition name="text-fade">
             <div v-show="show" class="text-white text-h1 text-uppercase title_styles line_height_1_3">{{ $t(text) }}</div>
