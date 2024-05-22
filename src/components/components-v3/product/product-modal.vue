@@ -82,7 +82,7 @@ import RectangularButton from '../buttons/rectangular-button.vue';
         <slot name="carousel" />
 
         <!-- characteristics -->
-        <div class="column text-body1">
+        <div class="column text-body1 characteristics_area">
           <div class="text-grey q-mb-lg text-h3">
             {{ $t('characteristics') }}
           </div>
@@ -211,6 +211,10 @@ import RectangularButton from '../buttons/rectangular-button.vue';
     overflow-x: hidden;
     scrollbar-width: thin;
     scrollbar-color: #5d5d5d transparent;
+  }
+  .characteristics_area {
+    grid-column: 2 / 3;
+    grid-row: 1 / 3;
   }
   .add_button {
     height: 80px;

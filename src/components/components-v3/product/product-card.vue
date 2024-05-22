@@ -6,12 +6,13 @@ import { useCartStore } from '../../../stores/cart';
 import { Good } from '../../../stores/goods';
 import OperatorButton from '../buttons/operator-button.vue';
 import ProductBinButton from '../buttons/product-bin-button.vue';
+import ScrollArrows from '../carousel/carousel-arrows.vue';
 import Carousel from '../carousel/carousel.vue';
 import Slide from '../carousel/slide.vue';
 import AttentionIcon from '../icons/attention-icon.vue';
 import BinIcon from '../icons/bin-icon.vue';
-import ProductModal from './product-modal.vue';
 import Image from '../image.vue';
+import ProductModal from './product-modal.vue';
 
   const cartStore = useCartStore();
   const app = useAppStore();
@@ -173,7 +174,7 @@ import Image from '../image.vue';
         </Carousel>
       </template>
       <template #slider-navigation>
-        <div class="slider_navigation_container">
+        <ScrollArrows>
           <Slide
             v-for="(images, index) in props.good.images"
             :key="index"
@@ -191,7 +192,7 @@ import Image from '../image.vue';
               </div>
             </template>
           </Slide>
-        </div>
+        </ScrollArrows>
       </template>
     </ProductModal>
   </template>
@@ -224,16 +225,6 @@ import Image from '../image.vue';
   .non_active {
     opacity: 0
   }
-  .slider_navigation_container {
-    overflow: hidden;
-    height: auto;
-    display: grid;
-    grid-row: 2 / 3;
-    grid-column: 1 / 3;
-    grid-template-columns: repeat(auto-fit, minmax(5%, 10%));
-    column-gap: 1.5rem;
-  }
-
   .slide_img {
     border-radius: 0 !important;
     scale: 0.9;
