@@ -31,6 +31,12 @@
     }
   })
 
+  const backdropCloseDrawer = () => {
+    if( app.orderDialog == true ) {
+      app.openOrderDialog(false);
+      router.push('hello');
+    } else { closeDrawerCart() }
+  }
   const closeDrawerCart = () => {
     app.openDrawerCart(false)
   }
@@ -65,16 +71,6 @@
   }
 
   const emit = defineEmits(['click']);
-
-  const orderCheckClose = () => {
-    cartStore.clearCart();
-    app.openDrawerCart(false);
-    closeDrawerCart();
-    app.orderDialog = false;
-    if (timer.value) {
-      clearTimeout(timer.value);
-    }
-  }
 </script>
 
 <template>
@@ -227,12 +223,12 @@
             </div>
           </div>
         </div>
-        <OrderCheck v-else-if="app.orderDialog == true" @click="orderCheckClose" />
+        <OrderCheck v-else-if="app.orderDialog == true" />
       </transition>
     </div>
   </transition>
   <transition name="backdrop_animation">
-    <div class="drawer_backdrop" v-if="props.isOpen" @click="emit('click')" />
+    <div class="drawer_backdrop" v-if="props.isOpen" @click="backdropCloseDrawer" />
   </transition>
 
 </template>

@@ -22,7 +22,7 @@
 
 <template>
   <div class="dialog_container_v3 bg-grey-3 relative-position justify-between items-center" v-bind="$attrs">
-    <IconButton
+    <!-- <IconButton
       icon="close"
       textColor="grey"
       :rounded="false"
@@ -31,7 +31,7 @@
       size="xl"
       class="cart_close_button absolute-top-right"
       @click="emit('click')"
-    />
+    /> -->
     <div class="text-h2 text-white text-uppercase text-center pt-100 px-140 mb-200 line_height_1_3">
       {{$t('order_was_successfully_confirmed')}}
     </div>

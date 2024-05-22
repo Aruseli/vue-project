@@ -287,7 +287,7 @@ import ProductCard from './product/product-card.vue';
     <!-- cart information -->
     <Cta @click="openDrawer" class="cta_style" />
 
-    <CartDrawer :isOpen="app.drawerCartState" @click="app.openDrawerCart(false);" additionalCartClass="cart_positioning" />
+    <CartDrawer :isOpen="app.drawerCartState" additionalCartClass="cart_positioning" />
 
     <!-- redirect dialog when user is inactive-->
     <RedirectDialog
