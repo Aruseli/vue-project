@@ -116,8 +116,7 @@ import ProductModal from './product-modal.vue';
       <div class="row justify-between items-center full-width">
         <div class="text-h4">&#3647&ensp;{{ props.good?.price }}</div>
         <ProductBinButton @click="addGoodToCart(props.good as Good)">
-          <BinIcon :quantity="cartStore.totalQuantity" v-if="!goodInCart" width="1rem" height="1rem" class="product_bin" />
-          <div v-else class="text-h2 no-margin text-white">{{ goodInCart.quant }}</div>
+          <BinIcon :quantity="cartStore.totalQuantity" width="1rem" height="1rem" class="product_bin" />
         </ProductBinButton>
       </div>
 
