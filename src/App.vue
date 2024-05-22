@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { eventEmitter, throwErr } from "src/services";
+  import { apiGetDocument, eventEmitter, throwErr } from "src/services";
   import ModalButton from 'components/components-v3/buttons/modal-button.vue';
   import RedirectDialog from 'components/dialog/redirect-dialog.vue';
   import Dialogs from "./components/overlay/dialogs.vue";
@@ -13,11 +13,12 @@
   import { forceNewVisit } from "./services/tracking";
   import { computed, onMounted, ref } from "vue";
   import { debugGenerateArrival } from "src/services/documents/documents";
-  import {closeAllDialogs } from "./services/dialogs";
+  import {closeAllDialogs, showSimpleNotification } from "./services/dialogs";
   import * as usersService from 'src/services/users';
   import Ping from './components/components-v3/ping.vue';
-  import { initTerminal } from "./services/terminal";
+  import { initTerminal, settings } from "./services/terminal";
   import { updateShifts } from "./services/shifts";
+  import { t } from "i18next";
 
   const route = useRoute()
   const router = useRouter()
@@ -82,8 +83,15 @@
         console.error("What's with uuids? Why not one?", uuids);
         return;
       }
+      const id = uuids[0];
 
       // DocumentBarcode
+      if (route.path == '/employee-actions' || route.path == '/') {
+        const doc = await apiGetDocument(id);
+        if (doc.doc_type == settings.value?.doc_type__invoice && (doc.state == 0 || doc.state == 6)) {
+          showSimpleNotification(t('order_already_issued'));
+        }
+      }
       if (appStore.orderIssueIsAllowed && (route.path == '/employee-actions' || route.path == '/')) {
         await ordersStore.updateOrders()
         // if (process.env.DEV) {

@@ -91,10 +91,16 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     return doc;
   }
 
-  const submitInventory = async () => {
+  const submitInventory = async (autocomplete = false) => {
     const doc: SaveableDocument | null = inventoryDocument.value;
     if (!doc) {
       throw new Error('Missing inventory document');
+    }
+
+    if (autocomplete) {
+      inventory.value?.items.forEach(i => {
+        i.scannedItems.push(...i.itemsToScan.map(its => its.mark).filter(id => !i.scannedItems.includes(id)));
+      });
     }
 
     doc.state = 0;
@@ -208,6 +214,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     submitInventory,
     totalActualQuant,
     docNumStr: computed(() => inventoryDocument.value?.abbr_num?.toString().padStart(4, "0") ?? t("Unknown")),
+    isInventoryDone: computed(() => inventory.value?.items.every(i => i.scannedItems.length == i.itemsToScan.length) ?? false),
   };
 });
 
@@ -229,6 +236,7 @@ function documentToInventory(
         price: good?.price,
         quant: 0,
         scannedItems: [] as string[],
+        itemsToScan: good.items,
         confirmed: false,
       };
     }),

@@ -145,4 +145,7 @@ export default {
   products_are_out_of_stock: 'Products are out of stock',
   out_of_network: 'Out of network',
   go_to_cart: 'go to cart',
+  autocomplete_inventory_under_my_responsibility: 'All is here, I promise',
+  order_already_issued: 'Order already have been issued',
+  ok: 'OK',
 };
